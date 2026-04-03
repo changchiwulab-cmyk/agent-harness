@@ -10,6 +10,8 @@ status: "pending"              # pending → in_progress → checkpoint → revi
 goal: ""                       # 一句話描述要完成什麼
 context: ""                    # 背景資訊、為什麼要做這件事
 input_data: []                 # 輸入資料來源（檔案路徑、URL、文字）
+depends_on: []                 # 前置任務 ID（例：["20260403-001"]）
+input_from: []                 # 從前置任務接收的檔案（例：["outputs/drafts/research_note.md"]）
 
 # === 完成標準（最重要的欄位）===
 definition_of_done:            # 必填。沒有這個欄位不進 runtime
@@ -35,7 +37,7 @@ max_retries: 3                 # 連續失敗最多重試次數
 max_web_searches: 3            # web search 上限
 
 # === Skill 路由 ===
-skill_type: ""                 # research / writing / ops / review
+skill_type: ""                 # research / writing / ops / review / analysis
 
 # === 執行紀錄（由 agent 填寫）===
 checkpoints: []                # 每次 checkpoint 的 git commit hash + 描述

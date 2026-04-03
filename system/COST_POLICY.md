@@ -58,6 +58,7 @@ v1 先用單一模型（Claude）。未來如需降本：
 | 任務類型 | 預估 token | 實測平均 | 建議上限 |
 |---------|-----------|---------|---------|
 | research | TBD | TBD | TBD |
+| analysis | TBD | TBD | TBD |
 | writing | TBD | TBD | TBD |
 | ops | TBD | TBD | TBD |
 | review | TBD | TBD | TBD |

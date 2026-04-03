@@ -14,7 +14,7 @@
 控制平面（Control）
 ├── 1. Interface         Claude Code CLI
 ├── 2. Task Card         tasks/*.yaml — 任務定義
-└── 3. Planner/Router    system/ROUTING_RULES.md — skill 路由
+└── 3. Planner/Router    system/ROUTING_RULES.md + INTAKE_FLOW.md — 需求釐清與路由
 
 執行平面（Execution）
 ├── 4. Context Manager   CLAUDE.md context 規則 — 上下文組裝
@@ -40,12 +40,15 @@ agent-harness/
 │   ├── GLOBAL_RULES.md        ← 全域規則 + 失敗分類學
 │   ├── PERMISSIONS.yaml       ← 權限策略（allow/ask/deny + 四級風險）
 │   ├── COST_POLICY.md         ← 成本控制 + 升級觸發條件
-│   └── ROUTING_RULES.md       ← Skill 路由規則
+│   ├── ROUTING_RULES.md       ← Skill 路由規則
+│   ├── INTAKE_FLOW.md         ← Task Card 前的需求釐清流程
+│   └── RETRO_FLOW.md          ← 回饋迴路與持續改進流程
 ├── tasks/
 │   ├── TASK_CARD_TEMPLATE.yaml
 │   └── examples/              ← 填好的範例
 ├── skills/
-│   ├── research/SKILL.md      ← 研究分析
+│   ├── research/SKILL.md      ← 研究調查
+│   ├── analysis/SKILL.md      ← 決策分析
 │   ├── writing/SKILL.md       ← 撰寫產出
 │   ├── ops/SKILL.md           ← 營運操作
 │   └── review/SKILL.md        ← 品質審查

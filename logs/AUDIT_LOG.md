@@ -22,6 +22,7 @@
   approval_given: false
   output_path: ""          # 輸出檔案路徑
   error_summary: ""        # 如有錯誤，簡述
+  suggested_recovery: ""   # 如果失敗，建議的恢復路徑（重試 / 改 Task Card / 換 skill / 拆分任務）
   estimated_tokens: ""     # 預估 token（粗略即可）
   notes: ""                # 其他備註
 ```
