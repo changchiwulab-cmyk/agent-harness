@@ -31,3 +31,24 @@
 ## 紀錄（依時間倒序）
 
 <!-- 新紀錄加在這裡 -->
+
+```yaml
+- task_id: "20260403-001"
+  date: "2026-04-04"
+  skill_type: "research"
+  goal: "調查越南市場 2026 年主流 AI 生產力工具的採用現況與趨勢"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 3
+    - tool_name: "file_read"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/vietnam-ai-tools-research.md"
+  error_summary: ""
+  estimated_tokens: "~8000"
+  notes: "涵蓋 8 個主流工具（5 國際 + 3 本地）；DoD 全部通過四層驗證。台越合作線索（FPT x Startup Island TAIWAN）已收錄。"
+```
