@@ -31,3 +31,43 @@
 ## 紀錄（依時間倒序）
 
 <!-- 新紀錄加在這裡 -->
+
+---
+
+```yaml
+- task_id: "20260404-R02"
+  date: "2026-04-04"
+  skill_type: "review"
+  goal: "審查工具盤點報告的完整性、邏輯一致性與一人公司適用性"
+  status: "done"
+  model_used: "claude-opus-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/tools-inventory-review-report.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "有條件通過。發現 2 個必須修改（知識管理類別缺失、採用狀態不一致），3 個建議修改。DoD 5/5 條有 3 通過、2 部分通過。Week 1 pipeline 驗證完成。"
+
+- task_id: "20260404-R01"
+  date: "2026-04-04"
+  skill_type: "research"
+  goal: "調查並整理一人公司運作所需的工具清單，按功能分類並評估現有採用狀況"
+  status: "done"
+  model_used: "claude-opus-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "web_search"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/solo-company-tools-inventory.md"
+  error_summary: ""
+  estimated_tokens: "~18K"
+  notes: "6 大類別 20+ 工具。web search 3 輪全部用完。outputs/drafts/ 因 .gitignore 不入版控，Task Card 狀態記錄在 YAML。"
+```
