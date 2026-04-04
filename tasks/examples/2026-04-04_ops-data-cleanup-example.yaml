@@ -1,0 +1,49 @@
+# 範例 Task Card — 客戶資料整理
+# 這是 ops skill 的範例
+
+task_id: "20260404-002"
+date: "2026-04-04"
+status: "pending"
+
+# === 任務定義 ===
+goal: "將散落在多個檔案的客戶聯絡資訊整合為統一 YAML 格式"
+context: "目前客戶資料分散在 notes/、memory/ 多處，需要統一格式方便後續任務引用"
+input_data:
+  - "memory/active_projects/consulting/references/"
+  - "outputs/drafts/client-list-raw.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "所有客戶資料整合到單一 YAML 檔"
+  - "欄位統一：name, company, role, contact, status, notes"
+  - "原始檔案保留不刪除"
+  - "輸出包含變更摘要（新增/合併/跳過筆數）"
+  - "資料完整性：合併前後筆數可追溯"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: "outputs/drafts/"
+  filename: "client-contacts-unified.yaml"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+
+# === 成本控制 ===
+max_tool_calls: 5
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
