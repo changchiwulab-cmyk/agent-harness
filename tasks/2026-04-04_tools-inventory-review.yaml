@@ -1,0 +1,48 @@
+# Task Card — 一人公司工具盤點（Review）
+
+task_id: "20260404-R02"
+date: "2026-04-04"
+status: "pending"
+
+# === 任務定義 ===
+goal: "審查工具盤點報告的完整性、邏輯一致性與一人公司適用性"
+context: "作為 20260404-R01 的 review 配對任務，完成 Week 1 research→review pipeline 驗證"
+input_data:
+  - "outputs/drafts/solo-company-tools-inventory.md"
+  - "tasks/2026-04-04_tools-inventory-research.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "逐條確認 research task（20260404-R01）的 definition_of_done"
+  - "格式與結構完整性確認（符合 research skill 輸出格式）"
+  - "標記無來源或未驗證的論述"
+  - "邏輯一致性：分類合理、無重複或遺漏的主要工具類別"
+  - "輸出 review report，明確區分「必須修改」與「建議修改」"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "tools-inventory-review-report.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+
+# === 成本控制 ===
+max_tool_calls: 5
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "review"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
