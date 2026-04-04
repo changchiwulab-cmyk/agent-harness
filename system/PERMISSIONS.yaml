@@ -23,17 +23,6 @@ permissions:
     - install_packages         # 安裝任何套件
     - modify_claude_md         # 修改 CLAUDE.md
 
-# === 畢業機制 ===
-# 當某個 ask 動作連續 10 次被 approve 且無事故，可考慮降級為 allow（加條件）
-# 畢業候選紀錄在 retro 流程中追蹤
-graduation_candidates: []
-  # 範例：
-  # - action: create_task_card
-  #   consecutive_approvals: 0
-  #   last_incident: null
-  #   threshold: 10           # 連續 approve 多少次後可畢業
-  #   graduated: false
-
   # === 禁止 ===
   deny:
     - shell_delete             # rm / rmdir / 任何刪除操作
@@ -69,3 +58,13 @@ risk_levels:
     auto_execute: false
     approval_needed: true
     approval_type: "deny_by_default"  # 預設拒絕，需額外授權
+
+# === 畢業機制 ===
+# 當某個 ask 動作連續 10 次被 approve 且無事故，可考慮降級為 allow（加條件）
+# 畢業候選由 retro 流程追蹤（見 system/RETRO_FLOW.md）
+graduation_candidates:
+  # - action: create_task_card
+  #   consecutive_approvals: 0
+  #   last_incident: null
+  #   threshold: 10           # 連續 approve 多少次後可畢業
+  #   graduated: false
