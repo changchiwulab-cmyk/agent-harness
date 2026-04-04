@@ -35,6 +35,29 @@
 ---
 
 ```yaml
+- task_id: "20260404-RV01"
+  date: "2026-04-04"
+  skill_type: "review"
+  goal: "審查 ai-era-solo-business-proposal.md 的邏輯一致性、事實正確性、風險完整性"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/ai-era-solo-business-proposal-review.md"
+  error_summary: ""
+  estimated_tokens: "~18K"
+  notes: "有條件通過。必須修改 3 項：月 7-9 里程碑數字矛盾、月 10-12 Retainer 月收區間矛盾、Retainer 三方案交付差異未說明。建議修改 6 項。DoD 7/7 通過（含條件）。"
+```
+
+---
+
+```yaml
 - task_id: "20260404-W01"
   date: "2026-04-04"
   skill_type: "writing"
