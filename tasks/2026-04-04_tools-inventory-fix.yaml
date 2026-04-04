@@ -2,7 +2,7 @@
 
 task_id: "20260404-O01"
 date: "2026-04-04"
-status: "pending"
+status: "done"
 
 # === 任務定義 ===
 goal: "修正 20260404-R02 review 發現的 2 個 must-fix 問題，完成工具盤點報告定稿"
@@ -43,8 +43,15 @@ max_web_searches: 0
 skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - "（此 commit）: Task Card 建立 + v2 報告輸出完成"
+actual_tool_calls: 4
+result_summary: |
+  修改項目清單：
+  1. 新增「6. 知識管理」類別：Obsidian / Notion / Mem.ai / Readwise Reader / agent-harness memory/ 共 5 個工具，含採用狀態、月費估算、一人公司適用性評估
+  2. 全 7 個類別採用狀態統一為四態格式（✅已用 / ✅推論已用 / 🔍待評估 / ❌不適用），移除所有自由文字描述
+  3. 各類別補充已知事實 / 合理推論 / 待驗證標記
+  4. 輸出：outputs/drafts/solo-company-tools-inventory-v2.md
+  注意：原 v1 草稿因 .gitignore 未存磁碟，v2 依 Task Card context + audit log + memory/ 重建
+completion_time: "2026-04-04"
 audit_log_ref: "logs/AUDIT_LOG.md"

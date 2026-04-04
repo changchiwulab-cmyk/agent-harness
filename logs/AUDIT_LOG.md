@@ -35,6 +35,29 @@
 ---
 
 ```yaml
+- task_id: "20260404-O01"
+  date: "2026-04-04"
+  skill_type: "ops"
+  goal: "修正 R02 must-fix：補充知識管理類別、統一採用狀態四態格式"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/solo-company-tools-inventory-v2.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "原 v1 草稿因 .gitignore 未入版控，v2 依 Task Card context + audit log + memory/ 重建。DoD 5/5 全部通過。新增知識管理類別（5 工具），7 大類別採用狀態全面統一四態格式。"
+```
+
+---
+
+```yaml
 - task_id: "20260404-R02"
   date: "2026-04-04"
   skill_type: "review"
