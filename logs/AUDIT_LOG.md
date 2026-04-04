@@ -35,6 +35,31 @@
 ---
 
 ```yaml
+- task_id: "20260404-S01"
+  date: "2026-04-04"
+  skill_type: "research"
+  goal: "分析 AI 時代一人公司最具長遠獲利潛力的商業項目，結合用戶背景提供可執行策略建議"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 2
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/ai-era-solo-business-strategy.md"
+  error_summary: "第 3 次 web search 遭遇速率限制（rate limit），以前兩次搜尋結果及既有知識完成任務。DoD 6/6 全部通過。"
+  estimated_tokens: "~25K"
+  notes: "識別前 5 商業模式：AI顧問×產品化服務、AI Agent 自動化建置、垂直 AI SaaS、知識商品化、AI 培訓工作坊。針對台灣+越南雙市場及管理顧問背景提供具體建議。12 個月執行路徑已規劃。"
+```
+
+---
+
+```yaml
 - task_id: "20260404-O01"
   date: "2026-04-04"
   skill_type: "ops"
