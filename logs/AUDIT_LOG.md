@@ -43,12 +43,12 @@
     - tool_name: "web_search"
       call_count: 3
     - tool_name: "file_read"
-      call_count: 4
-  checkpoints: 1
+      call_count: 3
+  checkpoints: 4
   approval_needed: false
   approval_given: false
   output_path: "outputs/drafts/vietnam-ai-tools-research.md"
   error_summary: ""
-  estimated_tokens: "~8000"
-  notes: "涵蓋 8 個主流工具（5 國際 + 3 本地）；DoD 全部通過四層驗證。台越合作線索（FPT x Startup Island TAIWAN）已收錄。"
+  estimated_tokens: "~12000"
+  notes: "涵蓋 8 個主流工具（5 國際 + 3 本地）；DoD 全部通過四層驗證。主要數據缺口：73% AI 採用率來源不明，已標記 [待驗證]。台越合作線索（FPT x Startup Island TAIWAN）已收錄但需進一步確認。"
 ```
