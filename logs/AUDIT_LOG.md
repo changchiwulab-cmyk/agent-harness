@@ -35,6 +35,29 @@
 ---
 
 ```yaml
+- task_id: "20260404-O02"
+  date: "2026-04-04"
+  skill_type: "ops"
+  goal: "修正審查報告 M1-M3，產出提案 v2 正式版"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "file_write"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/ai-era-solo-business-proposal-v2.md"
+  error_summary: ""
+  estimated_tokens: "~15K"
+  notes: "DoD 5/5 通過。M1 月 7-9 里程碑修正（NT$300-500K/月含構成明細）、M2 月 10-12 改為具體組合計算（NT$300K保底+Build均攤）、M3 Retainer 補充交付差異表、S1 Q1 假設說明。附加採納 S2/S3/S4/S5/S6 建議。"
+```
+
+---
+
+```yaml
 - task_id: "20260404-RV01"
   date: "2026-04-04"
   skill_type: "review"
