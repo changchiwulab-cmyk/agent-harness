@@ -35,6 +35,29 @@
 ---
 
 ```yaml
+- task_id: "20260404-W01"
+  date: "2026-04-04"
+  skill_type: "writing"
+  goal: "產出完整的一人公司 AI 時代策略提案（定位、服務菜單、ICP、競爭優勢、12 個月計畫、風險對策）"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/ai-era-solo-business-proposal.md"
+  error_summary: ""
+  estimated_tokens: "~20K"
+  notes: "承接 20260404-S01 研究成果。DoD 7/7 全部通過。含服務菜單（Discovery/Build/Retainer/Workshop）、台灣+越南雙市場 ICP、三方競爭對比、月度行動計畫、4 個風險對策、本週執行起點。"
+```
+
+---
+
+```yaml
 - task_id: "20260404-S01"
   date: "2026-04-04"
   skill_type: "research"
