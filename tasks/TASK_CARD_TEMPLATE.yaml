@@ -43,3 +43,11 @@ actual_tool_calls: 0           # 實際工具呼叫次數
 result_summary: ""             # 最終結果摘要
 completion_time: ""            # 完成時間
 audit_log_ref: ""              # 對應的 audit log 路徑
+
+# === 流程追蹤（可選，對齊 Observe→Plan→Act→Verify→Reflect）===
+execution_trace:
+  observe_notes: ""            # 需求/限制確認摘要
+  plan_notes: ""               # 步驟拆解與策略
+  act_notes: ""                # 關鍵動作與工具使用摘要
+  verify_notes: ""             # 驗證結果與缺漏
+  reflect_notes: ""            # 修正策略與重試決策

@@ -29,6 +29,19 @@
 └── 11. Audit Log        logs/AUDIT_LOG.md — 稽核紀錄
 ```
 
+## 最新模型流程（建議預設）
+
+在既有三平面結構上，執行順序建議固定為：
+
+1. Observe/觀察（O：讀 Task Card 與限制）
+2. Plan/規劃（P：先拆解再動作）
+3. Act/執行（A：最小必要工具呼叫）
+4. Verify/驗證（V：schema → 規則 → 完成 → 風險）
+5. Reflect/修正（R：只修缺口，不整段重做）
+6. Checkpoint/檢查點（C：關鍵節點 commit）
+
+這個流程可降低迴圈重試、控制 token 成本，並讓審核點更穩定。
+
 ## 資料夾結構
 
 ```

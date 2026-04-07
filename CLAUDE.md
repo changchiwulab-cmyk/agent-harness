@@ -14,9 +14,16 @@
 - **ask**：修改 skills/、system/、memory/，建立 Task Card，寫正式報告
 - **deny**：刪除、外發、修改正式資料、自動寫入長期記憶、金流操作
 
-## 執行流程
+## 執行流程（模型無關、2026 版）
 
-1. 載入 Task Card → 2. 確認 goal + definition_of_done → 3. 載入 context（system/GLOBAL_RULES.md + 對應 skill + project context）→ 4. 執行 → 5. 每關鍵階段 git commit checkpoint → 6. 四層驗證（schema → 規則 → 完成 → 風險）→ 7. 輸出到 outputs/ → 8. 寫 audit log
+1. **Observe/觀察（O）**：載入 Task Card，確認 goal + definition_of_done  
+2. **Plan/規劃（P）**：拆解步驟、標記風險與工具白名單  
+3. **Act/執行（A）**：執行最小必要動作（優先讀檔、再查網路）  
+4. **Verify/驗證（V）**：四層驗證（schema → 規則 → 完成 → 風險）  
+5. **Reflect/修正（R）**：若驗證失敗，僅針對缺漏重試（避免整段重做）  
+6. **Checkpoint/檢查點（C）**：每關鍵階段 git commit  
+7. **Output/輸出**：輸出到 outputs/（預設 drafts）  
+8. **Audit/稽核**：寫入 audit log
 
 ## Context 硬限制
 
@@ -26,7 +33,7 @@
 - 長對話 20 輪後摘要壓縮
 - 大型檔案用路徑引用，不全文貼入
 
-## Checkpoint
+## Checkpoint（最小回復單位）
 
 git commit 作為 checkpoint：完成拆解後、完成子任務後、重要工具結果後、進入人工審核前。
 格式：`checkpoint: [task_id] [階段描述]`

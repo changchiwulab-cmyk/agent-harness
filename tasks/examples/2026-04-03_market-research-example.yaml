@@ -47,3 +47,11 @@ actual_tool_calls: 0
 result_summary: ""
 completion_time: ""
 audit_log_ref: ""
+
+# === 流程追蹤（可選，對齊 Observe→Plan→Act→Verify→Reflect）===
+execution_trace:
+  observe_notes: ""
+  plan_notes: ""
+  act_notes: ""
+  verify_notes: ""
+  reflect_notes: ""
