@@ -73,13 +73,34 @@ cp tasks/TASK_CARD_TEMPLATE.yaml tasks/2026-04-03_你的任務.yaml
 `skill_type` 請使用：`research` / `writing` / `ops` / `review`。參考 `tasks/examples/` 下的範例。
 
 ### 2. 執行
-在 Claude Code CLI 中 `cd ~/Projects/agent-harness`，Claude 會自動讀取 CLAUDE.md。
+在 Claude Code CLI 中 `cd <agent-harness 專案路徑>`，Claude 會自動讀取 CLAUDE.md。
 告訴 Claude：「執行 tasks/2026-04-03_你的任務.yaml」。
 
 ### 3. 追蹤
 - 執行紀錄：`logs/AUDIT_LOG.md`
 - 進度快照：`git log --oneline`
 - 草稿輸出：`outputs/drafts/`
+
+### 快速一致性檢查（建議）
+```bash
+python - <<'PY'
+import re
+from pathlib import Path
+
+allowed = {"research", "writing", "ops", "review"}
+for p in [Path("tasks/TASK_CARD_TEMPLATE.yaml"), Path("tasks/examples/2026-04-03_market-research-example.yaml")]:
+    text = p.read_text()
+    m = re.search(r"^skill_type:.*$", text, flags=re.MULTILINE)
+    if not m:
+        raise SystemExit(f"{p} 缺少 skill_type 欄位")
+    raw = m.group(0).split(":", 1)[1]
+    raw = raw.split("#", 1)[0].strip()
+    skill_type = raw.strip('"').strip("'")
+    if skill_type and skill_type not in allowed:
+        raise SystemExit(f"{p} skill_type 不在允許清單: {skill_type}")
+print("task card skill_type check passed")
+PY
+```
 
 ## 導入計畫
 
