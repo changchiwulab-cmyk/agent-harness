@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require 'yaml'
+require 'date'
 
 errors = []
 
@@ -20,6 +21,9 @@ REQUIRED_FIELDS = %w[
   skill_type
 ].freeze
 REQUIRED_OUTPUT_FIELDS = %w[format location filename].freeze
+
+TASK_ID_PATTERN = /\A\d{8}-\d{3}\z/
+DATE_PATTERN = /\A\d{4}-\d{2}-\d{2}\z/
 
 # 1) README 宣告的重要目錄是否存在
 required_dirs = [
@@ -49,6 +53,23 @@ Dir.glob('tasks/**/*.yaml').sort.each do |task_file|
     value = task[field]
     empty = value.nil? || (value.is_a?(String) && value.strip.empty?) || (value.respond_to?(:empty?) && value.empty?)
     errors << "#{task_file}: missing required field #{field}" if empty
+  end
+
+
+  if task.key?('task_id') && task['task_id'].is_a?(String) && !task['task_id'].match?(TASK_ID_PATTERN)
+    errors << "#{task_file}: invalid task_id format #{task['task_id']} (expected YYYYMMDD-XXX)"
+  end
+
+  if task.key?('date') && task['date'].is_a?(String)
+    if !task['date'].match?(DATE_PATTERN)
+      errors << "#{task_file}: invalid date format #{task['date']} (expected YYYY-MM-DD)"
+    else
+      begin
+        Date.strptime(task['date'], '%Y-%m-%d')
+      rescue ArgumentError
+        errors << "#{task_file}: invalid calendar date #{task['date']}"
+      end
+    end
   end
 
   if task.key?('status') && !ALLOWED_STATUS.include?(task['status'])
