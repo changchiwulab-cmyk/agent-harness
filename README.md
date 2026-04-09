@@ -83,23 +83,7 @@ cp tasks/TASK_CARD_TEMPLATE.yaml tasks/2026-04-03_你的任務.yaml
 
 ### 快速一致性檢查（建議）
 ```bash
-python - <<'PY'
-import re
-from pathlib import Path
-
-allowed = {"research", "writing", "ops", "review"}
-for p in [Path("tasks/TASK_CARD_TEMPLATE.yaml"), Path("tasks/examples/2026-04-03_market-research-example.yaml")]:
-    text = p.read_text()
-    m = re.search(r"^skill_type:.*$", text, flags=re.MULTILINE)
-    if not m:
-        raise SystemExit(f"{p} 缺少 skill_type 欄位")
-    raw = m.group(0).split(":", 1)[1]
-    raw = raw.split("#", 1)[0].strip()
-    skill_type = raw.strip('"').strip("'")
-    if skill_type and skill_type not in allowed:
-        raise SystemExit(f"{p} skill_type 不在允許清單: {skill_type}")
-print("task card skill_type check passed")
-PY
+python scripts/check_task_card_skill_type.py
 ```
 
 ## 導入計畫
