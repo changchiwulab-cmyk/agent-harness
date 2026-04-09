@@ -102,6 +102,11 @@ Dir.glob('tasks/**/*.yaml').sort.each do |task_file|
     errors << "#{task_file}: invalid status #{task['status']}"
   end
 
+
+  if %w[done failed].include?(task['status']) && task['completion_time'].to_s.strip.empty?
+    errors << "#{task_file}: completion_time is required when status is done/failed"
+  end
+
   if task.key?('risk_level') && !ALLOWED_RISK.include?(task['risk_level'])
     errors << "#{task_file}: invalid risk_level #{task['risk_level']}"
   end

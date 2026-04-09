@@ -109,7 +109,7 @@ cp tasks/TASK_CARD_TEMPLATE.yaml tasks/2026-04-03_你的任務.yaml
 scripts/check_spec_consistency.rb
 ```
 
-此檢查已包含：目錄存在性、Task Card 必填欄位 schema、`task_id`/`date` 格式與一致性驗證、`completion_time` 日期驗證、範例 `input_data` / `expected_output.location` 路徑驗證。
+此檢查已包含：目錄存在性、Task Card 必填欄位 schema、`task_id`/`date` 格式與一致性驗證、`completion_time` 日期驗證（且 `status=done/failed` 時必填）、範例 `input_data` / `expected_output.location` 路徑驗證。
 
 若要額外確認 YAML 可被解析，可再執行：
 
