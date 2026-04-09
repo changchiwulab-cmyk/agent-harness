@@ -100,6 +100,13 @@ cp tasks/TASK_CARD_TEMPLATE.yaml tasks/2026-04-03_你的任務.yaml
 - 進度快照：`git log --oneline`
 - 草稿輸出：`outputs/drafts/`
 
+### 4. 提交前檢查（建議）
+```bash
+scripts/check_spec_consistency.rb
+```
+用來驗證 repo 結構與 `tasks/examples/*.yaml` 的路徑參照是否一致。
+
+
 ## 導入計畫
 
 ### 第 1 週：跑通骨架
