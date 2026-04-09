@@ -25,6 +25,16 @@ REQUIRED_OUTPUT_FIELDS = %w[format location filename].freeze
 TASK_ID_PATTERN = /\A\d{8}-\d{3}\z/
 DATE_PATTERN = /\A\d{4}-\d{2}-\d{2}\z/
 
+def parse_iso_date(value)
+  return value if value.is_a?(Date)
+  return nil unless value.is_a?(String) && value.match?(DATE_PATTERN)
+
+  Date.strptime(value, '%Y-%m-%d')
+rescue ArgumentError
+  nil
+end
+
+
 # 1) README 宣告的重要目錄是否存在
 required_dirs = [
   'logs/runs',
@@ -60,16 +70,32 @@ Dir.glob('tasks/**/*.yaml').sort.each do |task_file|
     errors << "#{task_file}: invalid task_id format #{task['task_id']} (expected YYYYMMDD-XXX)"
   end
 
+  task_id_date = nil
+  if task.key?('task_id') && task['task_id'].is_a?(String) && task['task_id'].match?(TASK_ID_PATTERN)
+    y = task['task_id'][0, 4]
+    m = task['task_id'][4, 2]
+    d = task['task_id'][6, 2]
+    task_id_date = parse_iso_date("#{y}-#{m}-#{d}")
+    errors << "#{task_file}: invalid calendar date in task_id #{task['task_id']}" if task_id_date.nil?
+  end
+
+  task_date = nil
   if task.key?('date') && task['date'].is_a?(String)
     if !task['date'].match?(DATE_PATTERN)
       errors << "#{task_file}: invalid date format #{task['date']} (expected YYYY-MM-DD)"
     else
-      begin
-        Date.strptime(task['date'], '%Y-%m-%d')
-      rescue ArgumentError
-        errors << "#{task_file}: invalid calendar date #{task['date']}"
-      end
+      task_date = parse_iso_date(task['date'])
+      errors << "#{task_file}: invalid calendar date #{task['date']}" if task_date.nil?
     end
+  end
+
+  if task_id_date && task_date && task_id_date != task_date
+    errors << "#{task_file}: task_id date does not match date field"
+  end
+
+  if task.key?('completion_time') && !task['completion_time'].to_s.strip.empty?
+    completion_date = parse_iso_date(task['completion_time'])
+    errors << "#{task_file}: invalid completion_time #{task['completion_time']} (expected valid YYYY-MM-DD)" if completion_date.nil?
   end
 
   if task.key?('status') && !ALLOWED_STATUS.include?(task['status'])
