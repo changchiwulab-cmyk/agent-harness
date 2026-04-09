@@ -1,0 +1,30 @@
+name: Spec Consistency
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+      - work
+
+jobs:
+  validate-spec:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+
+      - name: Ruby syntax check
+        run: ruby -c scripts/check_spec_consistency.rb
+
+      - name: Spec consistency check
+        run: scripts/check_spec_consistency.rb
+
+      - name: YAML parse check
+        run: ruby -e 'require "yaml"; Dir.glob("**/*.yaml").each{|p| YAML.load_file(p)}; puts "ALL_YAML_OK"'

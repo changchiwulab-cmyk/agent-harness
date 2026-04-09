@@ -100,6 +100,21 @@ cp tasks/TASK_CARD_TEMPLATE.yaml tasks/2026-04-03_你的任務.yaml
 - 進度快照：`git log --oneline`
 - 草稿輸出：`outputs/drafts/`
 
+
+## 提交前檢查（建議）
+
+為避免範例路徑或資料夾結構漂移，提交前先執行（且 CI 也會自動執行同組檢查）：
+
+```bash
+scripts/check_spec_consistency.rb
+```
+
+若要額外確認 YAML 可被解析，可再執行：
+
+```bash
+ruby -e 'require "yaml"; Dir.glob("**/*.yaml").each{|p| YAML.load_file(p)}; puts "ALL_YAML_OK"'
+```
+
 ## 導入計畫
 
 ### 第 1 週：跑通骨架
