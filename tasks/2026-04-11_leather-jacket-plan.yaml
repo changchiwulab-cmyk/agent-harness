@@ -1,0 +1,39 @@
+task_id: "20260411-008"
+date: "2026-04-11"
+status: "pending"
+
+goal: "產出皮衣類電商顧問一人公司的 90 天行動規劃（服務定位、ICP、服務菜單、月度行動）"
+context: "承接分析結果（20260411-007）。聚焦可執行性與差異化定位。全球市場視角。"
+input_data:
+  - "outputs/drafts/leather-jacket-research.md"
+  - "outputs/drafts/leather-jacket-analysis.md"
+
+definition_of_done:
+  - "服務定位陳述（一句話 + 差異化主張）"
+  - "目標客戶輪廓 ICP（誰、規模、痛點、在哪找到）"
+  - "服務菜單：至少 3 個方案（含收費區間）"
+  - "90 天行動計畫（月度分解，每月 3 個具體行動）"
+  - "輸出為結構化 markdown"
+
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "leather-jacket-plan.md"
+
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+max_tool_calls: 4
+max_retries: 2
+max_web_searches: 0
+
+skill_type: "writing"
+
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
