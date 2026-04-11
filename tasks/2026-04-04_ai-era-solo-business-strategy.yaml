@@ -1,0 +1,56 @@
+# Task Card: AI 時代一人公司最有長遠獲利的項目
+# 建立日期：2026-04-04
+
+task_id: "20260404-S01"
+date: "2026-04-04"
+status: "review"
+
+# === 任務定義 ===
+goal: "分析 AI 時代一人公司最具長遠獲利潛力的商業項目，結合用戶背景（管理顧問、台灣+越南市場）提供可執行策略建議"
+context: >
+  用戶為 20+ 年跨產業管理顧問，以一人公司模式運作，深度整合 Claude 生態系。
+  台灣+越南雙市場。需要識別在 AI 時代最有長遠獲利潛力的商業模式，
+  並評估哪些最適合一人公司執行且具備可持續競爭優勢。
+input_data:
+  - "memory/user_prefs.md"
+  - "memory/active_projects/agent-harness/context.md"
+  - "outputs/drafts/solo-company-tools-inventory-v2.md"  # 已有工具盤點參考
+
+# === 完成標準 ===
+definition_of_done:
+  - "識別 5 個以上具體商業模式，每個包含：獲利潛力、啟動成本、競爭壁壘"
+  - "每個商業模式說明為何適合一人公司執行（scalability + leverage 分析）"
+  - "針對台灣+越南市場的具體機會點各別說明"
+  - "管理顧問背景的差異化優勢分析（如何加速進入門檻）"
+  - "事實 / 合理推論 / 待驗證項目 / 高風險假設清楚分開標記"
+  - "輸出格式符合 skills/research/SKILL.md 規範"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "ai-era-solo-business-strategy.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "web_search"
+  - "file_write"
+
+# === 成本控制 ===
+max_tool_calls: 5
+max_retries: 3
+max_web_searches: 3
+
+# === Skill 路由 ===
+skill_type: "research"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: [20260404-S01] AI 策略研究完成"
+actual_tool_calls: 6
+result_summary: "識別前 5 商業模式，最推薦 AI 顧問×產品化服務。台灣+越南市場機會、管理顧問差異化優勢、12 個月執行路徑均已輸出至草稿。"
+completion_time: "2026-04-04"
+audit_log_ref: "logs/AUDIT_LOG.md"

@@ -1,0 +1,51 @@
+# Task Card — 一人公司工具盤點（Research）
+
+task_id: "20260404-R01"
+date: "2026-04-04"
+status: "done"
+
+# === 任務定義 ===
+goal: "調查並整理一人公司運作所需的工具清單，按功能分類並評估現有採用狀況"
+context: "建立工具盤點基準，作為未來工具評估與替換決策的參考基礎。使用者背景：20年+ 跨產業管理顧問、台灣與越南雙市場、深度整合 Claude 生態系。"
+input_data:
+  - "memory/user_prefs.md"
+  - "memory/active_projects/agent-harness/context.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "涵蓋至少 6 個功能類別（AI 工具、專案管理、通訊、財務/行政、行銷、知識管理）"
+  - "每個工具有：名稱、主要功能、採用狀態（已用/待評估/不適用）、月費估算"
+  - "加一層評估：是否適合一人公司採用"
+  - "已知事實、合理推論、待驗證項目有明確標記"
+  - "輸出為結構化 Markdown，符合 research skill 格式"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "solo-company-tools-inventory.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "web_search"
+  - "file_search"
+
+# === 成本控制 ===
+max_tool_calls: 5
+max_retries: 3
+max_web_searches: 3
+
+# === Skill 路由 ===
+skill_type: "research"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "65b3c8a: Task Card 建立"
+  - "（下一個 commit hash）: research 完成"
+actual_tool_calls: 3
+result_summary: "整理 6 大工具類別（AI/專案管理/通訊/財務行政/行銷/自動化），共 20+ 工具，依採用狀態分類。已知事實 6 項，合理推論 4 項，待驗證 6 項。"
+completion_time: "2026-04-04"
+audit_log_ref: "logs/AUDIT_LOG.md"

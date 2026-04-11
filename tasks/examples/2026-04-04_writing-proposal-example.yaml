@@ -1,0 +1,49 @@
+# 範例 Task Card — 客戶提案撰寫
+# 這是 writing skill 的範例
+
+task_id: "20260404-001"
+date: "2026-04-04"
+status: "pending"
+
+# === 任務定義 ===
+goal: "撰寫 AI 導入顧問服務提案，對象為台灣中型製造業客戶"
+context: "客戶已初步表達興趣，需要一份 2-3 頁的服務提案說明導入效益與流程"
+input_data:
+  - "memory/active_projects/consulting/context.md"
+  - "outputs/drafts/client-meeting-notes.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "提案結構包含：問題摘要、服務內容、預期效益、執行時程、報價範圍"
+  - "長度控制在 1,500-2,000 字"
+  - "結論先行，每段有具體論點"
+  - "所有數據標明來源，推論有明確標記"
+  - "輸出為 Markdown，符合 writing skill 格式"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "ai-consulting-proposal-draft.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+
+# === 成本控制 ===
+max_tool_calls: 5
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "writing"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
