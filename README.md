@@ -89,17 +89,17 @@ agent-harness/
 ```bash
 cp tasks/TASK_CARD_TEMPLATE.yaml tasks/2026-04-03_你的任務.yaml
 ```
-填入 `goal`、`definition_of_done`、`skill_type`。參考 `tasks/examples/` 下的範例。
+填入 `goal`、`definition_of_done`、`skill_type`。  
+`skill_type` 請使用：`research` / `writing` / `ops` / `review`。參考 `tasks/examples/` 下的範例。
 
 ### 2. 執行
-在 Claude Code CLI 中 `cd ~/Projects/agent-harness`，Claude 會自動讀取 CLAUDE.md。
+在 Claude Code CLI 中 `cd <agent-harness 專案路徑>`，Claude 會自動讀取 CLAUDE.md。
 告訴 Claude：「執行 tasks/2026-04-03_你的任務.yaml」。
 
 ### 3. 追蹤
 - 執行紀錄：`logs/AUDIT_LOG.md`
 - 進度快照：`git log --oneline`
 - 草稿輸出：`outputs/drafts/`
-
 
 ## 提交前檢查（建議）
 
@@ -120,11 +120,11 @@ ruby -e 'require "yaml"; Dir.glob("**/*.yaml").each{|p| YAML.load_file(p)}; puts
 ## 導入計畫
 
 ### 第 1 週：跑通骨架
-- 用 `research_skill` 和 `review_skill` 跑 1 條完整任務流
+- 用 `research` 和 `review` 跑 1 條完整任務流
 - 確認 Task Card → 執行 → Checkpoint → 驗證 → 輸出 的流程順暢
 
 ### 第 2 週：補執行閉環
-- 啟用 `writing_skill` 和 `ops_skill`
+- 啟用 `writing` 和 `ops`
 - 開始累積 audit log 數據
 - 補充 working memory
 
