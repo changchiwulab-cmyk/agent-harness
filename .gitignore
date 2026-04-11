@@ -1,10 +1,6 @@
 # macOS
 .DS_Store
 
-# 草稿輸出（避免敏感內容進 git）
-outputs/drafts/*
-!outputs/drafts/.gitkeep
-
 # 敏感檔案
 *.env
 *.key
