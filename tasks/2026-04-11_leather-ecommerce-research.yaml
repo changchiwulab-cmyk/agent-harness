@@ -1,0 +1,37 @@
+task_id: "20260411-001"
+date: "2026-04-11"
+status: "in_progress"
+
+goal: "調查皮件類電商全球市場現況：規模、趨勢、主要通路、品牌/賣家痛點"
+context: "作為 agent-harness 端對端測試任務。顧問視角，全球市場範圍，為後續分析任務（20260411-002）提供研究基礎。"
+input_data: []
+
+definition_of_done:
+  - "市場規模與成長率數據（含來源與年份）"
+  - "列出主要電商平台與各平台通路特性（至少 3 個）"
+  - "整理品牌/賣家前三大痛點（有具體描述，非泛泛而談）"
+  - "識別近期值得關注的趨勢（至少 2 項，含具體案例或數據）"
+  - "輸出為結構化 markdown，可直接供分析任務引用"
+
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "leather-ecommerce-research.md"
+
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "web_search"
+  - "file_write"
+
+max_tool_calls: 6
+max_retries: 3
+max_web_searches: 3
+
+skill_type: "research"
+
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
