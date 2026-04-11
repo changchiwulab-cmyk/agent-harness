@@ -1,0 +1,15 @@
+task_id: "20260411-024"
+date: "2026-04-11"
+skill_type: "writing"
+goal: "產出家用健身器材 Drop Shipping 一人公司 90 天行動規劃"
+status: "review"
+approval_needed: true
+output_path: "outputs/drafts/home-fitness-dropship-plan.md"
+definition_of_done:
+  - "ICP 明確定義（終端客戶畫像）"
+  - "商品清單與定價策略"
+  - "90 天分月行動計畫"
+  - "月一/月三收入目標"
+  - "關鍵假設與風險"
+completion_time: "2026-04-11T19:00:00Z"
+notes: "依賴 20260411-023 輸出"
