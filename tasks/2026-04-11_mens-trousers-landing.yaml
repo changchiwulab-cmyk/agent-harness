@@ -1,0 +1,38 @@
+task_id: "20260411-017"
+date: "2026-04-11"
+status: "pending"
+
+goal: "產出男性長褲電商顧問落地三件套：首客獲取計畫 + 完整執行手冊 + MVP 實驗設計"
+context: "承接規劃報告（20260411-016）。落地三層全交付，可直接操作。"
+input_data:
+  - "outputs/drafts/mens-trousers-analysis.md"
+  - "outputs/drafts/mens-trousers-plan.md"
+
+definition_of_done:
+  - "首客獲取：ICP 篩選 + 冷接觸腳本 + 定價決策樹"
+  - "執行手冊：服務交付 SOP + 客戶會議模板 + 交付物清單"
+  - "MVP 實驗：最小可行服務 + 30 天驗證 + Go/No-Go 標準"
+  - "輸出為結構化 markdown，可直接操作"
+
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "mens-trousers-landing.md"
+
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+max_tool_calls: 4
+max_retries: 2
+max_web_searches: 0
+
+skill_type: "writing"
+
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
