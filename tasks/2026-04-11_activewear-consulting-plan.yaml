@@ -1,0 +1,40 @@
+task_id: "20260411-005"
+date: "2026-04-11"
+status: "pending"
+
+goal: "產出一人公司切入運動衣類電商顧問的 90 天行動規劃（服務定位、目標客戶、起步步驟、收費方式）"
+context: "承接分析結果（20260411-004）。聚焦可執行性：第一個月做什麼、如何找到第一個客戶、怎麼定價。"
+input_data:
+  - "outputs/drafts/activewear-ecommerce-research.md"
+  - "outputs/drafts/activewear-ecommerce-analysis.md"
+
+definition_of_done:
+  - "服務定位陳述（一句話 + 三個關鍵差異點）"
+  - "目標客戶輪廓（ICP）：誰、規模、痛點、在哪找到"
+  - "服務菜單：至少 2 種服務方案（含收費區間）"
+  - "90 天行動計畫：以月為單位，每月 3 個具體行動"
+  - "第一個客戶獲取策略（具體渠道與方式）"
+  - "輸出為結構化 markdown，可直接執行"
+
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "activewear-consulting-plan.md"
+
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+max_tool_calls: 4
+max_retries: 2
+max_web_searches: 0
+
+skill_type: "writing"
+
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
