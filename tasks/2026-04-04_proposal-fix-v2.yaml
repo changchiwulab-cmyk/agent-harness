@@ -1,0 +1,46 @@
+# Task Card: 修正提案 M1-M3，產出 v2
+# 建立日期：2026-04-04
+
+task_id: "20260404-O02"
+date: "2026-04-04"
+status: "review"
+
+goal: "根據審查報告 RV01 的 3 個必須修改項，修正提案數字矛盾並補充 Retainer 交付差異，產出 v2 正式版"
+context: >
+  承接 20260404-RV01 審查結果。修正 M1（月 7-9 里程碑數字）、
+  M2（月 10-12 Retainer 月收區間）、M3（Retainer 三方案交付差異）。
+  同時採納 S1（Q1 假設說明）。輸出 v2，不覆蓋 v1。
+input_data:
+  - "outputs/drafts/ai-era-solo-business-proposal.md"
+  - "outputs/drafts/ai-era-solo-business-proposal-review.md"
+
+definition_of_done:
+  - "M1 修正：月 7-9 里程碑數字與 Q3 季度目標一致"
+  - "M2 修正：月 10-12 Retainer 月收區間改為具體客戶組合計算"
+  - "M3 修正：Retainer 三方案補充交付差異欄位"
+  - "S1 採納：Q1 收入目標補充前提假設說明"
+  - "輸出為獨立 v2 檔案，v1 保留不動"
+
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "ai-era-solo-business-proposal-v2.md"
+
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+max_tool_calls: 5
+max_retries: 3
+max_web_searches: 0
+
+skill_type: "ops"
+
+checkpoints:
+  - "checkpoint: [20260404-O02] 提案 v2 修正完成"
+actual_tool_calls: 3
+result_summary: "M1/M2/M3 全部修正，S1 採納，另補強台灣 ICP 主次分離、越南渠道語言策略、風險 3 品牌時間成本、競爭優勢描述精準化。v2 輸出完成。"
+completion_time: "2026-04-04"
+audit_log_ref: "logs/AUDIT_LOG.md"

@@ -1,0 +1,56 @@
+# Task Card: 審查 AI 策略提案品質
+# 建立日期：2026-04-04
+
+task_id: "20260404-RV01"
+date: "2026-04-04"
+status: "review"
+
+# === 任務定義 ===
+goal: "審查 ai-era-solo-business-proposal.md 的邏輯一致性、事實正確性、風險完整性，確認可作為正式使用的策略文件"
+context: >
+  承接 20260404-W01 寫作成果。對提案進行獨立審查，
+  不修改原文，只產出審查報告與具體修改建議。
+  審查重點：提案是否實際可執行、數字是否合理、ICP 是否具體、
+  風險是否被低估。
+input_data:
+  - "outputs/drafts/ai-era-solo-business-proposal.md"
+  - "outputs/drafts/ai-era-solo-business-strategy.md"  # 研究來源核對用
+
+# === 完成標準 ===
+definition_of_done:
+  - "格式完整性：提案結構符合 writing/SKILL.md 規範"
+  - "事實查核：數字與研究報告來源交叉比對"
+  - "邏輯一致性：定位 → 服務 → ICP → 競爭優勢 → 行動計畫是否自洽"
+  - "風險評估：識別提案中可能被低估或遺漏的風險"
+  - "可執行性：行動計畫是否具體可落地，還是停在口號層次"
+  - "DoD 逐條核對（照 W01 的 7 條）"
+  - "輸出符合 review/SKILL.md 格式規範"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "ai-era-solo-business-proposal-review.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+# === 成本控制 ===
+max_tool_calls: 5
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "review"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: [20260404-RV01] 提案審查報告完成"
+actual_tool_calls: 3
+result_summary: "有條件通過。3 個必須修改（數字矛盾 × 2、Retainer 交付差異未說明），6 個建議修改。修正 M1-M3 後可升格正式版本。"
+completion_time: "2026-04-04"
+audit_log_ref: "logs/AUDIT_LOG.md"
