@@ -1,6 +1,6 @@
 task_id: "20260411-006"
 date: "2026-04-11"
-status: "in_progress"
+status: "done"
 
 goal: "調查皮衣類（皮革外套/皮衣）電商全球市場現況：規模、通路、品牌痛點、趨勢"
 context: "顧問視角，全球市場。皮衣為獨立品類（非皮件配件），聚焦時尚電商與 DTC 皮衣品牌。為後續分析（20260411-007）與規劃（20260411-008/009）提供研究基礎。"
@@ -32,7 +32,7 @@ max_web_searches: 3
 skill_type: "research"
 
 checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+actual_tool_calls: 3
+result_summary: "全球皮革服飾 USD 94.3B，電商 CAGR 9.4%。5 個通路分析、3 大痛點（真實性/季節性/退貨率）、4 個趨勢（Vegan 皮革/二手/客製化/韓系崛起）。DoD 6/6 通過。"
+completion_time: "2026-04-11"
 audit_log_ref: "logs/AUDIT_LOG.md"
