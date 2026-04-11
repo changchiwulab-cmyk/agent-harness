@@ -101,9 +101,20 @@ cp tasks/TASK_CARD_TEMPLATE.yaml tasks/2026-04-03_你的任務.yaml
 - 進度快照：`git log --oneline`
 - 草稿輸出：`outputs/drafts/`
 
-### 快速一致性檢查（建議）
+## 提交前檢查（建議）
+
+為避免範例路徑或資料夾結構漂移，提交前先執行（且 CI 也會自動執行同組檢查）：
+
 ```bash
-python scripts/check_task_card_skill_type.py
+scripts/check_spec_consistency.rb
+```
+
+此檢查已包含：目錄存在性、Task Card 必填欄位 schema、`task_id`/`date` 格式與一致性驗證、`completion_time` 日期驗證（且 `status=done/failed` 時必填）、範例 `input_data` / `expected_output.location` 路徑驗證。
+
+若要額外確認 YAML 可被解析，可再執行：
+
+```bash
+ruby -e 'require "yaml"; Dir.glob("**/*.yaml").each{|p| YAML.load_file(p)}; puts "ALL_YAML_OK"'
 ```
 
 ## 導入計畫
@@ -143,4 +154,4 @@ python scripts/check_task_card_skill_type.py
 | **v1.5** | + Gate Policy + Operating Context + Decision Log + Eval Examples + Weekly Review | 馬鞍工程原則導入：驗證集中化、系統自知、決策可追溯 |
 | **v2（現在）** | + Approval Policy + Failure Taxonomy + Execution Log Schema + Rollback Path + Ops Eval | 馬鞍工程落地：批准流程獨立化、失敗模式可引用、執行紀錄結構化 |
 | **v3** | 拆分 bounded specialists（research/sales/content） | 單一代理的 context 經常超限；任務類型間的規則衝突頻繁 |
-| **v4** | Graph orchestration + 進階 checkpoint persistence | 任務間依賴複雜度超過線性拆分能處理的範圍 |
+| **v4** | Graph orchestration + 進階 checkpoint persistence | 任務間依賴複雜度超過線性拔分能處理的範圍 |
