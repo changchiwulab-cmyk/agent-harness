@@ -35,6 +35,52 @@
 ---
 
 ```yaml
+- task_id: "20260411-002"
+  date: "2026-04-11"
+  skill_type: "analysis"
+  goal: "評估一人公司切入皮件類電商顧問的可行性，同時分析市場對顧問服務的需求"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "outputs/drafts/leather-ecommerce-analysis.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "承接 20260411-001。雙側分析：需求側（4 類外包問題）+ 供給側（4 選項六維評估）。建議：電商渠道策略顧問（短期）+ 永續轉型顧問疊加（中期）。DoD 5/5 通過。approval_needed=true，待人工確認後移至 reports/。"
+```
+
+---
+
+```yaml
+- task_id: "20260411-001"
+  date: "2026-04-11"
+  skill_type: "research"
+  goal: "調查皮件類電商全球市場現況：規模、趨勢、主要通路、品牌/賣家痛點"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/leather-ecommerce-research.md"
+  error_summary: ""
+  estimated_tokens: "~8K"
+  notes: "3 次 web search 全部完成（市場規模、品牌痛點、趨勢）。市場規模 USD 448B（2025），電商 CAGR 8.87%。識別 5 個主要通路、3 大痛點、4 個趨勢（永續/二手/AI/區塊鏈）。DoD 5/5 全部通過。端對端測試任務，驗證 agent-harness research skill 流程正常。"
+```
+
+---
+
+```yaml
 - task_id: "20260404-O02"
   date: "2026-04-04"
   skill_type: "ops"
