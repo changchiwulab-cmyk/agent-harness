@@ -1,0 +1,38 @@
+task_id: "20260411-011"
+date: "2026-04-11"
+status: "pending"
+
+goal: "評估一人公司切入運動鞋電商顧問的可行性，分析市場需求與最佳切入角度"
+context: "承接 20260411-010 研究結果。雙側分析：需求側（品牌/賣家外包什麼）+ 供給側（一人顧問六維可行性）。特別注意轉售市場顧問機會。"
+input_data:
+  - "outputs/drafts/athletic-shoes-research.md"
+
+definition_of_done:
+  - "需求側：品牌與轉售賣家願意外包的問題類型（分開評估）"
+  - "供給側：4 個切入選項的六維可行性評估"
+  - "建議排序（含「不切入」選項）"
+  - "高風險假設明確標示（至少 3 個）"
+  - "輸出為結構化 markdown"
+
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "athletic-shoes-analysis.md"
+
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+max_tool_calls: 4
+max_retries: 2
+max_web_searches: 0
+
+skill_type: "analysis"
+
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
