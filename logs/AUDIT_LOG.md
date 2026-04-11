@@ -10,7 +10,7 @@
 ```yaml
 - task_id: ""
   date: ""
-  skill_type: ""           # research / writing / ops / review
+  skill_type: ""           # research / writing / ops / review / analysis
   goal: ""                 # 一句話
   status: ""               # done / failed / partial
   model_used: ""           # claude-sonnet-4-20250514 等
@@ -31,6 +31,75 @@
 ## 紀錄（依時間倒序）
 
 <!-- 新紀錄加在這裡 -->
+
+---
+
+```yaml
+- task_id: "20260411-005"
+  date: "2026-04-11"
+  skill_type: "writing"
+  goal: "產出一人公司切入運動衣類電商顧問的 90 天行動規劃"
+  status: "review"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 0
+  approval_needed: true
+  approval_given: false
+  output_path: "outputs/drafts/activewear-consulting-plan.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "承接 20260411-003/004。定位：TikTok Shop 東南亞入駐專家。3 個服務方案（USD 1,200/4,800/2,000mo）。90 天月度行動計畫（月一：首客獲取；月二：SOP 建立；月三：模型複製）。3 種首客策略（冷接觸/內容/社群）。DoD 4/4 通過。approval_needed=true，待人工確認後移至 reports/。"
+```
+
+---
+
+```yaml
+- task_id: "20260411-004"
+  date: "2026-04-11"
+  skill_type: "analysis"
+  goal: "評估一人公司切入運動衣類電商顧問的可行性，分析市場需求與最佳切入角度"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 0
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/activewear-ecommerce-analysis.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "承接 20260411-003。六維評估 20/30（67%，條件性可行）。需求側：6 類問題，差異化診斷/全通路架構/TikTok 入駐外包意願最高。4 個切入選項：A（TikTok Shop，★★★★☆推薦）B（定位顧問，★★★）C（永續，★★）D（棄選皮件）。3 個高風險假設明確標示。vs 皮件市場：73% vs 67% 可行性。DoD 5/5 通過。"
+```
+
+---
+
+```yaml
+- task_id: "20260411-003"
+  date: "2026-04-11"
+  skill_type: "research"
+  goal: "調查運動衣類電商全球市場現況：規模、成長、主要通路、品牌痛點、關鍵趨勢"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 0
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/activewear-ecommerce-research.md"
+  error_summary: ""
+  estimated_tokens: "~8K"
+  notes: "全球 Activewear 市場 USD 440B（2025），電商 CAGR 11%（高於整體 9%）。亞太最快 9.2%。5 個主要通路（DTC/Amazon/Zalando/TikTok/App）、4 大痛點（差異化/永續/全通路/AI）、4 個趨勢（Athleisure/智能紡織/TikTok/退貨管理）。DoD 6/6 通過。"
+```
 
 ---
 
@@ -192,7 +261,7 @@
   output_path: "outputs/drafts/solo-company-tools-inventory-v2.md"
   error_summary: ""
   estimated_tokens: "~10K"
-  notes: "原 v1 草稿因 .gitignore 未入版控，v2 依 Task Card context + audit log + memory/ 重建。DoD 5/5 全部通過。新增知識管理類別（5 工具），7 大類別採用狀態全面統一四態格式。"
+  notes: "原 v1 草稿因 .gitignore 不入版控，v2 依 Task Card context + audit log + memory/ 重建。DoD 5/5 全部通過。新增知識管理類別（5 工具），7 大類別採用狀態全面統一四態格式。"
 ```
 
 ---
