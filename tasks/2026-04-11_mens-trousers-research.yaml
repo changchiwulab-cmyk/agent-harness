@@ -1,0 +1,38 @@
+task_id: "20260411-014"
+date: "2026-04-11"
+status: "in_progress"
+
+goal: "調查男性長褲電商全球市場現況：規模、通路、品牌痛點、趨勢（含 Athleisure 影響）"
+context: "顧問視角，全球市場。涵蓋正裝長褲、休閒褲、運動褲等子品類。聚焦電商賣家與 DTC 男裝品牌。為後續分析（20260411-015）提供研究基礎。"
+input_data: []
+
+definition_of_done:
+  - "市場規模與成長率（含來源）"
+  - "主要電商平台與通路特性（至少 4 個）"
+  - "品牌/賣家前三大痛點（有具體描述）"
+  - "值得關注的趨勢（至少 3 項）"
+  - "子品類差異（正裝/休閒/運動褲的電商差異）"
+  - "輸出為結構化 markdown"
+
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "mens-trousers-research.md"
+
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "web_search"
+  - "file_write"
+
+max_tool_calls: 6
+max_retries: 3
+max_web_searches: 3
+
+skill_type: "research"
+
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
