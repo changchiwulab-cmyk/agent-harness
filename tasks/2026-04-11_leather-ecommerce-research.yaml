@@ -1,6 +1,6 @@
 task_id: "20260411-001"
 date: "2026-04-11"
-status: "in_progress"
+status: "done"
 
 goal: "調查皮件類電商全球市場現況：規模、趨勢、主要通路、品牌/賣家痛點"
 context: "作為 agent-harness 端對端測試任務。顧問視角，全球市場範圍，為後續分析任務（20260411-002）提供研究基礎。"
@@ -30,8 +30,9 @@ max_web_searches: 3
 
 skill_type: "research"
 
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - "1cb9a139 — research output written to outputs/drafts/leather-ecommerce-research.md"
+actual_tool_calls: 4
+result_summary: "全球皮件市場 USD 448B（2025），電商 CAGR 8.87%。識別 5 個主要通路、3 大痛點、4 個趨勢。DoD 5/5 通過。"
+completion_time: "2026-04-11"
 audit_log_ref: "logs/AUDIT_LOG.md"
