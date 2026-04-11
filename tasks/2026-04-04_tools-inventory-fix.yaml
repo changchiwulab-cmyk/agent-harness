@@ -1,0 +1,57 @@
+# Task Card — 工具盤點報告修正（Ops）
+
+task_id: "20260404-O01"
+date: "2026-04-04"
+status: "done"
+
+# === 任務定義 ===
+goal: "修正 20260404-R02 review 發現的 2 個 must-fix 問題，完成工具盤點報告定稿"
+context: "R02 審查結果為有條件通過，發現（1）知識管理工具類別缺失、（2）採用狀態標記不一致（需對齊 research/SKILL.md 的 ✅已用 / ✅推論已用 / 🔍待評估 / ❌不適用 四態）。本任務完成這兩項修正後輸出定稿草稿。"
+input_data:
+  - "outputs/drafts/solo-company-tools-inventory.md"
+  - "outputs/drafts/tools-inventory-review-report.md"
+  - "skills/research/SKILL.md"
+  - "tasks/2026-04-04_tools-inventory-review.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "新增知識管理工具類別（至少含 Notion、Obsidian 或同類工具），格式與其他類別一致"
+  - "所有工具採用狀態統一使用四態格式：✅ 已用 / ✅ 推論已用 / 🔍 待評估 / ❌ 不適用"
+  - "確認其他 5 個類別的採用狀態標記已對齊（無自由文字描述）"
+  - "輸出為修正版報告，存入 outputs/drafts/ 並命名為 solo-company-tools-inventory-v2.md"
+  - "在本 Task Card result_summary 中列出所有修改項目清單"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "solo-company-tools-inventory-v2.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+# === 成本控制 ===
+max_tool_calls: 5
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "（此 commit）: Task Card 建立 + v2 報告輸出完成"
+actual_tool_calls: 4
+result_summary: |
+  修改項目清單：
+  1. 新增「6. 知識管理」類別：Obsidian / Notion / Mem.ai / Readwise Reader / agent-harness memory/ 共 5 個工具，含採用狀態、月費估算、一人公司適用性評估
+  2. 全 7 個類別採用狀態統一為四態格式（✅已用 / ✅推論已用 / 🔍待評估 / ❌不適用），移除所有自由文字描述
+  3. 各類別補充已知事實 / 合理推論 / 待驗證標記
+  4. 輸出：outputs/drafts/solo-company-tools-inventory-v2.md
+  注意：原 v1 草稿因 .gitignore 未存磁碟，v2 依 Task Card context + audit log + memory/ 重建
+completion_time: "2026-04-04"
+audit_log_ref: "logs/AUDIT_LOG.md"
