@@ -4,7 +4,7 @@
 
 ```
 memory/
-  user_prefs.md          ← 使用者偏好與回應風格規則
+  user_prefs.md          ← 指標檔，實際偏好存於 ~/.claude/memory/
   active_projects/       ← 進行中專案的持久 context
     [project_name]/
       context.md         ← 該專案的背景、目標、限制
@@ -15,6 +15,18 @@ memory/
 > **Decision Log 說明**：重要決策不再用自由格式 decisions.md，改用結構化 YAML。
 > 每筆決策一個檔案，格式見 `tasks/DECISION_LOG_TEMPLATE.yaml`。
 > 檔名格式：`YYYYMMDD-D###_決策簡述.yaml`。寫入前需人工確認。
+
+## Memory 邊界（與外部系統）
+
+| 存放位置 | 存放內容 |
+|---------|----------|
+| `~/.claude/memory/` | 使用者偏好、跨專案通用框架（Claude Code 全域） |
+| `~/ai-os/` | 跨工具狀態層（ChatGPT ↔ Claude Code 交班、AI OS 級決策） |
+| `agent-harness/memory/` | **僅限** agent-harness 任務執行 context（active_projects/） |
+
+**決策記錄分層：**
+- 跨工具 / AI OS 策略決策 → `~/ai-os/decision_log.md`（DEC-XXX 格式）
+- agent-harness 任務內決策 → `memory/active_projects/[project]/decisions/`
 
 ## 兩層記憶規則
 
