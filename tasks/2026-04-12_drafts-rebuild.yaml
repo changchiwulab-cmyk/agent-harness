@@ -1,0 +1,63 @@
+# Task Card — 重建遺失草稿
+# 建立日期：2026-04-12
+
+task_id: "20260412-001"
+date: "2026-04-12"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "重建 2026-04-04 因 .gitignore 遺失的 4 份草稿檔案，依原始 Task Card 及 Audit Log 紀錄忠實還原內容"
+context: >
+  2026-04-04 執行 8 個任務產出草稿至 outputs/drafts/，但因 .gitignore
+  規則（outputs/drafts/*）導致檔案未入版控。規則已在 f32ba4a 移除。
+  本任務依序重建 4 份關鍵草稿：工具盤點 v2、策略研究、策略提案 v2、審查報告。
+  重建依據：各任務的 Task Card（goal/DoD/result_summary）、Audit Log notes、
+  Skill 格式規範。原始檔案不可恢復，重建忠實於記錄的內容要點。
+input_data:
+  - "tasks/2026-04-04_tools-inventory-fix.yaml"
+  - "tasks/2026-04-04_ai-era-solo-business-strategy.yaml"
+  - "tasks/2026-04-04_ai-era-solo-business-proposal.yaml"
+  - "tasks/2026-04-04_proposal-fix-v2.yaml"
+  - "tasks/2026-04-04_ai-era-solo-business-proposal-review.yaml"
+  - "logs/AUDIT_LOG.md"
+  - "skills/research/SKILL.md"
+  - "skills/writing/SKILL.md"
+  - "skills/review/SKILL.md"
+  - "skills/ops/SKILL.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "outputs/drafts/solo-company-tools-inventory-v2.md 已建立，含 7 大工具類別、四態格式、research SKILL.md 格式"
+  - "outputs/drafts/ai-era-solo-business-strategy.md 已建立，含 5 商業模式、台越市場、12 月路徑、research SKILL.md 格式"
+  - "outputs/drafts/ai-era-solo-business-proposal-v2.md 已建立，含定位宣言/服務菜單/ICP/競爭優勢/12月計畫/風險對策，M1-M3 修正 + S1 採納"
+  - "outputs/drafts/ai-era-solo-business-proposal-review.md 已建立，有條件通過、3 必須修改、6 建議修改、DoD 7 條逐條確認"
+  - "每份草稿完成後各一次 git checkpoint"
+  - "全部完成後更新 Audit Log"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "（4 個檔案，見 DoD）"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+# === 成本控制 ===
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
