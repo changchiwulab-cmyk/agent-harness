@@ -3,7 +3,7 @@
 
 task_id: "20260413-001"
 date: "2026-04-13"
-status: "in_progress"
+status: "done"
 
 # === 任務定義 ===
 goal: "審查 Agent Harness v2 專案完整度，執行驗證測試，修補已知缺漏"
@@ -47,8 +47,10 @@ max_web_searches: 0
 skill_type: "review"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - "Task Card 建立（b1dc828）"
+  - "缺漏修補完成 — validators + eval_examples.md + OPERATING_CONTEXT.yaml（3f6af3a）"
+actual_tool_calls: 26
+result_summary: "6/6 DoD 通過。修復驗證器 3 項問題，新增 analysis/eval_examples.md，補充 OPERATING_CONTEXT.yaml 棄用說明，CI 兩個驗證器現皆通過。"
+completion_time: "2026-04-13"
 audit_log_ref: "logs/AUDIT_LOG.md"

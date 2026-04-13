@@ -35,6 +35,33 @@
 ---
 
 ```yaml
+- task_id: "20260413-001"
+  date: "2026-04-13"
+  skill_type: "review"
+  goal: "審查 Agent Harness v2 專案完整度，執行驗證測試，修補已知缺漏"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 12
+    - tool_name: "file_write"
+      call_count: 6
+    - tool_name: "bash_exec"
+      call_count: 4
+    - tool_name: "git_commit_checkpoint"
+      call_count: 3
+  checkpoints: 2
+  approval_needed: false
+  approval_given: false
+  output_path: "logs/runs/20260413-001_completeness-review.yaml"
+  error_summary: ""
+  estimated_tokens: "~15K"
+  notes: "6/6 DoD 通過。修復驗證器 3 項問題（task_id 格式、analysis skill_type 不一致、example 路徑檢查）。新增 skills/analysis/eval_examples.md。補充 OPERATING_CONTEXT.yaml 棄用說明。CI 兩個驗證器現皆通過。"
+```
+
+---
+
+```yaml
 - task_id: "20260404-O02"
   date: "2026-04-04"
   skill_type: "ops"
