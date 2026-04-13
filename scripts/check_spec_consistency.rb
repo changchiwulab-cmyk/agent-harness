@@ -8,7 +8,7 @@ errors = []
 
 ALLOWED_STATUS = %w[pending in_progress checkpoint review done failed].freeze
 ALLOWED_RISK = %w[low medium high critical].freeze
-ALLOWED_SKILL = %w[research writing ops review].freeze
+ALLOWED_SKILL = %w[research writing ops review analysis].freeze
 REQUIRED_FIELDS = %w[
   task_id
   date
@@ -22,7 +22,7 @@ REQUIRED_FIELDS = %w[
 ].freeze
 REQUIRED_OUTPUT_FIELDS = %w[format location filename].freeze
 
-TASK_ID_PATTERN = /\A\d{8}-\d{3}\z/
+TASK_ID_PATTERN = /\A\d{8}-[A-Z]{0,2}\d+\z/
 DATE_PATTERN = /\A\d{4}-\d{2}-\d{2}\z/
 
 def parse_iso_date(value)
