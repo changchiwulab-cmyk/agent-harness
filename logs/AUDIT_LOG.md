@@ -35,6 +35,27 @@
 ---
 
 ```yaml
+- task_id: "20260409-001"
+  date: "2026-04-09"
+  skill_type: "review"
+  goal: "v2.0 系統全流程驗證：確認所有 system/ 檔案、Task Card 格式、Gate Policy 均符合規範"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 9
+  checkpoints: 3
+  approval_needed: true
+  approval_given: true
+  output_path: "logs/runs/20260409-001_system-validation.yaml"
+  error_summary: "DoD #3 初次驗證發現 FAILURE_TAXONOMY 僅 13 種（漏 SEC-04 幻覺驅動行動），已補正至 14 種。"
+  estimated_tokens: "~8K"
+  notes: "Gate 四層全部通過（schema/rule/completion/risk）。系統驗證完成，v2.0 正式生效。"
+```
+
+---
+
+```yaml
 - task_id: "20260404-O02"
   date: "2026-04-04"
   skill_type: "ops"
