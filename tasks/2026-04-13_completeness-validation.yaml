@@ -1,0 +1,59 @@
+# Task Card — 2026-04-13 專案完整度驗證與修復
+# 目的：執行 CI 驗證腳本，識別並修復缺口，更新 AUDIT_LOG
+
+task_id: "20260413-001"
+date: "2026-04-13"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "驗證 Agent Harness v2 專案完整度，執行所有 CI 驗證腳本，修復發現的缺口"
+context: >
+  使用者要求「檢視專案完整度，測試」。上次系統驗證在 2026-04-09 完成（task 20260409-001）。
+  本次目標：執行 check_spec_consistency.rb、check_task_card_skill_type.py、
+  validate_task_card.py，記錄結果，修復缺口，更新 AUDIT_LOG。
+input_data:
+  - "scripts/check_spec_consistency.rb"
+  - "scripts/check_task_card_skill_type.py"
+  - "system/validate_task_card.py"
+  - "logs/AUDIT_LOG.md"
+  - "skills/analysis/SKILL.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "check_spec_consistency.rb 執行結果已記錄（pass 或 fail + 原因）"
+  - "check_task_card_skill_type.py 執行結果已記錄"
+  - "validate_task_card.py 對本 Task Card 驗證通過"
+  - "skills/analysis/eval_examples.md 已建立，結構與其他 skill 的 eval_examples 一致"
+  - "check_spec_consistency.rb 中 ALLOWED_SKILL 已加入 analysis，與 validate_task_card.py 一致"
+  - "歷史 task card 的 task_id 格式問題已修復（TASK_ID_PATTERN regex 更新以接受字母後綴格式）"
+  - "3 張 example task card 的 input_data 路徑問題已修復"
+  - "執行紀錄寫入 logs/runs/20260413-001_completeness-validation.yaml"
+  - "AUDIT_LOG.md 新增本次執行紀錄"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: "logs/runs/"
+  filename: "20260413-001_completeness-validation.yaml"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+# === 成本控制 ===
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

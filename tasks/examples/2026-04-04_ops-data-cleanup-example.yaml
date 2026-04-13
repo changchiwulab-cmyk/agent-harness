@@ -9,7 +9,7 @@ status: "pending"
 goal: "將散落在多個檔案的客戶聯絡資訊整合為統一 YAML 格式"
 context: "目前客戶資料分散在 notes/、memory/ 多處，需要統一格式方便後續任務引用"
 input_data:
-  - "memory/active_projects/consulting/references/"
+  - "memory/active_projects/vietnam-expansion/references"
   - "outputs/drafts/client-list-raw.md"
 
 # === 完成標準 ===

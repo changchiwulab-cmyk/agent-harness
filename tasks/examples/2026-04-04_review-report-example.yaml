@@ -12,6 +12,7 @@ input_data:
   - "outputs/drafts/vietnam-ai-tools-research.md"
   - "tasks/examples/2026-04-03_market-research-example.yaml"
 
+
 # === 完成標準 ===
 definition_of_done:
   - "逐條檢查原 Task Card 的 definition_of_done"
