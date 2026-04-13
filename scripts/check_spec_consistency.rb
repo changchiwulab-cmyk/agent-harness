@@ -22,7 +22,7 @@ REQUIRED_FIELDS = %w[
 ].freeze
 REQUIRED_OUTPUT_FIELDS = %w[format location filename].freeze
 
-TASK_ID_PATTERN = /\A\d{8}-[A-Z]{0,2}\d{1,3}\z/
+TASK_ID_PATTERN = /\A\d{8}-([A-Z]{1,2}\d{2}|\d{3})\z/
 DATE_PATTERN = /\A\d{4}-\d{2}-\d{2}\z/
 
 def parse_iso_date(value)
