@@ -3,7 +3,7 @@
 
 task_id: "20260412-001"
 date: "2026-04-12"
-status: "in_progress"
+status: "done"
 
 # === 任務定義 ===
 goal: "重建 2026-04-04 因 .gitignore 遺失的 4 份草稿檔案，依原始 Task Card 及 Audit Log 紀錄忠實還原內容"
@@ -65,5 +65,4 @@ checkpoints:
 actual_tool_calls: 13
 result_summary: "DoD 6/6 通過。重建 4 份草稿：(1) 工具盤點 v2：7 大類別、25+ 工具、四態格式；(2) 策略研究：5 大商業模式、台越市場機會、12 月執行路徑；(3) 策略提案 v2：含定位宣言、服務菜單、ICP、競爭優勢、12 月計畫（M1-M3 修正+S1）；(4) 審查報告：有條件通過、3 必須修改、6 建議、DoD 7 條確認。"
 completion_time: "2026-04-12"
-status: "done"
 audit_log_ref: "logs/AUDIT_LOG.md"
