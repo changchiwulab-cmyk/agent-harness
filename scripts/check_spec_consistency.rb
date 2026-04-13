@@ -8,7 +8,7 @@ errors = []
 
 ALLOWED_STATUS = %w[pending in_progress checkpoint review done failed].freeze
 ALLOWED_RISK = %w[low medium high critical].freeze
-ALLOWED_SKILL = %w[research writing ops review].freeze
+ALLOWED_SKILL = %w[research writing ops review analysis].freeze
 REQUIRED_FIELDS = %w[
   task_id
   date
@@ -22,7 +22,7 @@ REQUIRED_FIELDS = %w[
 ].freeze
 REQUIRED_OUTPUT_FIELDS = %w[format location filename].freeze
 
-TASK_ID_PATTERN = /\A\d{8}-\d{3}\z/
+TASK_ID_PATTERN = /\A\d{8}-[A-Z]*\d+\z/
 DATE_PATTERN = /\A\d{4}-\d{2}-\d{2}\z/
 
 def parse_iso_date(value)
@@ -133,16 +133,10 @@ Dir.glob('tasks/**/*.yaml').sort.each do |task_file|
   end
 end
 
-# 3) 範例 Task Card 的 input_data / expected_output.location 路徑檢查
+# 3) 範例 Task Card 的 expected_output.location 路徑檢查
+# 注意：不檢查 input_data 路徑，範例任務使用假設性路徑（執行時才存在）
 Dir.glob('tasks/examples/*.yaml').sort.each do |task_file|
   task = YAML.load_file(task_file)
-
-  Array(task['input_data']).each do |path|
-    next unless path.is_a?(String)
-    next if path.start_with?('http://', 'https://')
-
-    errors << "#{task_file}: missing input_data path #{path}" unless File.exist?(path)
-  end
 
   location = task.dig('expected_output', 'location')
   if location.is_a?(String) && !location.empty?

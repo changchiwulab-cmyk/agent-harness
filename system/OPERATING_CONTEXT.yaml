@@ -1,5 +1,8 @@
-# 此檔案已更名為 AGENT_CONTEXT.yaml
-# 請更新所有引用，本檔案下次版本將刪除
+# [DEPRECATED] 此檔案已更名並移至 system/AGENT_CONTEXT.yaml
 #
 # 更名原因：避免與 ~/ai-os/operating_context.yaml（跨工具 AI OS 狀態層）同名混淆
 # 新路徑：system/AGENT_CONTEXT.yaml
+#
+# 請更新所有引用此路徑的設定，改為引用 system/AGENT_CONTEXT.yaml。
+# 此檔案將在下次系統維護時由人工刪除（shell_delete 為 deny 操作，需人工執行）。
+# 棄用確認日期：2026-04-13
