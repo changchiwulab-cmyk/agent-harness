@@ -22,9 +22,9 @@ REQUIRED_FIELDS = %w[
 ].freeze
 REQUIRED_OUTPUT_FIELDS = %w[format location filename].freeze
 
-# Canonical format: YYYYMMDD-001 (3 numeric digits)
-# Legacy format also accepted: YYYYMMDD-R01, YYYYMMDD-RV01 (0-2 uppercase letters + 2-3 digits)
-TASK_ID_PATTERN = /\A\d{8}-[A-Z]{0,2}\d{2,3}\z/
+# Canonical format: YYYYMMDD-001 (exactly 3 numeric digits)
+# Legacy format also accepted: YYYYMMDD-R01, YYYYMMDD-RV01 (1-2 uppercase letters + 2-3 digits)
+TASK_ID_PATTERN = /\A\d{8}-([A-Z]{1,2}\d{2,3}|\d{3})\z/
 DATE_PATTERN = /\A\d{4}-\d{2}-\d{2}\z/
 
 def parse_iso_date(value)
