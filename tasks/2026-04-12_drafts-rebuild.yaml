@@ -56,8 +56,14 @@ max_web_searches: 0
 skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - "33f92a9: Task Card 建立"
+  - "d59ff9a: 重建 solo-company-tools-inventory-v2.md"
+  - "f3ce3d5: 重建 ai-era-solo-business-strategy.md"
+  - "4a10b73: 重建 ai-era-solo-business-proposal-v2.md"
+  - "0c02ab4: 重建 ai-era-solo-business-proposal-review.md"
+actual_tool_calls: 13
+result_summary: "DoD 6/6 通過。重建 4 份草稿：(1) 工具盤點 v2：7 大類別、25+ 工具、四態格式；(2) 策略研究：5 大商業模式、台越市場機會、12 月執行路徑；(3) 策略提案 v2：含定位宣言、服務菜單、ICP、競爭優勢、12 月計畫（M1-M3 修正+S1）；(4) 審查報告：有條件通過、3 必須修改、6 建議、DoD 7 條確認。"
+completion_time: "2026-04-12"
+status: "done"
 audit_log_ref: "logs/AUDIT_LOG.md"

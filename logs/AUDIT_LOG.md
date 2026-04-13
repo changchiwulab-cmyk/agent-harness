@@ -35,6 +35,29 @@
 ---
 
 ```yaml
+- task_id: "20260412-001"
+  date: "2026-04-12"
+  skill_type: "ops"
+  goal: "重建 2026-04-04 因 .gitignore 遺失的 4 份草稿檔案"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 8
+    - tool_name: "file_write"
+      call_count: 5
+  checkpoints: 5
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/ (4 files)"
+  error_summary: ""
+  estimated_tokens: "~20K"
+  notes: "重建 4 份草稿：solo-company-tools-inventory-v2.md、ai-era-solo-business-strategy.md、ai-era-solo-business-proposal-v2.md、ai-era-solo-business-proposal-review.md。依 Task Card + Audit Log 紀錄忠實還原。原檔因 .gitignore（已在 f32ba4a 移除）未入版控。DoD 6/6 通過。"
+```
+
+---
+
+```yaml
 - task_id: "20260404-O02"
   date: "2026-04-04"
   skill_type: "ops"
