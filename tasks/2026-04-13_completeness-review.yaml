@@ -1,0 +1,54 @@
+# Task Card — 專案完整度檢視與測試
+# 目的：審查 Agent Harness v2.0 所有組件的完整性，執行驗證腳本，修補已知缺漏
+
+task_id: "20260413-001"
+date: "2026-04-13"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "審查 Agent Harness v2 專案完整度，執行驗證測試，修補已知缺漏"
+context: "v2.0 完成後進行第一次完整度稽核。已知缺漏：skills/analysis/eval_examples.md 尚未建立（其他四個 skill 都有）；system/OPERATING_CONTEXT.yaml 為已廢棄的 redirect 檔，需補充說明。"
+input_data:
+  - "scripts/check_spec_consistency.rb"
+  - "scripts/check_task_card_skill_type.py"
+  - "skills/analysis/SKILL.md"
+  - "system/OPERATING_CONTEXT.yaml"
+  - "logs/AUDIT_LOG.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "scripts/check_spec_consistency.rb 執行結果 exit 0（全部通過）"
+  - "scripts/check_task_card_skill_type.py 執行結果無錯誤"
+  - "skills/analysis/eval_examples.md 已建立，格式與其他 skill 的 eval_examples 一致（含好/壞範例與判斷標準）"
+  - "system/OPERATING_CONTEXT.yaml 已補充 deprecated 說明，讀者可明確知道應參考哪個檔案"
+  - "logs/runs/20260413-001_completeness-review.yaml 已依 EXECUTION_LOG_SCHEMA 格式寫入"
+  - "logs/AUDIT_LOG.md 已新增本次執行紀錄"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: "logs/runs/"
+  filename: "20260413-001_completeness-review.yaml"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "review"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
