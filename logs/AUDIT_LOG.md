@@ -35,6 +35,31 @@
 ---
 
 ```yaml
+- task_id: "20260413-001"
+  date: "2026-04-13"
+  skill_type: "writing"
+  goal: "為 skills/analysis/ 建立 eval_examples.md，完成 5/5 skill suite"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "file_write"
+      call_count: 2
+    - tool_name: "file_edit"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "skills/analysis/eval_examples.md"
+  error_summary: "CI task_id 格式錯誤（A01 → 001），修正後無新錯誤。既有 12 個錯誤為 pre-existing 問題。"
+  estimated_tokens: "~5K"
+  notes: "DoD 6/6 全部通過。補齊 analysis skill 最後缺口，5/5 skills 現全部含 eval_examples.md。範例題目：一人公司評估是否導入付費 AI 工具。"
+```
+
+---
+
+```yaml
 - task_id: "20260404-O02"
   date: "2026-04-04"
   skill_type: "ops"

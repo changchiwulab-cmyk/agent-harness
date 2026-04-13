@@ -1,0 +1,47 @@
+task_id: "20260413-001"
+date: "2026-04-13"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "為 skills/analysis/ 建立 eval_examples.md，完成 5/5 skill suite"
+context: "skills/analysis/SKILL.md 已存在，但缺少 eval_examples.md。其他四個 skill（research/writing/ops/review）均有對應的評測範例檔案。補齊此缺口可讓 analysis skill 達到與其他 skill 一致的完整度。"
+input_data:
+  - "skills/analysis/SKILL.md"
+  - "skills/research/eval_examples.md"  # 格式參照
+
+# === 完成標準（最重要的欄位）===
+definition_of_done:
+  - "skills/analysis/eval_examples.md 已建立"
+  - "包含至少 1 個好的輸出範例（附說明為什麼好）"
+  - "包含至少 1 個壞的輸出範例（附說明哪裡錯）"
+  - "包含判斷標準表格"
+  - "格式與 skills/research/eval_examples.md 一致"
+  - "CI spec-consistency 無新錯誤"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "skills/analysis/"
+  filename: "eval_examples.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+# === 成本控制 ===
+max_tool_calls: 5
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "writing"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
