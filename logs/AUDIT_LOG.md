@@ -35,6 +35,31 @@
 ---
 
 ```yaml
+- task_id: "20260414-R01"
+  date: "2026-04-14"
+  skill_type: "research"
+  goal: "分析台灣一人公司的數量、類型與種類分佈"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 4
+    - tool_name: "file_write"
+      call_count: 1
+    - tool_name: "file_edit"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/taiwan-solo-company-analysis-2026-04-14.md"
+  error_summary: ""
+  estimated_tokens: "~20K"
+  notes: "DoD 5/5 全部通過。廣義一人事業體估計超過 120 萬家：獨資行號 93.5 萬（2024/6 官方數據）、一人股東有限公司估計 22-26 萬。行業前三：零售（25-30%）、餐飲（15-20%）、個人服務（15-18%）。關鍵洞察：2015 公司法修正開放一人股東為重要轉折點；數位創業浪潮（電商、顧問、AI）持續驅動結構轉型。"
+```
+
+---
+
+```yaml
 - task_id: "20260414-A01"
   date: "2026-04-14"
   skill_type: "analysis"

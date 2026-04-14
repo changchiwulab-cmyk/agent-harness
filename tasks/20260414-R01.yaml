@@ -1,0 +1,50 @@
+task_id: "20260414-R01"
+date: "2026-04-14"
+status: "done"
+
+# === 任務定義 ===
+goal: "分析台灣一人公司的數量、類型與種類分佈"
+context: "調查台灣一人公司（獨資、個人工作室、一人有限公司等）的市場規模與結構，涵蓋登記數量、行業分佈、法律形式分類，提供可執行的市場理解基礎。"
+input_data:
+  - "經濟部商業署 公司登記統計"
+  - "主計總處 工商及服務業普查"
+  - "中小企業白皮書（經濟部中企處）"
+  - "web_search"
+
+# === 完成標準 ===
+definition_of_done:
+  - "可確認台灣一人公司總登記數量（最新年度）已列出"
+  - "可確認依法律形式分類（獨資/有限公司/行號）的比例已說明"
+  - "可確認依行業別（前 5 大產業）的分佈已列出"
+  - "可確認所有數據均標注來源與年份"
+  - "可確認報告已輸出至 outputs/drafts/"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "taiwan-solo-company-analysis-2026-04-14.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "web_search"
+  - "file_write"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 5
+
+# === Skill 路由 ===
+skill_type: "research"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - commit: "pending"
+    description: "完成研究報告：台灣一人公司數量、類型與種類分佈"
+actual_tool_calls: 6
+result_summary: "廣義一人事業體估計超過 120 萬家（獨資行號 93.5 萬、一人股東有限公司 22-26 萬）。行業前三：零售、餐飲、個人服務業。2015 公司法修正與數位創業為兩大結構性驅動力。DoD 5/5 通過。"
+completion_time: "2026-04-14"
+audit_log_ref: "logs/AUDIT_LOG.md"
