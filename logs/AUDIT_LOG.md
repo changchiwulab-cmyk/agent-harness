@@ -35,6 +35,29 @@
 ---
 
 ```yaml
+- task_id: "20260414-RV02"
+  date: "2026-04-14"
+  skill_type: "review"
+  goal: "第二次 Retro：分析全部 10 個任務，評估 Week 1 建議採納效果，提出新優化建議"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "file_write"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/retro-2026-04-14-2.md"
+  error_summary: ""
+  estimated_tokens: "~18K"
+  notes: "DoD 4/4 全部通過。Week 1 建議 100% 採納並有效。新發現：(1) analysis 類型缺 COST_POLICY 預算與 eval_examples；(2) skill_type whitelist 多處維護是 regression 根因，建議建立 SKILL_TYPES.yaml；(3) Task Card 建立流程摩擦，低風險任務可考慮畢業為 allow；(4) Approval Pipeline 首次完整運行為本期最大里程碑。共提出 6 條建議，待使用者確認。"
+```
+
+---
+
+```yaml
 - task_id: "20260414-R01"
   date: "2026-04-14"
   skill_type: "research"
