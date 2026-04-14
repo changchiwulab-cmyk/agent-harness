@@ -1,0 +1,55 @@
+task_id: "20260414-RV02"
+date: "2026-04-14"
+status: "done"
+
+# === 任務定義 ===
+goal: "執行第二次系統 Retro，分析 Retro #1 後的 3 個新任務，並評估 Retro #1 五項改善建議的實際效果"
+context: |
+  累積任務總數達 11，超過第二個觸發點（10）。
+  上次 Retro（20260414-RV01）覆蓋任務 1-8，此次覆蓋任務 9-11：
+    - 20260414-A01：Elon Musk 分析（analysis skill 首次使用）
+    - 20260414-RV01：Retro Week 1（review skill）
+    - 20260414-R02：Vietnam AI 工具研究（research skill，3 輪 web search）
+  額外評估維度：Retro #1 的 5 項系統修改是否生效。
+input_data:
+  - "logs/AUDIT_LOG.md"
+  - "logs/errors/（空）"
+  - "logs/approvals/（空）"
+  - "system/COST_POLICY.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "分析成本維度：3 個新任務實測 token vs 更新後預算"
+  - "分析錯誤維度：有無新錯誤模式"
+  - "分析流程維度：Retro #1 的 5 項修改是否有效（改善 / 無效 / 待觀察）"
+  - "分析權限維度：新任務有無觸發 ask 權限"
+  - "分析品質維度：DoD 完整通過率"
+  - "產出 outputs/drafts/retro-2026-04-14-v2.md"
+  - "每項建議指向具體檔案與段落"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "retro-2026-04-14-v2.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+
+# === 成本控制 ===
+max_tool_calls: 5
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "review"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 3
+result_summary: "DoD 6/6 通過。Retro #1 五項改善措施：4/5 有效，1/5 部分有效（logs/runs/ 未建立）。新建議 4 項：analysis 預算基準、logs/runs/ 邊界釐清、eval_examples 補完、批量審核說明。最大進步：報告升格從 0→3 份、Retro 延遲從 3→1 任務。"
+completion_time: "2026-04-14"
+audit_log_ref: "logs/AUDIT_LOG.md"
