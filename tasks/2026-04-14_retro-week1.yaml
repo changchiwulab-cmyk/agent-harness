@@ -1,0 +1,50 @@
+task_id: "20260414-RV01"
+date: "2026-04-14"
+status: "done"
+
+# === 任務定義 ===
+goal: "執行第一次系統 Retro，分析 8 個已完成任務的成本、錯誤、流程、權限、品質五個維度"
+context: "RETRO_FLOW.md 規定累積 5 個任務觸發 Retro。目前已完成 8 個任務（2026-04-04 至 2026-04-09），超過觸發條件 3 個任務。使用者指示立即執行。"
+input_data:
+  - "logs/AUDIT_LOG.md"
+  - "logs/runs/20260409-001_system-validation.yaml"
+  - "logs/errors/（空）"
+  - "logs/approvals/（空）"
+  - "system/COST_POLICY.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "分析成本維度：比對 8 個任務的實際 token 估算 vs COST_POLICY.md 預估值"
+  - "分析錯誤維度：識別所有錯誤模式（rate limit / schema gap / context loss）"
+  - "分析流程維度：找出流程瓶頸與多餘步驟"
+  - "分析權限維度：評估哪些 ask 權限可考慮畢業"
+  - "分析品質維度：評估 definition_of_done 的有效性"
+  - "產出 outputs/drafts/retro-2026-04-14.md，包含數據摘要、發現模式、具體修改建議"
+  - "每項建議指向具體檔案與段落"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "retro-2026-04-14.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+
+# === 成本控制 ===
+max_tool_calls: 5
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "review"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 4
+result_summary: "Week 1 Retro 完成。五維度分析：成本全面低估（writing +100%）、2 個非致命錯誤模式、.gitignore 為最大流程瓶頸、無 ask 權限可畢業、DoD 有效但需強化。5 項系統修改建議全部採納並執行。2 份草稿升格為正式報告（outputs/reports/）。"
+completion_time: "2026-04-14"
+audit_log_ref: "logs/AUDIT_LOG.md"

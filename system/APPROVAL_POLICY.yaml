@@ -48,3 +48,9 @@ escalation:
     action: "追加風險說明到草稿，重新通知使用者"
   - condition: "同一任務產生 3 次以上批准請求"
     action: "暫停任務，建議使用者重新評估任務範圍"
+
+batch_approval:
+  description: "多項建議可一次批准，無需逐項確認"
+  format: "使用者以編號清單回覆即可，例如：'1.2.3 都採納' 或 'a,b,c,d 全要'"
+  agent_behavior: "收到批量批准後，依序執行所有項目，完成後統一 commit"
+  note: "批量批准等同於逐項確認，具有相同法律效力與權限授予範圍"

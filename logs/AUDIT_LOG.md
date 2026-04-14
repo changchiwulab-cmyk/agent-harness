@@ -35,6 +35,88 @@
 ---
 
 ```yaml
+- task_id: "20260414-RV02"
+  date: "2026-04-14"
+  skill_type: "review"
+  goal: "第二次系統 Retro，分析任務 9-11 並評估 Retro #1 五項改善措施效果"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/retro-2026-04-14-v2.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "DoD 6/6 通過。Retro #1 效果：4/5 有效（成本預算準確、無 context loss、提醒機制生效、DoD 品質穩定），1/5 部分有效（logs/runs/ 未建立）。新建議 4 項：A=analysis 預算基準、B=logs/runs 邊界釐清、C=eval_examples 補完、D=批量審核說明。累積進度：報告 0→3 份、Retro 延遲 3→1 任務、首次測試 ask 權限批量批准。"
+
+---
+
+- task_id: "20260414-R02"
+  date: "2026-04-14"
+  skill_type: "research"
+  goal: "調查越南中小企業 AI 生產力工具採用現況與趨勢，產出一人公司市場進入決策用研究摘要"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 3
+    - tool_name: "file_read"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/reports/vietnam-ai-tools-research.md"
+  error_summary: ""
+  estimated_tokens: "~22K"
+  notes: "DoD 6/6 全部通過。3 輪 web search 全部用完。5 類別工具盤點（對話寫作/設計/生產力/銷售行銷/開發）。台越 5 項關鍵差異（Zalo 通訊生態、支付基礎設施、AI 法規、技能差距、決策信任週期）。3 個切入機會：AI 導入工作坊 / FDI 台企橋接顧問 / 工具選型服務。核心發現：越南 73% 企業已接觸 AI 但僅 13.8% 規模化，最後一哩路支援缺口真實。"
+
+---
+
+- task_id: "20260414-RV01"
+  date: "2026-04-14"
+  skill_type: "review"
+  goal: "執行第一次系統 Retro，分析 8 個已完成任務的五維度（成本/錯誤/流程/權限/品質）"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+  checkpoints: 2
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/reports/retro-2026-04-14.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "DoD 7/7 全部通過。五維度發現：成本全面低估（writing +100%）、2 個非致命錯誤模式（rate limit / context loss）、.gitignore 為最大流程瓶頸、無 ask 權限可畢業、DoD 有效但需強化。5 項系統修改建議全部採納：COST_POLICY 預算更新、.gitignore 說明、CLAUDE.md Retro 提醒、TASK_CARD_TEMPLATE DoD 強化、EXECUTION_LOG_SCHEMA 強制欄位。草稿同步升格為正式報告。"
+```
+
+---
+
+```yaml
+- task_id: "20260414-A01"
+  date: "2026-04-14"
+  skill_type: "analysis"
+  goal: "以 Elon Musk 第一性原理風格分析專案進度、完成度與缺失"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 5
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/reports/elon-musk-project-analysis.md"
+  error_summary: ""
+  estimated_tokens: "~18K"
+  notes: "完成度評估 75%。CRITICAL：outputs/reports/ 空白、Retro 從未觸發。HIGH：失敗路徑未測試、Vietnam 專案掛名無實。MEDIUM：analysis skill 缺 eval_examples、decision log 空白。本次分析直接觸發了 Retro 執行及 5 項系統修改。草稿升格為正式報告。"
+```
+
+---
+
+```yaml
 - task_id: "20260404-O02"
   date: "2026-04-04"
   skill_type: "ops"

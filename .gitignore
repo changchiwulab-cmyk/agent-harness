@@ -6,3 +6,8 @@
 *.key
 *.pem
 *.credentials
+
+# 輸出目錄追蹤政策
+# outputs/drafts/  ← 刻意不排除：草稿入版控，確保跨任務檔案傳遞不依賴 context
+# outputs/reports/ ← 刻意不排除：正式報告入版控
+# 注意：敏感格式（*.env, *.key 等）已在上方全域排除

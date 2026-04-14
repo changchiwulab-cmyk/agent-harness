@@ -16,7 +16,7 @@
 
 ## 執行流程
 
-1. 載入 Task Card → 2. 確認 goal + definition_of_done → 3. 載入 context（system/GLOBAL_RULES.md + system/AGENT_CONTEXT.yaml + system/APPROVAL_POLICY.yaml + 對應 skill + project context）→ 4. 執行 → 5. 每關鍵階段 git commit checkpoint → 6. 依 system/GATE_POLICY.yaml 逐層驗證（schema → 規則 → 完成 → 風險，含 rollback 定義）→ 7. 輸出到 outputs/ → 8. 依 system/EXECUTION_LOG_SCHEMA.yaml 寫執行紀錄到 logs/runs/ → 9. 寫 audit log
+1. 載入 Task Card → 2. 確認 goal + definition_of_done → 3. 載入 context（system/GLOBAL_RULES.md + system/AGENT_CONTEXT.yaml + system/APPROVAL_POLICY.yaml + 對應 skill + project context）→ 4. 執行 → 5. 每關鍵階段 git commit checkpoint → 6. 依 system/GATE_POLICY.yaml 逐層驗證（schema → 規則 → 完成 → 風險，含 rollback 定義）→ 7. 輸出到 outputs/ → 8. 寫 audit log（每次必做）→ 9. 若 risk_level ≥ medium，額外依 system/EXECUTION_LOG_SCHEMA.yaml 寫完整執行紀錄到 logs/runs/
 
 ## Context 硬限制
 
@@ -30,6 +30,13 @@
 
 git commit 作為 checkpoint：完成拆解後、完成子任務後、重要工具結果後、進入人工審核前。
 格式：`checkpoint: [task_id] [階段描述]`
+
+## Retro 觸發提醒
+
+每次任務完成寫入 audit log 後，計算目前已完成的任務總數。
+若總數為 **5 的倍數**（5、10、15…），主動提醒使用者：
+> 「已累積 N 個任務，達到 Retro 觸發條件，建議執行 RETRO_FLOW.md。」
+不自動執行 Retro，僅提醒，由使用者決定是否觸發。
 
 ## 驗證失敗處理
 

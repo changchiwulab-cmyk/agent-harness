@@ -12,8 +12,13 @@ context: ""                    # 背景資訊、為什麼要做這件事
 input_data: []                 # 輸入資料來源（檔案路徑、URL、文字）
 
 # === 完成標準（最重要的欄位）===
+# 規則：所有條目須「完整通過」才算 done。「部分通過」= 未完成，不得標記 done。
+# 隱性必要條件（每張 Task Card 均適用，無需重複列出）：
+#   - 輸出檔案已 git commit，可在版控中追蹤
+#   - logs/runs/ 執行紀錄已填寫完整（token_estimate 非 0，checkpoints 非 pending）
+#   - audit log 已新增對應紀錄
 definition_of_done:            # 必填。沒有這個欄位不進 runtime
-  - ""                         # 每一條都是可驗證的完成條件
+  - ""                         # 每一條都是可驗證的完成條件（用「可確認 X 存在/達成」的句式）
   - ""
 
 # === 輸出定義 ===
