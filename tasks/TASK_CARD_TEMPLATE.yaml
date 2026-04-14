@@ -2,7 +2,7 @@
 # 複製此檔案到 tasks/ 下，填入具體任務資訊
 # 命名規則：YYYY-MM-DD_[簡述].yaml
 
-task_id: ""                    # 格式：YYYYMMDD-001
+task_id: ""                    # 格式：YYYYMMDD-001 或 YYYYMMDD-S01（字母前綴）
 date: ""                       # 建立日期
 status: "pending"              # pending → in_progress → checkpoint → review → done / failed
 
@@ -35,7 +35,7 @@ max_retries: 3                 # 連續失敗最多重試次數
 max_web_searches: 3            # web search 上限
 
 # === Skill 路由 ===
-skill_type: ""                 # research / writing / ops / review
+skill_type: ""                 # research / writing / ops / review / analysis
 
 # === 執行紀錄（由 agent 填寫）===
 checkpoints: []                # 每次 checkpoint 的 git commit hash + 描述

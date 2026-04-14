@@ -10,7 +10,7 @@
 ```yaml
 - task_id: ""
   date: ""
-  skill_type: ""           # research / writing / ops / review
+  skill_type: ""           # research / writing / ops / review / analysis
   goal: ""                 # 一句話
   status: ""               # done / failed / partial
   model_used: ""           # claude-sonnet-4-20250514 等
@@ -31,6 +31,50 @@
 ## 紀錄（依時間倒序）
 
 <!-- 新紀錄加在這裡 -->
+
+---
+
+```yaml
+- task_id: "20260414-001"
+  date: "2026-04-14"
+  skill_type: "review"
+  goal: "檢視 Agent Harness v2 完整度，執行所有驗證腳本，修正發現的架構缺口"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 12
+    - tool_name: "file_write"
+      call_count: 12
+  checkpoints: 2
+  approval_needed: false
+  approval_given: false
+  output_path: "logs/runs/20260414-001_project-completeness-review.yaml"
+  error_summary: ""
+  estimated_tokens: "~30K"
+  notes: "8/8 DoD 通過。修正 6 類問題：task_id 格式（放寬 regex）、analysis skill 驗證不一致、eval_examples 缺失、example 路徑誤驗、4 張 Task Card 狀態同步、缺漏 audit log 補齊。"
+```
+
+---
+
+```yaml
+- task_id: "20260409-001"
+  date: "2026-04-09"
+  skill_type: "review"
+  goal: "驗證 Agent Harness v2.0 所有新增組件的可用性與流程完整性"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 9
+  checkpoints: 3
+  approval_needed: false
+  approval_given: false
+  output_path: "logs/runs/20260409-001_system-validation.yaml"
+  error_summary: ""
+  estimated_tokens: "~20K"
+  notes: "7/7 DoD 通過。初次驗證發現 FAILURE_TAXONOMY 漏 SEC-04（幻覺驅動行動），已補正至 14 種。四層 Gate 全部 pass。"
+```
 
 ---
 

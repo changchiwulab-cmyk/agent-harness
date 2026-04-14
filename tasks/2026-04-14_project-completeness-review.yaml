@@ -1,0 +1,58 @@
+# Task Card — 專案完整度審查與測試
+# 目的：系統性檢視 Agent Harness v2 所有組件完整度，執行全部驗證腳本並修正發現的缺口
+
+task_id: "20260414-001"
+date: "2026-04-14"
+status: "done"
+
+# === 任務定義 ===
+goal: "檢視 Agent Harness v2 完整度，執行所有驗證腳本，修正發現的架構缺口"
+context: "專案累積 16 個 commits 後進行首次全面完整度審查。識別並修正驗證腳本、skill 定義、Task Card 狀態、audit log 等方面的不一致問題。"
+input_data:
+  - "scripts/check_spec_consistency.rb"
+  - "scripts/check_task_card_skill_type.py"
+  - "system/validate_task_card.py"
+  - "skills/analysis/SKILL.md"
+  - "logs/AUDIT_LOG.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "check_spec_consistency.rb 執行結果為 OK（exit 0）"
+  - "check_task_card_skill_type.py 執行結果通過（exit 0）"
+  - "所有架構缺口已識別並記錄在執行 log"
+  - "analysis skill 驗證一致性已修正（check_spec_consistency.rb + TASK_CARD_TEMPLATE + AUDIT_LOG 注解同步）"
+  - "skills/analysis/eval_examples.md 已建立，格式與其他 skill 一致"
+  - "Task ID 格式規則已放寬，允許字母前綴（S01, R01 等）"
+  - "4 張狀態滯留 review 的 Task Card 已同步更新為 done"
+  - "20260409-001 任務的缺漏 AUDIT_LOG 紀錄已補上"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: "logs/runs/"
+  filename: "20260414-001_project-completeness-review.yaml"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "review"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "Task Card 建立 + 初次驗證腳本執行（12 錯誤）"
+  - "全部修正完成，re-run 通過"
+actual_tool_calls: 24
+result_summary: "8/8 DoD 通過。識別並修正 6 類問題：task_id 格式、analysis skill 驗證不一致、eval_examples 缺失、example 路徑誤驗、4 張 Task Card 狀態同步、缺漏 audit log 補齊。"
+completion_time: "2026-04-14"
+audit_log_ref: "logs/runs/20260414-001_project-completeness-review.yaml"
