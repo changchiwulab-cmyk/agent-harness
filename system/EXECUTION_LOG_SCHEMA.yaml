@@ -18,17 +18,18 @@ execution_log:
       #   call_count: 2
 
   checkpoints:
-    - commit: ""                      # git commit hash
+    - commit: ""                      # git commit hash【必填，不得為 "pending"；任務結束前須回填實際 hash】
       stage: ""                       # 階段描述
       # 範例：
       # - commit: "abc1234"
       #   stage: "完成資料蒐集"
 
   # --- 成本估算 ---
+  # 【必填，三個欄位均不得為 0；無法精確計算時填入粗估值並加注 "(estimated)"】
   token_estimate:
-    input: 0
-    output: 0
-    total: 0
+    input: 0                          # 輸入 token 估算
+    output: 0                         # 輸出 token 估算
+    total: 0                          # 合計（input + output）
 
   # --- 審批紀錄 ---
   approvals:
