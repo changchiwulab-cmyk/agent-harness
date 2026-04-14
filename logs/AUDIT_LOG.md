@@ -35,6 +35,31 @@
 ---
 
 ```yaml
+- task_id: "20260414-A01"
+  date: "2026-04-14"
+  skill_type: "analysis"
+  goal: "用 Steve Jobs / Apple 管理與經營思維，分析 Agent Harness v2 的完整度與優化程度"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 8
+    - tool_name: "file_write"
+      call_count: 3
+    - tool_name: "file_edit"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/jobs-analysis-2026-04-14.md"
+  error_summary: "發現 regression bug：check_task_card_skill_type.py 的 skill_type 白名單缺少 analysis，已修復。"
+  estimated_tokens: "~20K"
+  notes: "DoD 6/6 全部通過。以 Jobs 8 大標準診斷，整體評分 60/100。最嚴重問題：Approval Pipeline 從未執行（outputs/reports/ 空白、logs/approvals/ 空白）。輸出 P0-P3 共 15 項優先行動清單。同步修復 scripts/check_task_card_skill_type.py + tasks/TASK_CARD_TEMPLATE.yaml。"
+```
+
+---
+
+```yaml
 - task_id: "20260404-O02"
   date: "2026-04-04"
   skill_type: "ops"

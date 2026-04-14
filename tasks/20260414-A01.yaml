@@ -1,0 +1,57 @@
+task_id: "20260414-A01"
+date: "2026-04-14"
+status: "done"
+
+# === 任務定義 ===
+goal: "用 Steve Jobs / Apple 管理與經營思維，分析 Agent Harness v2 的完整度與優化程度"
+context: "使用者希望以外部視角、高標準檢視框架的設計品質，找出真正的問題，而非表面稱讚。採用 Jobs 的 8 個核心標準逐項診斷，並提出優先行動清單。"
+input_data:
+  - "CLAUDE.md"
+  - "README.md"
+  - "system/"
+  - "skills/"
+  - "tasks/"
+  - "logs/AUDIT_LOG.md"
+  - "logs/runs/"
+  - "outputs/drafts/"
+  - "scripts/"
+
+# === 完成標準 ===
+definition_of_done:
+  - "可確認分析報告已存在於 outputs/drafts/jobs-analysis-2026-04-14.md"
+  - "可確認 8 個 Jobs 標準均已逐項評分（及格 / 不及格 / 部分及格）"
+  - "可確認每項不及格均附有具體優化建議"
+  - "可確認 P0/P1/P2/P3 優先行動清單已列出"
+  - "可確認 skill_type 白名單 regression bug 已修復（check_task_card_skill_type.py 加入 analysis）"
+  - "可確認 TASK_CARD_TEMPLATE.yaml 的 skill_type 注釋已更新"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "jobs-analysis-2026-04-14.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "file_edit"
+
+# === 成本控制 ===
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄 ===
+checkpoints:
+  - commit: "pending"
+    description: "完成分析報告草稿 + 修復 regression bug"
+actual_tool_calls: 15
+result_summary: "以 Jobs 8 大標準診斷 Agent Harness v2。整體評分：Simplicity 不及格、Focus 部分及格、CX First 不及格、Quality 部分及格、Vertical Integration 部分及格、Real Artists Ship 不及格（最嚴重）、Say No 輕微問題、A-Player Standard 部分及格。找出關鍵 regression bug（skill_type 白名單缺 analysis）並修復。輸出 12 項優先行動清單（P0-P3）。"
+completion_time: "2026-04-14"
+audit_log_ref: "logs/AUDIT_LOG.md"
