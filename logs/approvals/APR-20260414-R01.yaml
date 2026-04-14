@@ -1,0 +1,15 @@
+approval_id: "APR-20260414-R01"
+date: "2026-04-14"
+task_id: "20260414-R01"
+
+draft_path: "outputs/drafts/taiwan-solo-company-analysis-2026-04-14.md"
+approved_output_path: "outputs/reports/taiwan-solo-company-analysis-2026-04-14.md"
+
+approved_by: "human"
+approval_method: "draft_first"
+approval_statement: "草稿已驗證，轉到正式"
+
+risk_level: "low"
+content_summary: "台灣一人公司數量、類型與種類分析。廣義一人事業體約 120-125 萬家，含獨資行號 93.5 萬、一人股東有限公司 22-26 萬。"
+
+changes_from_draft: "none"
