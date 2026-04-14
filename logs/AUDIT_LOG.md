@@ -49,7 +49,7 @@
   checkpoints: 1
   approval_needed: false
   approval_given: false
-  output_path: "outputs/drafts/vietnam-ai-tools-research.md"
+  output_path: "outputs/reports/vietnam-ai-tools-research.md"
   error_summary: ""
   estimated_tokens: "~22K"
   notes: "DoD 6/6 全部通過。3 輪 web search 全部用完。5 類別工具盤點（對話寫作/設計/生產力/銷售行銷/開發）。台越 5 項關鍵差異（Zalo 通訊生態、支付基礎設施、AI 法規、技能差距、決策信任週期）。3 個切入機會：AI 導入工作坊 / FDI 台企橋接顧問 / 工具選型服務。核心發現：越南 73% 企業已接觸 AI 但僅 13.8% 規模化，最後一哩路支援缺口真實。"
