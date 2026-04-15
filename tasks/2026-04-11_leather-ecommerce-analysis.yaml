@@ -1,0 +1,39 @@
+task_id: "20260411-002"
+date: "2026-04-11"
+status: "review"
+
+goal: "評估一人公司切入皮件類電商顧問的可行性，並分析市場對顧問服務的需求"
+context: "承接 20260411-001 研究結果。顧問視角雙側分析：需求側（客戶有哪些問題要外包）+ 供給側（一人顧問的切入可行性）。全球市場範圍，不限定地區。"
+input_data:
+  - "outputs/drafts/leather-ecommerce-research.md"
+
+definition_of_done:
+  - "需求側分析：品牌/賣家願意外包的具體問題類型（至少 3 類）"
+  - "供給側分析：一人公司切入的六維可行性評估（價值/成本/風險/可行性/執行難度/回報）"
+  - "最佳切入點建議（含「不做」選項的評估）"
+  - "高風險假設明確標示"
+  - "輸出為結構化 markdown，符合 analysis SKILL.md 格式"
+
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "leather-ecommerce-analysis.md"
+
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+max_tool_calls: 4
+max_retries: 2
+max_web_searches: 0
+
+skill_type: "analysis"
+
+checkpoints:
+  - "c5096b76 — analysis output written to outputs/drafts/leather-ecommerce-analysis.md"
+actual_tool_calls: 2
+result_summary: "建議切入：電商渠道策略顧問（短期）+ 永續轉型顧問（中期）。DoD 5/5 通過。待人工確認後移至 reports/。"
+completion_time: "2026-04-11"
+audit_log_ref: "logs/AUDIT_LOG.md"

@@ -1,0 +1,16 @@
+task_id: "20260411-026"
+date: "2026-04-11"
+skill_type: "research"
+goal: "調查廚房小工具 Drop Shipping 全球市場現況：規模、主流 SKU、利潤結構、供應商平台、競爭格局"
+status: "done"
+approval_needed: false
+output_path: "outputs/drafts/kitchen-gadgets-dropship-research.md"
+definition_of_done:
+  - "市場規模與成長率（含數據來源）"
+  - "Top 3-5 英雄 SKU 及其毛利區間"
+  - "主要供應商平台（含 MOQ/樣品政策）"
+  - "5 個主要銷售通路（含平台費用）"
+  - "3 個核心競爭風險"
+  - "4 個關鍵趨勢"
+completion_time: "2026-04-11T18:00:00Z"
+notes: "Drop Shipping 代理販賣無庫存模式，全球通用市場，TikTok #1 轉換品類"

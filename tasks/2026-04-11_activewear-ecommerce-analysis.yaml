@@ -1,0 +1,39 @@
+task_id: "20260411-004"
+date: "2026-04-11"
+status: "done"
+
+goal: "評估一人公司切入運動衣類電商顧問的可行性，分析市場需求與最佳切入角度"
+context: "承接 20260411-003 研究結果。雙側分析：需求側（品牌外包什麼）+ 供給側（一人顧問切入可行性）。全球市場，特別關注亞洲機會。"
+input_data:
+  - "outputs/drafts/activewear-ecommerce-research.md"
+
+definition_of_done:
+  - "需求側：品牌願意外包的問題類型（至少 3 類，含外包意願評估）"
+  - "供給側：4 個切入選項的六維可行性評估"
+  - "建議排序與理由（含「不切入」選項）"
+  - "運動衣 vs 皮件顧問市場的關鍵差異點"
+  - "高風險假設明確標示"
+  - "輸出為結構化 markdown"
+
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "activewear-ecommerce-analysis.md"
+
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+max_tool_calls: 4
+max_retries: 2
+max_web_searches: 0
+
+skill_type: "analysis"
+
+checkpoints: []
+actual_tool_calls: 2
+result_summary: "六維評估 20/30（條件性可行）。推薦切入：TikTok Shop 東南亞專家（選項A）。3 個高風險假設明確標示。DoD 5/5 通過。"
+completion_time: "2026-04-11"
+audit_log_ref: "logs/AUDIT_LOG.md"

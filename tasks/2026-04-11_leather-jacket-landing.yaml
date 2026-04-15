@@ -1,0 +1,38 @@
+task_id: "20260411-009"
+date: "2026-04-11"
+status: "review"
+
+goal: "產出皮衣類電商顧問落地三件套：首客獲取計畫 + 完整執行手冊 + MVP 實驗設計"
+context: "承接規劃報告（20260411-008）。落地三層：1）首客 SOP + 冷信模板 + 定價決策樹；2）服務交付 SOP + 清單 + 工具箱；3）MVP 定義 + 30 天實驗 + Go/No-Go 標準。"
+input_data:
+  - "outputs/drafts/leather-jacket-analysis.md"
+  - "outputs/drafts/leather-jacket-plan.md"
+
+definition_of_done:
+  - "首客獲取：ICP 篩選標準 + 冷接觸腳本 + 定價決策樹（3 種情境）"
+  - "執行手冊：服務交付步驟化 SOP（逐步驟）+ 客戶會議議程模板 + 交付物清單"
+  - "MVP 實驗：最小可行服務定義 + 30 天驗證計畫 + 明確 Go/No-Go 判斷標準"
+  - "輸出為結構化 markdown，可直接操作"
+
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "leather-jacket-landing.md"
+
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+max_tool_calls: 4
+max_retries: 2
+max_web_searches: 0
+
+skill_type: "writing"
+
+checkpoints: []
+actual_tool_calls: 2
+result_summary: "落地三件套完整交付。首客：ICP 5 項篩選標準 + LinkedIn 冷信腳本 + 3 情境定價決策樹。執行手冊：90 天 SOP（Week 1–12）+ 會議議程模板 + 6 份交付物清單。MVP：方案一健康檢查（USD 1,800）+ 30 天驗證 + Go/No-Go 三標準。DoD 4/4 通過。"
+completion_time: "2026-04-11"
+audit_log_ref: "logs/AUDIT_LOG.md"

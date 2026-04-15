@@ -1,0 +1,39 @@
+task_id: "20260411-016"
+date: "2026-04-11"
+status: "review"
+
+goal: "產出男性長褲電商顧問一人公司的 90 天行動規劃（定位、ICP、服務菜單、月度行動）"
+context: "承接分析結果（20260411-015）。聚焦可執行的利基定位。全球市場，特別關注尺寸問題解決顧問機會。"
+input_data:
+  - "outputs/drafts/mens-trousers-research.md"
+  - "outputs/drafts/mens-trousers-analysis.md"
+
+definition_of_done:
+  - "服務定位陳述（一句話 + 差異化主張）"
+  - "目標客戶輪廓 ICP"
+  - "服務菜單：至少 3 個方案（含收費區間）"
+  - "90 天行動計畫（月度分解）"
+  - "輸出為結構化 markdown"
+
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "mens-trousers-plan.md"
+
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+max_tool_calls: 4
+max_retries: 2
+max_web_searches: 0
+
+skill_type: "writing"
+
+checkpoints: []
+actual_tool_calls: 2
+result_summary: "定位：男性長褲退貨率優化顧問（90 天降低 20%）。3 個服務方案（診斷 USD 1,500/優化專案 USD 5,500/加購轉換率 USD 2,000）。月一目標：首付費診斷。月三收入目標 USD 7,000–11,500。DoD 5/5 通過。待審閱。"
+completion_time: "2026-04-11"
+audit_log_ref: "logs/AUDIT_LOG.md"

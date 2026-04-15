@@ -1,0 +1,14 @@
+task_id: "20260411-021"
+date: "2026-04-11"
+skill_type: "writing"
+goal: "產出寵物產品 Drop Shipping 落地三件套：首客獲取計畫 + 完整執行手冊 + MVP 實驗設計"
+status: "review"
+approval_needed: true
+output_path: "outputs/drafts/pet-products-dropship-landing.md"
+definition_of_done:
+  - "ICP 定義 + 冷接觸腳本 + 定價決策樹"
+  - "服務交付 SOP（步驟化）+ 交付物清單"
+  - "MVP 定義 + 30 天驗證計畫 + Go/No-Go 標準"
+  - "完整成本試算表格"
+completion_time: "2026-04-11T19:30:00Z"
+notes: "依賴 20260411-020 輸出"

@@ -1,0 +1,38 @@
+task_id: "20260411-003"
+date: "2026-04-11"
+status: "done"
+
+goal: "調查運動衣類電商全球市場現況：規模、成長、主要通路、品牌痛點、關鍵趨勢"
+context: "顧問視角，全球市場範圍。為後續分析（20260411-004）與規劃（20260411-005）提供研究基礎。"
+input_data: []
+
+definition_of_done:
+  - "市場規模與成長率（含來源與年份）"
+  - "電商子通路成長數據（vs 整體市場）"
+  - "主要電商平台與通路特性（至少 3 個）"
+  - "品牌/賣家前三大痛點（有具體描述）"
+  - "值得關注的趨勢（至少 3 項，含數據或案例）"
+  - "輸出為結構化 markdown"
+
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "activewear-ecommerce-research.md"
+
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "web_search"
+  - "file_write"
+
+max_tool_calls: 6
+max_retries: 3
+max_web_searches: 3
+
+skill_type: "research"
+
+checkpoints: []
+actual_tool_calls: 3
+result_summary: "全球 Activewear 市場 USD 440B，電商 CAGR 11%。5 個平台分析、4 大痛點、4 項趨勢。DoD 6/6 通過。"
+completion_time: "2026-04-11"
+audit_log_ref: "logs/AUDIT_LOG.md"

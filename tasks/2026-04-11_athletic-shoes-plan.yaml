@@ -1,0 +1,39 @@
+task_id: "20260411-012"
+date: "2026-04-11"
+status: "review"
+
+goal: "產出運動鞋電商顧問一人公司的 90 天行動規劃（定位、ICP、服務菜單、月度行動）"
+context: "承接分析結果（20260411-011）。聚焦利基定位：轉售市場顧問、DTC 球鞋品牌顧問、或平台入駐顧問（三選一）。"
+input_data:
+  - "outputs/drafts/athletic-shoes-research.md"
+  - "outputs/drafts/athletic-shoes-analysis.md"
+
+definition_of_done:
+  - "服務定位陳述（一句話 + 差異化主張）"
+  - "目標客戶輪廓 ICP"
+  - "服務菜單：至少 3 個方案（含收費區間）"
+  - "90 天行動計畫（月度分解）"
+  - "輸出為結構化 markdown"
+
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "athletic-shoes-plan.md"
+
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+max_tool_calls: 4
+max_retries: 2
+max_web_searches: 0
+
+skill_type: "writing"
+
+checkpoints: []
+actual_tool_calls: 2
+result_summary: "定位：數據驅動球鞋轉售策略師。3 個服務方案（月報 USD 149/個人諮詢 USD 490/Drop 速報 USD 299）。月一目標：5 人付費訂閱驗證。月三目標：月收 USD 6,000+。DoD 5/5 通過。待審閱。"
+completion_time: "2026-04-11"
+audit_log_ref: "logs/AUDIT_LOG.md"
