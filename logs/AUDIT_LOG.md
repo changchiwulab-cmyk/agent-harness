@@ -20,6 +20,7 @@
   checkpoints: 0           # checkpoint 次數
   approval_needed: false
   approval_given: false
+  approval_ref: ""         # 升格任務填入 logs/approvals/ 路徑，其餘留空
   output_path: ""          # 輸出檔案路徑
   error_summary: ""        # 如有錯誤，簡述
   estimated_tokens: ""     # 預估 token（粗略即可）

@@ -12,12 +12,13 @@ permissions:
     - git_commit_checkpoint    # git commit（僅 checkpoint 用途）
     - create_output_files      # 在 outputs/ 建立新檔案
     - read_memory              # 讀取 memory/ 下的內容
+    - create_task_card_low     # 建立 risk_level: low 的 Task Card（展示後直接執行，不等待確認）
 
   # === 需要人工確認 ===
   ask:
     - modify_skills            # 建立或修改 skills/ 下的檔案
     - modify_system_rules      # 修改 system/ 下的規則檔
-    - create_task_card         # 建立新的 Task Card
+    - create_task_card_medium  # 建立 risk_level >= medium 的 Task Card
     - write_long_term_memory   # 寫入 memory/ 下的長期知識
     - write_reports            # 寫入 outputs/reports/（正式輸出）
     - install_packages         # 安裝任何套件

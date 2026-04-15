@@ -43,6 +43,12 @@ approval_methods:
     timeout: "不設超時，草稿保留直到被人工處理"
     on_no_response: "草稿保留，不自動發布或移動"
 
+draft_upgrade_marking:
+  description: "草稿升格為正式報告時，在草稿頂部加入標記，保留版本追蹤"
+  format: "> [已升格至 outputs/reports/{filename} — {date}]"
+  example: "> [已升格至 outputs/reports/taiwan-solo-company-analysis-2026-04-14.md — 2026-04-14]"
+  note: "升格採複製（cp）而非移動（mv），草稿保留作版本記錄，標記說明其正式版位置"
+
 escalation:
   - condition: "批准等待中發現新風險"
     action: "追加風險說明到草稿，重新通知使用者"

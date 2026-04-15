@@ -1,0 +1,9 @@
+# Skill Type 允許清單 — 單一真實來源
+# 所有驗證器（Python / Ruby / CI）均從此檔案讀取，不再各自維護
+
+allowed_skill_types:
+  - research
+  - writing
+  - ops
+  - review
+  - analysis

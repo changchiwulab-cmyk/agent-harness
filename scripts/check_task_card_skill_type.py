@@ -7,7 +7,11 @@ import re
 import sys
 from pathlib import Path
 
-ALLOWED_SKILL_TYPES = {"research", "writing", "ops", "review", "analysis"}
+import yaml
+
+_skill_types_path = Path("system/SKILL_TYPES.yaml")
+ALLOWED_SKILL_TYPES = set(yaml.safe_load(_skill_types_path.read_text(encoding="utf-8"))["allowed_skill_types"])
+
 TARGET_FILES = (
     Path("tasks/TASK_CARD_TEMPLATE.yaml"),
     Path("tasks/examples/2026-04-03_market-research-example.yaml"),

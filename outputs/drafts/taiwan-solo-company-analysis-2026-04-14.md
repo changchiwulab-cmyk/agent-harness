@@ -1,3 +1,5 @@
+> [已升格至 outputs/reports/taiwan-solo-company-analysis-2026-04-14.md — 2026-04-14]
+
 # 台灣一人公司分析報告
 ## 數量、類型與種類分佈
 

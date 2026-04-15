@@ -5,10 +5,13 @@ Task Card Schema Validator
 """
 
 import sys
+from pathlib import Path
+
 import yaml
 
 REQUIRED_FIELDS = ["task_id", "date", "goal", "definition_of_done", "skill_type", "risk_level"]
-VALID_SKILLS = {"research", "analysis", "writing", "ops", "review"}
+_skill_types_path = Path(__file__).parent / "SKILL_TYPES.yaml"
+VALID_SKILLS = set(yaml.safe_load(_skill_types_path.read_text(encoding="utf-8"))["allowed_skill_types"])
 VALID_RISK = {"low", "medium", "high", "critical"}
 VALID_STATUS = {"pending", "in_progress", "checkpoint", "review", "done", "failed"}
 
