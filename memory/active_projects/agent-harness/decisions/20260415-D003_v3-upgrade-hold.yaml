@@ -1,0 +1,29 @@
+decision_id: "20260415-D003"
+date: "2026-04-15"
+project: "agent-harness"
+
+context: >
+  首次 RETRO（8 筆 audit log）評估 v3 升級條件：
+  bounded specialists 拆分（research/sales/content 各自獨立代理）。
+  README 定義的觸發條件為：context 經常超限、規則衝突頻繁、
+  成本持續超標、錯誤率上升。
+
+options_considered:
+  - option: "維持 v2，不升級"
+    pros: "無遷移成本；8 筆任務中無任何觸發條件出現；系統穩定"
+    cons: "若未來規模快速增長，可能需要緊急升級"
+
+  - option: "啟動 v3 規劃"
+    pros: "提前準備"
+    cons: "目前無實際需求；過早優化；增加維護成本"
+
+decision: "維持 v2，下次 retro（累積 5 筆後）再評估"
+reasoning: >
+  四項觸發條件均未達標：context 未超限、無規則衝突、
+  token 雖超預估但未超 dashboard 上限、錯誤率僅 1/8（非阻斷性）。
+  一人公司原則：不做沒有實際需求的架構升級。
+
+risk: "若業務急速擴張，v2 的單代理架構可能成為瓶頸"
+revisit_trigger: "任一 v3 觸發條件持續 2 週以上；或單 session context 超限頻率 > 30%"
+related_task: "20260409-001"
+status: "active"

@@ -1,0 +1,34 @@
+decision_id: "20260415-D004"
+date: "2026-04-15"
+project: "agent-harness"
+
+context: >
+  首次 RETRO（8 筆）發現 create_task_card 的 ask 確認每次都立即 approve，
+  形同虛設。RETRO 建議評估是否升為 allow。
+  以 analysis skill 任務（20260415-A01）進行正式評估。
+
+options_considered:
+  - option: "維持 ask"
+    pros: "不引入新風險"
+    cons: "8/8 筆全部立即 approve，把關無實質作用；增加流程摩擦"
+
+  - option: "條件升為 allow（low/medium risk）"
+    pros: "消除 ~80% 確認往返；高風險任務仍受保護"
+    cons: "需修改 PERMISSIONS + APPROVAL_POLICY 兩個檔案"
+
+  - option: "完全升為 allow"
+    pros: "最大化效率"
+    cons: "移除所有護欄，高風險任務建立時無確認"
+
+decision: "升為 allow（PERMISSIONS.yaml 中移入 allow 區塊）"
+reasoning: >
+  歷史數據明確：8/8 筆任務均為 low risk 且立即 approve，ask 無實質把關。
+  GATE_POLICY 的 risk_check 是第二道防線，確保即使 Task Card 建立時無確認，
+  執行後仍會驗證 risk_level 與實際動作一致。
+  選擇直接 allow（而非條件升）是因為：Task Card 本身是分析輸出，不是危險操作；
+  真正的風險在執行階段，而非建立 Task Card 階段。
+
+risk: "使用者可能在 low-risk Task Card 中描述高風險任務 → 靠 GATE_POLICY risk_check 緩解"
+revisit_trigger: "出現因 auto-approve Task Card 導致的未預期高風險執行"
+related_task: "20260415-A01"
+status: "active"

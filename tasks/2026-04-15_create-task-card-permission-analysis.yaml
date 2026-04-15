@@ -1,0 +1,43 @@
+task_id: "20260415-A01"
+date: "2026-04-15"
+status: "done"
+
+goal: "評估是否應將 create_task_card 從 ask 升為 allow，給出有依據的建議排序"
+context: >
+  首次 RETRO 發現：8 個任務中每次建立 Task Card 都需要 ask 確認，
+  但每次都被立即 approve，形同 allow。RETRO 建議將其列為「畢業候選」。
+  此為 agent-harness 第一個 analysis skill 真實任務。
+
+input_data:
+  - "system/PERMISSIONS.yaml"
+  - "system/APPROVAL_POLICY.yaml"
+  - "logs/AUDIT_LOG.md"
+  - "outputs/drafts/retro-2026-04-15.md"
+
+definition_of_done:
+  - "列出所有可行選項（含不變、完全升為 allow、條件升級等）"
+  - "每個選項完成六維評估（價值/成本/風險/可行性/執行難度/回報）"
+  - "明確列出高風險假設與待驗證項目"
+  - "給出有排序的建議與下一步行動"
+
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "analysis-create-task-card-permission.md"
+
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+
+max_tool_calls: 5
+max_retries: 3
+max_web_searches: 0
+
+skill_type: "analysis"
+
+checkpoints: []
+actual_tool_calls: 0
+result_summary: "建議升為 allow（條件：已驗證 8 筆全 approve）。已執行：PERMISSIONS.yaml + APPROVAL_POLICY.yaml 更新，D004 Decision Log 補建。"
+completion_time: "2026-04-15"
+audit_log_ref: ""

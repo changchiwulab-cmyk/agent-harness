@@ -24,9 +24,10 @@ triggers:
     action: "列出擬寫入內容，等待確認"
     method: human_confirm
 
-  - condition: "建立新的 Task Card"
+  - condition: "建立新的 Task Card（risk_level >= high）"
     action: "展示 goal + definition_of_done，等待確認"
     method: human_confirm
+    note: "low/medium risk Task Card 已升為 allow（見 PERMISSIONS.yaml）"
 
   - condition: "寫入正式報告（outputs/reports/）"
     action: "先存 drafts/，確認後移至 reports/"

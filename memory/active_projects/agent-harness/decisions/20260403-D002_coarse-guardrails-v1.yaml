@@ -1,0 +1,31 @@
+decision_id: "20260403-D002"
+date: "2026-04-03"
+project: "agent-harness"
+
+context: >
+  設計 v1 成本控制策略時，面臨「即時 token 追蹤」vs「粗略護欄 + 事後量測」的選擇。
+  Claude Code CLI 本身不提供即時 token 計數 API；實作即時追蹤需要 proxy 或 hook。
+
+options_considered:
+  - option: "粗略護欄 + 事後量測（v1 採用）"
+    pros: "零額外基礎設施；Anthropic dashboard 已有月度用量；先跑起來再校正"
+    cons: "無法在任務內即時感知成本；token 預算只能是估算值"
+
+  - option: "即時 token 計數（proxy / hook）"
+    pros: "精確；可在任務中途觸發警示"
+    cons: "需要 middleware；增加複雜度；v1 過早引入"
+
+  - option: "不追蹤"
+    pros: "零成本"
+    cons: "沒有任何成本意識，無法校正"
+
+decision: "粗略護欄 + 事後量測"
+reasoning: >
+  v1 目標是「跑起來並累積實測數據」。精確 token 追蹤在沒有基準數據前意義不大；
+  先累積 audit log，再用實測平均值校正預算（即 RETRO 流程所做的事）。
+  複雜度留給 v2+ 再引入。
+
+risk: "token 預估偏差大（事後 RETRO 驗證：確實低估 25-100%）"
+revisit_trigger: "單任務成本持續超過建議上限 2 週以上"
+related_task: ""
+status: "active"
