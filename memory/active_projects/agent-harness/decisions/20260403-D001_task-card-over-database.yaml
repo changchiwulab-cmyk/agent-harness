@@ -1,0 +1,32 @@
+decision_id: "20260403-D001"
+date: "2026-04-03"
+project: "agent-harness"
+
+context: >
+  需要一個機制來追蹤 agent 任務的目標、完成標準與執行狀態。
+  主要考量：一人公司不需要複雜基礎設施；可恢復性比即時查詢更重要；
+  git 已是既有工具。
+
+options_considered:
+  - option: "Task Card YAML + git checkpoint"
+    pros: "零基礎設施依賴；git log 即進度追蹤；純文字易讀易改；可離線"
+    cons: "無法跨 session 自動查詢；需手動維護 YAML 格式"
+
+  - option: "SQLite / 輕量資料庫"
+    pros: "可跨 session 查詢；結構化儲存"
+    cons: "需額外工具；備份複雜；無法用 git diff 審查變更"
+
+  - option: "Notion / 外部工具"
+    pros: "介面友好；可分享"
+    cons: "外部依賴；需 API；成本高；context 無法直接注入"
+
+decision: "Task Card YAML + git checkpoint"
+reasoning: >
+  一人公司規模下，可恢復性（任何時間點都能 git checkout 回到任意狀態）
+  比即時查詢能力更重要。YAML 純文字可直接被 agent 讀取注入 context，
+  無需額外 API 呼叫。git 已在工具鏈中，維護成本為零。
+
+risk: "YAML 欄位漂移（不同任務格式不一致）→ 已用 CI schema 驗證緩解"
+revisit_trigger: "單一 session 需要管理 20+ 個並行任務，且跨 session 查詢需求頻繁"
+related_task: ""
+status: "active"
