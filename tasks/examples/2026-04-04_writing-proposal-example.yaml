@@ -9,8 +9,8 @@ status: "pending"
 goal: "撰寫 AI 導入顧問服務提案，對象為台灣中型製造業客戶"
 context: "客戶已初步表達興趣，需要一份 2-3 頁的服務提案說明導入效益與流程"
 input_data:
-  - "memory/active_projects/consulting/context.md"
-  - "outputs/drafts/client-meeting-notes.md"
+  - "memory/active_projects/agent-harness/context.md"
+  - "memory/active_projects/vietnam-expansion/context.md"
 
 # === 完成標準 ===
 definition_of_done:

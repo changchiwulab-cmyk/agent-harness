@@ -8,7 +8,7 @@ errors = []
 
 ALLOWED_STATUS = %w[pending in_progress checkpoint review done failed].freeze
 ALLOWED_RISK = %w[low medium high critical].freeze
-ALLOWED_SKILL = %w[research writing ops review].freeze
+ALLOWED_SKILL = %w[research writing ops review analysis].freeze
 REQUIRED_FIELDS = %w[
   task_id
   date
@@ -22,7 +22,7 @@ REQUIRED_FIELDS = %w[
 ].freeze
 REQUIRED_OUTPUT_FIELDS = %w[format location filename].freeze
 
-TASK_ID_PATTERN = /\A\d{8}-\d{3}\z/
+TASK_ID_PATTERN = /\A\d{8}-[A-Za-z]*\d+\z/
 DATE_PATTERN = /\A\d{4}-\d{2}-\d{2}\z/
 
 def parse_iso_date(value)
@@ -67,7 +67,7 @@ Dir.glob('tasks/**/*.yaml').sort.each do |task_file|
 
 
   if task.key?('task_id') && task['task_id'].is_a?(String) && !task['task_id'].match?(TASK_ID_PATTERN)
-    errors << "#{task_file}: invalid task_id format #{task['task_id']} (expected YYYYMMDD-XXX)"
+    errors << "#{task_file}: invalid task_id format #{task['task_id']} (expected YYYYMMDD-NNN or YYYYMMDD-XNNN)"
   end
 
   task_id_date = nil

@@ -25,7 +25,7 @@
 └── 9. Checkpoint        git commit — 進度保存
 
 治理平面（Governance）
-├── 10. Operating Context  system/OPERATING_CONTEXT.yaml — 系統自我認知
+├── 10. Agent Context      system/AGENT_CONTEXT.yaml — 系統自我認知
 ├── 11. Permission         system/PERMISSIONS.yaml — 權限策略
 ├── 12. Approval Policy    system/APPROVAL_POLICY.yaml — 批准流程（v2 新增）
 ├── 13. Cost Policy        system/COST_POLICY.md — 成本控制
@@ -47,7 +47,7 @@ agent-harness/
 │   ├── COST_POLICY.md         ← 成本控制 + 升級觸發條件
 │   ├── ROUTING_RULES.md       ← Skill 路由規則
 │   ├── GATE_POLICY.yaml            ← 四層驗證 checklist + rollback（v1.5+v2）
-│   ├── OPERATING_CONTEXT.yaml      ← 系統自我認知與邊界（v1.5 新增）
+│   ├── AGENT_CONTEXT.yaml          ← 系統自我認知與邊界（v1.5 新增）
 │   ├── APPROVAL_POLICY.yaml        ← 批准流程規則（v2 新增）
 │   ├── FAILURE_TAXONOMY.yaml       ← 14 種失敗模式獨立檔（v2 新增）
 │   └── EXECUTION_LOG_SCHEMA.yaml   ← 執行紀錄結構定義（v2 新增）
@@ -60,6 +60,9 @@ agent-harness/
 │   ├── research/
 │   │   ├── SKILL.md           ← 研究分析
 │   │   └── eval_examples.md   ← 好/壞輸出範例（v1.5 新增）
+│   ├── analysis/
+│   │   ├── SKILL.md           ← 決策支援與策略分析
+│   │   └── eval_examples.md   ← 好/壞輸出範例（v2 新增）
 │   ├── writing/
 │   │   ├── SKILL.md           ← 撰寫產出
 │   │   └── eval_examples.md   ← 好/壞輸出範例（v1.5 新增）

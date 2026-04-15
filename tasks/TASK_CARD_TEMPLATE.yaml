@@ -2,7 +2,7 @@
 # 複製此檔案到 tasks/ 下，填入具體任務資訊
 # 命名規則：YYYY-MM-DD_[簡述].yaml
 
-task_id: ""                    # 格式：YYYYMMDD-001
+task_id: ""                    # 格式：YYYYMMDD-001 或 YYYYMMDD-R01（字母前綴選用）
 date: ""                       # 建立日期
 status: "pending"              # pending → in_progress → checkpoint → review → done / failed
 

@@ -7,31 +7,58 @@ import re
 import sys
 from pathlib import Path
 
-ALLOWED_SKILL_TYPES = {"research", "writing", "ops", "review"}
-TARGET_FILES = (
-    Path("tasks/TASK_CARD_TEMPLATE.yaml"),
-    Path("tasks/examples/2026-04-03_market-research-example.yaml"),
-)
+ALLOWED_SKILL_TYPES = {"research", "analysis", "writing", "ops", "review"}
+TASKS_DIR = Path("tasks")
+EXCLUDE_NAMES = {"TASK_CARD_TEMPLATE", "DECISION_LOG_TEMPLATE", "WEEKLY_REVIEW_TEMPLATE"}
 
 
-def extract_skill_type(path: Path) -> str:
+def extract_skill_type(path: Path) -> str | None:
     text = path.read_text(encoding="utf-8")
     match = re.search(r"^skill_type:.*$", text, flags=re.MULTILINE)
     if not match:
-        raise ValueError(f"{path} 缺少 skill_type 欄位")
+        return None
 
     raw = match.group(0).split(":", 1)[1]
     raw = raw.split("#", 1)[0].strip()
-    return raw.strip('"').strip("'")
+    value = raw.strip('"').strip("'")
+    return value if value else None
+
+
+def collect_task_cards() -> list[Path]:
+    cards = []
+    for path in sorted(TASKS_DIR.rglob("*.yaml")):
+        stem = path.stem.upper().replace("-", "_").replace(" ", "_")
+        if any(excl in stem for excl in EXCLUDE_NAMES):
+            continue
+        cards.append(path)
+    return cards
 
 
 def main() -> int:
-    for path in TARGET_FILES:
-        skill_type = extract_skill_type(path)
-        if skill_type and skill_type not in ALLOWED_SKILL_TYPES:
-            raise ValueError(f"{path} skill_type 不在允許清單: {skill_type}")
+    task_cards = collect_task_cards()
 
-    print("task card skill_type check passed")
+    if not task_cards:
+        print("no task cards found — skipping check")
+        return 0
+
+    errors = []
+    for path in task_cards:
+        skill_type = extract_skill_type(path)
+        if skill_type is None:
+            errors.append(f"{path} 缺少 skill_type 欄位")
+            continue
+        if skill_type not in ALLOWED_SKILL_TYPES:
+            errors.append(
+                f"{path} skill_type 不在允許清單: '{skill_type}' "
+                f"(允許值: {sorted(ALLOWED_SKILL_TYPES)})"
+            )
+
+    if errors:
+        for e in errors:
+            print(e, file=sys.stderr)
+        return 1
+
+    print(f"task card skill_type check passed ({len(task_cards)} cards checked)")
     return 0
 
 

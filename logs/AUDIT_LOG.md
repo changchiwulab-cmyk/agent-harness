@@ -10,7 +10,7 @@
 ```yaml
 - task_id: ""
   date: ""
-  skill_type: ""           # research / writing / ops / review
+  skill_type: ""           # research / analysis / writing / ops / review
   goal: ""                 # 一句話
   status: ""               # done / failed / partial
   model_used: ""           # claude-sonnet-4-20250514 等

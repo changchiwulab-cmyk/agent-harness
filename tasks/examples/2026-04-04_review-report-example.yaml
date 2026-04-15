@@ -9,7 +9,7 @@ status: "pending"
 goal: "審查越南市場 AI 工具調查報告的品質與完整性"
 context: "research task 已完成初稿，需要 review skill 進行品質把關後才能定稿"
 input_data:
-  - "outputs/drafts/vietnam-ai-tools-research.md"
+  - "memory/active_projects/vietnam-expansion/context.md"
   - "tasks/examples/2026-04-03_market-research-example.yaml"
 
 # === 完成標準 ===
