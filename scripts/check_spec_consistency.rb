@@ -35,6 +35,8 @@ rescue ArgumentError
 end
 
 
+if __FILE__ == $PROGRAM_NAME
+
 # 1) README 宣告的重要目錄是否存在
 required_dirs = [
   'logs/runs',
@@ -158,3 +160,5 @@ end
 puts 'FAILED: spec consistency checks found issues:'
 errors.each { |e| puts "- #{e}" }
 exit 1
+
+end # if __FILE__ == $PROGRAM_NAME
