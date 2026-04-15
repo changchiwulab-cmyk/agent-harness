@@ -1,5 +1,0 @@
-# 此檔案已更名為 AGENT_CONTEXT.yaml
-# 請更新所有引用，本檔案下次版本將刪除
-#
-# 更名原因：避免與 ~/ai-os/operating_context.yaml（跨工具 AI OS 狀態層）同名混淆
-# 新路徑：system/AGENT_CONTEXT.yaml
