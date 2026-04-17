@@ -24,7 +24,7 @@ input_data:
 definition_of_done:
   - "四張目標卡 status 皆由 review 改為 done"
   - "四張卡其他欄位不動（completion_time / result_summary / checkpoints 保留）"
-  - "validator 對四張卡皆通過（python system/validate_task_card.py）"
+  - "validator 對四張卡皆通過（逐檔執行 python3 system/validate_task_card.py tasks/2026-04-04_<name>.yaml，全部 exit 0）"
   - "logs/AUDIT_LOG.md 新增一筆 20260417-O01 紀錄"
   - "變更以單一 commit 提交並 push 到 claude/clear-review-tasks-IBMzj"
 
