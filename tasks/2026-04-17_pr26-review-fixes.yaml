@@ -1,6 +1,6 @@
 task_id: "20260417-O04"
 date: "2026-04-17"
-status: "pending"
+status: "done"
 
 # === 任務定義 ===
 goal: "回應 PR #26 的兩則 Codex P2 review 評論：修 vietnam-expansion frontmatter 檔頭順序、補 evidence-gap-filling 任務卡的 bash 工具白名單"
@@ -47,8 +47,17 @@ max_web_searches: 0
 skill_type: "ops"
 
 # === 執行紀錄 ===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
-audit_log_ref: ""
+checkpoints:
+  - "pr26-review-fixes-complete: frontmatter 與 allowed_tools 修正完成，全數 Gate checker 通過"
+actual_tool_calls: 9
+result_summary: |
+  DoD 7/7 通過。
+  - memory/archived_projects/vietnam-expansion/context.md：frontmatter 移至 line 1，`# 越南市場拓展專案 Context` heading 移至 frontmatter 後；Ruby YAML.safe_load 可正確解析 status / archived_date / revive_trigger
+  - tasks/2026-04-17_evidence-gap-filling.yaml：allowed_tools 加入 `bash`，與該卡 actual_tool_calls 記錄一致
+  - ruby scripts/check_spec_consistency.rb ✅
+  - python system/validate_task_card.py ✅（兩張卡皆通過）
+  - python scripts/check_task_card_skill_type.py ✅（17 張卡）
+  - ruby scripts/test_check_spec_consistency.rb ✅（14 runs, 0 failures）
+  - python scripts/test_check_task_card_skill_type.py ✅（13 tests）
+completion_time: "2026-04-17"
+audit_log_ref: "logs/AUDIT_LOG.md"

@@ -35,6 +35,31 @@
 ---
 
 ```yaml
+- task_id: "20260417-O04"
+  date: "2026-04-17"
+  skill_type: "ops"
+  goal: "回應 PR #26 的兩則 Codex P2 review 評論：修 vietnam-expansion frontmatter 檔頭順序、補 evidence-gap-filling 任務卡的 bash 工具白名單"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "file_edit"
+      call_count: 2
+    - tool_name: "bash"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "memory/archived_projects/vietnam-expansion/context.md, tasks/2026-04-17_evidence-gap-filling.yaml"
+  error_summary: ""
+  estimated_tokens: "~6K"
+  notes: "兩則 Codex P2 評論全部處理完成。frontmatter 移至 line 1 並以 YAML.safe_load 驗證可解析；allowed_tools 加 bash 後 validate_task_card 通過。spec consistency + 兩支 unit test 全綠。DoD 7/7 通過。"
+```
+
+---
+
+```yaml
 - task_id: "20260417-O03"
   date: "2026-04-17"
   skill_type: "ops"
