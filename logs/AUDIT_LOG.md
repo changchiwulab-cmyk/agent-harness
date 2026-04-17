@@ -35,6 +35,31 @@
 ---
 
 ```yaml
+- task_id: "20260417-O01"
+  date: "2026-04-17"
+  skill_type: "ops"
+  goal: "填補 retro-2026-04-15 發現的三項證據空白：Error Log 範例、Decision Log D005、Token 校準資料表"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "file_write"
+      call_count: 3
+    - tool_name: "bash"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "logs/errors/2026-04-04_20260404-S01_error.md, memory/active_projects/agent-harness/decisions/20260415-D005_intake-fast-path.yaml, outputs/drafts/token-calibration-table-v1.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "Stage 1 of agent-harness optimization plan. DoD 5/5 通過。spec consistency check 通過。全 allow 權限範圍，無阻斷。"
+```
+
+---
+
+```yaml
 - task_id: "20260404-O02"
   date: "2026-04-04"
   skill_type: "ops"
