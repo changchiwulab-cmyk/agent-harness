@@ -187,4 +187,23 @@
   error_summary: ""
   estimated_tokens: "~18K"
   notes: "6 大類別 20+ 工具。web search 3 輪全部用完。outputs/drafts/ 因 .gitignore 不入版控，Task Card 狀態記錄在 YAML。"
+
+- task_id: "20260417-O01"
+  date: "2026-04-17"
+  skill_type: "ops"
+  goal: "將 2026-04-04 四張滯留 review 狀態的任務卡 status 推進到 done"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 5
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "tasks/2026-04-04_*.yaml"
+  error_summary: ""
+  estimated_tokens: "~8K"
+  notes: "四張卡（20260404-S01/W01/RV01/O02）status review→done。validator 四張皆通過，其他欄位未動。選 Path A 因 TASK_CARD_TEMPLATE.yaml:7 明定 review 為過渡、done/failed 為終態，同日 tools-inventory × 3 也走到 done。"
 ```

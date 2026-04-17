@@ -1,0 +1,58 @@
+# Task Card: 清理 2026-04-04 四張滯留 review 狀態的任務卡
+# 建立日期：2026-04-17
+
+task_id: "20260417-O01"
+date: "2026-04-17"
+status: "done"
+
+# === 任務定義 ===
+goal: "將 2026-04-04 四張已完成但停留 review 狀態的任務卡 status 推進到 done，使之與同日 tools-inventory × 3 的終態一致"
+context: >
+  四張目標卡（20260404-S01 / W01 / RV01 / O02）皆已填 completion_time 與 result_summary，
+  但 status 仍停在 review。依 TASK_CARD_TEMPLATE.yaml:7 定義，review 為過渡狀態，
+  done / failed 才是終態。同日 tools-inventory × 3（R01 / R02 / 20260404-O01 tools-inventory-fix）
+  已正確走到 done，選 Path A（推進 done）符合既有模板語義、改動面最小。
+input_data:
+  - "tasks/2026-04-04_ai-era-solo-business-strategy.yaml"
+  - "tasks/2026-04-04_ai-era-solo-business-proposal.yaml"
+  - "tasks/2026-04-04_ai-era-solo-business-proposal-review.yaml"
+  - "tasks/2026-04-04_proposal-fix-v2.yaml"
+  - "tasks/TASK_CARD_TEMPLATE.yaml"
+  - "system/validate_task_card.py"
+
+# === 完成標準 ===
+definition_of_done:
+  - "四張目標卡 status 皆由 review 改為 done"
+  - "四張卡其他欄位不動（completion_time / result_summary / checkpoints 保留）"
+  - "validator 對四張卡皆通過（python system/validate_task_card.py）"
+  - "logs/AUDIT_LOG.md 新增一筆 20260417-O01 紀錄"
+  - "變更以單一 commit 提交並 push 到 claude/clear-review-tasks-IBMzj"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: "tasks/"
+  filename: "2026-04-04_*.yaml (4 files modified)"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+# === 成本控制 ===
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: [20260417-O01] 四張卡 status review→done 完成"
+actual_tool_calls: 8
+result_summary: "四張 2026-04-04 卡（S01/W01/RV01/O02）status 由 review 翻轉為 done。validator 對四張皆通過，其他欄位未動。現 2026-04-04 共 7 張卡全部 done，狀態一致。"
+completion_time: "2026-04-17"
+audit_log_ref: "logs/AUDIT_LOG.md"
