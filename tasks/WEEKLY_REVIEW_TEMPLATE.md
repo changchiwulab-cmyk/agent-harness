@@ -1,5 +1,12 @@
 # 週回顧模板
 
+> **DEPRECATED（2026-04-17）**：本模板已由 `system/RETRO_FLOW.md` 取代。
+> 實務上 retro 以「累積 5 筆任務 / 手動觸發 / 同類錯誤 2 次以上」為主，而非固定週期。
+> 保留此檔作為歷史參考，新回顧請走 RETRO_FLOW 流程並產出到 `outputs/drafts/retro-[日期].md`。
+> 封存原因與追溯：Task Card `20260417-O03`、Decision Log `20260415-D005` 相關。
+
+---
+
 > 使用方式：每週複製此檔案到 `logs/runs/YYYY-WXX_weekly_review.md`，填入當週數據。
 
 ## 本週概況

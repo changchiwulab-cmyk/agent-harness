@@ -35,6 +35,31 @@
 ---
 
 ```yaml
+- task_id: "20260417-O03"
+  date: "2026-04-17"
+  skill_type: "ops"
+  goal: "為 COST_POLICY 加入校準係數章節，並將 WEEKLY_REVIEW_TEMPLATE 標注為 deprecated"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "file_edit"
+      call_count: 4
+    - tool_name: "bash"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "system/COST_POLICY.md, tasks/WEEKLY_REVIEW_TEMPLATE.md, system/RETRO_FLOW.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "Stage 3 of optimization plan. 新章節數值與 token-calibration-table-v1.md 一致。DoD 7/7 通過，spec consistency 通過。"
+```
+
+---
+
+```yaml
 - task_id: "20260417-O02"
   date: "2026-04-17"
   skill_type: "ops"
