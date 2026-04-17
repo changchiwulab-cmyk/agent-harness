@@ -56,6 +56,20 @@ def validate(path: str) -> list[str]:
         errors.append("expected_output.format 不能為空")
     if not output.get("filename"):
         errors.append("expected_output.filename 不能為空")
+    if not output.get("location"):
+        errors.append("expected_output.location 不能為空")
+
+    # allowed_tools 白名單（Gate 2 rule_check 依賴此欄位）
+    allowed_tools = card.get("allowed_tools")
+    if not isinstance(allowed_tools, list) or len(allowed_tools) == 0:
+        errors.append("allowed_tools 必須為非空 list（至少列出一個工具）")
+
+    # max_tool_calls 必須為正整數
+    max_calls = card.get("max_tool_calls")
+    if max_calls is None:
+        errors.append("缺少必填欄位：max_tool_calls")
+    elif not isinstance(max_calls, int) or isinstance(max_calls, bool) or max_calls <= 0:
+        errors.append(f"max_tool_calls 必須為正整數，實際：{max_calls!r}")
 
     return errors
 
