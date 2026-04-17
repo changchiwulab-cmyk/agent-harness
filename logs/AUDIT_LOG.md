@@ -35,6 +35,33 @@
 ---
 
 ```yaml
+- task_id: "20260417-O02"
+  date: "2026-04-17"
+  skill_type: "ops"
+  goal: "將 retro-2026-04-15 晉升為正式 report，並封存 vietnam-expansion 專案"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "file_write"
+      call_count: 1
+    - tool_name: "file_edit"
+      call_count: 6
+    - tool_name: "bash"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/reports/retro-2026-Q2-01.md, memory/archived_projects/vietnam-expansion/, system/RETRO_FLOW.md"
+  error_summary: ""
+  estimated_tokens: "~15K"
+  notes: "Stage 2 of optimization plan. 使用者已於規劃階段核准四項決策。發現 examples/ 兩張 Task Card 引用舊路徑，一併修正。DoD 7/7 通過，spec consistency 通過。"
+```
+
+---
+
+```yaml
 - task_id: "20260417-O01"
   date: "2026-04-17"
   skill_type: "ops"

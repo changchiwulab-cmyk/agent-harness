@@ -10,7 +10,22 @@ memory/
       context.md         ← 該專案的背景、目標、限制
       decisions/         ← 該專案的結構化決策紀錄（用 tasks/DECISION_LOG_TEMPLATE.yaml 格式）
       references/        ← 該專案的參考資料
+  archived_projects/     ← 已封存但保留結構的專案（可透過 git mv 還原為 active）
+    [project_name]/
+      context.md         ← 檔頭需含 YAML frontmatter：status / archived_date / archive_reason / revive_trigger
+      decisions/         ← 封存當下的決策紀錄（通常保留原樣）
+      references/        ← 封存當下的參考資料
 ```
+
+### active vs archived 判斷
+
+| 情境 | 處理 |
+|------|------|
+| 專案仍有預期中的後續任務 | `active_projects/` |
+| 專案暫停，未來可能重啟 | `archived_projects/`，context.md 加 `revive_trigger` |
+| 專案確定終止 | `archived_projects/`，context.md 標註終止原因，**不刪除**（保留歷史） |
+
+封存／還原一律使用 `git mv` 保留歷史，並透過 Task Card 執行以便進入 audit log。
 
 > **Decision Log 說明**：重要決策不再用自由格式 decisions.md，改用結構化 YAML。
 > 每筆決策一個檔案，格式見 `tasks/DECISION_LOG_TEMPLATE.yaml`。

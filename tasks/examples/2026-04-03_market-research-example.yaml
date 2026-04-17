@@ -9,7 +9,7 @@ status: "pending"
 goal: "調查越南市場 2026 年主流 AI 生產力工具的採用現況與趨勢"
 context: "準備越南市場拓展策略，需要了解當地企業對 AI 工具的接受度與偏好"
 input_data:
-  - "memory/active_projects/vietnam-expansion/context.md"
+  - "memory/archived_projects/vietnam-expansion/context.md"
 
 # === 完成標準 ===
 definition_of_done:
