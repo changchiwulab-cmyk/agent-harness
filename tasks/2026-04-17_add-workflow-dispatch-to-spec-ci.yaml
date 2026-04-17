@@ -1,0 +1,59 @@
+task_id: "20260417-O05"
+date: "2026-04-17"
+status: "done"
+
+# === 任務定義 ===
+goal: "為 spec-consistency.yml 補入 workflow_dispatch 觸發器，使 CI 可在 Actions 啟用後手動觸發"
+context: |
+  PR #26 與 PR #27 的 GitHub Actions 均顯示 0 check runs（state: pending）。
+  排查發現 spec-consistency.yml 缺少 workflow_dispatch 觸發器，而 task-card-skill-type-check.yml 已有。
+  此修正確保：
+  1. Actions 啟用後可從 GitHub UI 手動觸發 spec-consistency 工作流程
+  2. 兩支 CI workflow 觸發方式一致，便於未來統一維護
+  本任務不變更任何業務邏輯，僅修改 workflow YAML 的 on: 區塊。
+input_data:
+  - ".github/workflows/spec-consistency.yml"
+  - ".github/workflows/task-card-skill-type-check.yml"
+
+# === 完成標準 ===
+definition_of_done:
+  - ".github/workflows/spec-consistency.yml 的 on: 區塊新增 workflow_dispatch"
+  - "兩支 workflow 的觸發器結構對齊（皆含 pull_request + workflow_dispatch）"
+  - "ruby scripts/check_spec_consistency.rb 通過"
+  - "python scripts/check_task_card_skill_type.py 通過（18 cards）"
+  - "logs/AUDIT_LOG.md 追加本任務執行紀錄"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: ".github/workflows/"
+  filename: "spec-consistency.yml"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 6
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄 ===
+checkpoints:
+  - "workflow-dispatch-added: spec-consistency.yml on: 區塊補入 workflow_dispatch，兩支 Gate checker 通過"
+actual_tool_calls: 4
+result_summary: |
+  DoD 5/5 通過。
+  - .github/workflows/spec-consistency.yml on: 區塊補入 workflow_dispatch
+  - 兩支 workflow 觸發器對齊（pull_request + workflow_dispatch）
+  - ruby scripts/check_spec_consistency.rb ✅
+  - python scripts/check_task_card_skill_type.py ✅（18 cards）
+completion_time: "2026-04-17"
+audit_log_ref: "logs/AUDIT_LOG.md"
