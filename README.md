@@ -93,7 +93,7 @@ agent-harness/
 cp tasks/TASK_CARD_TEMPLATE.yaml tasks/2026-04-03_你的任務.yaml
 ```
 填入 `goal`、`definition_of_done`、`skill_type`。  
-`skill_type` 請使用：`research` / `writing` / `ops` / `review`。參考 `tasks/examples/` 下的範例。
+`skill_type` 請使用：`research` / `analysis` / `writing` / `ops` / `review`。參考 `tasks/examples/` 下的範例。
 
 ### 2. 執行
 在 Claude Code CLI 中 `cd <agent-harness 專案路徑>`，Claude 會自動讀取 CLAUDE.md。
@@ -110,6 +110,7 @@ cp tasks/TASK_CARD_TEMPLATE.yaml tasks/2026-04-03_你的任務.yaml
 
 ```bash
 scripts/check_spec_consistency.rb
+python3 scripts/check_task_card_skill_type.py
 ```
 
 此檢查已包含：目錄存在性、Task Card 必填欄位 schema、`task_id`/`date` 格式與一致性驗證、`completion_time` 日期驗證（且 `status=done/failed` 時必填）、範例 `input_data` / `expected_output.location` 路徑驗證。
@@ -119,6 +120,17 @@ scripts/check_spec_consistency.rb
 ```bash
 ruby -e 'require "yaml"; Dir.glob("**/*.yaml").each{|p| YAML.load_file(p)}; puts "ALL_YAML_OK"'
 ```
+
+### 設定 PR 必過檢查（GitHub）
+
+本專案的 PR 檢查 workflow：`.github/workflows/pr-required-taskcard-checks.yml`。  
+若要「未通過不得合併」，請在 GitHub 設定：
+
+1. Repository → **Settings** → **Branches**
+2. 編輯（或新增）目標分支的 protection rule（例如 `main`）
+3. 啟用 **Require status checks to pass before merging**
+4. 勾選 `PR Required Taskcard Checks / required-checks`
+更多排查：見 `docs/ci-troubleshooting.md`。
 
 ## 導入計畫
 

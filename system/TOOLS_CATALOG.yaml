@@ -1,0 +1,20 @@
+# Tools Catalog
+# Task Card allowed_tools 的唯一命名來源（canonical names）
+# 規則：採嚴格 canonical，不接受 alias。
+
+tools:
+  - name: "file_read"
+    risk_level: "low"
+    description: "讀取專案檔案內容"
+
+  - name: "file_write"
+    risk_level: "medium"
+    description: "寫入或更新專案檔案"
+
+  - name: "file_search"
+    risk_level: "low"
+    description: "在專案檔案中搜尋內容"
+
+  - name: "web_search"
+    risk_level: "low"
+    description: "查詢外部公開資訊"

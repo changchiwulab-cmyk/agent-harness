@@ -21,6 +21,15 @@ REQUIRED_FIELDS = %w[
   skill_type
 ].freeze
 REQUIRED_OUTPUT_FIELDS = %w[format location filename].freeze
+SKILL_POLICY_FILES = {
+  'tasks/TASK_CARD_TEMPLATE.yaml' => /skill_type:\s*""\s*#\s*(.+)$/,
+  'system/GATE_POLICY.yaml' => /skill_type 為有效值（(.+)）/,
+  'system/EXECUTION_LOG_SCHEMA.yaml' => /skill_type:\s*""\s*#\s*(.+)$/
+}.freeze
+
+TOOLS_CATALOG_PATH = 'system/TOOLS_CATALOG.yaml'
+COST_POLICY_PATH = 'system/COST_POLICY.md'
+MODEL_REVIEW_MAX_AGE_DAYS = 7
 
 TASK_ID_PATTERN = /\A\d{8}-[A-Za-z]*\d+\z/
 DATE_PATTERN = /\A\d{4}-\d{2}-\d{2}\z/
@@ -32,6 +41,14 @@ def parse_iso_date(value)
   Date.strptime(value, '%Y-%m-%d')
 rescue ArgumentError
   nil
+end
+
+def extract_skill_values_from_text(path, pattern)
+  text = File.read(path, encoding: 'UTF-8')
+  match = text.match(pattern)
+  return nil unless match
+
+  match[1].split('/').map(&:strip).reject(&:empty?)
 end
 
 
@@ -49,6 +66,29 @@ required_dirs = [
 
 required_dirs.each do |dir|
   errors << "missing directory: #{dir}" unless Dir.exist?(dir)
+end
+
+# 1.5) skill_type 允許值跨檔一致性檢查
+skill_sets = {}
+SKILL_POLICY_FILES.each do |path, pattern|
+  unless File.exist?(path)
+    errors << "missing skill policy file: #{path}"
+    next
+  end
+
+  values = extract_skill_values_from_text(path, pattern)
+  if values.nil? || values.empty?
+    errors << "#{path}: failed to parse skill_type allowed values"
+    next
+  end
+  skill_sets[path] = values.sort
+end
+
+unless skill_sets.empty?
+  expected = ALLOWED_SKILL.sort
+  skill_sets.each do |path, values|
+    errors << "#{path}: skill_type set mismatch #{values.inspect} != #{expected.inspect}" unless values == expected
+  end
 end
 
 # 2) Task Card schema 驗證（排除模板）
@@ -135,6 +175,29 @@ Dir.glob('tasks/**/*.yaml').sort.each do |task_file|
   end
 end
 
+# 2.5) allowed_tools 需在工具字典中
+unless File.exist?(TOOLS_CATALOG_PATH)
+  errors << "missing tools catalog: #{TOOLS_CATALOG_PATH}"
+else
+  catalog = YAML.load_file(TOOLS_CATALOG_PATH)
+  tool_names = Array(catalog['tools']).filter_map { |t| t['name'] if t.is_a?(Hash) }.map(&:to_s).uniq
+  if tool_names.empty?
+    errors << "#{TOOLS_CATALOG_PATH}: tools list is empty or invalid"
+  else
+    Dir.glob('tasks/**/*.yaml').sort.each do |task_file|
+      next if File.basename(task_file).include?('TEMPLATE')
+
+      task = YAML.load_file(task_file)
+      tools = Array(task['allowed_tools'])
+      tools.each do |tool|
+        next if tool_names.include?(tool)
+
+        errors << "#{task_file}: allowed_tools includes unknown tool '#{tool}' (catalog: #{TOOLS_CATALOG_PATH})"
+      end
+    end
+  end
+end
+
 # 3) 範例 Task Card 的 input_data / expected_output.location 路徑檢查
 Dir.glob('tasks/examples/*.yaml').sort.each do |task_file|
   task = YAML.load_file(task_file)
@@ -149,6 +212,27 @@ Dir.glob('tasks/examples/*.yaml').sort.each do |task_file|
   location = task.dig('expected_output', 'location')
   if location.is_a?(String) && !location.empty?
     errors << "#{task_file}: missing expected_output.location directory #{location}" unless Dir.exist?(location)
+  end
+end
+
+# 4) 模型治理 last_reviewed 檢查（避免策略過期）
+if !File.exist?(COST_POLICY_PATH)
+  errors << "missing cost policy: #{COST_POLICY_PATH}"
+else
+  policy_text = File.read(COST_POLICY_PATH, encoding: 'UTF-8')
+  review_match = policy_text.match(/^last_reviewed:\s*(\d{4}-\d{2}-\d{2})\s*$/)
+  if review_match.nil?
+    errors << "#{COST_POLICY_PATH}: missing last_reviewed (YYYY-MM-DD)"
+  else
+    reviewed_on = parse_iso_date(review_match[1])
+    if reviewed_on.nil?
+      errors << "#{COST_POLICY_PATH}: invalid last_reviewed date #{review_match[1]}"
+    else
+      age_days = (Date.today - reviewed_on).to_i
+      if age_days > MODEL_REVIEW_MAX_AGE_DAYS
+        errors << "#{COST_POLICY_PATH}: last_reviewed is stale (#{age_days} days > #{MODEL_REVIEW_MAX_AGE_DAYS})"
+      end
+    end
   end
 end
 
