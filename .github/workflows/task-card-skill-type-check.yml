@@ -15,6 +15,9 @@ on:
       - ".github/workflows/task-card-skill-type-check.yml"
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   check-task-card-skill-type:
     runs-on: ubuntu-latest
