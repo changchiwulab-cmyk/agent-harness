@@ -1,0 +1,48 @@
+decision_id: "20260420-D005"
+date: "2026-04-20"
+project: "agent-harness"
+
+# --- 決策內容 ---
+context: >
+  首次 Weekly Review（20260420-003）發現 logs/AUDIT_LOG.md 最後一筆是 20260404-O02，
+  之後 3 筆任務（20260409-001、20260415-A01、首次 Retro）全數未補上紀錄。
+  CLAUDE.md 執行流程第 9 步「寫 audit log」語意偏弱，未被實際強制。
+  若 AUDIT_LOG 為 Retro/Weekly Review 的主要資料來源，其漏記會使後續統計失真。
+
+options_considered:
+  - option: "維持現狀（僅靠 CLAUDE.md 第 9 步的文字）"
+    pros: "零變更"
+    cons: "已證實無效；3/3 的新任務全漏記"
+
+  - option: "在 GATE_POLICY.completion_check 加一條：AUDIT_LOG 存在對應 task_id 紀錄"
+    pros: "與現有四層 Gate 一致；失敗時會觸發人工詢問（on_fail：列出缺漏清單）"
+    cons: "仍依賴 Gate 被實際執行，若 Gate 自己被跳過一樣失效"
+
+  - option: "改寫 CLAUDE.md 第 9 步為強制且精確（『追加一筆到 logs/AUDIT_LOG.md』）+ GATE 雙重保險"
+    pros: "規則層面與執行層面雙保險"
+    cons: "修改 CLAUDE.md 屬 ask 權限，需人工確認"
+
+  - option: "自動化：從 logs/runs/ 的 execution log 自動生成 audit entry"
+    pros: "完全消除漏記可能"
+    cons: "需要新工具／腳本；需先補回歷史漏記；初期誤判風險"
+
+decision: "採第三選項（CLAUDE.md 精確化 + GATE completion_check 加驗）"
+
+reasoning: >
+  第一選項已證實失敗，淘汰。
+  第四選項（自動化）為長期理想但需工程投入，建議列入 v2.1 改良候選。
+  第二選項（僅 Gate）覆蓋不足，因 Gate 本身是信任制。
+  第三選項在「規則明確」與「驗證強化」雙線並行，成本低、立即可落實。
+  額外附帶行動：補齊漏記的 3 筆歷史紀錄（logs/AUDIT_LOG.md），否則 Gate 啟用後
+  既有資料仍是壞的。
+
+# --- 追蹤 ---
+risk: >
+  若 Gate completion_check 在 AUDIT_LOG 不存在時 fail，可能使原本可 done 的任務
+  卡在 review 狀態；緩解：on_fail 為「列出缺漏清單」，不硬性擋 done，但留下紀錄。
+
+revisit_trigger: >
+  下次 Weekly Review 時若仍發現 AUDIT_LOG 漏記 → 決策失敗，改採自動化方案。
+
+related_task: "20260420-003"
+status: "draft"  # 待人工確認後改為 active
