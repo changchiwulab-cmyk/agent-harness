@@ -35,6 +35,80 @@
 ---
 
 ```yaml
+- task_id: "20260420-003"
+  date: "2026-04-20"
+  skill_type: "review"
+  goal: "以 2026-04-08~04-15 為範圍執行第一次 Weekly Review"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 9
+    - tool_name: "file_write"
+      call_count: 4
+  checkpoints: 2
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/weekly-review-2026-04-08-to-15.md"
+  error_summary: ""
+  estimated_tokens: "未實測"
+  notes: >
+    DoD 5/5 通過。發現 AUDIT_LOG 漏記 3 筆（20260409-001、20260415-A01、首次 Retro），
+    已產出 D005 決策草稿。實際 13 次工具呼叫超過 max_tool_calls: 8，記錄為 COST_POLICY
+    下次校準輸入。連帶補記 20260409-001 與 20260415-A01 兩筆歷史漏記（見下）。
+```
+
+---
+
+```yaml
+- task_id: "20260415-A01"
+  date: "2026-04-15"
+  skill_type: "analysis"
+  goal: "評估是否應將 create_task_card 從 ask 升為 allow，給出有依據的建議排序"
+  status: "done"
+  model_used: "claude-opus-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 0
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/analysis-create-task-card-permission.md"
+  error_summary: ""
+  estimated_tokens: "未實測"
+  notes: >
+    首個 analysis skill 真實任務。歷史漏記，由 20260420-003 Weekly Review 補記。
+    決策結果：create_task_card 升為 allow（見 D004）。
+```
+
+---
+
+```yaml
+- task_id: "20260409-001"
+  date: "2026-04-09"
+  skill_type: "review"
+  goal: "驗證 Agent Harness v2.0 所有新增組件的可用性與流程完整性"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 9
+  checkpoints: 3
+  approval_needed: false
+  approval_given: false
+  output_path: "logs/runs/20260409-001_system-validation.yaml"
+  error_summary: ""
+  estimated_tokens: "未實測"
+  notes: >
+    DoD 7/7 通過。初次驗證發現 FAILURE_TAXONOMY 漏 SEC-04，已補正。
+    四層 Gate 全部 pass。歷史漏記，由 20260420-003 Weekly Review 補記。
+```
+
+---
+
+```yaml
 - task_id: "20260404-O02"
   date: "2026-04-04"
   skill_type: "ops"

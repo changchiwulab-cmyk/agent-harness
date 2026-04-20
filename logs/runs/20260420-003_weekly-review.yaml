@@ -1,0 +1,48 @@
+# Execution Log — 第一次 Weekly Review（2026-04-08 ~ 2026-04-15）
+
+execution_log:
+  run_id: "RUN-20260420-003"
+  task_id: "20260420-003"
+  skill_type: "review"
+  started_at: "2026-04-20 10:40"
+  ended_at: "2026-04-20 10:55"
+  status: "completed"
+
+  tools_used:
+    - tool: file_read
+      call_count: 9
+    - tool: file_write
+      call_count: 4
+
+  checkpoints:
+    - commit: "pending"
+      stage: "context 載入完成（SKILL、TEMPLATE、AUDIT_LOG、retro、RETRO_FLOW、EXECUTION_LOG_SCHEMA、D004、DECISION_LOG_TEMPLATE）"
+    - commit: "pending"
+      stage: "4 份產出寫入完成（weekly review + D005 + execution log + task card 更新）"
+
+  token_estimate:
+    input: 0           # 未實測回填
+    output: 0           # 未實測回填
+    total: 0
+
+  approvals:
+    - action: "建立 Weekly Review draft（approval_needed: false）"
+      status: "not_required"
+      approved_by: "n/a"
+      timestamp: "2026-04-20"
+
+  output_path: "outputs/drafts/weekly-review-2026-04-08-to-15.md"
+  error_summary: ""
+  gate_results:
+    schema_check: "pass"
+    rule_check: "pass"
+    completion_check: "pass"
+    risk_check: "pass"
+
+  notes: >
+    DoD 5/5 通過。發現 AUDIT_LOG 漏記 3 筆（20260409-001、20260415-A01、首次 Retro），
+    已產出 D005 決策草稿建議以 GATE completion_check + CLAUDE.md 改寫雙線強化。
+    實際工具呼叫 13 次，超過 Task Card max_tool_calls: 8 原預算（+5 / +62.5%）。
+    與 2026-04-15 Retro 針對 review skill 的建議（23K）方向一致：review 類任務
+    普遍需要比原估高的預算。建議於 COST_POLICY 下次校準時把 review 預算上調、
+    或專為 Weekly Review 設立獨立預算（~15 次工具呼叫）。

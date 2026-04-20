@@ -1,0 +1,59 @@
+# Task Card — draft → report 審核鏈驗證
+# 目的：挑一份既有 draft 走完人工確認流程，正式寫入 outputs/reports/，驗證審核鏈可執行
+
+task_id: "20260420-002"
+date: "2026-04-20"
+status: "pending"
+
+# === 任務定義 ===
+goal: "挑一份既有 draft 走完人工確認流程並正式寫入 outputs/reports/，驗證 draft → report 審核鏈"
+context: >
+  2026-04-20 進度檢視顯示 outputs/reports/ 目錄仍空，正式產出流程從未跑通。
+  APPROVAL_POLICY 與 GATE_POLICY 四層驗證均有定義但無實際執行紀錄。
+  此任務以既有 draft 走完一次完整正式化流程，驗證審核鏈是否可運作。
+input_data:
+  - "outputs/drafts/analysis-create-task-card-permission.md"
+  - "outputs/drafts/retro-2026-04-15.md"
+  - "system/APPROVAL_POLICY.yaml"
+  - "system/GATE_POLICY.yaml"
+  - "logs/AUDIT_LOG.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "從 outputs/drafts/ 選定一份文件並說明選擇理由"
+  - "依 APPROVAL_POLICY 完成人工確認，紀錄確認方式與簽核者"
+  - "通過 GATE_POLICY 四層驗證（schema → 規則 → 完成 → 風險），逐層留下 pass/fail 紀錄"
+  - "正式化文件寫入 outputs/reports/（首份 report）"
+  - "logs/AUDIT_LOG.md 新增一筆 report 類紀錄，指向新檔案"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/reports/"
+  filename: "report-20260420-002.md"
+
+# === 風險與權限 ===
+# write_reports 在 PERMISSIONS.yaml 屬 ask；依 risk_levels 定義涉及
+# 檔案修改與正式化簽核 → medium（inline_confirm）。若升 high，依
+# GATE_POLICY.risk_check 第 46 行，high 輸出會被鎖在 drafts/，
+# 反而無法達成 DoD。
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+# === 成本控制 ===
+max_tool_calls: 6
+max_retries: 2
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "review"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
