@@ -5,6 +5,16 @@
 
 ---
 
+## 模型版本遷移紀錄
+
+| 日期 | 遷移項 | 說明 |
+|------|--------|------|
+| 2026-04-20 | `claude-opus-4-6` / `claude-sonnet-4-6` → `claude-opus-4-7`（預設） | Opus 4.7 為 2026-01 起最新模型；見 `system/MODEL_POLICY.yaml` 與 Task Card `20260420-001`。**歷史紀錄不竄改**，以下 entries 的 `model_used` 保留原始值。|
+
+> 紀錄格式範例欄位 `model_used` 先前寫 `claude-sonnet-4-20250514`；自 2026-04-20 起改以 `claude-opus-4-7` / `claude-sonnet-4-6` / `claude-haiku-4-5-20251001` 等短格式（依 `MODEL_POLICY.yaml` 登錄）。
+
+---
+
 ## 紀錄格式
 
 ```yaml

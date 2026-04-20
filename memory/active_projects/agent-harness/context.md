@@ -29,10 +29,14 @@
 - Execution Log（system/EXECUTION_LOG_SCHEMA.yaml）
 - Audit Log（logs/AUDIT_LOG.md）
 
-## 目前狀態（2026-04-15）
+## 目前狀態（2026-04-20）
 - v2 框架完成，所有檔案到位
 - 已完成 Week 1 pipeline 驗證（research → review → writing → ops）
-- 累積 6 筆 audit log 紀錄
+- 累積 8 筆 audit log 紀錄（2026-04-15 首次 RETRO）
+- **2026-04-20 Opus 4.7 相容性盤點完成**（Task Card `20260420-001`）：
+  架構整體相容，新增 `system/MODEL_POLICY.yaml` 定義預設 Opus 4.7 + Sonnet 4.6 / Haiku 4.5 fallback；
+  歷史 audit log 保留原 model ID（`claude-sonnet-4-6` / `claude-opus-4-6`）不竄改。
+  詳見 Decision Log D005（`memory/active_projects/agent-harness/decisions/20260420-D005*`）。
 
 ## Skill 類型
 - research：資料蒐集與分析
@@ -52,3 +56,5 @@
 - 2026-04-03：v1 用粗略護欄 + 事後量測，不做即時 token 追蹤
 - 2026-04-04：完成首次專案檢查，修正 HIGH/MEDIUM priority 缺漏
 - 2026-04-09：v2 系統全流程驗證通過，補正 FAILURE_TAXONOMY 至 14 種
+- 2026-04-15：D003 v3 升級暫緩、D004 create_task_card 升為 allow
+- 2026-04-20：D005 Opus 4.7 baseline — 預設 Opus 4.7，Sonnet 4.6 / Haiku 4.5 fallback
