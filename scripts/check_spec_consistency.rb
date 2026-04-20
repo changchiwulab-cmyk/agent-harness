@@ -3,6 +3,7 @@
 
 require 'yaml'
 require 'date'
+require 'set'
 
 errors = []
 
@@ -25,6 +26,8 @@ REQUIRED_OUTPUT_FIELDS = %w[format location filename].freeze
 TASK_ID_PATTERN = /\A\d{8}-[A-Za-z]*\d+\z/
 DATE_PATTERN = /\A\d{4}-\d{2}-\d{2}\z/
 
+PERMISSIONS_FILE = 'system/PERMISSIONS.yaml'
+
 def parse_iso_date(value)
   return value if value.is_a?(Date)
   return nil unless value.is_a?(String) && value.match?(DATE_PATTERN)
@@ -32,6 +35,23 @@ def parse_iso_date(value)
   Date.strptime(value, '%Y-%m-%d')
 rescue ArgumentError
   nil
+end
+
+# Load PERMISSIONS registry (D007) — allowed_tools must be in allow ∪ ask;
+# must not overlap deny. Returns [registered_set, deny_set, error] where error
+# is non-nil only if the file is missing or malformed.
+def load_permissions_registry(path = PERMISSIONS_FILE)
+  return [Set.new, Set.new, "missing #{path}"] unless File.exist?(path)
+
+  data = YAML.load_file(path)
+  perms = data.is_a?(Hash) ? data['permissions'] : nil
+  return [Set.new, Set.new, "#{path}: missing 'permissions' key"] unless perms.is_a?(Hash)
+
+  allow = Array(perms['allow']).map(&:to_s)
+  ask = Array(perms['ask']).map(&:to_s)
+  deny = Array(perms['deny']).map(&:to_s)
+
+  [Set.new(allow + ask), Set.new(deny), nil]
 end
 
 
@@ -52,6 +72,11 @@ required_dirs.each do |dir|
 end
 
 # 2) Task Card schema 驗證（排除模板）
+registered_tools, denied_tools, perm_err = load_permissions_registry
+errors << perm_err if perm_err
+
+seen_task_ids = {}  # task_id → file（D007 全域唯一）
+
 Dir.glob('tasks/**/*.yaml').sort.each do |task_file|
   next if File.basename(task_file).include?('TEMPLATE')
 
@@ -59,6 +84,16 @@ Dir.glob('tasks/**/*.yaml').sort.each do |task_file|
   unless task.is_a?(Hash)
     errors << "#{task_file}: root must be mapping"
     next
+  end
+
+  # D007 — task_id 全域唯一
+  tid = task['task_id']
+  if tid.is_a?(String) && !tid.strip.empty?
+    if seen_task_ids.key?(tid)
+      errors << "#{task_file}: duplicate task_id #{tid} (also in #{seen_task_ids[tid]})"
+    else
+      seen_task_ids[tid] = task_file
+    end
   end
 
   REQUIRED_FIELDS.each do |field|
@@ -132,6 +167,28 @@ Dir.glob('tasks/**/*.yaml').sort.each do |task_file|
       value = task['expected_output'][field]
       errors << "#{task_file}: missing expected_output.#{field}" if value.nil? || value.to_s.strip.empty?
     end
+  end
+
+  # D007 — allowed_tools 詞彙閉包
+  if task.key?('allowed_tools')
+    tools = task['allowed_tools']
+    if tools.is_a?(Array)
+      tools.each do |t|
+        name = t.to_s
+        if denied_tools.include?(name)
+          errors << "#{task_file}: allowed_tools contains denied tool '#{name}' (see PERMISSIONS.yaml deny list)"
+        elsif !registered_tools.include?(name)
+          errors << "#{task_file}: allowed_tools contains unregistered tool '#{name}' (not in PERMISSIONS.yaml allow/ask; see D007)"
+        end
+      end
+    elsif !tools.nil?
+      errors << "#{task_file}: allowed_tools must be an array"
+    end
+  end
+
+  # D007 — risk_level ≥ high 必須 approval_needed: true
+  if %w[high critical].include?(task['risk_level']) && task['approval_needed'] != true
+    errors << "#{task_file}: risk_level=#{task['risk_level']} requires approval_needed: true"
   end
 end
 

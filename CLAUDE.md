@@ -14,16 +14,23 @@
 - **ask**：修改 skills/、system/、memory/，建立 Task Card，寫正式報告
 - **deny**：刪除、外發、修改正式資料、自動寫入長期記憶、金流操作
 
+> 模型選擇依 `system/MODEL_POLICY.yaml`（D005，2026-04-20）：預設 Opus 4.7，
+> Sonnet 4.6 / Haiku 4.5 為 fallback。Task Card 可用 `model_override` 覆寫。
+
+> Sub-agent（Agent tool）限唯讀模式（Explore / Plan / general-purpose / claude-code-guide）；
+> 禁止 sub-agent 寫入、commit、multi-agent swarm。詳見 D006 與 PERMISSIONS 的
+> `sub_agent_readonly` (allow) / `sub_agent_with_write_access` (deny)。
+
 ## 執行流程
 
-1. 載入 Task Card → 2. 確認 goal + definition_of_done → 3. 載入 context（system/GLOBAL_RULES.md + system/AGENT_CONTEXT.yaml + system/APPROVAL_POLICY.yaml + 對應 skill + project context）→ 4. 執行 → 5. 每關鍵階段 git commit checkpoint → 6. 依 system/GATE_POLICY.yaml 逐層驗證（schema → 規則 → 完成 → 風險，含 rollback 定義）→ 7. 輸出到 outputs/ → 8. 依 system/EXECUTION_LOG_SCHEMA.yaml 寫執行紀錄到 logs/runs/ → 9. 寫 audit log
+1. 載入 Task Card → 2. 確認 goal + definition_of_done → 3a. 載入 context（system/GLOBAL_RULES.md + system/AGENT_CONTEXT.yaml + system/APPROVAL_POLICY.yaml + system/MODEL_POLICY.yaml + system/TOOL_MAPPING.yaml + 對應 skill + project context）→ 3b. 宣告本次使用模型（依 MODEL_POLICY.yaml 與 Task Card 的 model_override）→ 4. 執行（allowed_tools ⊆ PERMISSIONS 登錄；未登錄視為 deny，見 D007）→ 5. 每關鍵階段 git commit checkpoint → 6. 依 system/GATE_POLICY.yaml 逐層驗證（schema → 規則 → 完成 → 風險，含 rollback 定義）→ 7. 輸出到 outputs/ → 8. 依 system/EXECUTION_LOG_SCHEMA.yaml 寫執行紀錄到 logs/runs/ → 9. 寫 audit log
 
 ## Context 硬限制
 
 - CLAUDE.md + GLOBAL_RULES.md ≤ 3,000 tokens
-- 單一 skill prompt ≤ 1,500 tokens
+- 單一 skill prompt (SKILL.md) ≤ 1,500 tokens；eval_examples.md 為按需載入參考材料，不計入
 - 只載入 Task Card 白名單內的工具
-- 長對話 20 輪後摘要壓縮
+- 長對話 20 輪後摘要壓縮（Claude Code CLI 另有 auto-compaction；兩者並存，auto-compaction 後重要決策應已寫入 memory/ 或 logs/，不依賴 session 記憶跨輪保存）
 - 大型檔案用路徑引用，不全文貼入
 
 ## Checkpoint

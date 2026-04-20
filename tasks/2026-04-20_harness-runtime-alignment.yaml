@@ -1,0 +1,108 @@
+task_id: "20260420-002"
+date: "2026-04-20"
+status: "done"
+
+goal: "讓 agent-harness 的 PERMISSIONS / APPROVAL / AGENT_CONTEXT / validator 反映 Claude Code CLI (Opus 4.7) 的實際工具與流程，補齊第二輪盤點的 HIGH + MED 缺口"
+context: >
+  第二輪深度盤點（2026-04-20，由兩個 Explore sub-agent 執行）共 24 項 finding，
+  其中 HIGH 5 項：(1) 工具命名抽象層與 Claude Code 實際工具無對應；
+  (2) Agent / TodoWrite / Skill / ToolSearch / MCP 均未在 PERMISSIONS 登錄；
+  (3) GitHub MCP 寫入未進 APPROVAL triggers；(4) sub-agent 使用與 context.md
+  「不做 multi-agent swarm」規則衝突；(5) validator 未做 allowed_tools 詞彙閉包。
+  MED 7 項：AGENT_CONTEXT 自我宣告不全、execution flow 步驟排序、hooks /
+  Plan mode 未文件化、research skill 缺 knowledge cutoff 指引 等。
+  使用者 2026-04-20 透過 AskUserQuestion 決定：放寬為允許唯讀 sub-agent、
+  保留 snake_case 抽象層並加 mapping 檔、HIGH+MED 全處理。
+
+input_data:
+  - "CLAUDE.md"
+  - "system/PERMISSIONS.yaml"
+  - "system/APPROVAL_POLICY.yaml"
+  - "system/AGENT_CONTEXT.yaml"
+  - "system/GATE_POLICY.yaml"
+  - "system/MODEL_POLICY.yaml"
+  - "system/COST_POLICY.md"
+  - "memory/active_projects/agent-harness/context.md"
+  - "skills/research/SKILL.md"
+  - "scripts/check_spec_consistency.rb"
+  - "scripts/check_task_card_skill_type.py"
+  - "scripts/test_check_spec_consistency.rb"
+  - "scripts/test_check_task_card_skill_type.py"
+  - "tasks/TASK_CARD_TEMPLATE.yaml"
+  - "logs/AUDIT_LOG.md"
+
+definition_of_done:
+  # Phase 1 — 新建檔案 + PERMISSIONS
+  - "新增 system/TOOL_MAPPING.yaml：framework snake_case ↔ Claude Code PascalCase / MCP 雙向對應"
+  - "新增 memory/active_projects/agent-harness/decisions/20260420-D006_sub-agent-scope.yaml：允許唯讀 sub-agent，禁止 multi-agent swarm，明確定義「唯讀」"
+  - "新增 memory/active_projects/agent-harness/decisions/20260420-D007_tool-registry-closure.yaml：allowed_tools 必須在 PERMISSIONS 登錄"
+  - "system/PERMISSIONS.yaml 新增條目：sub_agent_readonly / todo_update / github_read / tool_search（allow）、user_skill_invoke / github_write（ask）、sub_agent_with_write_access / mcp_github_merge_pull_request（deny）；檔頭加閉包規則"
+
+  # Phase 2 — 規則與 context
+  - "system/APPROVAL_POLICY.yaml 新增三條 trigger（github_write→draft_first、user_skill_invoke→human_confirm、Plan mode/ExitPlanMode→說明為 framework draft_first 等價），現有 trigger 2 加 GitHub 註解"
+  - "system/AGENT_CONTEXT.yaml 擴充 can_do / cannot_do，新增 runtime_integrations 區塊（Plan mode、Stop hook、PR activity、auto-compaction）"
+  - "memory/active_projects/agent-harness/context.md 修正「不做 multi-agent swarm」行為精準化；關鍵決策加 D006 / D007"
+  - "skills/research/SKILL.md 補 knowledge cutoff 指引（2026-01 之後事實優先 WebSearch）"
+
+  # Phase 3 — validator
+  - "scripts/check_spec_consistency.rb 擴充：allowed_tools 閉包檢查、risk_level≥high 必有 approval_needed、task_id 全域唯一"
+  - "scripts/test_check_spec_consistency.rb 新增單元測試覆蓋新規則"
+  - "scripts/check_task_card_skill_type.py 加 task_id uniqueness 檢查"
+  - "scripts/test_check_task_card_skill_type.py 對應測試"
+  - "本地測試完整套件通過（ruby tests / python unittest / consistency / skill_type）"
+  - "故意失敗案例驗證：未登錄工具 / high-risk+no-approval / 重複 task_id 三類都被 validator 擋下（驗證後還原）"
+
+  # Phase 4 — draft + 收斂
+  - "outputs/drafts/claude-md-harness-runtime-alignment-diff.md：CLAUDE.md 四處建議 diff（執行流程拆 3a/3b + 載入 TOOL_MAPPING、權限段註記、context 硬限制加 auto-compaction 說明）"
+  - "outputs/drafts/harness-runtime-alignment-summary.md：遷移摘要（對應 20260420-001 的 migration-summary）"
+  - "logs/runs/20260420-002_harness-runtime-alignment.yaml：執行紀錄依 EXECUTION_LOG_SCHEMA"
+  - "logs/AUDIT_LOG.md 新增本任務紀錄"
+
+  # 整體驗收
+  - "每階段 git commit checkpoint（格式 checkpoint: [20260420-002] <階段>）"
+  - "CLAUDE.md 本體不直接修改，僅產草稿待人工確認"
+
+expected_output:
+  format: "mixed"
+  location: "outputs/drafts/"
+  filename: "harness-runtime-alignment-summary.md"
+
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "create_output_files"
+  - "write_drafts"
+  - "write_logs"
+  - "git_commit_checkpoint"
+  - "modify_system_rules"      # PERMISSIONS / APPROVAL / AGENT_CONTEXT / TOOL_MAPPING
+  - "modify_skills"            # skills/research/SKILL.md
+  - "write_long_term_memory"   # D006 / D007 / context.md
+  - "modify_claude_md"         # 僅產草稿
+  - "modify_scripts"           # validator 擴充（新 allow 類別，在 Phase 1 納入 PERMISSIONS）
+
+max_tool_calls: 60
+max_retries: 3
+max_web_searches: 0
+
+skill_type: "ops"
+
+checkpoints:
+  - commit: "bda734d"
+    stage: "Phase 1 — TOOL_MAPPING / D006 / D007 / PERMISSIONS"
+  - commit: "875a8d7"
+    stage: "Phase 2 — APPROVAL_POLICY / AGENT_CONTEXT / context.md / research SKILL"
+  - commit: "b986ce6"
+    stage: "Phase 3 — validator closure + tests + fail-case verify"
+  - commit: "（Phase 4）"
+    stage: "Phase 4 — drafts / execution log / audit log / Task Card close"
+actual_tool_calls: 45
+result_summary: >
+  4 階段全部完成。HIGH 5 項 + MED 7 項 finding 全數處理。新增 TOOL_MAPPING.yaml /
+  D006 / D007；擴充 PERMISSIONS / APPROVAL_POLICY / AGENT_CONTEXT；更新 context.md /
+  research SKILL；validator 加閉包 + risk/approval + task_id 唯一（Ruby 23 tests /
+  Python 19 tests 全 pass / 3 類 fail-case 驗證）。CLAUDE.md 4 處建議 diff 在
+  outputs/drafts/ 等人工確認。四層 gate 全 pass。
+completion_time: "2026-04-20"
+audit_log_ref: "logs/runs/20260420-002_harness-runtime-alignment.yaml"

@@ -8,9 +8,10 @@ triggers:
     action: "輸出到 outputs/drafts/，等待人工確認"
     method: human_confirm
 
-  - condition: "對外動作（email / 發文 / API call）"
+  - condition: "對外動作（email / 發文 / API call / GitHub PR・issue 寫入）"
     action: "產出草稿，不直接執行"
     method: draft_first
+    note: "GitHub MCP 寫入（create_pull_request / add_issue_comment / push_files 等）屬此類；見 PERMISSIONS.yaml 的 github_write (ask)"
 
   - condition: "修改 system/ 目錄下任何檔案"
     action: "列出變更差異，等待確認"
@@ -32,6 +33,22 @@ triggers:
   - condition: "寫入正式報告（outputs/reports/）"
     action: "先存 drafts/，確認後移至 reports/"
     method: draft_first
+
+  # --- Claude Code CLI runtime 整合（D006 / D007，2026-04-20）---
+  - condition: "呼叫 github_write（GitHub MCP 寫入）"
+    action: "先展示擬建立的 PR / comment / 檔案變更內容，等待確認"
+    method: draft_first
+    note: "merge_pull_request 屬 deny（見 PERMISSIONS.yaml mcp_github_merge_pull_request），本 trigger 不含 merge"
+
+  - condition: "呼叫 user_skill_invoke（Claude Code Skill 工具 /init /simplify /loop /security-review 等）"
+    action: "說明該 skill 的副作用（可能修改檔案 / 執行任意工具），等待確認"
+    method: human_confirm
+    note: "Skill 本身可觸發寫入型動作，需 ask 級審核"
+
+  - condition: "進入 Plan mode / ExitPlanMode 提交計畫"
+    action: "Plan mode 期間只能讀與研究，退出時必須先提交完整計畫；等價於 framework 的 draft_first"
+    method: draft_first
+    note: "Claude Code CLI 原生 Plan mode = 框架 draft-first 的 runtime 對應；使用者核可計畫後才進入執行階段"
 
 approval_methods:
   human_confirm:
