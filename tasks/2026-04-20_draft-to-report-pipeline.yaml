@@ -33,7 +33,11 @@ expected_output:
   filename: "report-20260420-002.md"
 
 # === 風險與權限 ===
-risk_level: "low"
+# write_reports 在 PERMISSIONS.yaml 屬 ask；依 risk_levels 定義涉及
+# 檔案修改與正式化簽核 → medium（inline_confirm）。若升 high，依
+# GATE_POLICY.risk_check 第 46 行，high 輸出會被鎖在 drafts/，
+# 反而無法達成 DoD。
+risk_level: "medium"
 approval_needed: true
 allowed_tools:
   - "file_read"
