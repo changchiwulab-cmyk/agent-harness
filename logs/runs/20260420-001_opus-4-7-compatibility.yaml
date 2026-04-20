@@ -1,0 +1,69 @@
+execution_log:
+  run_id: "RUN-20260420-001"
+  task_id: "20260420-001"
+  skill_type: "ops"
+  started_at: "2026-04-20 00:23"
+  ended_at: "2026-04-20 00:48"
+  status: "completed"
+
+  tools_used:
+    - tool: "file_read"
+      call_count: 18
+    - tool: "file_write"
+      call_count: 4
+    - tool: "file_edit"
+      call_count: 6
+    - tool: "git_commit_checkpoint"
+      call_count: 4
+    - tool: "sub_agent (Haiku 4.5, explore)"
+      call_count: 1
+    - tool: "mcp_github_create_pull_request"
+      call_count: 1
+
+  checkpoints:
+    - commit: "72f5b0e"
+      stage: "Task Card 建立"
+    - commit: "2140cbe"
+      stage: "Phase 1 — AUDIT_LOG migration / MODEL_POLICY / context footnote"
+    - commit: "c0237c0"
+      stage: "Phase 2 — D005 decision / COST_POLICY update（CI 版本釘選已滿足）"
+    - commit: "2778e51"
+      stage: "Phase 3 — analysis skill load rule / CLAUDE.md diff draft"
+
+  token_estimate:
+    input: 48000
+    output: 7000
+    total: 55000
+
+  approvals:
+    - action: "建立 Task Card 20260420-001"
+      status: "approved"
+      approved_by: "human"
+      timestamp: "2026-04-20 00:25"
+    - action: "執行 Task Card（modify_system_rules / modify_skills / write_long_term_memory）"
+      status: "approved"
+      approved_by: "human"
+      timestamp: "2026-04-20 00:35"
+    - action: "CLAUDE.md 直接修改"
+      status: "pending"
+      approved_by: "human"
+      timestamp: ""
+
+  output_path: "outputs/drafts/opus-4-7-migration-summary.md"
+  error_summary: ""
+  gate_results:
+    schema_check: "pass"         # Task Card 經兩支 validator 通過
+    rule_check: "pass"           # allowed_tools 全部使用範圍內；已人工確認 ask 權限
+    completion_check: "pass"     # 11 條 DoD 逐條通過（Phase 3 CLAUDE.md 僅產草稿符合 DoD 定義）
+    risk_check: "pass"           # risk_level=medium 與實際動作一致；CLAUDE.md 修改保持在 drafts/
+
+  notes: |
+    - CI 檢查在 PR #32 失敗 2 秒內結束，本地所有對應步驟通過；研判為 runner infra
+      問題（已告知使用者，選項 C：忽略視為 infra flake）。
+    - Phase 2.1 DoD（.github/workflows 釘選版本）已自然滿足：
+      task-card-skill-type-check.yml 已 pin python-version: "3.11"；
+      spec-consistency.yml 已 pin ruby-version: '3.2' 與 python-version: '3.11'。
+      未做變更，已在 commit message 說明。
+    - D002 原文未改寫（審計原則）；以 D005 部分覆寫其 token API 假設。
+    - 分析 eval_examples.md 的 token margin 議題採「載入規則註解」解法，
+      不重寫內容；未來觀察 2 次任務後再決定是否改強制按需載入。

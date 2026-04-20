@@ -1,6 +1,6 @@
 task_id: "20260420-001"
 date: "2026-04-20"
-status: "pending"
+status: "done"
 
 goal: "將 agent-harness 架構與 Opus 4.7（2026-01 起的最新模型）對齊，完成相容性盤點後的分階段優化"
 context: >
@@ -71,8 +71,21 @@ max_web_searches: 0
 
 skill_type: "ops"
 
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
-audit_log_ref: ""
+checkpoints:
+  - commit: "72f5b0e"
+    stage: "Task Card 建立"
+  - commit: "2140cbe"
+    stage: "Phase 1 完成"
+  - commit: "c0237c0"
+    stage: "Phase 2 完成"
+  - commit: "2778e51"
+    stage: "Phase 3 完成"
+actual_tool_calls: 30
+result_summary: >
+  Opus 4.7 相容性遷移 3 階段全部完成（Phase 1/2 直接修改系統檔；Phase 3 CLAUDE.md
+  僅產草稿）。新增 MODEL_POLICY.yaml、D005 決策、analysis skill 載入規則；更新
+  AUDIT_LOG / context / COST_POLICY。CI workflow 版本釘選已自然滿足。
+  四層 gate 全 pass。CLAUDE.md 建議 diff 在 outputs/drafts/claude-md-opus-4-7-proposed-diff.md
+  等人工確認。
+completion_time: "2026-04-20"
+audit_log_ref: "logs/runs/20260420-001_opus-4-7-compatibility.yaml"

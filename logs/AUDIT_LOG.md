@@ -45,6 +45,39 @@
 ---
 
 ```yaml
+- task_id: "20260420-001"
+  date: "2026-04-20"
+  skill_type: "ops"
+  goal: "將 agent-harness 架構與 Opus 4.7 對齊，完成相容性盤點後的分階段優化"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 18
+    - tool_name: "file_edit"
+      call_count: 6
+    - tool_name: "file_write"
+      call_count: 4
+    - tool_name: "git_commit_checkpoint"
+      call_count: 4
+    - tool_name: "sub_agent (Haiku 4.5)"
+      call_count: 1
+  checkpoints: 4
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/opus-4-7-migration-summary.md"
+  error_summary: ""
+  estimated_tokens: "~55K"
+  notes: >
+    Phase 1-3 全部完成；CLAUDE.md 僅產草稿到 outputs/drafts/。新增
+    system/MODEL_POLICY.yaml 與 D005 決策紀錄（部分覆寫 D002 token API 假設，
+    D002 原文保留）。CI 在 PR #32 2 秒內失敗但本地全通過，研判 runner infra
+    問題（使用者選擇忽略）。四層 gate 全 pass。
+```
+
+---
+
+```yaml
 - task_id: "20260404-O02"
   date: "2026-04-04"
   skill_type: "ops"
