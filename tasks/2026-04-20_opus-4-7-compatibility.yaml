@@ -1,0 +1,78 @@
+task_id: "20260420-001"
+date: "2026-04-20"
+status: "pending"
+
+goal: "將 agent-harness 架構與 Opus 4.7（2026-01 起的最新模型）對齊，完成相容性盤點後的分階段優化"
+context: >
+  背景稽核 (2026-04-20, 由 Haiku 4.5 sub-agent 完成) 結論：整體相容 (YELLOW)，
+  無 API / schema / tool 層級衝突，但有 4 類需處理項目：
+  (1) logs/AUDIT_LOG.md 歷史紀錄使用 claude-sonnet-4-6 / claude-opus-4-6；
+  (2) 決策 D002 假設「Claude Code CLI 無 token API」，可能過時；
+  (3) skills/analysis 已達 1.5K token 上限 99.6%，無擴充空間；
+  (4) .github/workflows 未釘選 Ruby/Python 版本，缺少 model fallback policy。
+  另外 CLAUDE.md 自身 model ID 區塊若有硬編碼也需一併驗證。
+
+input_data:
+  - "CLAUDE.md"
+  - "system/PERMISSIONS.yaml"
+  - "system/APPROVAL_POLICY.yaml"
+  - "system/GATE_POLICY.yaml"
+  - "system/COST_POLICY.md"
+  - "logs/AUDIT_LOG.md"
+  - "memory/decisions/20260403-D002-coarse-guardrails.md"
+  - "memory/active_projects/agent-harness/context.md"
+  - "skills/analysis/SKILL.md"
+  - "skills/analysis/eval_examples.md"
+  - ".github/workflows/task-card-skill-type-check.yml"
+  - ".github/workflows/spec-consistency.yml"
+
+definition_of_done:
+  # Phase 1 — 立即（低風險、向後相容）
+  - "logs/AUDIT_LOG.md 頂部加入 migration note，註明 2026-04-20 起使用 Opus 4.7；歷史紀錄保留原 model ID 不竄改"
+  - "新增 system/MODEL_POLICY.yaml：定義預設 Opus 4.7、Sonnet 4.6 次選、Haiku 4.5 fallback，以及成本/速度取捨"
+  - "memory/active_projects/agent-harness/context.md 加入 v4.7 升級 footnote，指向本 Task Card 與 D005"
+
+  # Phase 2 — 強化
+  - ".github/workflows/*.yml 釘選 ruby-version: '3.2' 與 python-version: '3.11'"
+  - "memory/decisions/20260420-D005-opus-4-7-baseline.md：覆寫 D002 token API 假設並定義 fallback 策略（不修改 D002 原文）"
+  - "system/COST_POLICY.md 補充 Opus 4.7 / Claude Code 觀測能力段落（若需實測則先寫入 known unknowns）"
+
+  # Phase 3 — 優化（選配，本次只做前兩項有把握的）
+  - "skills/analysis/ 重構：eval_examples 改為按需載入或精簡至 1K token 以下，SKILL.md 加入載入指示"
+  - "CLAUDE.md 若有過時 model ID 或 token 限制需放寬，產出 diff 草稿到 outputs/drafts/ 等人工確認（不直接修改）"
+
+  # 整體驗收
+  - "每個 phase 結束 git commit checkpoint（格式：checkpoint: [20260420-001] <phase>）"
+  - "執行紀錄寫入 logs/runs/20260420-001_opus-4-7-compatibility.yaml，含 actual_tool_calls / gate_results / checkpoints"
+  - "scripts/check_spec_consistency.rb 與 scripts/check_task_card_skill_type.py 本地執行通過"
+
+expected_output:
+  format: "mixed"
+  location: "outputs/drafts/"
+  filename: "opus-4-7-migration-summary.md"
+
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "create_output_files"
+  - "write_drafts"
+  - "write_logs"
+  - "git_commit_checkpoint"
+  - "modify_system_rules"      # ask：新增 MODEL_POLICY.yaml、修改 COST_POLICY.md
+  - "modify_skills"            # ask：重構 skills/analysis/
+  - "write_long_term_memory"   # ask：新增 D005 決策紀錄
+  - "modify_claude_md"         # ask：僅在 Phase 3 且僅產草稿
+
+max_tool_calls: 40
+max_retries: 3
+max_web_searches: 0
+
+skill_type: "ops"
+
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
