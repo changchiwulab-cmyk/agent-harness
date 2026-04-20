@@ -1,27 +1,45 @@
 # 權限策略 PERMISSIONS.yaml
 # 所有動作分為 allow / ask / deny 三級
+#
+# === 閉包規則（D007，2026-04-20）===
+# Task Card 的 allowed_tools 每一項必須出現在下方 allow / ask 清單，
+# 未登錄工具視為預設 deny。deny 清單工具禁止出現在 allowed_tools。
+# framework snake_case ↔ Claude Code CLI 工具的映射見 system/TOOL_MAPPING.yaml。
+# Validator：scripts/check_spec_consistency.rb（詞彙閉包 + risk/approval 交叉檢查 + task_id 唯一）。
 
 permissions:
   # === 允許直接執行 ===
   allow:
-    - read_project_files       # 讀取 project 內任何檔案
-    - web_search               # 網頁搜尋
-    - file_search              # 檔案內容搜尋
+    # --- 檔案 / 搜尋 / web ---
+    - read_project_files       # 讀取 project 內任何檔案（= file_read 語意別名）
+    - file_read                # 讀取 project 內任何檔案（framework 抽象名）
+    - web_search               # 網頁搜尋 + URL 抓取
+    - file_search              # 檔案內容搜尋 (Glob / Grep)
+    # --- 草稿與 logs ---
     - write_drafts             # 寫入 outputs/drafts/
     - write_logs               # 寫入 logs/ 下任何紀錄
-    - git_commit_checkpoint    # git commit（僅 checkpoint 用途）
+    - git_commit_checkpoint    # git commit（僅 checkpoint 用途；禁 push / reset --hard / rebase -i）
     - create_output_files      # 在 outputs/ 建立新檔案
     - read_memory              # 讀取 memory/ 下的內容
-    - create_task_card         # 建立新的 Task Card（已驗證：8 筆歷史任務全部立即 approve → 升為 allow）
+    - create_task_card         # 建立新的 Task Card（D004：8 筆歷史任務全部立即 approve → 升為 allow）
+    # --- Claude Code runtime（D006 / D007，2026-04-20）---
+    - sub_agent_readonly       # Agent tool 唯讀 sub-agent（Explore / Plan / general-purpose / claude-code-guide）
+    - todo_update              # TodoWrite，更新本 session 的 todo 列表（不改碼）
+    - tool_search              # ToolSearch 載入 deferred 工具 schema
+    - github_read              # GitHub MCP 讀取與訂閱（不變更遠端狀態）
+    - shell_readonly           # 唯讀 shell 指令（ls / wc / file / which）
 
   # === 需要人工確認 ===
   ask:
     - modify_skills            # 建立或修改 skills/ 下的檔案
     - modify_system_rules      # 修改 system/ 下的規則檔
+    - modify_scripts           # 修改 scripts/ 下驗證/測試腳本（D007，validator 本體）
     - write_long_term_memory   # 寫入 memory/ 下的長期知識
     - write_reports            # 寫入 outputs/reports/（正式輸出）
     - install_packages         # 安裝任何套件
     - modify_claude_md         # 修改 CLAUDE.md
+    - user_skill_invoke        # 呼叫 Claude Code Skill 工具（/init / /simplify / /loop 等；可能觸發任意動作）
+    - github_write             # GitHub MCP 寫入（建立 PR / 留言 / push 檔案等，屬對外動作）
 
   # === 禁止 ===
   deny:
@@ -33,6 +51,8 @@ permissions:
     - execute_payment          # 任何金流操作
     - auto_write_memory        # 自動寫入長期記憶（未經確認）
     - spawn_background_process # 啟動背景程序
+    - sub_agent_with_write_access   # sub-agent 具備寫入能力（D006）—— 本框架禁止
+    - mcp_github_merge_pull_request # GitHub PR merge 必須人工決策，不經 agent
 
 # === 風險等級對應 ===
 risk_levels:

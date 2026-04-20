@@ -1,0 +1,98 @@
+decision_id: "20260420-D007"
+date: "2026-04-20"
+project: "agent-harness"
+
+context: >
+  agent-harness v2 的 Task Card 可在 allowed_tools 欄位列出本次使用的工具，
+  但 framework 從未明文要求「allowed_tools 每一項必須在 PERMISSIONS 登錄」。
+  2026-04-20 第二輪盤點 (20260420-002) 發現兩個問題：
+  (1) Agent / TodoWrite / Skill / ToolSearch / mcp__github__* 等 Claude Code CLI
+      原生工具從未在 PERMISSIONS.yaml 出現，等於「處於 allowed / ask / deny 三元
+      宇宙之外」，validator 也沒辦法判斷；
+  (2) 歷史 Task Card 若拼錯工具名（如 file_red 而非 file_read），目前的 validator
+      會直接放行，沒有詞彙閉包檢查。
+  使用者 2026-04-20 透過 AskUserQuestion 決定：保留 snake_case 抽象層，
+  但新增 TOOL_MAPPING.yaml 做映射，並要求 validator 做詞彙閉包。
+
+options_considered:
+  - option: "維持現狀：allowed_tools 自由文字"
+    pros: "改動最小"
+    cons: >
+      權限模型形同虛設；拼錯沒人抓；新加 CLI 工具無從登錄；
+      實際執行時可能使用未授權工具但審計無感。
+
+  - option: "allowed_tools 必須在 PERMISSIONS 登錄；未登錄預設 deny（本決策）"
+    pros: >
+      (a) 單一事實來源：PERMISSIONS.yaml；
+      (b) validator 可做詞彙閉包（allowed_tools ⊆ PERMISSIONS.allow ∪ ask）；
+      (c) 新增工具時強制經「先登錄再使用」的流程，對應 CLAUDE.md 三條硬規則
+          中的「沒有 Task Card 不執行」的精神。
+    cons: >
+      現有 Task Card 若引用未登錄工具需回補；新工具加入多一道登錄成本。
+
+  - option: "只做警告不做 enforce"
+    pros: "漸進遷移"
+    cons: >
+      軟規則容易被忽略；失去 validator 的把關價值；
+      與 GATE_POLICY.yaml 的「schema check 失敗立即停止」原則不一致。
+
+decision: >
+  採第二選項。規則如下：
+
+  (A) 範圍：
+      - Task Card 的 allowed_tools 每一項必須是 PERMISSIONS.yaml 的 allow 或
+        ask 清單裡的工具名（framework snake_case）。
+      - deny 清單的工具不能出現在 allowed_tools（出現即 validator fail）。
+      - 若工具需要 ask 級別（如 modify_skills），Task Card 必須同時有
+        approval_needed: true。
+
+  (B) 映射層：
+      - framework snake_case ↔ Claude Code PascalCase / mcp__* 的對應定義於
+        system/TOOL_MAPPING.yaml；validator 透過此檔做雙向查詢。
+      - 新增 Claude Code 工具或 MCP tool 時：(a) 先登入 TOOL_MAPPING.yaml；
+        (b) 再在 PERMISSIONS.yaml 決定 allow / ask / deny；(c) 若屬對外動作，
+        一併在 APPROVAL_POLICY.yaml 加 trigger。
+
+  (C) Validator 實作（scripts/check_spec_consistency.rb）：
+      - 載入 PERMISSIONS.yaml，組成 registered = allow ∪ ask；
+      - 對每張 Task Card，檢查 allowed_tools ⊆ registered；
+      - 檢查 allowed_tools ∩ deny = ∅；
+      - 檢查 risk_level ≥ high → approval_needed: true；
+      - 檢查 task_id 全域唯一（跨 Task Card）。
+      Python 版 check_task_card_skill_type.py 做 task_id uniqueness 交叉覆核。
+
+  (D) Runtime 對應（TOOL_MAPPING.yaml）：
+      - Agent tool → sub_agent_readonly (allow) / sub_agent_with_write_access (deny)
+      - TodoWrite → todo_update (allow)
+      - Skill → user_skill_invoke (ask)
+      - ToolSearch → tool_search (allow)
+      - mcp__github__* 讀取類 → github_read (allow)
+      - mcp__github__* 寫入類 → github_write (ask)
+      - mcp__github__merge_pull_request → mcp_github_merge_pull_request (deny)
+
+reasoning: >
+  (1) v2 的治理平面（PERMISSIONS / APPROVAL / GATE）若缺一道詞彙閉包，
+      等於任何 Task Card 都能「合法地」使用未登錄工具；這與 CLAUDE.md 的
+      「只載入 Task Card 白名單內的工具」矛盾。
+  (2) 用「登錄表 + mapping」而非「Task Card 內嵌完整工具定義」，讓治理檔案
+      保持精簡、單一事實來源。
+  (3) D004 已把 create_task_card 從 ask 升為 allow，證明 PERMISSIONS 本就是
+      活的登錄表；新增 sub_agent_readonly / todo_update / github_read 等
+      屬於沿用同一套路。
+
+risk: >
+  (a) 現有 Task Card 若使用未登錄工具將在下次 validator run 失敗
+      → Phase 1 同步補登錄所有目前實際使用的工具；必要時對歷史 Task Card
+      加 allowed_tools 欄位的正規化（本次 20260420-002 的 Phase 3 完成）。
+  (b) 新工具上線時忘記登錄 → 由 validator 錯誤訊息引導；
+      TOOL_MAPPING.yaml 作為 single source of truth 便於 code review 抓漏。
+  (c) 映射表維護成本 → 新工具累積週期遠低於 Task Card 建立週期，維護成本可接受。
+
+revisit_trigger: >
+  - Claude Code CLI 重大升級（如 Claude Code v2+），工具集發生結構性變化
+  - validator 因 TOOL_MAPPING 不完整而導致正當任務被阻擋超過 2 次
+  - MCP 生態擴張，單靠 github_read / github_write 兩類包裝無法表達細節
+
+related_task: "20260420-002"
+supersedes: []
+status: "active"
