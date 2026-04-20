@@ -12,13 +12,15 @@ execution_log:
     - tool: "file_write"
       call_count: 4
     - tool: "file_edit"
-      call_count: 6
+      call_count: 7        # +1 含 CLAUDE.md 套用
     - tool: "git_commit_checkpoint"
-      call_count: 4
+      call_count: 5        # +1 CLAUDE.md commit
     - tool: "sub_agent (Haiku 4.5, explore)"
       call_count: 1
-    - tool: "mcp_github_create_pull_request"
-      call_count: 1
+  # 註：本紀錄不含 PR 活動回應產生的 GitHub MCP 讀取（get_check_runs / get_comments /
+  # get_reviews）— 這些由 subscribe_pr_activity 系統訂閱觸發，屬訂閱層活動而非
+  # Task Card scope 內的工具呼叫，因此不列入 tools_used。本任務未呼叫
+  # mcp_github_create_pull_request（PR #32 在 Task Card 開始前已存在）。
 
   checkpoints:
     - commit: "72f5b0e"
@@ -29,6 +31,10 @@ execution_log:
       stage: "Phase 2 — D005 decision / COST_POLICY update（CI 版本釘選已滿足）"
     - commit: "2778e51"
       stage: "Phase 3 — analysis skill load rule / CLAUDE.md diff draft"
+    - commit: "f57923b"
+      stage: "執行紀錄 / 摘要 / Task Card 收斂"
+    - commit: "25bbb3a"
+      stage: "CLAUDE.md 套用變更 1+2+3（人工核可後）"
 
   token_estimate:
     input: 48000
@@ -44,10 +50,14 @@ execution_log:
       status: "approved"
       approved_by: "human"
       timestamp: "2026-04-20 00:35"
-    - action: "CLAUDE.md 直接修改"
-      status: "pending"
+    - action: "CLAUDE.md 直接修改（套用 outputs/drafts/claude-md-opus-4-7-proposed-diff.md 變更 1+2+3）"
+      status: "approved"
       approved_by: "human"
-      timestamp: ""
+      timestamp: "2026-04-20 00:55"
+      note: >
+        Task Card DoD 原文為「產出 diff 草稿到 outputs/drafts/ 等人工確認（不直接修改）」。
+        草稿先產出於 commit 2778e51；使用者 2026-04-20 00:55 明確核可「1+2+3」後才於
+        commit 25bbb3a 直接套用，仍在本 Task Card scope 內，符合 ask 級權限流程。
 
   output_path: "outputs/drafts/opus-4-7-migration-summary.md"
   error_summary: ""

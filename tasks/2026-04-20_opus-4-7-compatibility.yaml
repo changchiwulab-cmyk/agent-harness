@@ -19,7 +19,7 @@ input_data:
   - "system/GATE_POLICY.yaml"
   - "system/COST_POLICY.md"
   - "logs/AUDIT_LOG.md"
-  - "memory/decisions/20260403-D002-coarse-guardrails.md"
+  - "memory/active_projects/agent-harness/decisions/20260403-D002_coarse-guardrails-v1.yaml"
   - "memory/active_projects/agent-harness/context.md"
   - "skills/analysis/SKILL.md"
   - "skills/analysis/eval_examples.md"
