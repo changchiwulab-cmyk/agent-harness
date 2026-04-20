@@ -1,0 +1,54 @@
+# Task Card — 錯誤處理壓力測試
+# 目的：觸發「連 3 次失敗停下」硬規則，驗證 logs/errors/ 與 FAILURE_TAXONOMY 分類能否正確運作
+
+task_id: "20260420-001"
+date: "2026-04-20"
+status: "pending"
+
+# === 任務定義 ===
+goal: "觸發連 3 次失敗停下硬規則，驗證 logs/errors/ 紀錄與 FAILURE_TAXONOMY 分類是否正確運作"
+context: >
+  首次 RETRO 與 2026-04-20 進度檢視均指出：logs/errors/ 目錄空、FAILURE_TAXONOMY 14 種
+  失敗模式從未掛上真實 failure_id、連 3 次失敗的硬規則未實測。此任務以可控方式
+  製造失敗場景，驗證錯誤處理閉環是否真能運作。
+input_data:
+  - "system/GLOBAL_RULES.md"
+  - "system/FAILURE_TAXONOMY.yaml"
+  - "system/GATE_POLICY.yaml"
+  - "logs/errors/"
+
+# === 完成標準 ===
+definition_of_done:
+  - "設計一個可控失敗場景並記錄於 post-mortem（例：讀取不存在檔案、schema 驗證失敗）"
+  - "實際跑到連 3 次失敗後 Agent 正確停止，未繼續硬修"
+  - "logs/errors/ 產生至少一筆錯誤紀錄，並掛上 FAILURE_TAXONOMY 對應 failure_id"
+  - "post-mortem draft 記錄流程是否照設計走、是否有規則缺口"
+  - "若流程與預期不符，列出規則或 skill 需調整的項目"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "post-mortem-20260420-001.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
