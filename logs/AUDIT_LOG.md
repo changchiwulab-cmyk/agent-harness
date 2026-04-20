@@ -45,6 +45,41 @@
 ---
 
 ```yaml
+- task_id: "20260420-002"
+  date: "2026-04-20"
+  skill_type: "ops"
+  goal: "讓 agent-harness 的 PERMISSIONS / APPROVAL / AGENT_CONTEXT / validator 反映 Claude Code CLI 的實際工具與流程，補齊第二輪盤點的 HIGH + MED 缺口"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 14
+    - tool_name: "file_write"
+      call_count: 8
+    - tool_name: "file_edit"
+      call_count: 11
+    - tool_name: "git_commit_checkpoint"
+      call_count: 4
+    - tool_name: "shell_readonly"
+      call_count: 8
+  checkpoints: 4
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/harness-runtime-alignment-summary.md"
+  error_summary: ""
+  estimated_tokens: "~71K"
+  notes: >
+    Phase 1-4 全部完成。新增 TOOL_MAPPING.yaml（工具映射）、D006（sub-agent scope）、
+    D007（tool registry closure）；擴充 PERMISSIONS / APPROVAL_POLICY / AGENT_CONTEXT；
+    更新 context.md、research SKILL.md（knowledge cutoff 指引）；validator 加閉包規則
+    + risk/approval 交叉 + task_id 唯一（Ruby 23 tests / Python 19 tests / 全 pass）；
+    3 類 fail-case 驗證通過。CLAUDE.md 4 處建議 diff 在 outputs/drafts/ 等人工確認。
+    四層 gate 全 pass。
+```
+
+---
+
+```yaml
 - task_id: "20260420-001"
   date: "2026-04-20"
   skill_type: "ops"

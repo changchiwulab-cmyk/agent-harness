@@ -1,6 +1,6 @@
 task_id: "20260420-002"
 date: "2026-04-20"
-status: "pending"
+status: "done"
 
 goal: "讓 agent-harness 的 PERMISSIONS / APPROVAL / AGENT_CONTEXT / validator 反映 Claude Code CLI (Opus 4.7) 的實際工具與流程，補齊第二輪盤點的 HIGH + MED 缺口"
 context: >
@@ -88,8 +88,21 @@ max_web_searches: 0
 
 skill_type: "ops"
 
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
-audit_log_ref: ""
+checkpoints:
+  - commit: "bda734d"
+    stage: "Phase 1 — TOOL_MAPPING / D006 / D007 / PERMISSIONS"
+  - commit: "875a8d7"
+    stage: "Phase 2 — APPROVAL_POLICY / AGENT_CONTEXT / context.md / research SKILL"
+  - commit: "b986ce6"
+    stage: "Phase 3 — validator closure + tests + fail-case verify"
+  - commit: "（Phase 4）"
+    stage: "Phase 4 — drafts / execution log / audit log / Task Card close"
+actual_tool_calls: 45
+result_summary: >
+  4 階段全部完成。HIGH 5 項 + MED 7 項 finding 全數處理。新增 TOOL_MAPPING.yaml /
+  D006 / D007；擴充 PERMISSIONS / APPROVAL_POLICY / AGENT_CONTEXT；更新 context.md /
+  research SKILL；validator 加閉包 + risk/approval + task_id 唯一（Ruby 23 tests /
+  Python 19 tests 全 pass / 3 類 fail-case 驗證）。CLAUDE.md 4 處建議 diff 在
+  outputs/drafts/ 等人工確認。四層 gate 全 pass。
+completion_time: "2026-04-20"
+audit_log_ref: "logs/runs/20260420-002_harness-runtime-alignment.yaml"
