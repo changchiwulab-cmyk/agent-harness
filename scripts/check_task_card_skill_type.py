@@ -24,6 +24,19 @@ def extract_skill_type(path: Path) -> str | None:
     return value if value else None
 
 
+def extract_task_id(path: Path) -> str | None:
+    """Extract task_id value from a Task Card YAML (line-based, same style as extract_skill_type)."""
+    text = path.read_text(encoding="utf-8")
+    match = re.search(r"^task_id:.*$", text, flags=re.MULTILINE)
+    if not match:
+        return None
+
+    raw = match.group(0).split(":", 1)[1]
+    raw = raw.split("#", 1)[0].strip()
+    value = raw.strip('"').strip("'")
+    return value if value else None
+
+
 def collect_task_cards() -> list[Path]:
     cards = []
     for path in sorted(TASKS_DIR.rglob("*.yaml")):
@@ -42,16 +55,25 @@ def main() -> int:
         return 0
 
     errors = []
+    seen_task_ids: dict[str, Path] = {}  # D007 — task_id 全域唯一
     for path in task_cards:
         skill_type = extract_skill_type(path)
         if skill_type is None:
             errors.append(f"{path} 缺少 skill_type 欄位")
-            continue
-        if skill_type not in ALLOWED_SKILL_TYPES:
+        elif skill_type not in ALLOWED_SKILL_TYPES:
             errors.append(
                 f"{path} skill_type 不在允許清單: '{skill_type}' "
                 f"(允許值: {sorted(ALLOWED_SKILL_TYPES)})"
             )
+
+        task_id = extract_task_id(path)
+        if task_id:
+            if task_id in seen_task_ids:
+                errors.append(
+                    f"{path} task_id '{task_id}' 已在 {seen_task_ids[task_id]} 使用（需全域唯一，見 D007）"
+                )
+            else:
+                seen_task_ids[task_id] = path
 
     if errors:
         for e in errors:

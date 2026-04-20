@@ -15,6 +15,8 @@ permissions:
     - file_read                # 讀取 project 內任何檔案（framework 抽象名）
     - web_search               # 網頁搜尋 + URL 抓取
     - file_search              # 檔案內容搜尋 (Glob / Grep)
+    - file_write               # 寫入新檔（原始能力；實際路徑政策由 write_drafts / create_output_files / modify_* 等語意 wrapper 約束）
+    - file_edit                # 修改既有檔（原始能力；同上，路徑政策由 wrapper 約束）
     # --- 草稿與 logs ---
     - write_drafts             # 寫入 outputs/drafts/
     - write_logs               # 寫入 logs/ 下任何紀錄
