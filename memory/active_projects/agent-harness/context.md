@@ -46,9 +46,9 @@
 - review：品質審查
 
 ## 限制與邊界
-- 單一核心 agent，不做 multi-agent swarm
+- 單一決策點：不做 multi-agent swarm（多 agent 分工長期協作、遞迴 sub-agent、背景常駐）；允許唯讀 sub-agent 做探勘與研究（Agent tool, Explore / Plan / general-purpose / claude-code-guide 模式），見 D006
 - 不自動擴展長期記憶
-- 不做自動對外發送（email/社群）
+- 不做自動對外發送（email/社群/GitHub PR 寫入）
 - 不做自動 shell 執行
 
 ## 關鍵決策紀錄
@@ -58,3 +58,5 @@
 - 2026-04-09：v2 系統全流程驗證通過，補正 FAILURE_TAXONOMY 至 14 種
 - 2026-04-15：D003 v3 升級暫緩、D004 create_task_card 升為 allow
 - 2026-04-20：D005 Opus 4.7 baseline — 預設 Opus 4.7，Sonnet 4.6 / Haiku 4.5 fallback
+- 2026-04-20：D006 sub-agent scope — 允許唯讀 sub-agent，禁止 multi-agent swarm；精修 line 49 規則
+- 2026-04-20：D007 tool registry closure — allowed_tools 必須登錄於 PERMISSIONS，未登錄預設 deny；新增 system/TOOL_MAPPING.yaml
