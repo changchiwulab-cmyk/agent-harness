@@ -32,13 +32,13 @@ jobs:
         run: ruby scripts/test_check_spec_consistency.rb
 
       - name: Spec consistency check
-        run: scripts/check_spec_consistency.rb
+        run: ruby scripts/check_spec_consistency.rb
 
       - name: YAML parse check
         run: ruby -e 'require "yaml"; Dir.glob("**/*.yaml").each{|p| YAML.load_file(p)}; puts "ALL_YAML_OK"'
 
       - name: Python unit tests
-        run: python -m unittest discover -s scripts -p "test_*.py" -v
+        run: python3 -m unittest discover -s scripts -p "test_*.py" -v
 
       - name: Python skill-type check
-        run: python scripts/check_task_card_skill_type.py
+        run: python3 scripts/check_task_card_skill_type.py
