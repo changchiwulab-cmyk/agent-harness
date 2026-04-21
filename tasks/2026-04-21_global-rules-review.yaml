@@ -1,0 +1,51 @@
+# Task Card — GLOBAL_RULES.md 完整性審查（Review）
+
+task_id: "20260421-V01"
+date: "2026-04-21"
+status: "done"
+
+# === 任務定義 ===
+goal: "審查 system/GLOBAL_RULES.md 的完整性、一致性，找出潛在缺漏、矛盾或需強化的規則"
+context: "GLOBAL_RULES.md 是整個 agent harness 的核心治理文件，任何缺漏都可能造成執行錯誤或安全漏洞。需要定期審查確保規則仍然適用且完整。此次為 v2 版本後首次正式審查。"
+input_data:
+  - "system/GLOBAL_RULES.md"
+  - "system/AGENT_CONTEXT.yaml"
+  - "system/PERMISSIONS.yaml"
+  - "CLAUDE.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "逐節確認 GLOBAL_RULES.md 的所有規則區塊（核心原則/任務規則/輸出規則/記憶規則/工具使用規則/成本意識/失敗分類學）"
+  - "列出缺漏項目（若無則明確說明「此區塊完整」）"
+  - "列出與其他系統文件（AGENT_CONTEXT.yaml / PERMISSIONS.yaml / CLAUDE.md）的潛在矛盾或不一致之處"
+  - "每個問題項目有具體修改建議，或明確說明「無需修改，原因是...」"
+  - "最終給出總體評估：通過 / 有條件通過 / 需修改"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "global-rules-review-report.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+
+# === 成本控制 ===
+max_tool_calls: 5
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "review"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260421-V01 review 完成"
+actual_tool_calls: 4
+result_summary: "有條件通過。必須修改 2 項（M1 輸出路徑未區分 drafts/reports、M2 Checkpoint 格式分散），建議修改 4 項（S1 Skill 路由引用、S2 記憶路徑、S3 高風險假設定義、S4 COST_POLICY 引用）。DoD 5/5 通過。"
+completion_time: "2026-04-21"
+audit_log_ref: "logs/AUDIT_LOG.md"
