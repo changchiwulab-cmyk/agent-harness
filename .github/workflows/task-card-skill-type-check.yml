@@ -29,4 +29,4 @@ jobs:
           python-version: "3.11"
 
       - name: Run skill_type consistency check
-        run: python3 scripts/check_task_card_skill_type.py
+        run: python scripts/check_task_card_skill_type.py
