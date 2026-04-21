@@ -1,0 +1,49 @@
+# Task Card — AI Agent 使用說明文件撰寫（Writing）
+
+task_id: "20260421-W01"
+date: "2026-04-21"
+status: "done"
+
+# === 任務定義 ===
+goal: "撰寫一份面向新使用者的 AI Agent 使用說明文件草稿（約 600 字）"
+context: "本 agent harness 框架將擴展給更多一人公司或小型顧問團隊使用，需要一份清晰易懂的入門文件，讓沒有技術背景的商業人士也能快速上手。"
+input_data:
+  - "CLAUDE.md"
+  - "system/GLOBAL_RULES.md"
+  - "tasks/TASK_CARD_TEMPLATE.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "文件包含四個明確章節：前言（說明用途）、快速開始（步驟流程）、常見錯誤（至少 3 項）、注意事項"
+  - "語氣專業但平易近人，符合台灣商業顧問風格，無翻譯腔"
+  - "所有技術術語均有一句話說明，不假設讀者有 AI 技術背景"
+  - "全文約 600 字（±100 字）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "ai-agent-usage-guide.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+
+# === 成本控制 ===
+max_tool_calls: 5
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "writing"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260421-W01 writing 完成"
+actual_tool_calls: 3
+result_summary: "產出約 650 字的使用說明文件，含前言/快速開始/常見錯誤（3 項）/注意事項（4 項）四節，台灣商業顧問語氣，所有術語有說明。DoD 4/4 通過。"
+completion_time: "2026-04-21"
+audit_log_ref: "logs/AUDIT_LOG.md"
