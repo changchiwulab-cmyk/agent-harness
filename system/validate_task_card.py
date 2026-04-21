@@ -5,7 +5,7 @@ Task Card Schema Validator
 """
 
 import sys
-import yaml
+import importlib.util
 
 REQUIRED_FIELDS = ["task_id", "date", "goal", "definition_of_done", "skill_type", "risk_level"]
 VALID_SKILLS = {"research", "analysis", "writing", "ops", "review"}
@@ -13,13 +13,27 @@ VALID_RISK = {"low", "medium", "high", "critical"}
 VALID_STATUS = {"pending", "in_progress", "checkpoint", "review", "done", "failed"}
 
 
+def _load_yaml_module():
+    if importlib.util.find_spec("yaml") is None:
+        return None
+    import yaml
+    return yaml
+
+
 def validate(path: str) -> list[str]:
+    yaml_module = _load_yaml_module()
+    if yaml_module is None:
+        return ["缺少相依套件：PyYAML（請先執行：pip install pyyaml）"]
+
     errors = []
     try:
         with open(path) as f:
-            card = yaml.safe_load(f)
+            card = yaml_module.safe_load(f)
     except Exception as e:
         return [f"YAML 解析失敗：{e}"]
+
+    if not isinstance(card, dict):
+        return ["YAML root 必須是 mapping/object"]
 
     # 必填欄位
     for field in REQUIRED_FIELDS:
@@ -54,6 +68,8 @@ def validate(path: str) -> list[str]:
     output = card.get("expected_output", {})
     if not output.get("format"):
         errors.append("expected_output.format 不能為空")
+    if not output.get("location"):
+        errors.append("expected_output.location 不能為空")
     if not output.get("filename"):
         errors.append("expected_output.filename 不能為空")
 
