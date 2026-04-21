@@ -14,7 +14,6 @@ module = importlib.util.module_from_spec(spec)
 assert spec and spec.loader
 spec.loader.exec_module(module)
 validate = module.validate
-HAS_PYYAML = importlib.util.find_spec("yaml") is not None
 
 
 class TestValidateTaskCardRootType(unittest.TestCase):
@@ -26,20 +25,26 @@ class TestValidateTaskCardRootType(unittest.TestCase):
         p.write_text(text, encoding="utf-8")
         return p
 
-    @unittest.skipIf(not HAS_PYYAML, "PyYAML not installed in environment")
     def test_root_none_returns_human_readable_error(self):
         path = self._write_yaml_text("none.yaml", "null\n")
-        self.assertEqual(validate(str(path)), ["YAML root 必須是 mapping/object"])
+        fake_yaml = mock.Mock()
+        fake_yaml.safe_load.return_value = None
+        with mock.patch.object(module, "_load_yaml_module", return_value=fake_yaml):
+            self.assertEqual(validate(str(path)), ["YAML root 必須是 mapping/object"])
 
-    @unittest.skipIf(not HAS_PYYAML, "PyYAML not installed in environment")
     def test_root_list_returns_human_readable_error(self):
         path = self._write_yaml_text("list.yaml", "- a\n- b\n")
-        self.assertEqual(validate(str(path)), ["YAML root 必須是 mapping/object"])
+        fake_yaml = mock.Mock()
+        fake_yaml.safe_load.return_value = ["a", "b"]
+        with mock.patch.object(module, "_load_yaml_module", return_value=fake_yaml):
+            self.assertEqual(validate(str(path)), ["YAML root 必須是 mapping/object"])
 
-    @unittest.skipIf(not HAS_PYYAML, "PyYAML not installed in environment")
     def test_root_string_returns_human_readable_error(self):
         path = self._write_yaml_text("str.yaml", "hello\n")
-        self.assertEqual(validate(str(path)), ["YAML root 必須是 mapping/object"])
+        fake_yaml = mock.Mock()
+        fake_yaml.safe_load.return_value = "hello"
+        with mock.patch.object(module, "_load_yaml_module", return_value=fake_yaml):
+            self.assertEqual(validate(str(path)), ["YAML root 必須是 mapping/object"])
 
 
 class TestExpectedOutputLocation(unittest.TestCase):
@@ -51,7 +56,6 @@ class TestExpectedOutputLocation(unittest.TestCase):
         p.write_text(text, encoding="utf-8")
         return p
 
-    @unittest.skipIf(not HAS_PYYAML, "PyYAML not installed in environment")
     def test_missing_location_is_reported(self):
         path = self._write_yaml_text(
             "missing_location.yaml",
@@ -67,13 +71,24 @@ status: "pending"
 expected_output:
   format: "md"
   filename: "out.md"
-""".strip()
+        """.strip()
             + "\n",
         )
-        errors = validate(str(path))
+        fake_yaml = mock.Mock()
+        fake_yaml.safe_load.return_value = {
+            "task_id": "20260421-001",
+            "date": "2026-04-21",
+            "goal": "test",
+            "definition_of_done": ["done"],
+            "skill_type": "analysis",
+            "risk_level": "low",
+            "status": "pending",
+            "expected_output": {"format": "md", "filename": "out.md"},
+        }
+        with mock.patch.object(module, "_load_yaml_module", return_value=fake_yaml):
+            errors = validate(str(path))
         self.assertIn("expected_output.location 不能為空", errors)
 
-    @unittest.skipIf(not HAS_PYYAML, "PyYAML not installed in environment")
     def test_with_location_passes_location_check(self):
         path = self._write_yaml_text(
             "with_location.yaml",
@@ -90,10 +105,26 @@ expected_output:
   format: "md"
   location: "outputs/drafts/"
   filename: "out.md"
-""".strip()
+        """.strip()
             + "\n",
         )
-        errors = validate(str(path))
+        fake_yaml = mock.Mock()
+        fake_yaml.safe_load.return_value = {
+            "task_id": "20260421-001",
+            "date": "2026-04-21",
+            "goal": "test",
+            "definition_of_done": ["done"],
+            "skill_type": "analysis",
+            "risk_level": "low",
+            "status": "pending",
+            "expected_output": {
+                "format": "md",
+                "location": "outputs/drafts/",
+                "filename": "out.md",
+            },
+        }
+        with mock.patch.object(module, "_load_yaml_module", return_value=fake_yaml):
+            errors = validate(str(path))
         self.assertNotIn("expected_output.location 不能為空", errors)
 
 
