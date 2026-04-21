@@ -1,0 +1,50 @@
+# 範例 Task Card — 越南市場拓展方案 Go/No-Go 分析
+# 這是 analysis skill 的範例
+
+task_id: "20260404-A01"
+date: "2026-04-04"
+status: "pending"
+
+# === 任務定義 ===
+goal: "評估越南市場 AI 工具拓展方案是否應在 Q3 啟動（Go/No-Go）"
+context: "已完成市場研究與草案，需要用 analysis skill 進行方案比較與決策建議"
+input_data:
+  - "tasks/examples/sample-data/vietnam-ai-tools-research-draft.md"
+  - "memory/active_projects/vietnam-expansion/context.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "至少比較 2 個可行方案（保守版 / 積極版）"
+  - "列出每個方案的預期收益、成本、主要風險與緩解策略"
+  - "以明確準則給出 Go / No-Go 建議與理由"
+  - "所有假設與不確定性需獨立標示"
+  - "輸出為結構化 Markdown，符合 analysis skill 格式"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "vietnam-expansion-go-no-go-analysis.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "web_search"
+
+# === 成本控制 ===
+max_tool_calls: 6
+max_retries: 3
+max_web_searches: 2
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
