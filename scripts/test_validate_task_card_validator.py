@@ -3,6 +3,7 @@
 
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 import importlib.util
 
@@ -24,14 +25,17 @@ class TestValidateTaskCardRootType(unittest.TestCase):
         p.write_text(text, encoding="utf-8")
         return p
 
+    @unittest.skipIf(module.yaml is None, "PyYAML not installed in environment")
     def test_root_none_returns_human_readable_error(self):
         path = self._write_yaml_text("none.yaml", "null\n")
         self.assertEqual(validate(str(path)), ["YAML root 必須是 mapping/object"])
 
+    @unittest.skipIf(module.yaml is None, "PyYAML not installed in environment")
     def test_root_list_returns_human_readable_error(self):
         path = self._write_yaml_text("list.yaml", "- a\n- b\n")
         self.assertEqual(validate(str(path)), ["YAML root 必須是 mapping/object"])
 
+    @unittest.skipIf(module.yaml is None, "PyYAML not installed in environment")
     def test_root_string_returns_human_readable_error(self):
         path = self._write_yaml_text("str.yaml", "hello\n")
         self.assertEqual(validate(str(path)), ["YAML root 必須是 mapping/object"])
@@ -46,6 +50,7 @@ class TestExpectedOutputLocation(unittest.TestCase):
         p.write_text(text, encoding="utf-8")
         return p
 
+    @unittest.skipIf(module.yaml is None, "PyYAML not installed in environment")
     def test_missing_location_is_reported(self):
         path = self._write_yaml_text(
             "missing_location.yaml",
@@ -67,6 +72,7 @@ expected_output:
         errors = validate(str(path))
         self.assertIn("expected_output.location 不能為空", errors)
 
+    @unittest.skipIf(module.yaml is None, "PyYAML not installed in environment")
     def test_with_location_passes_location_check(self):
         path = self._write_yaml_text(
             "with_location.yaml",
@@ -88,6 +94,13 @@ expected_output:
         )
         errors = validate(str(path))
         self.assertNotIn("expected_output.location 不能為空", errors)
+
+
+class TestYamlDependencyGuard(unittest.TestCase):
+    def test_missing_pyyaml_returns_readable_error(self):
+        with mock.patch.object(module, "yaml", None):
+            errors = validate("tasks/TASK_CARD_TEMPLATE.yaml")
+        self.assertEqual(errors, ["缺少相依套件：PyYAML（請先執行：pip install pyyaml）"])
 
 
 if __name__ == "__main__":

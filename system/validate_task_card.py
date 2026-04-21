@@ -5,7 +5,10 @@ Task Card Schema Validator
 """
 
 import sys
-import yaml
+try:
+    import yaml
+except ModuleNotFoundError:
+    yaml = None
 
 REQUIRED_FIELDS = ["task_id", "date", "goal", "definition_of_done", "skill_type", "risk_level"]
 VALID_SKILLS = {"research", "analysis", "writing", "ops", "review"}
@@ -14,6 +17,9 @@ VALID_STATUS = {"pending", "in_progress", "checkpoint", "review", "done", "faile
 
 
 def validate(path: str) -> list[str]:
+    if yaml is None:
+        return ["缺少相依套件：PyYAML（請先執行：pip install pyyaml）"]
+
     errors = []
     try:
         with open(path) as f:
