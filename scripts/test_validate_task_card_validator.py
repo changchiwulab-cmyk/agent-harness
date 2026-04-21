@@ -11,7 +11,8 @@ ROOT = Path(__file__).resolve().parents[1]
 VALIDATOR_PATH = ROOT / "system" / "validate_task_card.py"
 spec = importlib.util.spec_from_file_location("validate_task_card", VALIDATOR_PATH)
 module = importlib.util.module_from_spec(spec)
-assert spec and spec.loader
+if spec is None or spec.loader is None:
+    raise RuntimeError("unable to load system/validate_task_card.py for tests")
 spec.loader.exec_module(module)
 validate = module.validate
 
@@ -57,23 +58,7 @@ class TestExpectedOutputLocation(unittest.TestCase):
         return p
 
     def test_missing_location_is_reported(self):
-        path = self._write_yaml_text(
-            "missing_location.yaml",
-            """
-task_id: "20260421-001"
-date: "2026-04-21"
-goal: "test"
-definition_of_done:
-  - "done"
-skill_type: "analysis"
-risk_level: "low"
-status: "pending"
-expected_output:
-  format: "md"
-  filename: "out.md"
-        """.strip()
-            + "\n",
-        )
+        path = self._write_yaml_text("missing_location.yaml", "dummy: true\n")
         fake_yaml = mock.Mock()
         fake_yaml.safe_load.return_value = {
             "task_id": "20260421-001",
@@ -90,24 +75,7 @@ expected_output:
         self.assertIn("expected_output.location 不能為空", errors)
 
     def test_with_location_passes_location_check(self):
-        path = self._write_yaml_text(
-            "with_location.yaml",
-            """
-task_id: "20260421-001"
-date: "2026-04-21"
-goal: "test"
-definition_of_done:
-  - "done"
-skill_type: "analysis"
-risk_level: "low"
-status: "pending"
-expected_output:
-  format: "md"
-  location: "outputs/drafts/"
-  filename: "out.md"
-        """.strip()
-            + "\n",
-        )
+        path = self._write_yaml_text("with_location.yaml", "dummy: true\n")
         fake_yaml = mock.Mock()
         fake_yaml.safe_load.return_value = {
             "task_id": "20260421-001",
