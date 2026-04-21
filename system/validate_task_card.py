@@ -21,6 +21,9 @@ def validate(path: str) -> list[str]:
     except Exception as e:
         return [f"YAML 解析失敗：{e}"]
 
+    if not isinstance(card, dict):
+        return ["YAML root 必須是 mapping/object"]
+
     # 必填欄位
     for field in REQUIRED_FIELDS:
         if not card.get(field):
@@ -54,6 +57,8 @@ def validate(path: str) -> list[str]:
     output = card.get("expected_output", {})
     if not output.get("format"):
         errors.append("expected_output.format 不能為空")
+    if not output.get("location"):
+        errors.append("expected_output.location 不能為空")
     if not output.get("filename"):
         errors.append("expected_output.filename 不能為空")
 
