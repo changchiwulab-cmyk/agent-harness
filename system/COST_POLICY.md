@@ -1,4 +1,5 @@
 # 成本控制策略 COST_POLICY
+last_reviewed: 2026-04-18
 
 ## 當前方案（v1）
 
@@ -44,6 +45,26 @@ v1 先用單一模型（Claude）。未來如需降本：
 - 分類、抽取、格式檢查 → 便宜模型（Haiku 等級）
 - 規劃、推理、整合分析 → 強模型（Sonnet/Opus 等級）
 - 路由判斷本身 → 便宜模型
+
+## 模型治理（多 Provider，2026-04-18）
+
+> 目的：在維持「可控 > 能力」前提下，建立可追蹤的模型路由與退場機制。
+
+| Provider | 任務類型 | 主模型（建議） | 備援模型 | 成本級別 | 備註 |
+|---------|---------|---------------|---------|---------|------|
+| Anthropic | research / review | Claude Sonnet（4.x 系列） | Claude Haiku（4.x 系列） | 中 | 大量讀寫與檢查任務優先穩定性 |
+| Anthropic | analysis / writing | Claude Opus（4.x 系列） | Claude Sonnet（4.x 系列） | 高 | 用於整合推理、策略與高品質長文 |
+| OpenAI | research / ops | GPT-5 mini / GPT-5 nano | GPT-4.1 mini | 低~中 | 偏抽取、分類、結構化整理 |
+| OpenAI | analysis / writing / review | GPT-5 / o3 | GPT-5 mini | 中~高 | 用於複雜推理與跨來源整合 |
+
+### 版本與淘汰治理規則
+
+1. 每次 Retro 或最晚每 7 天，更新 `last_reviewed` 日期並核對官方文件。
+2. 遇到模型進入 deprecation / retirement：
+   - 先切換到同 Provider 備援模型；
+   - 一週內完成任務級成本與品質重估；
+   - 在 `logs/AUDIT_LOG.md` 留下調整紀錄。
+3. 新模型導入需先以低風險任務試跑（research / ops），連續 3 筆任務穩定後再擴到 analysis / writing。
 
 ## 事後量測流程（每週）
 
