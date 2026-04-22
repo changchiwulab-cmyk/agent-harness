@@ -153,6 +153,12 @@ ruby -e 'require "yaml"; Dir.glob("**/*.yaml").each{|p| YAML.load_file(p)}; puts
 python3 scripts/test_validate_task_card.py
 ```
 
+若要驗證 `bootstrap_dev.sh --check` 解析邏輯，可執行：
+
+```bash
+./scripts/test_bootstrap_dev_check.sh
+```
+
 ## 導入計畫
 
 ### 第 1 週：跑通骨架

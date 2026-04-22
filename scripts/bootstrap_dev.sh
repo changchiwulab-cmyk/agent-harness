@@ -2,7 +2,8 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-REQ_FILE="$ROOT_DIR/requirements-dev.txt"
+REQ_FILE="${REQ_FILE:-$ROOT_DIR/requirements-dev.txt}"
+PIP_SHOW_BIN="${PIP_SHOW_BIN:-python3 -m pip show}"
 MODE="${1:-install}"
 
 if [[ ! -f "$REQ_FILE" ]]; then
@@ -17,7 +18,7 @@ if [[ "$MODE" == "--check" ]]; then
     [[ -z "$line" ]] && continue
 
     pkg="$(echo "$line" | sed -E 's/[<>=!~].*$//' | sed -E 's/\[.*\]$//')"
-    if ! python3 -m pip show "$pkg" >/dev/null 2>&1; then
+    if ! $PIP_SHOW_BIN "$pkg" >/dev/null 2>&1; then
       missing+=("$pkg")
     fi
   done < "$REQ_FILE"
