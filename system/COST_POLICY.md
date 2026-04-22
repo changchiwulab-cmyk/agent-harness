@@ -66,6 +66,27 @@ v1 先用單一模型（Claude）。未來如需降本：
 > **校正規則**：累積 10 筆以上同類任務後，用實測平均 × 1.5 作為建議上限。  
 > **下次校正**：再累積 5 筆任務後觸發第二次 retro。
 
+## 校準係數（2026-04-17 首次建立）
+
+目的：在建立 Task Card 時，若原預估偏離歷史實測過多，可依該 skill 的係數調整 `max_tool_calls` 與 `max_retries`。資料來源：`outputs/drafts/token-calibration-table-v1.md`。
+
+**定義**：`calibration_factor = actual_avg / initial_estimate`
+
+| skill_type | 原預估 | 實測平均 | 校準係數 | 樣本數 |
+|-----------|------:|--------:|--------:|:-----:|
+| research | 15K | 21.5K | **1.43** | 2 |
+| writing  | 10K | 20K   | **2.00** | 1 |
+| ops      | 8K  | 12.5K | **1.56** | 2 |
+| review   | 12K | 15K   | **1.25** | 2 |
+| analysis | 12K | —     | 待累積    | 0 |
+
+**使用方式**：
+- 建立 Task Card 時，若 skill 係數 ≥ 1.5，將 `max_tool_calls` 與 `max_retries` 上調 1 檔作為緩衝
+- 係數 < 1.3 視為穩定，依原設定值
+- analysis 係數未知，至少 3 筆實測後再更新
+
+**下次校準觸發**：再累積 5 筆任務（含至少 1 筆 analysis）後，於下次 retro 重算。
+
 ## 升級觸發條件
 
 當以下任一條件持續 2 週以上，考慮升級到 v2：

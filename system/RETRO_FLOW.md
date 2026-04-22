@@ -11,6 +11,9 @@
 - 每週一次（週五下班前）
 - 發生 2 次以上同類錯誤
 
+> 週期性觸發原承自 `tasks/WEEKLY_REVIEW_TEMPLATE.md`（已 deprecated，2026-04-17）。
+> 實務上以「累積 5 筆」或「手動觸發」為主；固定週期觸發可視行程自行決定。
+
 ## Retro 流程
 
 ### 1. 資料蒐集
@@ -43,6 +46,14 @@ Retro 報告產出後：
 - 使用者確認哪些建議要採納
 - 修改對應的系統檔案（屬於 ask 權限）
 - 記錄到 audit log
+
+### 5. 晉升至 reports/
+
+當 retro 草稿已由人工確認、建議已採納（或明確擱置）後：
+- 複製 `outputs/drafts/retro-[日期].md` → `outputs/reports/retro-[季度-序號].md`
+- 正式版檔頭加「晉升標記」區塊（晉升日期、審閱者、採納項目清單）
+- 原 draft 檔尾加「已晉升為 reports/...」回指，保留歷史備援
+- 寫 `reports/` 屬 ask 權限，需人工確認；建立新 Task Card 執行晉升任務
 
 ## 限制
 
