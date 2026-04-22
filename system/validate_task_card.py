@@ -5,7 +5,10 @@ Task Card Schema Validator
 """
 
 import sys
-import yaml
+import importlib
+import importlib.util
+
+yaml = importlib.import_module("yaml") if importlib.util.find_spec("yaml") else None
 
 REQUIRED_FIELDS = ["task_id", "date", "goal", "definition_of_done", "skill_type", "risk_level"]
 VALID_SKILLS = {"research", "analysis", "writing", "ops", "review"}
@@ -14,6 +17,9 @@ VALID_STATUS = {"pending", "in_progress", "checkpoint", "review", "done", "faile
 
 
 def validate(path: str) -> list[str]:
+    if yaml is None:
+        return ["缺少相依套件：PyYAML（請先安裝 `pyyaml`）"]
+
     errors = []
     try:
         with open(path) as f:

@@ -5,11 +5,15 @@ import tempfile
 import unittest
 from pathlib import Path
 import sys
+import importlib.util
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "system"))
 from validate_task_card import validate
 
+HAS_YAML = importlib.util.find_spec("yaml") is not None
 
+
+@unittest.skipUnless(HAS_YAML, "PyYAML 未安裝，略過 validate_task_card 結構測試")
 class TestValidateTaskCardStructure(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp())
