@@ -159,7 +159,7 @@ python3 scripts/test_validate_task_card.py
 ./scripts/test_bootstrap_dev_check.sh
 ```
 
-該指令也建議納入 CI / 本地 pre-commit。
+該指令已納入 `.github/workflows/ci-validation.yml`，也建議在本地 pre-commit 執行。
 
 ## 導入計畫
 

@@ -1,0 +1,34 @@
+name: CI Validation
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+
+      - name: Install dev dependencies
+        run: ./scripts/bootstrap_dev.sh
+
+      - name: Validate spec consistency
+        run: ruby scripts/check_spec_consistency.rb
+
+      - name: Validate task card checker tests
+        run: python3 scripts/test_validate_task_card.py
+
+      - name: Validate bootstrap check tests
+        run: ./scripts/test_bootstrap_dev_check.sh
