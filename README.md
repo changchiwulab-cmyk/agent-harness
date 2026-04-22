@@ -90,7 +90,7 @@ agent-harness/
 
 （若要使用 Task Card validator，先安裝開發依賴）
 ```bash
-python3 -m pip install -r requirements-dev.txt
+./scripts/bootstrap_dev.sh
 ```
 
 ### 1. 建立任務
@@ -116,7 +116,7 @@ cp tasks/TASK_CARD_TEMPLATE.yaml tasks/2026-04-03_你的任務.yaml
 `system/validate_task_card.py` 與其測試依賴 `PyYAML`。建議先安裝開發依賴：
 
 ```bash
-python3 -m pip install -r requirements-dev.txt
+./scripts/bootstrap_dev.sh
 ```
 
 若只想單獨安裝 `PyYAML`，可改用：
