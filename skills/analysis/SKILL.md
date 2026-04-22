@@ -1,5 +1,9 @@
 # Analysis Skill
 
+> **載入規則**：本檔 (SKILL.md) 為必載入的 skill prompt；
+> 同目錄的 `eval_examples.md` 為**按需載入**的參考材料，
+> 首次使用或輸出品質不穩時再載入，不預設計入 1.5K 的 skill prompt token 預算。
+
 ## 用途
 決策支援、方案評估、Go/No-Go 判斷、策略分析、可行性評估。
 

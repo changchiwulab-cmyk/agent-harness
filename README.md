@@ -93,7 +93,7 @@ agent-harness/
 cp tasks/TASK_CARD_TEMPLATE.yaml tasks/2026-04-03_你的任務.yaml
 ```
 填入 `goal`、`definition_of_done`、`skill_type`。  
-`skill_type` 請使用：`research` / `writing` / `ops` / `review`。參考 `tasks/examples/` 下的範例。
+`skill_type` 請使用：`research` / `analysis` / `writing` / `ops` / `review`（允許值以驗證腳本與 schema 為準）。參考 `tasks/examples/` 下的範例（例如 `2026-04-21_decision-feasibility-analysis-example.yaml` 可用於決策比較／可行性評估）。
 
 ### 2. 執行
 在 Claude Code CLI 中 `cd <agent-harness 專案路徑>`，Claude 會自動讀取 CLAUDE.md。

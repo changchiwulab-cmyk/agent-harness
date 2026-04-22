@@ -5,6 +5,16 @@
 
 ---
 
+## 模型版本遷移紀錄
+
+| 日期 | 遷移項 | 說明 |
+|------|--------|------|
+| 2026-04-20 | `claude-opus-4-6` / `claude-sonnet-4-6` → `claude-opus-4-7`（預設） | Opus 4.7 為 2026-01 起最新模型；見 `system/MODEL_POLICY.yaml` 與 Task Card `20260420-001`。**歷史紀錄不竄改**，以下 entries 的 `model_used` 保留原始值。|
+
+> 紀錄格式範例欄位 `model_used` 先前寫 `claude-sonnet-4-20250514`；自 2026-04-20 起改以 `claude-opus-4-7` / `claude-sonnet-4-6` / `claude-haiku-4-5-20251001` 等短格式（依 `MODEL_POLICY.yaml` 登錄）。
+
+---
+
 ## 紀錄格式
 
 ```yaml
@@ -31,6 +41,271 @@
 ## 紀錄（依時間倒序）
 
 <!-- 新紀錄加在這裡 -->
+
+---
+
+```yaml
+- task_id: "20260409-001"
+  date: "2026-04-22"
+  skill_type: "review"
+  goal: "重新驗證 v2.0 系統全流程（補跑）"
+  status: "partial"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 8
+    - tool_name: "bash_grep"
+      call_count: 5
+    - tool_name: "scripts/check_spec_consistency.rb"
+      call_count: 1
+    - tool_name: "ruby_yaml_parse"
+      call_count: 1
+  checkpoints: 0
+  approval_needed: false
+  approval_given: true
+  output_path: "logs/runs/20260409-001_system-validation.re-run.yaml"
+  error_summary: ""
+  estimated_tokens: "low"
+  notes: "發現 drift：FAILURE_TAXONOMY 現為 15 項但 GLOBAL_RULES.md 仍寫 14 種，已記錄建議修正"
+```
+
+---
+
+```yaml
+- task_id: "20260404-R01"
+  date: "2026-04-22"
+  skill_type: "research"
+  goal: "補產缺失的 tools-inventory 草稿"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+  checkpoints: 0
+  approval_needed: false
+  approval_given: true
+  output_path: "outputs/drafts/solo-company-tools-inventory.md"
+  error_summary: ""
+  estimated_tokens: "medium"
+  notes: "涵蓋 6 類別、30+ 工具、含建議配置（USD < 150/月）；未動用 web_search"
+```
+
+---
+
+```yaml
+- task_id: "20260404-S01"
+  date: "2026-04-22"
+  skill_type: "research"
+  goal: "補產缺失的 AI 時代一人公司策略草稿"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+  checkpoints: 0
+  approval_needed: false
+  approval_given: true
+  output_path: "outputs/drafts/ai-era-solo-business-strategy.md"
+  error_summary: ""
+  estimated_tokens: "medium"
+  notes: "5 商業模式評估 + 台越雙市場機會 + 12 個月路徑；首推 Productized Consulting"
+```
+
+---
+
+```yaml
+- task_id: "20260415-A01"
+  date: "2026-04-22"
+  skill_type: "analysis"
+  goal: "驗證 create_task_card 權限升級建議是否已落實"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+  checkpoints: 0
+  approval_needed: false
+  approval_given: true
+  output_path: "logs/runs/20260415-A01_verification.yaml"
+  error_summary: ""
+  estimated_tokens: "low"
+  notes: "3 項建議（PERMISSIONS / APPROVAL_POLICY / D004）全部落實，閉環驗證 pass"
+```
+
+---
+
+```yaml
+- task_id: "20260421-O01"
+  date: "2026-04-21"
+  skill_type: "ops"
+  goal: "掃描 tasks/ 目錄下所有 Task Cards，產出結構化的任務狀態摘要表"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "bash"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/tasks-status-summary.md"
+  error_summary: ""
+  estimated_tokens: "~8K"
+  notes: "掃描 14 張 Task Cards（排除 2 個模板），Markdown 表格含 5 個欄位，依日期倒序，附狀態/skill/時間三維統計。DoD 4/4 通過。"
+```
+
+---
+
+```yaml
+- task_id: "20260421-V01"
+  date: "2026-04-21"
+  skill_type: "review"
+  goal: "審查 system/GLOBAL_RULES.md 的完整性、一致性，找出潛在缺漏、矛盾或需強化的規則"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/global-rules-review-report.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "有條件通過。必須修改 2 項（M1 輸出路徑區分、M2 Checkpoint 格式定義），建議修改 4 項（Skill 路由引用/記憶路徑/高風險假設範圍/COST_POLICY 引用）。DoD 5/5 通過。"
+```
+
+---
+
+```yaml
+- task_id: "20260421-A01"
+  date: "2026-04-21"
+  skill_type: "analysis"
+  goal: "分析一人顧問公司從台灣進入越南市場的可行性，產出 Go / No-Go 建議與關鍵決策依據"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/vietnam-market-analysis.md"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "Conditional Go 建議。3 個選項完整六維評估（含不做選項），3 項支持/3 項反對依據，2 項高風險假設含結論變化說明，3 項待驗證含驗證方式，建議下一步 3 項。DoD 5/5 通過。"
+```
+
+---
+
+```yaml
+- task_id: "20260421-W01"
+  date: "2026-04-21"
+  skill_type: "writing"
+  goal: "撰寫一份面向新使用者的 AI Agent 使用說明文件草稿（約 600 字）"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/ai-agent-usage-guide.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "約 650 字，含前言/快速開始（3 步驟）/常見錯誤（3 項）/注意事項（4 項）四節，台灣商業顧問語氣，所有術語有說明。DoD 4/4 通過。"
+```
+
+---
+
+```yaml
+- task_id: "20260421-R01"
+  date: "2026-04-21"
+  skill_type: "research"
+  goal: "調查一人公司（顧問型）常見的客戶開發方法與工具，整理可立即行動的策略清單"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/client-development-strategies.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "4 大客戶開發管道（轉介紹/內容行銷/直接開發/策略合作），每管道含描述/適用場景/2-3 步驟/預期效果。三層標記完整，含優先行動建議。DoD 4/4 通過。"
+```
+
+---
+
+```yaml
+- task_id: "20260420-002"
+  date: "2026-04-20"
+  skill_type: "ops"
+  goal: "讓 agent-harness 的 PERMISSIONS / APPROVAL / AGENT_CONTEXT / validator 反映 Claude Code CLI 的實際工具與流程，補齊第二輪盤點的 HIGH + MED 缺口"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 14
+    - tool_name: "file_write"
+      call_count: 8
+    - tool_name: "file_edit"
+      call_count: 11
+    - tool_name: "git_commit_checkpoint"
+      call_count: 4
+    - tool_name: "shell_readonly"
+      call_count: 8
+  checkpoints: 4
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/harness-runtime-alignment-summary.md"
+  error_summary: ""
+  estimated_tokens: "~71K"
+  notes: >
+    Phase 1-4 全部完成。新增 TOOL_MAPPING.yaml（工具映射）、D006（sub-agent scope）、
+    D007（tool registry closure）；擴充 PERMISSIONS / APPROVAL_POLICY / AGENT_CONTEXT；
+    更新 context.md、research SKILL.md（knowledge cutoff 指引）；validator 加閉包規則
+    + risk/approval 交叉 + task_id 唯一（Ruby 23 tests / Python 19 tests / 全 pass）；
+    3 類 fail-case 驗證通過。CLAUDE.md 4 處建議 diff 在 outputs/drafts/ 等人工確認。
+    四層 gate 全 pass。
+```
+
+---
+
+```yaml
+- task_id: "20260420-001"
+  date: "2026-04-20"
+  skill_type: "ops"
+  goal: "將 agent-harness 架構與 Opus 4.7 對齊，完成相容性盤點後的分階段優化"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 18
+    - tool_name: "file_edit"
+      call_count: 6
+    - tool_name: "file_write"
+      call_count: 4
+    - tool_name: "git_commit_checkpoint"
+      call_count: 4
+    - tool_name: "sub_agent (Haiku 4.5)"
+      call_count: 1
+  checkpoints: 4
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/opus-4-7-migration-summary.md"
+  error_summary: ""
+  estimated_tokens: "~55K"
+  notes: >
+    Phase 1-3 全部完成；CLAUDE.md 僅產草稿到 outputs/drafts/。新增
+    system/MODEL_POLICY.yaml 與 D005 決策紀錄（部分覆寫 D002 token API 假設，
+    D002 原文保留）。CI 在 PR #32 2 秒內失敗但本地全通過，研判 runner infra
+    問題（使用者選擇忽略）。四層 gate 全 pass。
+```
 
 ---
 

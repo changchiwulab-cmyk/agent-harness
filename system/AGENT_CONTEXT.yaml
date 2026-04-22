@@ -17,6 +17,12 @@ capabilities:
     - 結構化資料整理（CSV / YAML / JSON）
     - 品質審查與邏輯檢查
     - Git checkpoint 進度保存
+    # --- Claude Code CLI runtime 能力（D006 / D007，2026-04-20）---
+    - 唯讀 sub-agent 探勘（Agent tool, subagent_type 限 Explore / Plan / general-purpose / claude-code-guide；見 D006）
+    - TodoWrite 更新本 session 的 todo 清單（不改檔）
+    - GitHub MCP 讀取（get_file_contents / list_pull_requests / pull_request_read / search_* 等）
+    - Claude Code Skill 工具呼叫（/init / /simplify / /loop / /security-review — ask 級）
+    - ToolSearch 載入 deferred 工具 schema（本身不執行動作）
   cannot_do:
     - 直接對外發送任何內容（Email、訊息、發文）
     - 刪除檔案或資料
@@ -24,6 +30,43 @@ capabilities:
     - 跨 session 自動記憶（需明確寫入 memory/）
     - 金流操作
     - 存取本機敏感目錄（~/.ssh、/etc）
+    # --- Claude Code CLI runtime 不可動作（D006 / D007，2026-04-20）---
+    - 讓 sub-agent 執行寫入型工具（Write / Edit / Bash git commit|push / mcp__*_write）
+    - Multi-agent swarm（多 agent 分工長期協作、遞迴 sub-agent、背景常駐 agent）
+    - 直接 merge PR（mcp__github__merge_pull_request 屬 deny）
+    - 使用未登錄於 PERMISSIONS.yaml 的工具（allowed_tools 詞彙閉包，D007）
+
+runtime_integrations:
+  # Claude Code CLI 原生能力的宣告：存在、歸屬、處理原則（本框架不重寫 CLI 行為，僅說明對應）
+  plan_mode:
+    description: "Claude Code 的 Plan mode = framework draft-first 的 runtime 等價物"
+    framework_mapping: "APPROVAL_POLICY.yaml → Plan mode / ExitPlanMode trigger (draft_first)"
+    handling: "進入 Plan mode 期間只做讀與研究；ExitPlanMode 提交計畫後，由使用者核可才進入執行"
+
+  stop_hook:
+    description: "Claude Code 可配置 Stop hook 在回覆結束時執行檢查（如 git uncommitted 檢查）"
+    framework_mapping: "不在 framework 治理範圍內；屬使用者環境配置"
+    handling: "Stop hook 回饋視為來自使用者的提示，依內容判斷是否修正（如提醒 commit 未追蹤檔案）"
+
+  session_start_hook:
+    description: "Claude Code 可在 session 啟動時注入 context（如 currentDate、已載入 skills）"
+    framework_mapping: "補強 CLAUDE.md 的 context 載入；不取代 Task Card 規則"
+    handling: "SessionStart 注入的資訊供參考；任務執行仍以 Task Card 為準"
+
+  pr_activity_subscription:
+    description: "mcp__github__subscribe_pr_activity 可在 session 內收到 CI / review / comment 事件"
+    framework_mapping: "訂閱層活動屬系統管理，不計入 Task Card 的 tools_used / max_tool_calls"
+    handling: "收到事件先判斷是否 actionable；若涉及 fix，走一般 Task Card 流程（不得跳過草稿審核）"
+
+  auto_compaction:
+    description: "Claude Code CLI 接近 context 上限時會自動壓縮歷史訊息"
+    framework_mapping: "與 CLAUDE.md「長對話 20 輪後摘要壓縮」並存；兩者不衝突"
+    handling: "auto-compaction 後重要決策應已寫入 memory/ 或 logs/；不依賴 session memory 跨輪保存"
+
+  deferred_tools:
+    description: "Claude Code CLI 啟動時僅暴露核心工具，其他工具透過 ToolSearch 按需載入 schema"
+    framework_mapping: "PERMISSIONS.yaml 登錄 tool_search (allow)；載入本身無副作用"
+    handling: "實際呼叫 deferred 工具仍受 allowed_tools 白名單約束"
 
 boundaries:
   refuse_when:

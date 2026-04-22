@@ -1,0 +1,236 @@
+# Tool Mapping — framework 抽象層 ↔ Claude Code CLI 實際工具對應
+#
+# 用途：framework 的 PERMISSIONS / allowed_tools 使用 snake_case 抽象名稱，
+#   保留 CLI-agnostic；實際執行時由 Claude Code CLI 提供 PascalCase 工具
+#   與 mcp__* MCP 工具。本檔負責雙向映射，validator 用來做詞彙閉包檢查。
+#
+# 最後更新：2026-04-20（Task Card 20260420-002，決策 D007）
+
+version: "1.0"
+last_updated: "2026-04-20"
+
+# === 正向對應（framework → Claude Code / MCP）===
+# validator 讀取 `permissions:` 內的 tool → 在此查詢 → 展開到實際 CC 工具列表
+framework_to_claude_code:
+  # --- 檔案讀寫 ---
+  file_read:
+    cc_tools: ["Read"]
+    write_access: false
+    description: "讀取專案內檔案"
+
+  file_search:
+    cc_tools: ["Glob", "Grep"]
+    write_access: false
+    description: "檔名 pattern 搜尋 + 內容搜尋"
+
+  file_write:
+    cc_tools: ["Write"]
+    write_access: true
+    description: "建立新檔（完整覆寫）"
+
+  file_edit:
+    cc_tools: ["Edit", "NotebookEdit"]
+    write_access: true
+    description: "對既有檔案做精確替換"
+
+  # --- Web ---
+  web_search:
+    cc_tools: ["WebSearch", "WebFetch"]
+    write_access: false
+    description: "搜尋網頁 / 抓取單一 URL"
+
+  # --- Git / Shell ---
+  git_commit_checkpoint:
+    cc_tools: ["Bash"]
+    bash_commands: ["git add", "git commit", "git status", "git diff", "git log"]
+    write_access: true
+    description: "git checkpoint 操作；禁用 push / reset --hard / force / rebase -i"
+
+  shell_readonly:
+    cc_tools: ["Bash"]
+    bash_commands: ["ls", "wc", "file", "which"]
+    write_access: false
+    description: "唯讀 shell 指令"
+
+  # --- 框架內部動作（由 file_write / file_edit 實作，這裡給權限層語意名稱）---
+  write_drafts:
+    backed_by: ["file_write", "file_edit"]
+    path_constraint: "outputs/drafts/**"
+    description: "只能寫入 outputs/drafts/"
+
+  write_logs:
+    backed_by: ["file_write", "file_edit"]
+    path_constraint: "logs/**"
+    description: "只能寫入 logs/"
+
+  create_output_files:
+    backed_by: ["file_write"]
+    path_constraint: "outputs/**"
+    description: "在 outputs/ 建立新檔"
+
+  read_memory:
+    backed_by: ["file_read"]
+    path_constraint: "memory/**"
+    description: "讀 memory 內容（寫入需 ask）"
+
+  create_task_card:
+    backed_by: ["file_write"]
+    path_constraint: "tasks/*.yaml"
+    description: "建立新 Task Card（2026-04-15 D004 升為 allow）"
+
+  modify_skills:
+    backed_by: ["file_write", "file_edit"]
+    path_constraint: "skills/**"
+    description: "修改 skills/ 下任何檔案"
+
+  modify_system_rules:
+    backed_by: ["file_write", "file_edit"]
+    path_constraint: "system/**"
+    description: "修改 system/ 下任何檔案"
+
+  modify_scripts:
+    backed_by: ["file_write", "file_edit"]
+    path_constraint: "scripts/**"
+    description: "修改 scripts/ 下驗證/測試腳本"
+
+  modify_claude_md:
+    backed_by: ["file_write", "file_edit"]
+    path_constraint: "CLAUDE.md"
+    description: "修改根層 CLAUDE.md"
+
+  write_long_term_memory:
+    backed_by: ["file_write", "file_edit"]
+    path_constraint: "memory/**"
+    description: "寫入 memory/（決策、長期 context）"
+
+  write_reports:
+    backed_by: ["file_write"]
+    path_constraint: "outputs/reports/**"
+    description: "寫入正式報告（outputs/reports/）"
+
+  install_packages:
+    cc_tools: ["Bash"]
+    bash_commands: ["npm install", "pip install", "gem install", "apt-get install"]
+    write_access: true
+    description: "安裝任何套件"
+
+  # --- Claude Code runtime 工具（2026-04-20 D007 新增登錄）---
+  sub_agent_readonly:
+    cc_tools: ["Agent"]
+    modes_allowed: ["Explore", "Plan", "general-purpose", "claude-code-guide"]
+    write_access: false
+    description: >
+      唯讀 sub-agent：只做探勘、研究、回報。禁止呼叫 Write / Edit /
+      Bash(git commit|push) / 任何 mcp__*_write / 產出 output 檔案。
+      詳見 D006。
+
+  sub_agent_with_write_access:
+    cc_tools: ["Agent"]
+    write_access: true
+    description: "sub-agent 具備寫入能力（commit / 寫檔 / 外發）— 本框架禁止"
+    banned: true
+
+  todo_update:
+    cc_tools: ["TodoWrite"]
+    write_access: false   # 僅寫入本 session 的 todo 列表，不改碼
+    description: "更新執行中任務 todo 列表（不影響專案檔案）"
+
+  user_skill_invoke:
+    cc_tools: ["Skill"]
+    write_access: true    # Skill 本身可能執行任意動作
+    description: "呼叫 Claude Code 的 user-invocable skills（/init / /simplify / /loop / /security-review 等）"
+
+  tool_search:
+    cc_tools: ["ToolSearch"]
+    write_access: false
+    description: "載入 deferred 工具 schema（本身不執行動作）"
+
+  # --- GitHub MCP（分兩類）---
+  github_read:
+    cc_tools:
+      - "mcp__github__pull_request_read"
+      - "mcp__github__issue_read"
+      - "mcp__github__list_branches"
+      - "mcp__github__list_commits"
+      - "mcp__github__list_issues"
+      - "mcp__github__list_pull_requests"
+      - "mcp__github__list_releases"
+      - "mcp__github__list_tags"
+      - "mcp__github__get_commit"
+      - "mcp__github__get_file_contents"
+      - "mcp__github__get_label"
+      - "mcp__github__get_latest_release"
+      - "mcp__github__get_me"
+      - "mcp__github__get_release_by_tag"
+      - "mcp__github__get_tag"
+      - "mcp__github__get_team_members"
+      - "mcp__github__get_teams"
+      - "mcp__github__search_code"
+      - "mcp__github__search_issues"
+      - "mcp__github__search_pull_requests"
+      - "mcp__github__search_repositories"
+      - "mcp__github__search_users"
+      - "mcp__github__subscribe_pr_activity"
+      - "mcp__github__unsubscribe_pr_activity"
+    write_access: false
+    description: "GitHub MCP 讀取與訂閱（不變更遠端狀態）"
+
+  github_write:
+    cc_tools:
+      - "mcp__github__create_pull_request"
+      - "mcp__github__update_pull_request"
+      - "mcp__github__update_pull_request_branch"
+      - "mcp__github__create_branch"
+      - "mcp__github__create_or_update_file"
+      - "mcp__github__delete_file"
+      - "mcp__github__push_files"
+      - "mcp__github__add_issue_comment"
+      - "mcp__github__add_comment_to_pending_review"
+      - "mcp__github__add_reply_to_pull_request_comment"
+      - "mcp__github__issue_write"
+      - "mcp__github__pull_request_review_write"
+      - "mcp__github__sub_issue_write"
+      - "mcp__github__enable_pr_auto_merge"
+      - "mcp__github__disable_pr_auto_merge"
+      - "mcp__github__request_copilot_review"
+      - "mcp__github__resolve_review_thread"
+      - "mcp__github__unresolve_review_thread"
+      - "mcp__github__run_secret_scanning"
+      - "mcp__github__fork_repository"
+      - "mcp__github__create_repository"
+    write_access: true
+    description: "GitHub MCP 寫入（建立 PR / 留言 / push 檔案等）— 對外動作，屬 ask 等級"
+
+  mcp_github_merge_pull_request:
+    cc_tools: ["mcp__github__merge_pull_request"]
+    write_access: true
+    description: "合併 PR — 單獨列出為 deny（由人工決策）"
+    banned: true
+
+# === 反向對應索引（Claude Code → framework）===
+# validator 若需要反查某 CC 工具屬於哪個抽象類別時使用
+# （內容由上表自動推導；此處列摘要，實際執行請用程式展開）
+claude_code_to_framework_summary:
+  Read: ["file_read"]
+  Glob: ["file_search"]
+  Grep: ["file_search"]
+  Write: ["file_write", "write_drafts", "write_logs", "create_output_files", "create_task_card", "modify_*"]
+  Edit: ["file_edit", "modify_*"]
+  NotebookEdit: ["file_edit"]
+  WebSearch: ["web_search"]
+  WebFetch: ["web_search"]
+  Bash: ["git_commit_checkpoint", "shell_readonly", "install_packages"]
+  Agent: ["sub_agent_readonly", "sub_agent_with_write_access"]
+  TodoWrite: ["todo_update"]
+  Skill: ["user_skill_invoke"]
+  ToolSearch: ["tool_search"]
+  "mcp__github__*": ["github_read", "github_write", "mcp_github_merge_pull_request"]
+
+# === Notes ===
+# 1. 本檔為 validator 唯一真實來源；PERMISSIONS.yaml 的 allow/ask/deny 條目
+#    必須存在於 framework_to_claude_code 頂層 key。
+# 2. 新增一個 Claude Code 工具或 MCP tool 時：(a) 加入本檔正向對應；
+#    (b) 在 PERMISSIONS.yaml 決定 allow/ask/deny；(c) 若屬對外動作，
+#    一併在 APPROVAL_POLICY.yaml 加 trigger。
+# 3. `banned: true` 表示該抽象即便出現在 Task Card allowed_tools 也會被
+#    validator 拒絕（等同永久 deny）。

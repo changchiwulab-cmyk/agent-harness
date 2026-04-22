@@ -1,0 +1,90 @@
+# Model Policy — 模型選擇與 fallback 策略
+# 定義 agent-harness 在不同情境下使用哪個 Claude 模型。
+# 與 COST_POLICY.md 互補：本檔管「選哪個模型」，COST_POLICY 管「怎麼省 token」。
+#
+# 最後更新：2026-04-20（由 Task Card 20260420-001 建立）
+
+version: "1.0"
+last_updated: "2026-04-20"
+
+# === 預設模型（依任務類型）===
+# Claude 4.X 系列（2026-01 起最新）：
+#   - Opus 4.7  (claude-opus-4-7)                 — 最強推理，首選
+#   - Sonnet 4.6 (claude-sonnet-4-6)              — 平衡型
+#   - Haiku 4.5  (claude-haiku-4-5-20251001)      — 快速、便宜
+defaults:
+  # 高複雜度：策略分析、決策支援、風險判斷
+  analysis:
+    primary: "claude-opus-4-7"
+    fallback: "claude-sonnet-4-6"
+    rationale: "六維評估 + 高風險假設判斷需要最強推理"
+
+  # 中等複雜度：整合資料、產出內容
+  writing:
+    primary: "claude-opus-4-7"
+    fallback: "claude-sonnet-4-6"
+    rationale: "長文產出需穩定語氣一致，Opus 4.7 品質最佳"
+
+  # 中等複雜度：資料蒐集與整合
+  research:
+    primary: "claude-sonnet-4-6"
+    fallback: "claude-opus-4-7"
+    rationale: "大量讀取 + 摘要，Sonnet 性價比最佳"
+
+  # 低到中：逐條比對、checklist
+  review:
+    primary: "claude-sonnet-4-6"
+    fallback: "claude-opus-4-7"
+    rationale: "結構化檢查，Sonnet 足夠；高風險審查升級 Opus"
+
+  # 中等複雜度：檔案整理、格式轉換、流程執行
+  ops:
+    primary: "claude-sonnet-4-6"
+    fallback: "claude-opus-4-7"
+    rationale: "多為結構化操作；複雜重構升級 Opus"
+
+# === Fallback 策略 ===
+fallback_policy:
+  # 何時 fallback：
+  triggers:
+    - "primary 模型在 Claude Code CLI 不可用"
+    - "primary 模型回傳錯誤且重試 2 次仍失敗"
+    - "使用者明確要求用 fallback 模型（成本考量）"
+  # Fallback 順序（任何任務通用）：
+  chain:
+    - "claude-opus-4-7"        # 強
+    - "claude-sonnet-4-6"      # 平衡
+    - "claude-haiku-4-5-20251001"  # 快
+  # 降級後要做的事：
+  on_downgrade:
+    - "在 audit log 的 model_used 記錄實際使用模型與降級原因"
+    - "若品質明顯下降，checkpoint 後詢問使用者是否繼續"
+
+# === 成本/速度取捨 ===
+tradeoffs:
+  opus_4_7:
+    strengths: ["推理深度", "長文一致性", "複雜指令遵循"]
+    weaknesses: ["單次成本最高", "延遲較高"]
+    use_when: "任務涉及策略判斷、多步推理、高風險輸出"
+
+  sonnet_4_6:
+    strengths: ["性價比平衡", "多數任務夠用", "延遲中等"]
+    weaknesses: ["極複雜推理略遜 Opus"]
+    use_when: "預設選項；大部分 research / writing / review / ops 任務"
+
+  haiku_4_5:
+    strengths: ["最快", "最便宜"]
+    weaknesses: ["推理深度有限", "不適合創意或策略任務"]
+    use_when: "批次格式檢查、簡單抽取、分類標籤"
+
+# === 禁用模型 ===
+# 以下模型不應在 agent-harness 內使用（太舊或已停用）
+deprecated:
+  - "claude-3-*"                 # 3.X 系列已過時
+  - "claude-sonnet-4-20250514"   # 4.0 舊快照；改用 4.6 / 4.7
+  - "claude-opus-4-6"            # 已由 Opus 4.7 取代（歷史紀錄保留不改寫）
+
+# === 覆寫 ===
+# Task Card 可在自身 YAML 內以 `model_override:` 欄位覆寫本策略，
+# 但需在 audit log 的 notes 欄位記錄覆寫原因。
+# （此為 ops / ask 等級變更，Task Card 的 approval_needed 仍適用。）
