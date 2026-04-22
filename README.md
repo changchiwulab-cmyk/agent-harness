@@ -128,7 +128,7 @@ python3 -m pip install pyyaml
 安裝後可用以下指令確認：
 
 ```bash
-python3 -c "import yaml; print(yaml.__version__)"
+./scripts/bootstrap_dev.sh --check
 ```
 
 為避免範例路徑或資料夾結構漂移，提交前先執行（且 CI 也會自動執行同組檢查）：
