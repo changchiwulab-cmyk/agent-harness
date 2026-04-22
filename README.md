@@ -88,12 +88,17 @@ agent-harness/
 
 ## 快速上手（3 步驟）
 
+（若要使用 Task Card validator，先安裝開發依賴）
+```bash
+./scripts/bootstrap_dev.sh
+```
+
 ### 1. 建立任務
 ```bash
 cp tasks/TASK_CARD_TEMPLATE.yaml tasks/2026-04-03_你的任務.yaml
 ```
 填入 `goal`、`definition_of_done`、`skill_type`。  
-`skill_type` 請使用：`research` / `writing` / `ops` / `review`。參考 `tasks/examples/` 下的範例。
+`skill_type` 請使用：`research` / `analysis` / `writing` / `ops` / `review`。參考 `tasks/examples/` 下的範例。
 
 ### 2. 執行
 在 Claude Code CLI 中 `cd <agent-harness 專案路徑>`，Claude 會自動讀取 CLAUDE.md。
@@ -105,6 +110,28 @@ cp tasks/TASK_CARD_TEMPLATE.yaml tasks/2026-04-03_你的任務.yaml
 - 草稿輸出：`outputs/drafts/`
 
 ## 提交前檢查（建議）
+
+### 開發依賴（Python）
+
+`system/validate_task_card.py` 與其測試依賴 `PyYAML`。建議先安裝開發依賴：
+
+```bash
+./scripts/bootstrap_dev.sh
+```
+
+若只想單獨安裝 `PyYAML`，可改用：
+
+```bash
+python3 -m pip install pyyaml
+```
+
+安裝後可用以下指令確認：
+
+```bash
+./scripts/bootstrap_dev.sh --check
+```
+
+此檢查會逐項確認 `requirements-dev.txt` 內的套件是否已安裝。
 
 為避免範例路徑或資料夾結構漂移，提交前先執行（且 CI 也會自動執行同組檢查）：
 
@@ -119,6 +146,20 @@ scripts/check_spec_consistency.rb
 ```bash
 ruby -e 'require "yaml"; Dir.glob("**/*.yaml").each{|p| YAML.load_file(p)}; puts "ALL_YAML_OK"'
 ```
+
+若要驗證 Task Card validator 相關測試，可執行：
+
+```bash
+python3 scripts/test_validate_task_card.py
+```
+
+若要驗證 `bootstrap_dev.sh --check` 解析邏輯，可執行：
+
+```bash
+./scripts/test_bootstrap_dev_check.sh
+```
+
+該指令已納入 `.github/workflows/ci-validation.yml`，也建議在本地 pre-commit 執行。
 
 ## 導入計畫
 
