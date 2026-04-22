@@ -142,6 +142,13 @@ class TestLoadPermissionsRegistry < Minitest::Test
     refute_nil err
     assert_match(/permissions/, err)
   end
+
+  def test_yaml_syntax_error_returns_error
+    path = write_perms("permissions:\n  allow:\n    - foo\n  ask: [unterminated\n")
+    _registered, _denied, err = load_permissions_registry(path)
+    refute_nil err
+    assert_match(/malformed YAML/, err)
+  end
 end
 
 # ── 整合測試：Task Card 違反新規則時 validator 報錯 ───────────────────────────

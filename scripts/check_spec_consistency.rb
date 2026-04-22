@@ -43,7 +43,11 @@ end
 def load_permissions_registry(path = PERMISSIONS_FILE)
   return [Set.new, Set.new, "missing #{path}"] unless File.exist?(path)
 
-  data = YAML.load_file(path)
+  begin
+    data = YAML.load_file(path)
+  rescue Psych::SyntaxError => e
+    return [Set.new, Set.new, "#{path}: malformed YAML (#{e.message})"]
+  end
   perms = data.is_a?(Hash) ? data['permissions'] : nil
   return [Set.new, Set.new, "#{path}: missing 'permissions' key"] unless perms.is_a?(Hash)
 
