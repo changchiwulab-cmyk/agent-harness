@@ -88,6 +88,11 @@ agent-harness/
 
 ## 快速上手（3 步驟）
 
+（若要使用 Task Card validator，先安裝開發依賴）
+```bash
+python3 -m pip install -r requirements-dev.txt
+```
+
 ### 1. 建立任務
 ```bash
 cp tasks/TASK_CARD_TEMPLATE.yaml tasks/2026-04-03_你的任務.yaml
