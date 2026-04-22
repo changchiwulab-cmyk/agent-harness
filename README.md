@@ -108,13 +108,19 @@ cp tasks/TASK_CARD_TEMPLATE.yaml tasks/2026-04-03_你的任務.yaml
 
 ### 開發依賴（Python）
 
-`system/validate_task_card.py` 與其測試依賴 `PyYAML`。若本機尚未安裝，請先執行：
+`system/validate_task_card.py` 與其測試依賴 `PyYAML`。建議先安裝開發依賴：
+
+```bash
+python3 -m pip install -r requirements-dev.txt
+```
+
+若只想單獨安裝 `PyYAML`，可改用：
 
 ```bash
 python3 -m pip install pyyaml
 ```
 
-可用以下指令確認：
+安裝後可用以下指令確認：
 
 ```bash
 python3 -c "import yaml; print(yaml.__version__)"
