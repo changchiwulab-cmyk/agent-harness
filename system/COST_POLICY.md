@@ -1,12 +1,28 @@
 # 成本控制策略 COST_POLICY
 
-## 當前方案（v1）
+## 當前方案（v1，Opus 4.7 baseline 更新 2026-04-20）
 
 v1 階段採用「粗略護欄 + 事後量測」策略：
 
 - **硬上限**：透過 Anthropic API dashboard 的 spending limit 設定月度/日度上限
 - **軟上限**：透過 CLAUDE.md 規則限制單一任務的工具呼叫次數與重試次數
 - **事後追蹤**：每次任務完成後在 audit log 記錄預估 token 消耗
+
+## Opus 4.7 觀測能力（2026-04-20 已知 / 待驗證）
+
+D002 (2026-04-03) 假設「Claude Code CLI 不提供即時 token 計數 API」。
+D005 覆寫此假設，改以「known unknowns」方式處理：
+
+**已知**：
+- Opus 4.7 context window 與先前世代同級（用於限制估算不需變更）
+- CLAUDE.md 的 3K / 1.5K 硬限制仍有效
+
+**待驗證（下次 retro 實測）**：
+- Opus 4.7 在 Claude Code CLI 內是否提供 per-turn token 統計
+- 若可用，是否能納入 hook，讓任務中途能觸發成本告警
+- fallback 到 Sonnet 4.6 / Haiku 4.5 的自動判斷（目前僅手動）
+
+**處置**：在確認觀測能力前，維持事後量測；MODEL_POLICY 的 fallback 仍為手動觸發。
 
 ## 行為規則
 
@@ -38,12 +54,15 @@ v1 階段採用「粗略護欄 + 事後量測」策略：
 | CLAUDE.md + GLOBAL_RULES | 控制在 3K 以內 | 硬限制 |
 | 單一 skill prompt | 控制在 1.5K 以內 | 硬限制 |
 
-## 模型路由規則（v2 準備）
+## 模型路由規則（v2 — 2026-04-20 更新）
 
-v1 先用單一模型（Claude）。未來如需降本：
-- 分類、抽取、格式檢查 → 便宜模型（Haiku 等級）
-- 規劃、推理、整合分析 → 強模型（Sonnet/Opus 等級）
-- 路由判斷本身 → 便宜模型
+本區塊的模型選擇與 fallback 策略已提升為獨立檔案 `system/MODEL_POLICY.yaml`（D005）。
+COST_POLICY 僅保留「節省 token 的做法」，模型路由細節不在此重複。
+
+摘要（完整內容見 MODEL_POLICY.yaml）：
+- 預設 Opus 4.7（分析 / 寫作）或 Sonnet 4.6（研究 / 審查 / 操作）
+- Fallback chain：Opus 4.7 → Sonnet 4.6 → Haiku 4.5
+- 降級時需在 audit log 的 `model_used` 欄位記錄實際模型與原因
 
 ## 事後量測流程（每週）
 

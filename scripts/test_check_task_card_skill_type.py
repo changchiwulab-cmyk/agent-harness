@@ -12,6 +12,7 @@ from check_task_card_skill_type import (
     EXCLUDE_NAMES,
     collect_task_cards,
     extract_skill_type,
+    extract_task_id,
 )
 
 
@@ -85,6 +86,71 @@ class TestCollectTaskCards(unittest.TestCase):
             stem_upper = card.stem.upper().replace("-", "_").replace(" ", "_")
             for excl in EXCLUDE_NAMES:
                 self.assertNotIn(excl, stem_upper, f"{card} should be excluded")
+
+
+class TestExtractTaskId(unittest.TestCase):
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp())
+
+    def _write(self, name: str, content: str) -> Path:
+        p = self.tmp / name
+        p.write_text(content, encoding="utf-8")
+        return p
+
+    def test_basic_task_id(self):
+        path = self._write("t.yaml", 'task_id: "20260420-001"\nskill_type: ops\n')
+        self.assertEqual(extract_task_id(path), "20260420-001")
+
+    def test_missing_returns_none(self):
+        path = self._write("t.yaml", "goal: test\n")
+        self.assertIsNone(extract_task_id(path))
+
+    def test_single_quoted_value(self):
+        path = self._write("t.yaml", "task_id: '20260420-002'\n")
+        self.assertEqual(extract_task_id(path), "20260420-002")
+
+    def test_inline_comment_stripped(self):
+        path = self._write("t.yaml", "task_id: 20260420-003  # comment\n")
+        self.assertEqual(extract_task_id(path), "20260420-003")
+
+
+class TestTaskIdUniqueness(unittest.TestCase):
+    """End-to-end test: run the main checker against a temp tasks/ dir."""
+
+    def setUp(self):
+        import shutil
+        self.tmp = Path(tempfile.mkdtemp())
+        (self.tmp / "tasks").mkdir()
+        (self.tmp / "scripts").mkdir()
+        script_src = Path(__file__).parent / "check_task_card_skill_type.py"
+        shutil.copy(script_src, self.tmp / "scripts" / "check_task_card_skill_type.py")
+
+    def _write_card(self, name, task_id, skill_type="ops"):
+        content = f'task_id: "{task_id}"\nskill_type: {skill_type}\n'
+        (self.tmp / "tasks" / name).write_text(content, encoding="utf-8")
+
+    def _run(self):
+        import subprocess
+        return subprocess.run(
+            [sys.executable, "scripts/check_task_card_skill_type.py"],
+            cwd=self.tmp,
+            capture_output=True,
+            text=True,
+        )
+
+    def test_unique_task_ids_pass(self):
+        self._write_card("a.yaml", "20260420-U01")
+        self._write_card("b.yaml", "20260420-U02")
+        result = self._run()
+        self.assertEqual(result.returncode, 0, f"stdout: {result.stdout}\nstderr: {result.stderr}")
+
+    def test_duplicate_task_ids_fail(self):
+        self._write_card("a.yaml", "20260420-DUP")
+        self._write_card("b.yaml", "20260420-DUP")
+        result = self._run()
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("20260420-DUP", result.stderr)
+        self.assertIn("已在", result.stderr)
 
 
 if __name__ == "__main__":

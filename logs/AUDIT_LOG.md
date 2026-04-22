@@ -5,6 +5,16 @@
 
 ---
 
+## 模型版本遷移紀錄
+
+| 日期 | 遷移項 | 說明 |
+|------|--------|------|
+| 2026-04-20 | `claude-opus-4-6` / `claude-sonnet-4-6` → `claude-opus-4-7`（預設） | Opus 4.7 為 2026-01 起最新模型；見 `system/MODEL_POLICY.yaml` 與 Task Card `20260420-001`。**歷史紀錄不竄改**，以下 entries 的 `model_used` 保留原始值。|
+
+> 紀錄格式範例欄位 `model_used` 先前寫 `claude-sonnet-4-20250514`；自 2026-04-20 起改以 `claude-opus-4-7` / `claude-sonnet-4-6` / `claude-haiku-4-5-20251001` 等短格式（依 `MODEL_POLICY.yaml` 登錄）。
+
+---
+
 ## 紀錄格式
 
 ```yaml
@@ -227,6 +237,74 @@
   error_summary: ""
   estimated_tokens: "~12K"
   notes: "4 大客戶開發管道（轉介紹/內容行銷/直接開發/策略合作），每管道含描述/適用場景/2-3 步驟/預期效果。三層標記完整，含優先行動建議。DoD 4/4 通過。"
+```
+
+---
+
+```yaml
+- task_id: "20260420-002"
+  date: "2026-04-20"
+  skill_type: "ops"
+  goal: "讓 agent-harness 的 PERMISSIONS / APPROVAL / AGENT_CONTEXT / validator 反映 Claude Code CLI 的實際工具與流程，補齊第二輪盤點的 HIGH + MED 缺口"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 14
+    - tool_name: "file_write"
+      call_count: 8
+    - tool_name: "file_edit"
+      call_count: 11
+    - tool_name: "git_commit_checkpoint"
+      call_count: 4
+    - tool_name: "shell_readonly"
+      call_count: 8
+  checkpoints: 4
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/harness-runtime-alignment-summary.md"
+  error_summary: ""
+  estimated_tokens: "~71K"
+  notes: >
+    Phase 1-4 全部完成。新增 TOOL_MAPPING.yaml（工具映射）、D006（sub-agent scope）、
+    D007（tool registry closure）；擴充 PERMISSIONS / APPROVAL_POLICY / AGENT_CONTEXT；
+    更新 context.md、research SKILL.md（knowledge cutoff 指引）；validator 加閉包規則
+    + risk/approval 交叉 + task_id 唯一（Ruby 23 tests / Python 19 tests / 全 pass）；
+    3 類 fail-case 驗證通過。CLAUDE.md 4 處建議 diff 在 outputs/drafts/ 等人工確認。
+    四層 gate 全 pass。
+```
+
+---
+
+```yaml
+- task_id: "20260420-001"
+  date: "2026-04-20"
+  skill_type: "ops"
+  goal: "將 agent-harness 架構與 Opus 4.7 對齊，完成相容性盤點後的分階段優化"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 18
+    - tool_name: "file_edit"
+      call_count: 6
+    - tool_name: "file_write"
+      call_count: 4
+    - tool_name: "git_commit_checkpoint"
+      call_count: 4
+    - tool_name: "sub_agent (Haiku 4.5)"
+      call_count: 1
+  checkpoints: 4
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/opus-4-7-migration-summary.md"
+  error_summary: ""
+  estimated_tokens: "~55K"
+  notes: >
+    Phase 1-3 全部完成；CLAUDE.md 僅產草稿到 outputs/drafts/。新增
+    system/MODEL_POLICY.yaml 與 D005 決策紀錄（部分覆寫 D002 token API 假設，
+    D002 原文保留）。CI 在 PR #32 2 秒內失敗但本地全通過，研判 runner infra
+    問題（使用者選擇忽略）。四層 gate 全 pass。
 ```
 
 ---

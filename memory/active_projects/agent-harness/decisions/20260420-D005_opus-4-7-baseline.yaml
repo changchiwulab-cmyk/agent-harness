@@ -1,0 +1,53 @@
+decision_id: "20260420-D005"
+date: "2026-04-20"
+project: "agent-harness"
+
+context: >
+  Claude Opus 4.7 於 2026-01 成為最新模型。agent-harness 2026-04-20 相容性盤點
+  (Task Card 20260420-001) 結論：架構整體相容 (YELLOW)，無 API / schema / tool
+  衝突；但有兩類需處理項目：
+  (1) 缺少模型選擇與 fallback 政策；audit log 使用 claude-sonnet-4-6 / claude-opus-4-6，
+      沒有明文「預設用哪個、何時 fallback、何時棄用」。
+  (2) D002 (2026-04-03) 假設「Claude Code CLI 不提供即時 token 計數 API」，
+      此假設在 Opus 4.7 時代需要重新驗證；但不應改寫 D002 原文（審計原則）。
+
+options_considered:
+  - option: "不訂 model policy，延用隱性預設"
+    pros: "零改動"
+    cons: "每個任務都要自行選模型；fallback 行為不一致；audit 無法追溯"
+
+  - option: "訂 MODEL_POLICY.yaml + 覆寫 D002"
+    pros: "明確預設 / fallback 鏈；Task Card 可覆寫；audit log 可追溯"
+    cons: "需要新增一份 system/ 檔案（ask 級別變更）"
+
+  - option: "改寫 D002 原文"
+    pros: "單一事實來源"
+    cons: "違反決策審計原則（歷史決策不竄改）；讓 revisit_trigger 追溯失效"
+
+decision: >
+  採第二選項：新增 system/MODEL_POLICY.yaml 並以本 D005 覆寫 D002 的舊假設。
+  D002 保留 status: active 但視為已被 D005 覆寫（token 追蹤仍待驗證，
+  但不再假設「無即時 API」）。
+
+reasoning: >
+  (1) MODEL_POLICY.yaml 讓模型選擇可追溯、可 fallback，填補 v1 的一個隱性假設；
+  (2) 用「新決策覆寫舊決策」而非「修改舊決策原文」，符合 GLOBAL_RULES 的
+      記憶寫入規則（長期記憶需人工確認 + 不竄改歷史）；
+  (3) 預設選 Opus 4.7 而非 Sonnet：agent-harness 任務多為策略 / 分析 / review，
+      錯誤成本 > 單次推理成本；research 類任務例外，預設 Sonnet。
+
+risk: >
+  (a) Opus 4.7 在 Claude Code CLI 的可用性未實測 → 靠 fallback chain 緩解；
+  (b) 預設 Opus 可能在簡單任務超支 → 已在 MODEL_POLICY.yaml 為 research/ops/review
+      預設 Sonnet；
+  (c) D002 token API 假設若已失效而未更新，可能錯過即時成本觀測機會
+      → 列入 COST_POLICY.md 的 known unknowns，下次 retro 實測。
+
+revisit_trigger: >
+  - Opus 4.7 實測 fallback 觸發率 > 20%（代表可用性不穩）
+  - 任何任務因預設選錯模型導致成本超標 2 倍以上
+  - 新模型發佈（Opus 4.8+ / Sonnet 4.7+）
+
+related_task: "20260420-001"
+supersedes: ["20260403-D002 (部分覆寫：token API 假設)"]
+status: "active"

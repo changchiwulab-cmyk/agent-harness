@@ -1,0 +1,92 @@
+decision_id: "20260420-D006"
+date: "2026-04-20"
+project: "agent-harness"
+
+context: >
+  agent-harness v2 的 context.md line 49 寫「單一核心 agent，不做 multi-agent swarm」。
+  2026-04-20 第一輪相容性任務 (20260420-001) 為了在時間內盤點，實際使用了
+  Haiku 4.5 sub-agent (Explore 模式) 執行研究，與上述規則在字面上有矛盾。
+  第二輪深度盤點 (20260420-002) 的 24 項 finding 中，HIGH #4「sub-agent 使用與規則衝突」
+  需要明確政策。使用者 2026-04-20 透過 AskUserQuestion 決定：放寬為「允許唯讀 sub-agent」。
+
+options_considered:
+  - option: "維持現狀：嚴格禁止任何 sub-agent"
+    pros: "最簡單；與 context.md 字面一致"
+    cons: >
+      與 Claude Code CLI 原生能力（Agent tool / Explore / Plan）相衝；
+      第一輪已經實測 Haiku sub-agent 對探勘任務有明顯加速，禁止等於放棄一個安全工具；
+      且 Task Card 20260420-001 的 execution log 已記錄 sub_agent 呼叫，形成既成事實。
+
+  - option: "放寬為允許唯讀 sub-agent，禁止 multi-agent swarm（本決策）"
+    pros: >
+      (a) 精準化「不做 multi-agent swarm」的真正意義 ＝ 不做多 agent 長期分工協作；
+      (b) Explore / Plan / general-purpose / claude-code-guide 等唯讀 sub-agent
+          安全性可控，只做探勘、不改碼、不外發；
+      (c) 保留主 agent 單一決策點，所有寫入/對外動作仍只能由主 agent 執行。
+    cons: "需要清楚定義「唯讀」的邊界，避免 sub-agent 被誤用寫入"
+
+  - option: "完全開放，允許 sub-agent 寫入"
+    pros: "最大化能力"
+    cons: >
+      嚴重違反 v2「單一決策點」原則；外部動作審核鏈失效；與 CLAUDE.md 三條硬規則
+      中的「對外動作只產出草稿」衝突。
+
+decision: >
+  採第二選項。定義如下：
+
+  (A) 允許（唯讀 sub-agent）：
+      - Agent tool，subagent_type 限定：Explore / Plan / general-purpose / claude-code-guide
+      - 工具白名單：Read / Glob / Grep / WebSearch / WebFetch / Bash（唯讀指令如 ls/wc/file/which）
+      - 產出形式：僅回報文字摘要給主 agent，由主 agent 決定後續動作
+
+  (B) 禁止（sub-agent 寫入）：
+      - 呼叫 Write / Edit / NotebookEdit
+      - 呼叫 Bash 的寫入型指令（git commit / git push / rm / mkdir / install 等）
+      - 呼叫任何 mcp__*_write 工具（GitHub PR/issue 寫入、檔案 push、merge）
+      - 產出 outputs/ 或 logs/ 檔案
+      - 代表主 agent 做對外動作（email / 社群發文 / 資料變更）
+
+  (C) 禁止（multi-agent swarm）：
+      - 多個 sub-agent 長期分工協作、互傳訊息、共同維護狀態
+      - 遞迴 sub-agent（sub-agent 內再 spawn sub-agent）
+      - 背景常駐 agent
+
+  (D) 數量與時序：
+      - 同一 Task Card 內的 sub-agent 呼叫次數應記錄於 execution log 的 tools_used；
+      - 並行呼叫多個唯讀 sub-agent 做不同面向探勘是允許的（如本次盤點 2 個並行）；
+      - 不得讓 sub-agent 自行持續運行或跨 Task Card 存活。
+
+reasoning: >
+  (1) 「不做 multi-agent swarm」的原始意圖是避免多 agent 互相協作造成責任分散、
+      審核鏈失效；而非禁止使用 sub-agent 做探勘。本決策將規則精準化到「寫入 /
+      協作」兩個維度，保留探勘能力。
+  (2) Claude Code CLI 的 Agent tool 本來就設計為短生命週期、single-turn、
+      由主 agent 協調。使用 Explore 類 sub-agent 符合 CLI 的原生設計，
+      不屬於 swarm pattern。
+  (3) 唯讀限制讓 sub-agent 的失敗爆炸半徑為零：最壞情況是回報錯誤摘要，
+      由主 agent 的 gate 層 (system/GATE_POLICY.yaml) 捕捉。
+  (4) 既存 Task Card 20260420-001 已使用 Haiku sub-agent 且通過四層 gate，
+      實測安全；本決策形式化該實踐。
+
+risk: >
+  (a) sub-agent 被誤用寫入 → 由 PERMISSIONS.yaml 的 sub_agent_with_write_access: deny
+      攔截；主 agent 的 prompt 應明確寫「只做研究與回報」。
+  (b) sub-agent 探勘品質不如主 agent → 用於研究性任務、盤點、檔案搜尋；
+      決策與產出仍由主 agent 完成。
+  (c) 多個並行 sub-agent 可能產生 context 衝突的回報 → 主 agent 需做合併與仲裁；
+      若衝突嚴重，觸發 CLAUDE.md 「連續失敗 3 次」規則停下。
+
+revisit_trigger: >
+  - sub-agent 誤用寫入事件發生（即便因 deny 被擋）
+  - 某 Task Card 因 sub-agent 誤報導致 gate 失敗 > 2 次
+  - Claude Code CLI 推出新的 sub-agent 模式（如 persistent agent）需重新評估
+
+related_task: "20260420-002"
+supersedes: []
+amends:
+  - ref: "memory/active_projects/agent-harness/context.md (line 49)"
+    change: >
+      「單一核心 agent，不做 multi-agent swarm」精修為
+      「不做 multi-agent swarm（多 agent 分工長期協作）；
+      允許唯讀 sub-agent 做探勘，規範見 D006」
+status: "active"
