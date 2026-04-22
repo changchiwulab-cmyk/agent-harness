@@ -35,6 +35,96 @@
 ---
 
 ```yaml
+- task_id: "20260409-001"
+  date: "2026-04-22"
+  skill_type: "review"
+  goal: "重新驗證 v2.0 系統全流程（補跑）"
+  status: "partial"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 8
+    - tool_name: "bash_grep"
+      call_count: 5
+    - tool_name: "scripts/check_spec_consistency.rb"
+      call_count: 1
+    - tool_name: "ruby_yaml_parse"
+      call_count: 1
+  checkpoints: 0
+  approval_needed: false
+  approval_given: true
+  output_path: "logs/runs/20260409-001_system-validation.re-run.yaml"
+  error_summary: ""
+  estimated_tokens: "low"
+  notes: "發現 drift：FAILURE_TAXONOMY 現為 15 項但 GLOBAL_RULES.md 仍寫 14 種，已記錄建議修正"
+```
+
+---
+
+```yaml
+- task_id: "20260404-R01"
+  date: "2026-04-22"
+  skill_type: "research"
+  goal: "補產缺失的 tools-inventory 草稿"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+  checkpoints: 0
+  approval_needed: false
+  approval_given: true
+  output_path: "outputs/drafts/solo-company-tools-inventory.md"
+  error_summary: ""
+  estimated_tokens: "medium"
+  notes: "涵蓋 6 類別、30+ 工具、含建議配置（USD < 150/月）；未動用 web_search"
+```
+
+---
+
+```yaml
+- task_id: "20260404-S01"
+  date: "2026-04-22"
+  skill_type: "research"
+  goal: "補產缺失的 AI 時代一人公司策略草稿"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+  checkpoints: 0
+  approval_needed: false
+  approval_given: true
+  output_path: "outputs/drafts/ai-era-solo-business-strategy.md"
+  error_summary: ""
+  estimated_tokens: "medium"
+  notes: "5 商業模式評估 + 台越雙市場機會 + 12 個月路徑；首推 Productized Consulting"
+```
+
+---
+
+```yaml
+- task_id: "20260415-A01"
+  date: "2026-04-22"
+  skill_type: "analysis"
+  goal: "驗證 create_task_card 權限升級建議是否已落實"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+  checkpoints: 0
+  approval_needed: false
+  approval_given: true
+  output_path: "logs/runs/20260415-A01_verification.yaml"
+  error_summary: ""
+  estimated_tokens: "low"
+  notes: "3 項建議（PERMISSIONS / APPROVAL_POLICY / D004）全部落實，閉環驗證 pass"
+```
+
+---
+
+```yaml
 - task_id: "20260404-O02"
   date: "2026-04-04"
   skill_type: "ops"

@@ -1,0 +1,83 @@
+# Execution Log — v2.0 系統全流程驗證（2026-04-22 重新驗證）
+# 原執行紀錄：logs/runs/20260409-001_system-validation.yaml
+# 本次為補跑（使用者要求 4 張 Task Card 依序實跑），在原紀錄之外獨立保留
+
+execution_log:
+  run_id: "RUN-20260422-001"
+  task_id: "20260409-001"
+  skill_type: "review"
+  started_at: "2026-04-22 00:00"
+  ended_at: "2026-04-22 00:10"
+  status: "partial"
+
+  tools_used:
+    - tool: file_read
+      call_count: 8
+    - tool: bash_grep
+      call_count: 5
+    - tool: scripts/check_spec_consistency.rb
+      call_count: 1
+    - tool: ruby_yaml_parse
+      call_count: 1
+
+  checkpoints: []
+
+  token_estimate:
+    input: 0
+    output: 0
+    total: 0
+
+  approvals:
+    - action: "Re-run Task Card 20260409-001 為驗證模式"
+      status: "approved"
+      approved_by: "human"
+      timestamp: "2026-04-22"
+
+  output_path: "logs/runs/20260409-001_system-validation.re-run.yaml"
+  error_summary: ""
+
+  gate_results:
+    schema_check: "pass"
+    rule_check: "pass"
+    completion_check: "partial"
+    risk_check: "pass"
+
+  # --- 逐條 DoD 驗證結果 ---
+  dod_verification:
+    - item: "EXECUTION_LOG_SCHEMA.yaml 欄位完整，可被用來產出一筆範例 execution log"
+      status: "pass"
+      evidence: "本檔即依 schema 產出；schema 含 run_id/task_id/skill_type/timestamps/status/tools_used/checkpoints/approvals/output_path/gate_results/notes"
+
+    - item: "APPROVAL_POLICY.yaml 的 7 個觸發條件與 PERMISSIONS.yaml 的 ask 清單一致"
+      status: "pass"
+      evidence: "APPROVAL_POLICY 7 triggers 中，4 條（修改 system/、skills/、memory/、寫正式報告）對應 PERMISSIONS ask 清單的 modify_system_rules/modify_skills/write_long_term_memory/write_reports；其餘 3 條（risk>=high、對外動作、新 Task Card risk>=high）為橫切條件，不在 ask 清單也合理"
+      observation: "PERMISSIONS ask 清單中 install_packages 與 modify_claude_md 未在 APPROVAL_POLICY 明列對應 trigger；但 modify_claude_md 可歸類於 system/ 修改的延伸"
+
+    - item: "FAILURE_TAXONOMY.yaml 包含 14 種失敗模式，與原 GLOBAL_RULES.md 一一對應"
+      status: "partial"
+      evidence: "實際檢測 FAILURE_TAXONOMY.yaml 共 15 種（SPEC 4 + COORD 4 + VAL 3 + SEC 4）"
+      drift_found: "GLOBAL_RULES.md L48 仍寫「14 種常見失敗模式」，但 FAILURE_TAXONOMY.yaml 實際為 15 種（SEC 類從 3 擴到 4，新增 SEC-04 幻覺驅動行動）。數量不一致屬於漂移，但為「追加」非「遺漏」，所有原分類都被覆蓋"
+      recommended_fix: "更新 GLOBAL_RULES.md 「14 種」為「15 種」"
+
+    - item: "GATE_POLICY.yaml 四層皆有 rollback 定義"
+      status: "pass"
+      evidence: "grep -n rollback: 回傳 4 行（L17/29/39/49），四層 gate 完整覆蓋"
+
+    - item: "skills/ops/eval_examples.md 結構與其他三個 skill 的 eval_examples 一致"
+      status: "pass"
+      evidence: "5 個 eval_examples 均具「好的輸出範例 / 壞的輸出範例」雙層結構，ops 在格式上與 research/analysis/writing/review 對齊"
+
+    - item: "CLAUDE.md 執行流程引用了 APPROVAL_POLICY 和 EXECUTION_LOG_SCHEMA"
+      status: "pass"
+      evidence: "CLAUDE.md L19 引用 APPROVAL_POLICY.yaml（步驟 3）與 EXECUTION_LOG_SCHEMA.yaml（步驟 8）"
+
+    - item: "README.md 版本為 v2.0，架構圖為十六模組"
+      status: "pass"
+      evidence: "README L1: 'Agent Harness v2.0'；L11: '架構：三平面、十六模組'"
+
+  notes: |
+    本次重新驗證在原 2026-04-09 首次驗證基礎上補跑，主要發現一處 drift：
+    FAILURE_TAXONOMY.yaml 已從 14 → 15 項（新增 SEC-04 後再追加），
+    但 GLOBAL_RULES.md 文字敘述未同步更新。
+    建議：單獨建立 retro/fix Task Card 校準，不在本次修正（避免範圍擴張）。
+    CI 檢查（scripts/check_spec_consistency.rb）全通過；YAML 全可解析（ALL_YAML_OK）。
