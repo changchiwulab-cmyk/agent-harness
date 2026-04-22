@@ -159,6 +159,8 @@ python3 scripts/test_validate_task_card.py
 ./scripts/test_bootstrap_dev_check.sh
 ```
 
+該指令也建議納入 CI / 本地 pre-commit。
+
 ## 導入計畫
 
 ### 第 1 週：跑通骨架
