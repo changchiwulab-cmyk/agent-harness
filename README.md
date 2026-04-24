@@ -106,6 +106,12 @@ cp tasks/TASK_CARD_TEMPLATE.yaml tasks/2026-04-03_你的任務.yaml
 
 ## 提交前檢查（建議）
 
+### skill_type 文件顯示順序規範
+
+為避免文件與模板漂移，凡是列舉 `skill_type` 的地方，請統一使用以下順序：
+
+`research` / `writing` / `ops` / `review` / `analysis`
+
 為避免範例路徑或資料夾結構漂移，提交前先執行（且 CI 也會自動執行同組檢查）：
 
 ```bash
