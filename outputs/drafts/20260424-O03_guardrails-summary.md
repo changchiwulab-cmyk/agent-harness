@@ -12,13 +12,18 @@
 | `scripts/test_check_context_budget.rb` | 8 runs / 11 assertions，涵蓋空檔、ASCII、CJK、邊界四捨五入 |
 | `.github/workflows/spec-consistency.yml` | 新增 `Context budget check` step（先跑 test，再跑 check） |
 
-### 當前預算狀態
+### 當前預算狀態（language-aware 估算）
 ```
-CLAUDE.md               ~312 tokens
-system/GLOBAL_RULES.md  ~242 tokens
-TOTAL                   ~554 tokens (budget 3000)
+CLAUDE.md               ~606 tokens
+system/GLOBAL_RULES.md  ~591 tokens
+TOTAL                   ~1197 tokens (budget 3000)
 ```
-餘裕 ~2,446 tokens（使用率 18.5%）。
+餘裕 ~1,803 tokens（使用率 ≈40%）。
+
+> **修訂記錄（2026-04-24，PR #49 review 回應）**：
+> 初版用 `char/4` 粗估，對 CJK 嚴重低估（PR #49 Codex P2 review）。
+> 已改為 language-aware：ASCII `/ 4` + 非 ASCII `× 1`（保守上界，避免假陰性）。
+> 初版估值 554 / 3000 → 修訂後 1197 / 3000，差距 ×2.16。
 
 ### Execution Log Schema 收斂決策
 - **選項**：A. Enforce ／ B. Deprecate ／ C. Narrow Scope
@@ -50,5 +55,5 @@ ruby YAML parse loop                         → ALL_YAML_OK
 ```
 
 ## 延伸觀察
-- char/4 對純 CJK 內容是「過度低估」（Claude/GPT tokenizer 實測 CJK 常 1 char ≈ 1 token）。目前估值 554 vs 預算 3000 餘裕充足，粗估已夠；未來若逼近上限，可換成更精確的 tokenizer-based 估算
+- language-aware 估算仍是上界估，真實 tokenizer 值會略低於此；若未來逼近 3K 需精確計量，可換用 tiktoken-ruby 或 Anthropic tokenizer
 - D006 設有 revisit_trigger：未來 2 筆 failed/partial 任務未寫 runs/ → 升級為 enforce

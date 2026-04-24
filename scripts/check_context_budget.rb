@@ -3,12 +3,16 @@
 
 # Context budget check — 驗證 CLAUDE.md + GLOBAL_RULES.md 加總不超過 3,000 tokens。
 # 依據：CLAUDE.md「Context 硬限制」段落。
-# 粗估：token ≈ 字元數 / 4（中英混合語料經驗值）。
+#
+# 估算法（language-aware，保守上界）：
+#   - ASCII 字元（codepoint < 128）：每 4 個字元 ≈ 1 token（英文/程式碼經驗值）
+#   - 非 ASCII 字元（CJK、emoji、全形符號）：每個字元 ≈ 1 token（保守上界）
+#   此做法避免 char/4 對中文嚴重低估造成假陰性。
 #
 # exit 0 = 通過；exit 1 = 超限或檔案缺失。
 
 TOKEN_BUDGET = 3_000
-CHARS_PER_TOKEN = 4
+ASCII_CHARS_PER_TOKEN = 4
 TARGET_FILES = [
   'CLAUDE.md',
   'system/GLOBAL_RULES.md'
@@ -17,9 +21,18 @@ TARGET_FILES = [
 def estimate_tokens(path)
   return nil unless File.exist?(path)
 
-  # 以字元數粗估，排除純 ASCII 空白帶來的低估；統一以 size 為基準
   content = File.read(path, encoding: 'UTF-8')
-  (content.length.to_f / CHARS_PER_TOKEN).ceil
+  ascii_count = 0
+  non_ascii_count = 0
+  content.each_char do |ch|
+    if ch.ord < 128
+      ascii_count += 1
+    else
+      non_ascii_count += 1
+    end
+  end
+
+  ((ascii_count.to_f / ASCII_CHARS_PER_TOKEN) + non_ascii_count).ceil
 end
 
 if __FILE__ == $PROGRAM_NAME
@@ -37,7 +50,7 @@ if __FILE__ == $PROGRAM_NAME
     total += est
   end
 
-  puts 'Context budget estimate:'
+  puts 'Context budget estimate (ASCII / 4 + non-ASCII × 1):'
   per_file.each { |path, tokens| puts format('  %-28s  ~%d tokens', path, tokens) }
   puts format('  %-28s  ~%d tokens (budget %d)', 'TOTAL', total, TOKEN_BUDGET)
 
