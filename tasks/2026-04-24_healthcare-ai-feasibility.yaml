@@ -1,0 +1,56 @@
+# Task Card: 醫療健康產業 AI 導入可行性分析
+# 建立日期：2026-04-24
+
+task_id: "20260424-H01"
+date: "2026-04-24"
+status: "pending"
+
+# === 任務定義 ===
+goal: "評估台灣醫療健康產業 AI 顧問服務的可行性，比較診所、醫美、長照三個子市場的進入機會"
+context: >
+  台灣醫療產業正面臨數位轉型壓力，健保給付壓縮、人力短缺、高齡化需求上升。
+  AI 應用（病歷摘要、預約排程優化、患者溝通自動化）具有明確痛點，
+  但醫療法規（個資法、醫療法）與採購週期形成進入障礙。
+  需分析哪個子市場風險/報酬最適合一人顧問切入。
+input_data:
+  - "memory/user_prefs.md"
+  - "memory/active_projects/agent-harness/context.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "診所、醫美、長照三個子市場各自的市場規模、決策週期、客單價估算"
+  - "每個子市場 AI 應用的法規限制與合規風險說明"
+  - "六維評分矩陣（價值、成本、風險、可行性、執行難度、預期 ROI）"
+  - "不做此市場的理由也納入分析（機會成本對比）"
+  - "結論清楚指出推薦優先進入的子市場與原因"
+  - "事實 / 合理推論 / 待驗證項目 / 高風險假設清楚分開標記"
+  - "輸出格式符合 skills/analysis/SKILL.md 規範"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260424-O05_healthcare-ai-feasibility.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "web_search"
+  - "file_write"
+
+# === 成本控制 ===
+max_tool_calls: 6
+max_retries: 3
+max_web_searches: 3
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
