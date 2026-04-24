@@ -120,6 +120,16 @@ scripts/check_spec_consistency.rb
 ruby -e 'require "yaml"; Dir.glob("**/*.yaml").each{|p| YAML.load_file(p)}; puts "ALL_YAML_OK"'
 ```
 
+若要驗證單張 Task Card：
+
+```bash
+python system/validate_task_card.py tasks/your-task.yaml
+```
+
+## 安全政策
+
+安全議題回報流程見 [SECURITY.md](SECURITY.md)。
+
 ## 導入計畫
 
 ### 第 1 週：跑通骨架

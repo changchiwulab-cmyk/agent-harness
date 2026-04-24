@@ -32,6 +32,31 @@
 
 <!-- 新紀錄加在這裡 -->
 
+```yaml
+- task_id: "20260424-O01"
+  date: "2026-04-24"
+  skill_type: "ops"
+  goal: "收斂重複的 task card 驗證器為單一事實來源，補 SECURITY 發現性，清理重複 CI"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 2
+    - tool_name: "file_edit"
+      call_count: 3
+    - tool_name: "bash"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/20260424-O01_cleanup-summary.md; scripts/ (-2); .github/workflows/ (-1, ~1); README.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "Stage 1 of C 全面優化。DoD 8/8 通過。sample-data 發現非空已於 DoD 說明；Python CI step 全撤。spec-consistency / ruby tests / yaml parse 全綠。"
+```
+
 ---
 
 ```yaml
