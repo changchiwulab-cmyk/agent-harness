@@ -33,6 +33,33 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260424-O02"
+  date: "2026-04-24"
+  skill_type: "ops"
+  goal: "將 token-calibration-table 晉升為治理 artifact，調整 INTAKE_FLOW 主路為快速路徑，正式歸檔 WEEKLY_REVIEW_TEMPLATE"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 3
+    - tool_name: "file_edit"
+      call_count: 4
+    - tool_name: "bash"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/reports/token-calibration-v1.md; outputs/drafts/20260424-O02_restructure-summary.md; system/INTAKE_FLOW.md; system/COST_POLICY.md; system/RETRO_FLOW.md; tasks/archived/WEEKLY_REVIEW_TEMPLATE.md; README.md"
+  error_summary: ""
+  estimated_tokens: "~15K"
+  notes: "Stage 2 of C 全面優化。DoD 8/8 通過。token-calibration 正式晉升（drafts→reports）；INTAKE_FLOW fast-path 升為預設主路；WEEKLY_REVIEW_TEMPLATE git mv 至 tasks/archived/。歷史引用保留，活性引用全部同步。"
+```
+
+---
+
+```yaml
 - task_id: "20260424-O01"
   date: "2026-04-24"
   skill_type: "ops"

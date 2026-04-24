@@ -54,7 +54,7 @@ agent-harness/
 ├── tasks/
 │   ├── TASK_CARD_TEMPLATE.yaml
 │   ├── DECISION_LOG_TEMPLATE.yaml  ← 決策紀錄模板（v1.5 新增）
-│   ├── WEEKLY_REVIEW_TEMPLATE.md   ← 週回顧模板（v1.5 新增）
+│   ├── archived/              ← 已 deprecated 模板（如 WEEKLY_REVIEW_TEMPLATE）
 │   └── examples/              ← 填好的範例
 ├── skills/
 │   ├── research/
