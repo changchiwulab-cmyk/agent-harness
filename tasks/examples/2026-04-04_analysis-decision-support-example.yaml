@@ -1,0 +1,49 @@
+# 範例 Task Card — 市場進入策略分析
+# 這是 analysis skill 的範例
+
+task_id: "20260404-004"
+date: "2026-04-04"
+status: "pending"
+
+# === 任務定義 ===
+goal: "比較越南市場兩種進入策略，提供可執行的決策建議"
+context: "已有研究初稿與提案草案，需要進一步做取捨分析，支援下週管理會議決策"
+input_data:
+  - "tasks/examples/sample-data/vietnam-ai-tools-research-draft.md"
+  - "tasks/examples/2026-04-04_writing-proposal-example.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "提出至少 2 個可行策略選項，並定義評估準則"
+  - "以成本、時程、風險、預期效益進行結構化比較"
+  - "清楚標示假設、限制與不確定性"
+  - "輸出包含建議方案與不採用方案的理由"
+  - "輸出為 Markdown，符合 analysis skill 格式"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "vietnam-market-entry-analysis.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+
+# === 成本控制 ===
+max_tool_calls: 5
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
