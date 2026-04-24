@@ -8,7 +8,7 @@ errors = []
 
 ALLOWED_STATUS = %w[pending in_progress checkpoint review done failed].freeze
 ALLOWED_RISK = %w[low medium high critical].freeze
-ALLOWED_SKILL = %w[research writing ops review analysis].freeze
+ALLOWED_SKILL = %w[research analysis writing ops review].freeze
 REQUIRED_FIELDS = %w[
   task_id
   date
