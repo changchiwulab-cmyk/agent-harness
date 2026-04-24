@@ -4,7 +4,7 @@
 execution_log:
   run_id: "RUN-YYYYMMDD-###"        # 唯一識別碼
   task_id: ""                         # 對應的 Task Card ID
-  skill_type: ""                      # research / analysis / writing / ops / review
+  skill_type: ""                      # research / writing / ops / review / analysis
   started_at: "YYYY-MM-DD HH:MM"
   ended_at: "YYYY-MM-DD HH:MM"
   status: ""                          # completed / failed / partial / cancelled
