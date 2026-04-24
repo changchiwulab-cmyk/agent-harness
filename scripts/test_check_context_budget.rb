@@ -1,0 +1,65 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Unit tests for check_context_budget.rb
+
+require 'minitest/autorun'
+require 'tmpdir'
+
+load File.join(__dir__, 'check_context_budget.rb')
+
+class TestEstimateTokens < Minitest::Test
+  def test_nil_for_missing_file
+    assert_nil estimate_tokens('does/not/exist.md')
+  end
+
+  def test_empty_file_is_zero
+    Dir.mktmpdir do |dir|
+      path = File.join(dir, 'empty.md')
+      File.write(path, '')
+      assert_equal 0, estimate_tokens(path)
+    end
+  end
+
+  def test_rough_ratio_four_chars_per_token
+    Dir.mktmpdir do |dir|
+      path = File.join(dir, 'sample.md')
+      File.write(path, 'a' * 40)
+      # 40 chars / 4 = 10 tokens
+      assert_equal 10, estimate_tokens(path)
+    end
+  end
+
+  def test_rounds_up_partial_tokens
+    Dir.mktmpdir do |dir|
+      path = File.join(dir, 'sample.md')
+      File.write(path, 'a' * 5)
+      # 5 / 4 = 1.25 → ceil → 2
+      assert_equal 2, estimate_tokens(path)
+    end
+  end
+
+  def test_cjk_characters_count_as_one_char_each
+    Dir.mktmpdir do |dir|
+      path = File.join(dir, 'cjk.md')
+      File.write(path, '任務執行框架')
+      # 6 CJK chars / 4 = 1.5 → ceil → 2
+      assert_equal 2, estimate_tokens(path)
+    end
+  end
+end
+
+class TestConstants < Minitest::Test
+  def test_budget_matches_claude_md_rule
+    assert_equal 3_000, TOKEN_BUDGET
+  end
+
+  def test_target_files_include_both_sources
+    assert_includes TARGET_FILES, 'CLAUDE.md'
+    assert_includes TARGET_FILES, 'system/GLOBAL_RULES.md'
+  end
+
+  def test_chars_per_token_is_rough_estimate
+    assert_equal 4, CHARS_PER_TOKEN
+  end
+end

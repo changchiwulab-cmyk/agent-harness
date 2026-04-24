@@ -31,3 +31,8 @@ jobs:
 
       - name: YAML parse check
         run: ruby -e 'require "yaml"; Dir.glob("**/*.yaml").each{|p| YAML.load_file(p)}; puts "ALL_YAML_OK"'
+
+      - name: Context budget check
+        run: |
+          ruby scripts/test_check_context_budget.rb
+          ruby scripts/check_context_budget.rb

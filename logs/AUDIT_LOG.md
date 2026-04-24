@@ -33,6 +33,33 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260424-O03"
+  date: "2026-04-24"
+  skill_type: "ops"
+  goal: "為 CLAUDE.md/GLOBAL_RULES 3K token 硬限制加 CI 檢查，並對 Execution Log Schema 落地率低做收斂決策"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "file_write"
+      call_count: 5
+    - tool_name: "file_edit"
+      call_count: 4
+    - tool_name: "bash"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "scripts/check_context_budget.rb; scripts/test_check_context_budget.rb; .github/workflows/spec-consistency.yml; system/EXECUTION_LOG_SCHEMA.yaml; memory/active_projects/agent-harness/decisions/20260424-D006_execution-log-scope.yaml; outputs/drafts/20260424-O03_guardrails-summary.md"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "Stage 3 of C 全面優化。DoD 9/9 通過。context budget 首次量化（554/3000, 18.5%）；Execution Log 選 Narrow Scope 僅 failed/partial/high-risk/多 checkpoint 任務寫 runs/。Decision Log D006 為專案第 6 筆結構化決策。"
+```
+
+---
+
+```yaml
 - task_id: "20260424-O02"
   date: "2026-04-24"
   skill_type: "ops"
