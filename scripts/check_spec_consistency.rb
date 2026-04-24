@@ -34,6 +34,25 @@ rescue ArgumentError
   nil
 end
 
+def extract_skill_order_from_readme(path)
+  text = File.read(path, encoding: 'UTF-8')
+  line = text.lines.find { |l| l.include?('`skill_type` 請使用：') }
+  return nil if line.nil?
+
+  section = line.split('請使用：', 2)[1]
+  return nil if section.nil?
+
+  section.scan(/`([a-z_]+)`/).flatten
+end
+
+def extract_skill_order_from_python(path)
+  text = File.read(path, encoding: 'UTF-8')
+  match = text.match(/ALLOWED_SKILL_TYPES\s*=\s*\{([^}]*)\}/m)
+  return nil if match.nil?
+
+  match[1].scan(/"([a-z_]+)"/).flatten
+end
+
 
 if __FILE__ == $PROGRAM_NAME
 
@@ -49,6 +68,21 @@ required_dirs = [
 
 required_dirs.each do |dir|
   errors << "missing directory: #{dir}" unless Dir.exist?(dir)
+end
+
+# 1.5) skill_type 三處一致性檢查（README / Python / Ruby）
+readme_skills = extract_skill_order_from_readme('README.md')
+if readme_skills.nil?
+  errors << 'README.md: cannot parse skill_type list from quickstart section'
+elsif readme_skills != ALLOWED_SKILL
+  errors << "README.md: skill_type order mismatch #{readme_skills.inspect} != #{ALLOWED_SKILL.inspect}"
+end
+
+python_skills = extract_skill_order_from_python('scripts/check_task_card_skill_type.py')
+if python_skills.nil?
+  errors << 'scripts/check_task_card_skill_type.py: cannot parse ALLOWED_SKILL_TYPES'
+elsif python_skills != ALLOWED_SKILL
+  errors << "scripts/check_task_card_skill_type.py: ALLOWED_SKILL_TYPES mismatch #{python_skills.inspect} != #{ALLOWED_SKILL.inspect}"
 end
 
 # 2) Task Card schema 驗證（排除模板）
