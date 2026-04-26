@@ -46,7 +46,10 @@ def extract_template_skills(path)
   line = content.lines.find { |l| l =~ /^\s*skill_type:/ }
   return nil unless line
 
-  line.scan(/\b(research|analysis|writing|ops|review)\b/).flatten.uniq
+  comment = line.split('#', 2)[1]
+  return [] if comment.nil?
+
+  comment.scan(/\b([a-z]+)\b/).flatten.uniq
 end
 
 def extract_routing_skills(path)

@@ -65,6 +65,27 @@ class TestExtractTemplateSkills < Minitest::Test
       assert_equal %w[research analysis writing ops review], extract_template_skills(path)
     end
   end
+
+  def test_captures_unexpected_skill_so_drift_can_be_detected
+    # Per Codex P2 review on PR #53: hard-coding the canonical tokens in the
+    # parser would make the parity check blind to additions like "design",
+    # because the extracted set would still equal canonical and the gate
+    # would falsely report success. The parser must surface every token in
+    # the comment so the parity comparison can fail on unexpected values.
+    with_tmp_file(<<~YAML) do |path|
+      skill_type: ""                 # research / analysis / writing / ops / review / design
+    YAML
+      assert_equal %w[research analysis writing ops review design], extract_template_skills(path)
+    end
+  end
+
+  def test_returns_empty_when_comment_missing
+    with_tmp_file(<<~YAML) do |path|
+      skill_type: ""
+    YAML
+      assert_equal [], extract_template_skills(path)
+    end
+  end
 end
 
 class TestExtractRoutingSkills < Minitest::Test
