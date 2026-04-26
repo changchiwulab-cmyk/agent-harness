@@ -8,6 +8,9 @@ on:
       - master
       - work
 
+permissions:
+  contents: read
+
 jobs:
   validate-spec:
     runs-on: ubuntu-latest
