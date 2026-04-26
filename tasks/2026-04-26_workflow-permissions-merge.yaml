@@ -1,0 +1,53 @@
+# Task Card — workflow permissions 收斂
+# 來源：deep-research-report-2.md 反向四「安全與 CI 衛生未關門」
+
+task_id: "20260426-O04"
+date: "2026-04-26"
+status: "done"
+
+# === 任務定義 ===
+goal: "把 .github/workflows/*.yml 全部加上顯式 permissions（最小權限），符合 GitHub Actions least-privilege"
+context: >
+  目前 .github/workflows/spec-consistency.yml 未設 permissions，依 GitHub 官方文件，
+  未設定時 GITHUB_TOKEN 採預設權限（過寬）。對只做 checkout + Ruby 檢查的 workflow，
+  contents: read 即足夠。Open PR #29 / #30 / #52 都在做這件事但未合併到 main。
+  此 Task Card 直接在 main 收斂，使 #52 等可關閉。
+input_data:
+  - ".github/workflows/spec-consistency.yml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "所有 .github/workflows/*.yml 在 root level 設有顯式 permissions block"
+  - "spec-consistency.yml 採 'permissions: contents: read'（只做 checkout + 本地檢查）"
+  - "新增/修改後本地 ruby 與 yaml parse check 通過"
+  - "推送前先在 PR 透過 GitHub Actions 驗證 workflow 仍能正常執行"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: ".github/workflows/"
+  filename: "spec-consistency.yml"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_edit"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄 ===
+checkpoints:
+  - "b23010c add explicit permissions block to spec-consistency workflow"
+actual_tool_calls: 3
+result_summary: "DoD 4/4 通過（CI 將在 push 後 GitHub Actions 上實跑驗證）。spec-consistency.yml root level 加入 'permissions: contents: read'，符合 GitHub Actions least-privilege。Open PRs #29/#30/#52 在 backlog triage 中已標 superseded。"
+completion_time: "2026-04-26"
+audit_log_ref: "logs/AUDIT_LOG.md"

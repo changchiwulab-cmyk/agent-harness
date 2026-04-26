@@ -10,8 +10,8 @@
 
 ## 權限（細節見 system/PERMISSIONS.yaml）
 
-- **allow**：讀取專案檔案、web search、寫草稿、寫 logs、git checkpoint
-- **ask**：修改 skills/、system/、memory/，建立 Task Card，寫正式報告
+- **allow**：讀取專案檔案、web search、寫草稿、寫 logs、git checkpoint、建立 Task Card（D004 已升 allow）
+- **ask**：修改 skills/、system/、memory/、CLAUDE.md，寫正式報告
 - **deny**：刪除、外發、修改正式資料、自動寫入長期記憶、金流操作
 
 ## 執行流程

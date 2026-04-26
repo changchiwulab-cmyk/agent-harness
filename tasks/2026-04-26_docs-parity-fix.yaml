@@ -1,0 +1,61 @@
+# Task Card — 文件真相對齊（README / CLAUDE.md / active context）
+# 來源：deep-research-report-2.md 反向一「文件真相分裂」
+
+task_id: "20260426-O02"
+date: "2026-04-26"
+status: "done"
+
+# === 任務定義 ===
+goal: "把 README、CLAUDE.md、active project context 對齊現行 PERMISSIONS / ROUTING / TEMPLATE，消除文件 drift"
+context: >
+  Deep research report 指出三處 drift：
+  (1) README.md 快速上手段把 skill_type 寫成只有 research/writing/ops/review，未列 analysis；
+  (2) CLAUDE.md 仍把 create_task_card 視為 ask，但 PERMISSIONS.yaml 已升 allow；
+  (3) memory/active_projects/agent-harness/context.md 停留在 2026-04-15、僅認列 6 筆 audit。
+  使用者已預先授權 modify_claude_md。
+input_data:
+  - "README.md"
+  - "CLAUDE.md"
+  - "system/PERMISSIONS.yaml"
+  - "system/ROUTING_RULES.md"
+  - "memory/active_projects/agent-harness/context.md"
+  - "memory/active_projects/agent-harness/decisions/"
+
+# === 完成標準 ===
+definition_of_done:
+  - "README.md 第 96 行附近的 skill_type 列舉加入 analysis"
+  - "CLAUDE.md 權限段落把 create_task_card 從 ask 移出（與 PERMISSIONS.yaml 對齊）"
+  - "memory/active_projects/agent-harness/context.md 更新最後活動日為 2026-04-26、決策數至 6 筆、audit 數對齊實際"
+  - "context.md 的 Skill 類型段落已含 analysis（已驗證），無需重複"
+  - "三檔修改後 scripts/check_spec_consistency.rb 通過"
+  - "三檔修改後 ruby YAML parse check 通過"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "."
+  filename: "README.md, CLAUDE.md, memory/active_projects/agent-harness/context.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_edit"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄 ===
+checkpoints:
+  - "884ca6a docs parity fix (README/CLAUDE/active context)"
+actual_tool_calls: 6
+result_summary: "DoD 6/6 通過。三檔對齊：README skill_type 加入 analysis；CLAUDE.md create_task_card 從 ask 移到 allow（與 PERMISSIONS.yaml + D004 一致）；active context 更新至 2026-04-26 + 15 筆 audit + D001-D006 完整列表。"
+completion_time: "2026-04-26"
+audit_log_ref: "logs/AUDIT_LOG.md"

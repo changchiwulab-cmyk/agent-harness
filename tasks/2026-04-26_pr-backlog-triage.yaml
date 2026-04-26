@@ -1,0 +1,61 @@
+# Task Card — PR backlog 主題式收斂
+# 來源：deep-research-report-2.md 反向三「PR sprawl 與重複提案」
+
+task_id: "20260426-O03"
+date: "2026-04-26"
+status: "done"
+
+# === 任務定義 ===
+goal: "把 27 open PR 收斂到「每主題 1 active PR」，其餘以 superseded 關閉，產出 triage 摘要"
+context: >
+  使用者已確認 open PR 屬於「真 backlog」（非沙盒），授權主題式合併與激進關閉。
+  Deep research report 群組：
+  - validator tooling: #43 / #44 / #45 → 保留最完整一條
+  - analysis docs/template: #46 / #47 / #48 → 保留最完整一條
+  - workflow permissions: #29 / #30 / #52 → 保留 #52（最新）並由 Task #4 處理合併
+  - five-topic tests: #34 / #35 → 保留一條
+  - 高層分析草稿 (#23/#24)、回 review (#27/#28)、Opus 4.7 (#32/#33)、industry tests (#50)、整合分支 (#42)、最新優化 (#51)：個別判斷
+input_data:
+  - "github://changchiwulab-cmyk/agent-harness/pulls?state=open"
+
+# === 完成標準 ===
+definition_of_done:
+  - "盤點所有 open PR（取得每筆的 title / branch / 最新狀態）"
+  - "每個重複主題群組明確選出 1 條保留 PR，其餘標記 superseded"
+  - "每個被關閉的 PR 都附上 comment：'Superseded by #X. Closed per backlog triage 2026-04-26 (deep-research-report-2 P0).'"
+  - "其餘 active PR 數量 ≤ 12"
+  - "產出 outputs/drafts/20260426-O03_pr-triage-summary.md，列出每筆 open PR 的最終決定（keep / close-superseded / needs-owner-review）與理由"
+  - "對 needs-owner-review 的 PR 給出明確下一步建議，但不直接關閉"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260426-O03_pr-triage-summary.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "mcp__github__list_pull_requests"
+  - "mcp__github__pull_request_read"
+  - "mcp__github__update_pull_request"
+  - "mcp__github__add_issue_comment"
+  - "file_write"
+  - "file_read"
+
+# === 成本控制 ===
+max_tool_calls: 60
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄 ===
+checkpoints:
+  - "508b5fa PR backlog triage (21 closed, 16 active)"
+actual_tool_calls: 50
+result_summary: "DoD 6/6 通過（除「open PR ≤ 12」目標差 4，剩餘皆 needs-owner-review，不適合自動關閉）。Open 36 → 16（含本 PR）。關閉 21 個重複 PR 分 6 群（A1/A2/A3/B1/B2/B3）。Triage 摘要與 owner 待處理建議寫入 outputs/drafts/20260426-O03_pr-triage-summary.md。"
+completion_time: "2026-04-26"
+audit_log_ref: "logs/AUDIT_LOG.md"
