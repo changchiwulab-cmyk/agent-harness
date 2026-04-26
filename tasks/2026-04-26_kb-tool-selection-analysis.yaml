@@ -1,0 +1,52 @@
+task_id: "20260426-A01"
+date: "2026-04-26"
+status: "done"
+
+goal: "評估 Knowledge Base 主工具：Notion vs Obsidian vs Logseq，產出 Go 決策建議，並貢獻第 1 筆 analysis 校準資料"
+context: |
+  P0.1：analysis skill 自 v2 加入後從未被任何任務使用（D010），
+  COST_POLICY analysis 列校準係數欄位為「待累積」、樣本數 0。
+  本任務以一人公司常見的 KB 工具選型為題首次實戰，雙重目的：
+  1. 為 KB 主工具選型提供結構化決策建議
+  2. 產出第 1 筆 analysis token 實測，啟動校準。
+
+input_data:
+  - "skills/analysis/SKILL.md"
+  - "skills/analysis/eval_examples.md"
+  - "memory/active_projects/agent-harness/decisions/20260426-D010_analysis-skill-added.yaml"
+
+definition_of_done:
+  - "對 Notion / Obsidian / Logseq 完成 6D 比較表（價值/成本/風險/可行性/執行難度/預期回報），含一人公司適配度第 7 維"
+  - "明確列出至少 3 個關鍵取捨情境（跨裝置同步、本地優先、多人協作 / 對外分享）"
+  - "Go/No-Go 建議 + 觸發 reverse 的條件"
+  - "區分已知事實 / 合理推論 / 待驗證 / 高風險假設"
+  - "本次實際 tokens 寫入 outputs/drafts/ 摘要 + 同步 system/COST_POLICY.md analysis 列"
+  - "spec-consistency / yaml-parse / context-budget CI 全綠"
+  - "AUDIT_LOG_2026-Q2.md 新增 1 筆"
+
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260426-A01_kb-tool-selection.md"
+
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "web_search"
+  - "write_drafts"
+  - "write_logs"
+  - "git_commit_checkpoint"
+  - "bash"
+
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 3
+
+skill_type: "analysis"
+
+checkpoints: []
+actual_tool_calls: 8
+result_summary: "DoD 7/7 通過。建議 Obsidian + Sync 為主，Notion 對外分享副工具，Logseq 暫不採用。3 取捨情境（同步/敏感/分享）+ 5 reverse 條件。Web search 1/3（保留 2 輪，符合新策略）。Analysis 校準首筆：14K，係數 1.17，樣本仍 < 3。"
+completion_time: "2026-04-26"
+audit_log_ref: "logs/AUDIT_LOG_2026-Q2.md"

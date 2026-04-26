@@ -26,3 +26,17 @@
 - 如果一個需求需要多個 skill → 拆成多張 Task Card
 - Task Card 之間用 output 檔案作為接力點
 - 例如：research → outputs/drafts/research_note.md → writing 讀取並產出報告
+
+## 量化拆分閾值（同一 skill 內）
+
+當下列任一條件成立，建議將單張卡拆為 2 張或更多：
+
+| 閾值 | 說明 | 建議行動 |
+|------|------|---------|
+| `definition_of_done` ≥ 8 條 | DoD 過長代表目標已雜湊 | 依語意分群，每群一張卡 |
+| `max_tool_calls` 估 > 25 | 預期工具呼叫量逼近單任務上限 | 拆為前後段，前段 checkpoint 為後段輸入 |
+| 預估 token > skill 校準上限 × 1.5 | 超出 COST_POLICY 任務級預算的安全邊界 | 縮 scope 或拆段 |
+| 牽涉檔案 > 8 個（read + write 合計） | 上下文壓力升高，gate 驗證難覆蓋 | 按目錄/模組分卡 |
+
+> 校準上限參考 `system/COST_POLICY.md` 任務級預算（research 32K / writing 30K / ops 19K / review 23K / analysis 20K）。
+> 觸發任一閾值時，於 Task Card `context` 欄位註明拆分理由。

@@ -1,0 +1,58 @@
+task_id: "20260426-O04"
+date: "2026-04-26"
+status: "done"
+
+goal: "補登 v1→v2 三筆關鍵歷史決策至 Decision Log，提高制度可追溯性"
+context: |
+  P1.4：retro-2026-Q2-01 採納項目 #4「補填歷史 Decision Log」狀態為「部分實施」，
+  D003/D004/D005 已補但仍有舊決策未補。
+  原規劃中的 D008（不用 DB）已存在於 D001（2026-04-03 task-card-over-database），故實際補三筆：
+    - D008：Approval Policy 從 GLOBAL_RULES 拆為獨立檔（v2）
+    - D009：Failure Taxonomy 拆獨立檔，14 模式（v2）
+    - D010：第 5 skill「analysis」加入（v2）
+  資料來源：README 版本規劃表、現有 system/ 與 skills/ 結構、git 歷史。
+
+input_data:
+  - "README.md"
+  - "system/APPROVAL_POLICY.yaml"
+  - "system/FAILURE_TAXONOMY.yaml"
+  - "system/GLOBAL_RULES.md"
+  - "skills/analysis/SKILL.md"
+  - "tasks/DECISION_LOG_TEMPLATE.yaml"
+
+definition_of_done:
+  - "memory/active_projects/agent-harness/decisions/20260426-D008_approval-policy-extraction.yaml"
+  - "memory/active_projects/agent-harness/decisions/20260426-D009_failure-taxonomy-extraction.yaml"
+  - "memory/active_projects/agent-harness/decisions/20260426-D010_analysis-skill-added.yaml"
+  - "每筆遵守 DECISION_LOG_TEMPLATE schema（context/options/decision/reasoning/risk/revisit/related/status）"
+  - "每筆引用對應 commit / 時間點作為證據"
+  - "spec-consistency / yaml-parse / context-budget CI 全綠"
+  - "AUDIT_LOG_2026-Q2.md 新增 1 筆"
+
+expected_output:
+  format: "yaml"
+  location: "memory/active_projects/agent-harness/decisions/"
+  filename: "20260426-D008/D009/D010"
+
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "write_long_term_memory"
+  - "git_commit_checkpoint"
+  - "bash"
+
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+skill_type: "ops"
+
+checkpoints: []
+actual_tool_calls: 9
+result_summary: "DoD 7/7 通過。D008/D009/D010 補登（Approval 拆檔 / Failure Taxonomy 拆檔 / analysis 加入）。原訂 D008 與 D001 重複，已調整為三筆未紀錄的 v1→v2 決策。每筆含 evidence 段。CI 三檢全綠。"
+completion_time: "2026-04-26"
+audit_log_ref: "logs/AUDIT_LOG_2026-Q2.md"

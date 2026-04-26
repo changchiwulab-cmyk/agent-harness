@@ -1,0 +1,56 @@
+decision_id: "20260426-D010"
+date: "2026-04-26"
+project: "agent-harness"
+
+context: |
+  v1.5 階段 skills/ 只有 4 種：research / writing / ops / review。
+  但實戰中發現「決策支援」類型的任務（Go/No-Go、方案比較、可行性評估）放在 research 裡
+  顯得格式不對齊（research 強調事實/推論/待驗證的分類，但決策需要「比較表 + 推薦」）。
+  v2 規劃時識別此為 routing 缺類型，需新增第 5 個 skill。
+  證據：commit 5b508c9 "feat: add analysis skill definition" 與 fc8dd3f
+  "agent-harness deep analysis & optimization (session 2026-04-15)"。
+
+options_considered:
+  - option: "A. 維持 4 skill，決策類任務塞 research"
+    pros: "skill 集合穩定；不需新模板"
+    cons: "research 的輸出格式與決策需求不符；router 規則模糊；eval_examples 難寫"
+  - option: "B. 新增 analysis skill 為第 5 個（本決策採用）"
+    pros: "決策類任務有明確格式（6D 比較表 + Go/No-Go）；router 規則清晰；可獨立校準成本"
+    cons: "skill 集合擴大；需新 SKILL.md + eval_examples.md + COST_POLICY 預算列"
+  - option: "C. 把 analysis 視為 writing 的子類型"
+    pros: "不需新 skill 定義"
+    cons: "writing 強調可閱讀性，analysis 強調可比較性，混在一起會讓 routing 與評估失準"
+
+decision: |
+  採 B。新增 skills/analysis/ 含：
+  - SKILL.md：用途、執行流程（提案/比較/推薦三段）、6D 比較表（價值/成本/風險/可行/工時/ROI）、輸出格式
+  - eval_examples.md：好壞範例
+  ROUTING_RULES.md 對應更新：「決策、評估、Go/No-Go、方案比較、可行性 → analysis」。
+  COST_POLICY.md 任務級預算新增 analysis 列（預估 12K，待校準）。
+
+reasoning: |
+  - Bounded skill set 是 v2 的設計原則之一（避免無限擴張）；新增需明確 ROI
+  - analysis 任務有明確的「決策客戶」（一人公司主自己），與 research 的「資料消費者」不同
+  - 6D 框架（價值/成本/風險/可行/工時/ROI）涵蓋決策的主要考量，且每維可量化
+  - v3 升級條件之一是「規則衝突頻繁」，新增 analysis 可降低 research 與決策需求的衝突
+
+risk: |
+  - 第 5 skill 可能仍不夠，後續還會出現 sales / planning 等需求 → v3 規劃時審視
+  - analysis skill 在實戰中從未被使用（截至 2026-04-26）→ 是否是真實需求待驗證
+  Mitigation：本次（2026-04-26）以 KB 工具選型為首次實戰（Card 20260426-A01）；
+  累積 ≥ 3 筆後校準成本；若 6 個月內仍無使用，考慮降為 research 子類型。
+
+revisit_trigger: |
+  - 累積 ≥ 3 筆 analysis 任務後校準 COST_POLICY
+  - 若 6 個月內 analysis 任務數 ≤ 1 → 考慮降級或移除
+  - 若 analysis 任務數 > research → 考慮獨立化為 v3 的 specialist agent
+
+related_task: "20260426-A01 (首次實戰：KB 工具選型)"
+status: "active"
+
+# === 證據 ===
+evidence:
+  - "commit 5b508c9 'feat: add analysis skill definition (decision support, strategy evaluation)'"
+  - "skills/analysis/SKILL.md + skills/analysis/eval_examples.md 存在於 v2"
+  - "system/ROUTING_RULES.md 表格第 2 列：「決策、評估、Go/No-Go、方案比較、可行性 → analysis」"
+  - "system/COST_POLICY.md 任務級預算表 analysis 列（預估 12K，校準係數待累積）"

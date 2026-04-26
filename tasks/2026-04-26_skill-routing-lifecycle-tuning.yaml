@@ -1,0 +1,51 @@
+task_id: "20260426-O01"
+date: "2026-04-26"
+status: "done"
+
+goal: "補完 retro 已建議但未落地的三項治理條款：research web search 策略、routing 量化拆分閾值、outputs 生命週期 SOP"
+context: |
+  首次 retro（2026-Q2-01）建議 #5「research/SKILL.md 補 web search 策略」標為「待下次 research 任務一併採納」，
+  但後續無 research 任務觸發；P2.7 routing 規則僅有質性「跨兩 skill 拆兩張」，缺單一 skill 內的拆分閾值；
+  P2.8 outputs/drafts/ 已累積 6 份且部分已晉升至 reports/，但無正式生命週期定義。
+  本卡一次補齊三項，避免分卡帶來的重複 context 載入。
+
+input_data:
+  - "skills/research/SKILL.md"
+  - "system/ROUTING_RULES.md"
+  - "outputs/drafts/"
+  - "outputs/reports/retro-2026-Q2-01.md"
+
+definition_of_done:
+  - "skills/research/SKILL.md 新增「Web search 策略」段：精準優先、保留 1 輪備用、SEC-03 案例對照"
+  - "system/ROUTING_RULES.md 新增量化拆分閾值：單卡 DoD ≥ 8 條建議拆 2 張、單卡 max_tool_calls 估 > 25 建議拆"
+  - "新增 outputs/LIFECYCLE.md：drafts / reports / archived 三態晉升與棄用條件，含 outputs/archived/ 目錄"
+  - "outputs/drafts/ 內 6 份既有草稿在 LIFECYCLE.md 內以狀態表標記（不移動檔案）"
+  - "spec-consistency / yaml-parse / context-budget CI 全綠"
+  - "AUDIT_LOG 新增 1 筆紀錄"
+
+expected_output:
+  format: "mixed"
+  location: "outputs/drafts/"
+  filename: "20260426-O01_skill-routing-lifecycle-summary.md"
+
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "git_commit_checkpoint"
+  - "bash"
+
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 0
+
+skill_type: "ops"
+
+checkpoints: []
+actual_tool_calls: 11
+result_summary: "DoD 6/6 通過。research SKILL.md / ROUTING_RULES.md 條款落地；outputs/LIFECYCLE.md + archived/ 啟用；6 份既有草稿狀態盤點。CI 三檢全綠。"
+completion_time: "2026-04-26"
+audit_log_ref: "logs/AUDIT_LOG_2026-Q2.md"

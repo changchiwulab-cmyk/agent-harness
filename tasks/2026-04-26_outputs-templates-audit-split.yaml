@@ -1,0 +1,54 @@
+task_id: "20260426-O02"
+date: "2026-04-26"
+status: "done"
+
+goal: "建立對外交付樣板（cover letter / version record / risk disclosure），並將 AUDIT_LOG 改為按季分檔"
+context: |
+  P1.5：目前無對外交付樣板，每次客戶交付都重造 cover letter / 版本紀錄 / 風險聲明，
+  且缺敏感資料邊界註記，存在洩漏風險。
+  P3.10：logs/AUDIT_LOG.md 單檔已 11.8KB / 15 筆，半年內難讀，需按季分檔並保留索引。
+  本卡同屬 ops 結構性變更，合併執行避免重複的 CI 與索引更新。
+
+input_data:
+  - "outputs/LIFECYCLE.md"
+  - "logs/AUDIT_LOG.md"
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+  - "README.md"
+
+definition_of_done:
+  - "新增 outputs/templates/client_cover_letter.md（含敏感資料邊界註記）"
+  - "新增 outputs/templates/version_record.md"
+  - "新增 outputs/templates/risk_disclosure.md"
+  - "新增 outputs/templates/README.md（用法說明 + 與 drafts/reports 銜接）"
+  - "logs/AUDIT_LOG.md 拆為 logs/AUDIT_LOG_2026-Q2.md（搬入現有 16 筆）"
+  - "原 logs/AUDIT_LOG.md 改為索引檔指向各季檔 + 格式說明保留"
+  - "README.md / EXECUTION_LOG_SCHEMA.yaml 等活性引用同步更新"
+  - "spec-consistency / yaml-parse / context-budget CI 全綠"
+  - "新 logs/AUDIT_LOG_2026-Q2.md 新增本任務 1 筆紀錄"
+
+expected_output:
+  format: "mixed"
+  location: "outputs/drafts/"
+  filename: "20260426-O02_outputs-templates-audit-split-summary.md"
+
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "git_commit_checkpoint"
+  - "bash"
+
+max_tool_calls: 25
+max_retries: 3
+max_web_searches: 0
+
+skill_type: "ops"
+
+checkpoints: []
+actual_tool_calls: 17
+result_summary: "DoD 9/9 通過。outputs/templates/ 4 檔建立；AUDIT_LOG 拆 Q2 檔（16 筆）；活性引用同步；CI 三檢全綠。"
+completion_time: "2026-04-26"
+audit_log_ref: "logs/AUDIT_LOG_2026-Q2.md"

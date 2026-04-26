@@ -1,0 +1,52 @@
+task_id: "20260426-O03"
+date: "2026-04-26"
+status: "done"
+
+goal: "在 COST_POLICY 補下次校準 SOP，並將 README v3 升級觸發條件由質性改為量化指標"
+context: |
+  P2.6：COST_POLICY 校準係數段落只說「再累積 5 筆任務後觸發第二次 retro」，
+  但缺少觸發後具體計算步驟與 analysis 樣本不足的 fallback。
+  P3.9：README 的 v3 升級條件全為質性描述（「context 經常超限」「規則衝突頻繁」），
+  無可觀測閾值，實質上永遠不會觸發。本卡將其轉為可量測指標。
+  兩項皆為文件化任務，合併以避免重複的 retro 邏輯確認。
+
+input_data:
+  - "system/COST_POLICY.md"
+  - "README.md"
+  - "outputs/reports/retro-2026-Q2-01.md"
+  - "outputs/reports/token-calibration-v1.md"
+
+definition_of_done:
+  - "COST_POLICY.md 新增「下次校準操作 SOP」段：觸發、計算步驟、analysis fallback"
+  - "README.md v3 觸發條件改為量化（context 月內接近限額 ≥ N 次、failure 重複率 ≥ X%、超預算 ≥ M 週）"
+  - "memory/active_projects/agent-harness/decisions/20260426-D007_v3-trigger-quantification.yaml 記錄量化選值依據"
+  - "spec-consistency / yaml-parse / context-budget CI 全綠"
+  - "AUDIT_LOG_2026-Q2.md 新增 1 筆"
+
+expected_output:
+  format: "mixed"
+  location: "outputs/drafts/"
+  filename: "20260426-O03_calibration-v3-summary.md"
+
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "write_long_term_memory"
+  - "git_commit_checkpoint"
+  - "bash"
+
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 0
+
+skill_type: "ops"
+
+checkpoints: []
+actual_tool_calls: 9
+result_summary: "DoD 5/5 通過。COST_POLICY 校準 SOP 5 步驟落地；README v3 觸發條件量化為 4 指標；D007 紀錄選值依據。CI 三檢全綠。"
+completion_time: "2026-04-26"
+audit_log_ref: "logs/AUDIT_LOG_2026-Q2.md"

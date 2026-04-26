@@ -1,0 +1,52 @@
+decision_id: "20260426-D008"
+date: "2026-04-26"
+project: "agent-harness"
+
+context: |
+  v1.5 期間，approval 規則散落在 GLOBAL_RULES.md 與 PERMISSIONS.yaml 的 risk_levels 段落，
+  缺少獨立的批准流程定義（誰、何時、如何批准、批准後如何記錄）。
+  v2 升級規劃時識別此為治理盲點：批准動作沒有可審計的觸發條件與 escalation 路徑，
+  與「對外動作只產出草稿」的硬規則綁定不夠清楚。
+  本決策為 v2 升級的第一塊治理拼圖（時間：2026-Q1 v2 規劃期）。
+
+options_considered:
+  - option: "A. 維持現狀，approval 規則散落在 GLOBAL_RULES + PERMISSIONS"
+    pros: "不需新增檔案；已有規則可繼續用"
+    cons: "規則重複分散；批准觸發條件不清；escalation 路徑無正式定義"
+  - option: "B. 拆出 APPROVAL_POLICY.yaml 為獨立治理檔（本決策採用）"
+    pros: "批准流程獨立可審計；triggers / methods / escalation 三段結構清楚；與 PERMISSIONS 的 risk_levels 互補"
+    cons: "新增治理檔需維護；初期需與其他檔案做交叉引用"
+  - option: "C. 把 approval 規則塞入 GATE_POLICY.yaml"
+    pros: "與驗證流程合併"
+    cons: "Gate 是「驗證」而非「批准」，混在一起會讓 risk_check（第 4 層）的職責不清"
+
+decision: |
+  採 B。建立 system/APPROVAL_POLICY.yaml 為獨立治理檔，包含：
+  - approval triggers（哪些動作觸發批准）
+  - approval methods（inline_confirm / explicit_review / deny_by_default）
+  - escalation rules（連續失敗、超預算、跨 skill 等情境）
+
+reasoning: |
+  - 批准流程的本質是「人機介面」而非「驗證邏輯」，與 GATE_POLICY 的「機器自驗」職責不同
+  - 拆檔後，PERMISSIONS 管 allow/ask/deny 三態，APPROVAL_POLICY 管「ask 觸發後的人工流程」
+  - draft_first 工作流程（對外動作只產出草稿）需要 escalation 與 explicit_review 配合，獨立檔更易維護
+  - 與 FAILURE_TAXONOMY 拆檔（D009）為同期決策，皆遵循「治理檔單一職責」原則
+
+risk: |
+  - 治理檔變多 → 新人 onboarding 成本上升
+  - APPROVAL_POLICY 與 PERMISSIONS 的邊界需持續同步，否則會出現「ask 沒對應 approval method」的漏洞
+  Mitigation：retro 時檢查兩檔交叉一致性；新增 ask 動作時必須同步增補 approval method。
+
+revisit_trigger: |
+  - 出現「ask 等級動作但 APPROVAL_POLICY 沒對應 method」的情境
+  - retro 顯示 explicit_review 與 inline_confirm 的區分實際無差異
+  - approval 的 escalation 在實戰中從未被觸發 → 考慮簡化
+
+related_task: ""
+status: "active"
+
+# === 證據 ===
+evidence:
+  - "system/APPROVAL_POLICY.yaml 為 v2 新增治理檔（README.md 版本規劃表第 12 模組）"
+  - "README.md 版本規劃 v2 條目：'+ Approval Policy + Failure Taxonomy + Execution Log Schema + Rollback Path + Ops Eval'"
+  - "PERMISSIONS.yaml 的 risk_levels 中 approval_type 欄位（inline_confirm / explicit_review / deny_by_default）對應 APPROVAL_POLICY 的 methods"

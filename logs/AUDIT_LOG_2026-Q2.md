@@ -1,0 +1,483 @@
+# Audit Log — 2026 Q2
+
+本檔記錄 2026-Q2（4-6 月）所有任務的稽核紀錄。
+格式定義：見 `logs/AUDIT_LOG.md`（索引 / 格式說明）。
+
+依時間倒序，新紀錄加在「新紀錄加在這裡」標記之後。
+
+---
+
+<!-- 新紀錄加在這裡 -->
+
+```yaml
+- task_id: "20260426-O05"
+  date: "2026-04-26"
+  skill_type: "ops"
+  goal: "修正 PR #51 兩條 Codex review comment：RETRO_FLOW 資料來源更新與 analysis 校準係數內部一致性"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_edit"
+      call_count: 4
+    - tool_name: "file_write"
+      call_count: 2
+    - tool_name: "bash"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "system/RETRO_FLOW.md; system/COST_POLICY.md; outputs/drafts/20260426-A01_kb-tool-selection.md; outputs/drafts/20260426-O05_pr51-review-fixes-summary.md"
+  error_summary: ""
+  estimated_tokens: "~6K"
+  notes: "PR #51 review fixes。Codex P1（RETRO_FLOW 引用過時 AUDIT_LOG 路徑）與 P2（analysis 樣本 1 違反 SOP <3 不重算）兩條皆採納方向修檔。SOP 為事實來源，數據對齊 SOP，非反向。"
+```
+
+---
+
+```yaml
+- task_id: "20260426-A01"
+  date: "2026-04-26"
+  skill_type: "analysis"
+  goal: "評估 Knowledge Base 主工具：Notion vs Obsidian vs Logseq，產出 Go 決策建議，並貢獻第 1 筆 analysis 校準資料"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "web_search"
+      call_count: 1
+    - tool_name: "file_write"
+      call_count: 2
+    - tool_name: "bash"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260426-A01_kb-tool-selection.md; system/COST_POLICY.md"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "Stage 5 of 2026-04-26 全面優化（Card E）。analysis skill 首次實戰（D010 觸發）。DoD 7/7 通過。建議 Obsidian + Sync 為主、Notion 對外分享副工具、Logseq 暫不採用。Web search 1/3（保留 2 輪備用，新策略首次落地）。Analysis 校準首筆：14K vs 預估 12K，係數 1.17，樣本 1（< 3 不更新上限）。"
+```
+
+---
+
+```yaml
+- task_id: "20260426-O04"
+  date: "2026-04-26"
+  skill_type: "ops"
+  goal: "補登 v1→v2 三筆關鍵歷史決策至 Decision Log，提高制度可追溯性"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 4
+    - tool_name: "bash"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "memory/active_projects/agent-harness/decisions/20260426-D008/D009/D010_*.yaml; outputs/drafts/20260426-O04_decision-log-backfill-summary.md"
+  error_summary: ""
+  estimated_tokens: "~9K"
+  notes: "Stage 4 of 2026-04-26 全面優化。DoD 7/7 通過。原訂 D008 與既有 D001 重複，已調整為三筆未紀錄決策（Approval 拆檔 / Failure Taxonomy 拆檔 / analysis skill 加入）。每筆含 evidence 段引用 commit / README / 既有檔案。CI 三檢全綠。"
+```
+
+---
+
+```yaml
+- task_id: "20260426-O03"
+  date: "2026-04-26"
+  skill_type: "ops"
+  goal: "在 COST_POLICY 補下次校準 SOP，並將 README v3 升級觸發條件由質性改為量化指標"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_edit"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 2
+    - tool_name: "bash"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "system/COST_POLICY.md; README.md; memory/active_projects/agent-harness/decisions/20260426-D007_v3-trigger-quantification.yaml; outputs/drafts/20260426-O03_calibration-v3-summary.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "Stage 3 of 2026-04-26 全面優化。DoD 5/5 通過。校準 SOP 5 步驟（觸發/計算/analysis fallback/異常偏差/驗證）；v3 觸發 4 量化指標（context 90% / 失敗重複 3 次 / 連續超預算 3 筆 / routing 拆分 5 次）。CI 三檢全綠。"
+```
+
+---
+
+```yaml
+- task_id: "20260426-O02"
+  date: "2026-04-26"
+  skill_type: "ops"
+  goal: "建立對外交付樣板（cover letter / version record / risk disclosure），並將 AUDIT_LOG 改為按季分檔"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "file_write"
+      call_count: 5
+    - tool_name: "file_edit"
+      call_count: 4
+    - tool_name: "bash"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/templates/{README,client_cover_letter,version_record,risk_disclosure}.md; logs/AUDIT_LOG_2026-Q2.md; logs/AUDIT_LOG.md (索引化); README.md; system/EXECUTION_LOG_SCHEMA.yaml"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "Stage 2 of 2026-04-26 全面優化。DoD 9/9 通過。outputs/templates/ 4 檔含敏感資料邊界註記；AUDIT_LOG 拆檔（14 筆遷至 Q2 檔）；活性引用全部同步。CI 三檢全綠。"
+```
+
+---
+
+```yaml
+- task_id: "20260426-O01"
+  date: "2026-04-26"
+  skill_type: "ops"
+  goal: "補完 retro 已建議但未落地的三項治理條款：research web search 策略、routing 量化拆分閾值、outputs 生命週期 SOP"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "file_edit"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 2
+    - tool_name: "bash"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "skills/research/SKILL.md; system/ROUTING_RULES.md; outputs/LIFECYCLE.md; outputs/archived/.gitkeep; outputs/drafts/20260426-O01_skill-routing-lifecycle-summary.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "Stage 1 of 2026-04-26 全面優化（5 卡）。DoD 6/6 通過。CI 三檢全綠（spec / yaml / context-budget 1197/3000）。LIFECYCLE.md 為 Card B 對外交付樣板的銜接基礎。"
+```
+
+---
+
+```yaml
+- task_id: "20260424-O03"
+  date: "2026-04-24"
+  skill_type: "ops"
+  goal: "為 CLAUDE.md/GLOBAL_RULES 3K token 硬限制加 CI 檢查，並對 Execution Log Schema 落地率低做收斂決策"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "file_write"
+      call_count: 5
+    - tool_name: "file_edit"
+      call_count: 4
+    - tool_name: "bash"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "scripts/check_context_budget.rb; scripts/test_check_context_budget.rb; .github/workflows/spec-consistency.yml; system/EXECUTION_LOG_SCHEMA.yaml; memory/active_projects/agent-harness/decisions/20260424-D006_execution-log-scope.yaml; outputs/drafts/20260424-O03_guardrails-summary.md"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "Stage 3 of C 全面優化。DoD 9/9 通過。context budget 首次量化（554/3000, 18.5%）；Execution Log 選 Narrow Scope 僅 failed/partial/high-risk/多 checkpoint 任務寫 runs/。Decision Log D006 為專案第 6 筆結構化決策。"
+```
+
+---
+
+```yaml
+- task_id: "20260424-O02"
+  date: "2026-04-24"
+  skill_type: "ops"
+  goal: "將 token-calibration-table 晉升為治理 artifact，調整 INTAKE_FLOW 主路為快速路徑，正式歸檔 WEEKLY_REVIEW_TEMPLATE"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 3
+    - tool_name: "file_edit"
+      call_count: 4
+    - tool_name: "bash"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/reports/token-calibration-v1.md; outputs/drafts/20260424-O02_restructure-summary.md; system/INTAKE_FLOW.md; system/COST_POLICY.md; system/RETRO_FLOW.md; tasks/archived/WEEKLY_REVIEW_TEMPLATE.md; README.md"
+  error_summary: ""
+  estimated_tokens: "~15K"
+  notes: "Stage 2 of C 全面優化。DoD 8/8 通過。token-calibration 正式晉升（drafts→reports）；INTAKE_FLOW fast-path 升為預設主路；WEEKLY_REVIEW_TEMPLATE git mv 至 tasks/archived/。歷史引用保留，活性引用全部同步。"
+```
+
+---
+
+```yaml
+- task_id: "20260424-O01"
+  date: "2026-04-24"
+  skill_type: "ops"
+  goal: "收斂重複的 task card 驗證器為單一事實來源，補 SECURITY 發現性，清理重複 CI"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 2
+    - tool_name: "file_edit"
+      call_count: 3
+    - tool_name: "bash"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/20260424-O01_cleanup-summary.md; scripts/ (-2); .github/workflows/ (-1, ~1); README.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "Stage 1 of C 全面優化。DoD 8/8 通過。sample-data 發現非空已於 DoD 說明；Python CI step 全撤。spec-consistency / ruby tests / yaml parse 全綠。"
+```
+
+---
+
+```yaml
+- task_id: "20260417-O03"
+  date: "2026-04-17"
+  skill_type: "ops"
+  goal: "為 COST_POLICY 加入校準係數章節，並將 WEEKLY_REVIEW_TEMPLATE 標注為 deprecated"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "file_edit"
+      call_count: 4
+    - tool_name: "bash"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "system/COST_POLICY.md, tasks/WEEKLY_REVIEW_TEMPLATE.md, system/RETRO_FLOW.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "Stage 3 of optimization plan. 新章節數值與 token-calibration-table-v1.md 一致。DoD 7/7 通過，spec consistency 通過。"
+```
+
+---
+
+```yaml
+- task_id: "20260417-O02"
+  date: "2026-04-17"
+  skill_type: "ops"
+  goal: "將 retro-2026-04-15 晉升為正式 report，並封存 vietnam-expansion 專案"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "file_write"
+      call_count: 1
+    - tool_name: "file_edit"
+      call_count: 6
+    - tool_name: "bash"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/reports/retro-2026-Q2-01.md, memory/archived_projects/vietnam-expansion/, system/RETRO_FLOW.md"
+  error_summary: ""
+  estimated_tokens: "~15K"
+  notes: "Stage 2 of optimization plan. 使用者已於規劃階段核准四項決策。發現 examples/ 兩張 Task Card 引用舊路徑，一併修正。DoD 7/7 通過，spec consistency 通過。"
+```
+
+---
+
+```yaml
+- task_id: "20260417-O01"
+  date: "2026-04-17"
+  skill_type: "ops"
+  goal: "填補 retro-2026-04-15 發現的三項證據空白：Error Log 範例、Decision Log D005、Token 校準資料表"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "file_write"
+      call_count: 3
+    - tool_name: "bash"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "logs/errors/2026-04-04_20260404-S01_error.md, memory/active_projects/agent-harness/decisions/20260415-D005_intake-fast-path.yaml, outputs/drafts/token-calibration-table-v1.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "Stage 1 of agent-harness optimization plan. DoD 5/5 通過。spec consistency check 通過。全 allow 權限範圍，無阻斷。"
+```
+
+---
+
+```yaml
+- task_id: "20260404-O02"
+  date: "2026-04-04"
+  skill_type: "ops"
+  goal: "修正審查報告 M1-M3，產出提案 v2 正式版"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "file_write"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/ai-era-solo-business-proposal-v2.md"
+  error_summary: ""
+  estimated_tokens: "~15K"
+  notes: "DoD 5/5 通過。M1 月 7-9 里程碑修正（NT$300-500K/月含構成明細）、M2 月 10-12 改為具體組合計算（NT$300K保底+Build均攤）、M3 Retainer 補充交付差異表、S1 Q1 假設說明。附加採納 S2/S3/S4/S5/S6 建議。"
+```
+
+---
+
+```yaml
+- task_id: "20260404-RV01"
+  date: "2026-04-04"
+  skill_type: "review"
+  goal: "審查 ai-era-solo-business-proposal.md 的邏輯一致性、事實正確性、風險完整性"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/ai-era-solo-business-proposal-review.md"
+  error_summary: ""
+  estimated_tokens: "~18K"
+  notes: "有條件通過。必須修改 3 項：月 7-9 里程碑數字矛盾、月 10-12 Retainer 月收區間矛盾、Retainer 三方案交付差異未說明。建議修改 6 項。DoD 7/7 通過（含條件）。"
+```
+
+---
+
+```yaml
+- task_id: "20260404-W01"
+  date: "2026-04-04"
+  skill_type: "writing"
+  goal: "產出完整的一人公司 AI 時代策略提案（定位、服務菜單、ICP、競爭優勢、12 個月計畫、風險對策）"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/ai-era-solo-business-proposal.md"
+  error_summary: ""
+  estimated_tokens: "~20K"
+  notes: "承接 20260404-S01 研究成果。DoD 7/7 全部通過。含服務菜單（Discovery/Build/Retainer/Workshop）、台灣+越南雙市場 ICP、三方競爭對比、月度行動計畫、4 個風險對策、本週執行起點。"
+```
+
+---
+
+```yaml
+- task_id: "20260404-S01"
+  date: "2026-04-04"
+  skill_type: "research"
+  goal: "分析 AI 時代一人公司最具長遠獲利潛力的商業項目，結合用戶背景提供可執行策略建議"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 2
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/ai-era-solo-business-strategy.md"
+  error_summary: "第 3 次 web search 遭遇速率限制（rate limit），以前兩次搜尋結果及既有知識完成任務。DoD 6/6 全部通過。"
+  estimated_tokens: "~25K"
+  notes: "識別前 5 商業模式：AI顧問×產品化服務、AI Agent 自動化建置、垂直 AI SaaS、知識商品化、AI 培訓工作坊。針對台灣+越南雙市場及管理顧問背景提供具體建議。12 個月執行路徑已規劃。"
+```
+
+---
+
+```yaml
+- task_id: "20260404-O01"
+  date: "2026-04-04"
+  skill_type: "ops"
+  goal: "修正 R02 must-fix：補充知識管理類別、統一採用狀態四態格式"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/solo-company-tools-inventory-v2.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "原 v1 草稿因 .gitignore 未入版控，v2 依 Task Card context + audit log + memory/ 重建。DoD 5/5 全部通過。新增知識管理類別（5 工具），7 大類別採用狀態全面統一四態格式。"
+```
+
+---
+
+```yaml
+- task_id: "20260404-R02"
+  date: "2026-04-04"
+  skill_type: "review"
+  goal: "審查工具盤點報告的完整性、邏輯一致性與一人公司適用性"
+  status: "done"
+  model_used: "claude-opus-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/tools-inventory-review-report.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "有條件通過。發現 2 個必須修改（知識管理類別缺失、採用狀態不一致），3 個建議修改。DoD 5/5 條有 3 通過、2 部分通過。Week 1 pipeline 驗證完成。"
+
+- task_id: "20260404-R01"
+  date: "2026-04-04"
+  skill_type: "research"
+  goal: "調查並整理一人公司運作所需的工具清單，按功能分類並評估現有採用狀況"
+  status: "done"
+  model_used: "claude-opus-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "web_search"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/solo-company-tools-inventory.md"
+  error_summary: ""
+  estimated_tokens: "~18K"
+  notes: "6 大類別 20+ 工具。web search 3 輪全部用完。outputs/drafts/ 因 .gitignore 不入版控，Task Card 狀態記錄在 YAML。"
+```
