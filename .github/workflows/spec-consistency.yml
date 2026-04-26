@@ -35,6 +35,16 @@ jobs:
       - name: YAML parse check
         run: ruby -e 'require "yaml"; Dir.glob("**/*.yaml").each{|p| YAML.load_file(p)}; puts "ALL_YAML_OK"'
 
+      - name: Audit completeness check
+        run: |
+          ruby scripts/test_check_audit_completeness.rb
+          ruby scripts/check_audit_completeness.rb
+
+      - name: Docs parity check
+        run: |
+          ruby scripts/test_check_docs_parity.rb
+          ruby scripts/check_docs_parity.rb
+
       - name: Context budget check
         run: |
           ruby scripts/test_check_context_budget.rb
