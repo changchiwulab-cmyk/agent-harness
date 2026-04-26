@@ -68,7 +68,7 @@ v1 先用單一模型（Claude）。未來如需降本：
 
 ## 校準係數（2026-04-17 首次建立）
 
-目的：在建立 Task Card 時，若原預估偏離歷史實測過多，可依該 skill 的係數調整 `max_tool_calls` 與 `max_retries`。資料來源：`outputs/drafts/token-calibration-table-v1.md`。
+目的：在建立 Task Card 時，若原預估偏離歷史實測過多，可依該 skill 的係數調整 `max_tool_calls` 與 `max_retries`。資料來源：`outputs/reports/token-calibration-v1.md`（2026-04-24 晉升自 drafts/）。
 
 **定義**：`calibration_factor = actual_avg / initial_estimate`
 

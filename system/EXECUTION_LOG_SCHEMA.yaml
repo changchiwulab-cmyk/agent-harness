@@ -1,5 +1,19 @@
 # Execution Log Schema
-# 每次任務執行完成後，依此 schema 寫入 logs/runs/
+#
+# === 使用範圍（2026-04-24 依 Decision Log D006 收斂）===
+# 非所有任務都需寫入 logs/runs/。僅下列情境需使用本 schema 做詳細記錄：
+#   1. status = failed（任務失敗）
+#   2. status = partial（部分完成）
+#   3. risk_level >= high 的任務（需 4 層 gate 完整紀錄）
+#   4. checkpoints >= 3（多階段複雜任務，需分段溯源）
+# 其他 happy-path 任務僅寫 logs/AUDIT_LOG.md 即可。
+#
+# 理由：近 5 筆任務零失敗零 partial，AUDIT_LOG 已充分；schema 對失敗後 post-mortem
+# 與高風險溯源最有價值，不應對短小任務強加儀式負擔。
+# 參見 memory/active_projects/agent-harness/decisions/20260424-D006_execution-log-scope.yaml
+#
+# === Schema 定義 ===
+# 符合上述條件的任務完成後，依此 schema 寫入 logs/runs/
 
 execution_log:
   run_id: "RUN-YYYYMMDD-###"        # 唯一識別碼

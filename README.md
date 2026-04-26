@@ -54,7 +54,7 @@ agent-harness/
 ├── tasks/
 │   ├── TASK_CARD_TEMPLATE.yaml
 │   ├── DECISION_LOG_TEMPLATE.yaml  ← 決策紀錄模板（v1.5 新增）
-│   ├── WEEKLY_REVIEW_TEMPLATE.md   ← 週回顧模板（v1.5 新增）
+│   ├── archived/              ← 已 deprecated 模板（如 WEEKLY_REVIEW_TEMPLATE）
 │   └── examples/              ← 填好的範例
 ├── skills/
 │   ├── research/
@@ -125,6 +125,16 @@ scripts/check_spec_consistency.rb
 ```bash
 ruby -e 'require "yaml"; Dir.glob("**/*.yaml").each{|p| YAML.load_file(p)}; puts "ALL_YAML_OK"'
 ```
+
+若要驗證單張 Task Card：
+
+```bash
+python system/validate_task_card.py tasks/your-task.yaml
+```
+
+## 安全政策
+
+安全議題回報流程見 [SECURITY.md](SECURITY.md)。
 
 ## 導入計畫
 
