@@ -191,6 +191,48 @@
 ---
 
 ```yaml
+- task_id: "20260415-A01"
+  date: "2026-04-15"
+  skill_type: "analysis"
+  goal: "評估是否應將 create_task_card 從 ask 升為 allow，給出有依據的建議排序"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+  checkpoints: 0
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/analysis-create-task-card-permission.md; memory/active_projects/agent-harness/decisions/20260415-D004_create-task-card-promoted-to-allow.yaml"
+  error_summary: ""
+  estimated_tokens: "~8K"
+  notes: "agent-harness 第一個 analysis skill 真實任務。完成六維評估後建議升 allow，PERMISSIONS.yaml + APPROVAL_POLICY.yaml 已更新，D004 已建。Backfill on 2026-04-26 per deep-research-report-2 (audit completeness gap)."
+```
+
+---
+
+```yaml
+- task_id: "20260409-001"
+  date: "2026-04-09"
+  skill_type: "review"
+  goal: "驗證 Agent Harness v2.0 所有新增組件的可用性與流程完整性"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 9
+  checkpoints: 3
+  approval_needed: false
+  approval_given: false
+  output_path: "logs/runs/20260409-001_system-validation.yaml"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "v2 系統全流程驗證。7/7 DoD 通過。初次驗證發現 FAILURE_TAXONOMY 漏 SEC-04 已補正。四層 Gate 全部 pass。Backfill on 2026-04-26 per deep-research-report-2 (audit completeness gap)."
+```
+
+---
+
+```yaml
 - task_id: "20260404-O02"
   date: "2026-04-04"
   skill_type: "ops"
