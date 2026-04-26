@@ -77,13 +77,17 @@ agent-harness/
 │   ├── user_prefs.md          ← 使用者偏好
 │   └── active_projects/       ← 進行中專案 context
 ├── logs/
-│   ├── AUDIT_LOG.md           ← 稽核紀錄
-│   ├── runs/                  ← 執行紀錄
+│   ├── AUDIT_LOG.md           ← 稽核紀錄索引（指向各季分檔）
+│   ├── AUDIT_LOG_2026-Q2.md   ← 2026 Q2 稽核紀錄（依季分檔）
+│   ├── runs/                  ← 執行紀錄（窄範圍：failed/partial/high-risk/多 checkpoint）
 │   ├── approvals/             ← 核准紀錄
 │   └── errors/                ← 錯誤紀錄
 └── outputs/
+    ├── LIFECYCLE.md           ← 三態（drafts/reports/archived）晉升與棄用 SOP
     ├── drafts/                ← 草稿輸出
-    └── reports/               ← 正式報告
+    ├── reports/               ← 正式報告
+    ├── templates/             ← 對外交付樣板（cover letter / version / risk）
+    └── archived/              ← 已棄用 / 歷史版本
 ```
 
 ## 快速上手（3 步驟）
