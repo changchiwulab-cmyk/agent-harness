@@ -1,0 +1,58 @@
+task_id: "20260417-O01"
+date: "2026-04-17"
+status: "done"
+
+# === 任務定義 ===
+goal: "填補 retro-2026-04-15 發現的三項證據空白：Error Log 範例、Decision Log D005、Token 校準資料表"
+context: |
+  首次 retro 指出三項結構已備但實例缺失的證據空白：
+  1. logs/errors/ 僅有範本，無任何實際錯誤紀錄（歷史事件 20260404-S01 web search rate limit 未建檔）
+  2. agent-harness/decisions/ 缺 D005（INTAKE_FLOW 快速路徑判斷的決策理由）
+  3. outputs/drafts/ 無 token 校準資料對照表，COST_POLICY 校準係數缺資料依據
+  本任務僅新增檔案，不修改 system/ 或 memory context，全部 allow 權限範圍內。
+input_data:
+  - "logs/AUDIT_LOG.md"
+  - "outputs/drafts/retro-2026-04-15.md"
+  - "logs/errors/ERROR_LOG_TEMPLATE.md"
+  - "tasks/DECISION_LOG_TEMPLATE.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "logs/errors/2026-04-04_20260404-S01_error.md 建立，YAML 欄位符合 ERROR_LOG_TEMPLATE，檔頭標註為歷史重建/非阻斷"
+  - "memory/active_projects/agent-harness/decisions/20260415-D005_intake-fast-path.yaml 建立，格式符合 DECISION_LOG_TEMPLATE"
+  - "outputs/drafts/token-calibration-table-v1.md 建立，含 8 筆 audit log 分 skill_type 統計與 COST_POLICY 偏差對照"
+  - "三份檔案的數據可追溯到 AUDIT_LOG.md 原始紀錄"
+  - "logs/AUDIT_LOG.md 追加本任務執行紀錄"
+
+# === 輸出定義 ===
+expected_output:
+  format: "multi"
+  location: "logs/errors/, memory/active_projects/agent-harness/decisions/, outputs/drafts/"
+  filename: "見 DoD"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+# === 成本控制 ===
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄 ===
+checkpoints:
+  - "stage1-complete: 三檔案產出完成，spec consistency 通過"
+actual_tool_calls: 4            # file_write ×3 + bash ×1（check_spec_consistency）
+result_summary: |
+  三份檔案全部產出，DoD 5/5 通過。
+  - logs/errors/2026-04-04_20260404-S01_error.md（含「歷史重建/非阻斷」檔頭標註）
+  - memory/active_projects/agent-harness/decisions/20260415-D005_intake-fast-path.yaml
+  - outputs/drafts/token-calibration-table-v1.md（含校準係數與 retro 數字一致性檢查）
+completion_time: "2026-04-17"
+audit_log_ref: "logs/AUDIT_LOG.md"

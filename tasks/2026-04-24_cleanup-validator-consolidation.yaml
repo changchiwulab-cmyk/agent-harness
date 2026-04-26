@@ -1,0 +1,58 @@
+task_id: "20260424-O01"
+date: "2026-04-24"
+status: "done"
+
+goal: "收斂重複的 task card 驗證器為單一事實來源，補 SECURITY 發現性，清理重複 CI"
+context: |
+  現況有 3 個驗證工具：
+  - scripts/check_spec_consistency.rb（Ruby，全量，含 schema / 日期 / 路徑驗證）
+  - scripts/check_task_card_skill_type.py（Python，僅 skill_type 子集，與 Ruby 重疊）
+  - system/validate_task_card.py（Python，單張卡 CLI，面向開發者手動使用）
+  CI 跑 2 條 workflow：spec-consistency.yml（已涵蓋全部）+ task-card-skill-type-check.yml（重疊）。
+  SECURITY.md 於 2026-04-24 新增但未被 README 引用；tasks/examples/sample-data/ 經再確認已含 2 個 sample 檔非空。
+
+input_data:
+  - "scripts/check_spec_consistency.rb"
+  - "scripts/check_task_card_skill_type.py"
+  - "scripts/test_check_task_card_skill_type.py"
+  - "system/validate_task_card.py"
+  - ".github/workflows/spec-consistency.yml"
+  - ".github/workflows/task-card-skill-type-check.yml"
+  - "README.md"
+  - "SECURITY.md"
+
+definition_of_done:
+  - "保留 scripts/check_spec_consistency.rb（CI 主驗）+ system/validate_task_card.py（單張 CLI），刪除 scripts/check_task_card_skill_type.py 與 scripts/test_check_task_card_skill_type.py"
+  - ".github/workflows/task-card-skill-type-check.yml 刪除"
+  - ".github/workflows/spec-consistency.yml 移除 Python skill-type step 與 Python unit tests step（因已無 Python 測試）"
+  - "README.md 快速上手或檢查段新增 SECURITY.md 引用"
+  - "tasks/examples/sample-data/ 已驗證非空（contacts-raw-notes.md, vietnam-ai-tools-research-draft.md），不需處理"
+  - "scripts/check_spec_consistency.rb 執行 exit 0"
+  - "ruby scripts/test_check_spec_consistency.rb 全綠"
+  - "ruby -e 'require \"yaml\"; Dir.glob(\"**/*.yaml\").each{|p| YAML.load_file(p)}; puts \"ALL_YAML_OK\"' 通過"
+
+expected_output:
+  format: "mixed"
+  location: "outputs/drafts/"
+  filename: "20260424-O01_cleanup-summary.md"
+
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+  - "bash"
+
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+skill_type: "ops"
+
+checkpoints: []
+actual_tool_calls: 10
+result_summary: "DoD 8/8 通過。刪除 2 支冗餘 Python 腳本 + 1 條重疊 CI workflow；spec-consistency.yml 收斂為純 Ruby；README 補 SECURITY 與單張卡 CLI 用法。所有本地 CI 檢查全綠。"
+completion_time: "2026-04-24"
+audit_log_ref: "logs/AUDIT_LOG.md"

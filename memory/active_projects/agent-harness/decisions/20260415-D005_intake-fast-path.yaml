@@ -1,0 +1,41 @@
+decision_id: "20260415-D005"
+date: "2026-04-15"
+project: "agent-harness"
+
+context: >
+  首次 RETRO（8 筆）發現 INTAKE_FLOW 完整流程完全未被觸發（0/8 使用率），
+  因為所有任務建立時需求都已明確，使用者直接跳過釐清階段建立 Task Card。
+  RETRO 建議在 INTAKE_FLOW.md 補充「快速路徑判斷」說明，保留完整流程給
+  未來需求模糊的情境。
+
+options_considered:
+  - option: "維持原 INTAKE_FLOW（完整釐清流程）"
+    pros: "保留最大彈性；未來若遇模糊需求，流程仍在"
+    cons: "當下 0% 使用率，文件與實務脫節；新人讀了會以為必經流程"
+
+  - option: "精簡／刪除 INTAKE_FLOW"
+    pros: "符合當前實測資料"
+    cons: "失去釐清工具；未來任務若從外部（非使用者本人）湧入，無對應流程；違反「不刪除既有機制」保守原則"
+
+  - option: "加入快速路徑判斷（fast-path）"
+    pros: "如實反映「需求明確直接建 Task Card」的現況；保留完整流程作為備援；文件與實務一致"
+    cons: "需在 INTAKE_FLOW.md 增加 ~10-20 行說明判斷條件"
+
+decision: "加入快速路徑判斷（fast-path），保留完整流程作為備援"
+reasoning: >
+  事後補填（reasoning 明註原因）：本決策在 2026-04-15 實作 retro 建議時已執行，
+  但未同步建立 Decision Log。2026-04-17 補建以保留決策可追溯性。
+  依據：
+  1. 8/8 實測資料（100% 快速路徑），顯示完整流程當前不必要
+  2. 但無法排除未來「委外任務」「非本人需求」等模糊情境
+  3. 保守原則：既有機制不刪除，僅補充判斷邏輯
+  4. 與 D004（create_task_card 升 allow）思路一致 —— 依實測降低摩擦，但保留上層安全網（GATE_POLICY）
+
+risk: |
+  若快速路徑判斷條件寫得太寬，會讓本該走完整釐清的任務也跳過；
+  緩解：每次 retro 檢查 INTAKE 觸發率，若完整流程觸發率持續 0%，再評估更精簡。
+revisit_trigger: |
+  下次 retro 時 INTAKE 完整流程觸發率 ≥ 20% 時重新評估（代表模糊需求開始出現）；
+  或連續 20 筆任務仍 0% 觸發，考慮進一步精簡。
+related_task: "20260415-create-task-card-permission-analysis"
+status: "active"

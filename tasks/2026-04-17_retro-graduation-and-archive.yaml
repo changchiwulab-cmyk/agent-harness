@@ -1,0 +1,63 @@
+task_id: "20260417-O02"
+date: "2026-04-17"
+status: "done"
+
+# === 任務定義 ===
+goal: "將 retro-2026-04-15 晉升為正式 report，並封存 vietnam-expansion 專案"
+context: |
+  依使用者在優化規劃階段的決定（AskUserQuestion 已確認）：
+  1. retro-2026-04-15 已成熟，晉升為 outputs/reports/retro-2026-Q2-01.md
+  2. vietnam-expansion 專案狀態為 Archived，移至 memory/archived_projects/
+  3. 同步更新 system/RETRO_FLOW.md 補充晉升步驟、memory/README.md 補充 archived_projects 說明
+input_data:
+  - "outputs/drafts/retro-2026-04-15.md"
+  - "system/RETRO_FLOW.md"
+  - "memory/active_projects/vietnam-expansion/"
+  - "memory/README.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "outputs/reports/retro-2026-Q2-01.md 建立，檔頭含晉升標記（日期、審閱者、採納項目）"
+  - "outputs/drafts/retro-2026-04-15.md 檔尾加入「已晉升為 reports/retro-2026-Q2-01.md」回指"
+  - "system/RETRO_FLOW.md 新增第 5 步「晉升至 reports/」的說明"
+  - "memory/archived_projects/vietnam-expansion/ 目錄建立（git mv 保留歷史），context.md 含 status: archived frontmatter"
+  - "memory/README.md 補充 archived_projects 段落，與 active_projects 對稱"
+  - "spec consistency 與 task card 驗證通過"
+  - "logs/AUDIT_LOG.md 追加本任務執行紀錄"
+
+# === 輸出定義 ===
+expected_output:
+  format: "multi"
+  location: "outputs/reports/, memory/archived_projects/, system/, memory/"
+  filename: "見 DoD"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "bash"                       # git mv + spec consistency check
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄 ===
+checkpoints:
+  - "stage2-complete: retro 晉升、vietnam 封存、RETRO_FLOW 更新，consistency 通過"
+actual_tool_calls: 7
+result_summary: |
+  DoD 7/7 通過。主要產出：
+  - outputs/reports/retro-2026-Q2-01.md（含晉升標記與採納清單）
+  - outputs/drafts/retro-2026-04-15.md 檔尾加回指
+  - system/RETRO_FLOW.md 新增第 5 步「晉升至 reports/」
+  - memory/archived_projects/vietnam-expansion/（git mv 保留歷史）
+  - memory/README.md 補 archived_projects 段落
+  附帶修正：tasks/examples/ 兩個 example Task Card 的 input_data 路徑更新為 archived_projects/
+completion_time: "2026-04-17"
+audit_log_ref: "logs/AUDIT_LOG.md"

@@ -1,0 +1,53 @@
+task_id: "20260424-O02"
+date: "2026-04-24"
+status: "done"
+
+goal: "將 token-calibration-table 晉升為治理 artifact，調整 INTAKE_FLOW 主路為快速路徑，正式歸檔 WEEKLY_REVIEW_TEMPLATE"
+context: |
+  COST_POLICY 校準係數章節引用 outputs/drafts/token-calibration-table-v1.md 作為 source of truth，
+  但該檔仍在 drafts/，與「正式引用 artifact 應在 reports/ 或 system/」邏輯矛盾。
+  INTAKE_FLOW 依 8/8 實證為「從未觸發」，主路應改為快速路徑（fast-path）為預設，intake 作為 fallback。
+  WEEKLY_REVIEW_TEMPLATE 已標 deprecated（2026-04-17）但仍與活躍模板同處 tasks/ 根目錄，容易誤用。
+
+input_data:
+  - "outputs/drafts/token-calibration-table-v1.md"
+  - "system/INTAKE_FLOW.md"
+  - "system/COST_POLICY.md"
+  - "system/RETRO_FLOW.md"
+  - "tasks/WEEKLY_REVIEW_TEMPLATE.md"
+
+definition_of_done:
+  - "token-calibration-table-v1.md 晉升至 outputs/reports/token-calibration-v1.md，檔頭加晉升標記"
+  - "原 drafts/token-calibration-table-v1.md 檔尾補「已晉升為 reports/...」回指"
+  - "COST_POLICY.md 校準係數章節的資料來源路徑更新至 outputs/reports/"
+  - "INTAKE_FLOW.md 重寫：快速路徑為預設主路，intake 作為 fallback；流程圖與說明順序調整"
+  - "tasks/WEEKLY_REVIEW_TEMPLATE.md 以 git mv 搬至 tasks/archived/"
+  - "RETRO_FLOW.md 中對 WEEKLY_REVIEW_TEMPLATE 的引用更新路徑"
+  - "spec-consistency 通過，ruby 測試全綠，YAML 解析通過"
+  - "audit log 新增 1 筆紀錄"
+
+expected_output:
+  format: "mixed"
+  location: "outputs/drafts/"
+  filename: "20260424-O02_restructure-summary.md"
+
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+  - "bash"
+
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 0
+
+skill_type: "ops"
+
+checkpoints: []
+actual_tool_calls: 12
+result_summary: "DoD 8/8 通過。token-calibration 晉升至 reports/；INTAKE_FLOW 重寫以 fast-path 為主路；WEEKLY_REVIEW_TEMPLATE 歸檔至 tasks/archived/；所有活性引用同步更新。CI 檢查全綠。"
+completion_time: "2026-04-24"
+audit_log_ref: "logs/AUDIT_LOG.md"

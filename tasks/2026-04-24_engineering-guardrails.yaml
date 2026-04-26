@@ -1,0 +1,57 @@
+task_id: "20260424-O03"
+date: "2026-04-24"
+status: "done"
+
+goal: "為 CLAUDE.md/GLOBAL_RULES 3K token 硬限制加 CI 檢查，並對 Execution Log Schema 落地率低做收斂決策"
+context: |
+  CLAUDE.md 與 GLOBAL_RULES.md 在 CLAUDE.md 第 3 節明訂「加總 ≤ 3,000 tokens」硬限制，
+  但無任何自動量測，長期會漂移失效。粗估以「字元數 / 4」即可（GPT/Claude tokenizer 對中英混合的經驗值）。
+
+  Execution Log Schema（system/EXECUTION_LOG_SCHEMA.yaml）定義齊備，但 logs/runs/ 只有 1 筆；
+  近 3 筆任務（O01/O02/O03 於 2026-04-17）都只寫 AUDIT_LOG 未寫 runs/。schema 實質未落地。
+  需決策：enforce（補檢查）或 narrow scope（僅 failed/partial/high-risk 任務寫詳細 log）或 deprecate。
+
+input_data:
+  - "CLAUDE.md"
+  - "system/GLOBAL_RULES.md"
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+  - "logs/runs/"
+  - "logs/AUDIT_LOG.md"
+  - "system/RETRO_FLOW.md"
+
+definition_of_done:
+  - "新增 scripts/check_context_budget.rb：加總 CLAUDE.md + GLOBAL_RULES.md 字元數 / 4，超 3K 則 exit 1"
+  - "新增 scripts/test_check_context_budget.rb：含多個 minitest case"
+  - ".github/workflows/spec-consistency.yml 新增步驟執行 context budget 檢查"
+  - "Execution Log Schema 決策：採用 narrow scope —— 僅 failed/partial/多 checkpoint 任務才需寫 runs/，happy-path 沿用 AUDIT_LOG"
+  - "Decision Log 寫入 memory/active_projects/agent-harness/decisions/20260424-D006_execution-log-scope.yaml"
+  - "system/EXECUTION_LOG_SCHEMA.yaml 檔頭加「使用範圍」段落，引用 D006"
+  - "system/RETRO_FLOW.md 與 AUDIT_LOG 格式無需改動（僅確認一致性，無需修檔即可）"
+  - "scripts/check_context_budget.rb + scripts/check_spec_consistency.rb + ruby tests 全部 exit 0"
+  - "audit log 新增 1 筆紀錄"
+
+expected_output:
+  format: "mixed"
+  location: "outputs/drafts/"
+  filename: "20260424-O03_guardrails-summary.md"
+
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+  - "bash"
+
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 0
+
+skill_type: "ops"
+
+checkpoints: []
+actual_tool_calls: 14
+result_summary: "DoD 9/9 通過。新增 context budget CI 護欄（當前 ~554/3000，使用 18.5%）；Execution Log Schema 選 Narrow Scope，Decision Log D006 落地。所有 CI 檢查全綠。"
+completion_time: "2026-04-24"
+audit_log_ref: "logs/AUDIT_LOG.md"
