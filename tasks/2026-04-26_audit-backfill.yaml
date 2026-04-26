@@ -3,7 +3,7 @@
 
 task_id: "20260426-O01"
 date: "2026-04-26"
-status: "pending"
+status: "done"
 
 # === 任務定義 ===
 goal: "回補 20260409-001 與 20260415-A01 兩筆已完成任務的 audit entries，使 audit completeness 達 100%"
@@ -47,8 +47,9 @@ max_web_searches: 0
 skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
-audit_log_ref: ""
+checkpoints:
+  - "f5d8ff1 backfill audit entries for 20260409-001 and 20260415-A01"
+actual_tool_calls: 4
+result_summary: "DoD 5/5 通過。Audit completeness 13/15 → 15/15。兩筆 backfill 皆標 'Backfill on 2026-04-26 per deep-research-report-2 (audit completeness gap)'。"
+completion_time: "2026-04-26"
+audit_log_ref: "logs/AUDIT_LOG.md"

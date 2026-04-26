@@ -33,6 +33,135 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260426-O05"
+  date: "2026-04-26"
+  skill_type: "ops"
+  goal: "把「文件 parity」與「audit completeness」變成 main merge 前的 CI 硬門檻"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "file_write"
+      call_count: 4
+    - tool_name: "file_edit"
+      call_count: 2
+    - tool_name: "bash"
+      call_count: 6
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "scripts/check_audit_completeness.rb; scripts/check_docs_parity.rb; scripts/test_check_audit_completeness.rb; scripts/test_check_docs_parity.rb; .github/workflows/spec-consistency.yml; tasks/TASK_CARD_TEMPLATE.yaml"
+  error_summary: ""
+  estimated_tokens: "~16K"
+  notes: "Stage 5 of deep-research-report-2 P0/P1 收斂。DoD 6/6 通過。Drift detection 實測通過（暫拿掉 README analysis → check fails；復原 → green）。實作中順手抓到 TASK_CARD_TEMPLATE.yaml skill_type 註解缺 analysis（報告未指出），已一併修正。Audit completeness 11/11、Docs parity 5/5 sources 對齊。"
+```
+
+---
+
+```yaml
+- task_id: "20260426-O04"
+  date: "2026-04-26"
+  skill_type: "ops"
+  goal: "把 .github/workflows/*.yml 全部加上顯式 permissions（最小權限）"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_edit"
+      call_count: 1
+    - tool_name: "bash"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: ".github/workflows/spec-consistency.yml"
+  error_summary: ""
+  estimated_tokens: "~3K"
+  notes: "Stage 4 of deep-research-report-2 P0/P1 收斂。DoD 4/4 通過（CI 將在 push 後 GitHub Actions 上實跑驗證）。permissions: contents: read 為 actions/checkout + 純讀檢查的最小權限。Open PRs #29/#30/#52 已在 backlog triage 標 superseded。"
+```
+
+---
+
+```yaml
+- task_id: "20260426-O03"
+  date: "2026-04-26"
+  skill_type: "ops"
+  goal: "把 27 open PR 收斂到「每主題 1 active PR」，其餘以 superseded 關閉，產出 triage 摘要"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "mcp__github__list_pull_requests"
+      call_count: 2
+    - tool_name: "mcp__github__add_issue_comment"
+      call_count: 23
+    - tool_name: "mcp__github__update_pull_request"
+      call_count: 23
+    - tool_name: "file_write"
+      call_count: 1
+    - tool_name: "bash"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/20260426-O03_pr-triage-summary.md"
+  error_summary: "中途誤關 #28，立即重開並補 comment 說明。盤點時發現實際 open PR 為 36（報告原估 27）。"
+  estimated_tokens: "~22K"
+  notes: "Stage 3 of deep-research-report-2 P0/P1 收斂。Open 36 → 16（含本 PR）。關閉 21 個重複分 6 群（A1/A2/A3/B1/B2/B3）。剩 15 active 全為 needs-owner-review。兩處與本 PR 顯著重疊已紀錄到 summary：#51 (governance 擴充) 與 #31 (替代 CI 設計)。"
+```
+
+---
+
+```yaml
+- task_id: "20260426-O02"
+  date: "2026-04-26"
+  skill_type: "ops"
+  goal: "把 README、CLAUDE.md、active project context 對齊現行 PERMISSIONS / ROUTING / TEMPLATE，消除文件 drift"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "file_edit"
+      call_count: 4
+    - tool_name: "bash"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "README.md; CLAUDE.md; memory/active_projects/agent-harness/context.md"
+  error_summary: ""
+  estimated_tokens: "~8K"
+  notes: "Stage 2 of deep-research-report-2 P0/P1 收斂。DoD 6/6 通過。README skill_type 加 analysis；CLAUDE.md create_task_card ask → allow（與 PERMISSIONS.yaml + D004 對齊）；active context 更新至 2026-04-26、audit count 15、D001-D006 完整列表。Context budget 1197 → 1207（+10 tokens，仍遠低 3000）。"
+```
+
+---
+
+```yaml
+- task_id: "20260426-O01"
+  date: "2026-04-26"
+  skill_type: "ops"
+  goal: "回補 20260409-001 與 20260415-A01 兩筆已完成任務的 audit entries，使 audit completeness 達 100%"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_edit"
+      call_count: 1
+    - tool_name: "bash"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "logs/AUDIT_LOG.md"
+  error_summary: ""
+  estimated_tokens: "~4K"
+  notes: "Stage 1 of deep-research-report-2 P0/P1 收斂。DoD 5/5 通過。兩筆 backfill 皆標 'Backfill on 2026-04-26 per deep-research-report-2 (audit completeness gap)'。從 13/15 → 15/15。"
+```
+
+---
+
+```yaml
 - task_id: "20260424-O03"
   date: "2026-04-24"
   skill_type: "ops"
