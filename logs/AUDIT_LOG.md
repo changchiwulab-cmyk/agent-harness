@@ -33,6 +33,33 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260426-O01"
+  date: "2026-04-26"
+  skill_type: "ops"
+  goal: "補完 retro 已建議但未落地的三項治理條款：research web search 策略、routing 量化拆分閾值、outputs 生命週期 SOP"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "file_edit"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 2
+    - tool_name: "bash"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "skills/research/SKILL.md; system/ROUTING_RULES.md; outputs/LIFECYCLE.md; outputs/archived/.gitkeep; outputs/drafts/20260426-O01_skill-routing-lifecycle-summary.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "Stage 1 of 2026-04-26 全面優化（5 卡）。DoD 6/6 通過。CI 三檢全綠（spec / yaml / context-budget 1197/3000）。LIFECYCLE.md 為 Card B 對外交付樣板的銜接基礎。"
+```
+
+---
+
+```yaml
 - task_id: "20260424-O03"
   date: "2026-04-24"
   skill_type: "ops"
