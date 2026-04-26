@@ -1,31 +1,4 @@
-const TASK_FILES = [
-  '../tasks/2026-04-04_ai-era-solo-business-proposal-review.yaml',
-  '../tasks/2026-04-04_ai-era-solo-business-proposal.yaml',
-  '../tasks/2026-04-04_ai-era-solo-business-strategy.yaml',
-  '../tasks/2026-04-04_proposal-fix-v2.yaml',
-  '../tasks/2026-04-04_tools-inventory-fix.yaml',
-  '../tasks/2026-04-04_tools-inventory-research.yaml',
-  '../tasks/2026-04-04_tools-inventory-review.yaml',
-  '../tasks/2026-04-09_system-validation.yaml',
-  '../tasks/2026-04-15_create-task-card-permission-analysis.yaml',
-  '../tasks/2026-04-17_evidence-gap-filling.yaml',
-  '../tasks/2026-04-17_retro-graduation-and-archive.yaml',
-  '../tasks/2026-04-17_system-rule-tuning.yaml',
-  '../tasks/2026-04-24_cleanup-validator-consolidation.yaml',
-  '../tasks/2026-04-24_engineering-guardrails.yaml',
-  '../tasks/2026-04-24_governance-docs-restructure.yaml'
-];
-
-const LOG_FILES = ['../logs/runs/20260409-001_system-validation.yaml'];
-
-const DECISION_FILES = [
-  '../memory/active_projects/agent-harness/decisions/20260403-D001_task-card-over-database.yaml',
-  '../memory/active_projects/agent-harness/decisions/20260403-D002_coarse-guardrails-v1.yaml',
-  '../memory/active_projects/agent-harness/decisions/20260415-D003_v3-upgrade-hold.yaml',
-  '../memory/active_projects/agent-harness/decisions/20260415-D004_create-task-card-promoted-to-allow.yaml',
-  '../memory/active_projects/agent-harness/decisions/20260415-D005_intake-fast-path.yaml',
-  '../memory/active_projects/agent-harness/decisions/20260424-D006_execution-log-scope.yaml'
-];
+import { TASK_FILES, LOG_FILES, DECISION_FILES } from './manifest.js';
 
 const state = { tasks: [], logs: [], decisions: [] };
 
