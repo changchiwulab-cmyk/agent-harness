@@ -11,7 +11,7 @@
 - 每週一次（週五下班前）
 - 發生 2 次以上同類錯誤
 
-> 週期性觸發原承自 `tasks/WEEKLY_REVIEW_TEMPLATE.md`（已 deprecated，2026-04-17）。
+> 週期性觸發原承自 `tasks/archived/WEEKLY_REVIEW_TEMPLATE.md`（已 deprecated，2026-04-17；歸檔 2026-04-24）。
 > 實務上以「累積 5 筆」或「手動觸發」為主；固定週期觸發可視行程自行決定。
 
 ## Retro 流程
