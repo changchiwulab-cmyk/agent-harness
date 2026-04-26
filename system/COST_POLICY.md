@@ -87,6 +87,47 @@ v1 先用單一模型（Claude）。未來如需降本：
 
 **下次校準觸發**：再累積 5 筆任務（含至少 1 筆 analysis）後，於下次 retro 重算。
 
+## 下次校準操作 SOP
+
+每次 retro 觸發時，依以下步驟更新校準係數，避免人工估算偏差：
+
+### 1. 觸發條件（任一成立即執行）
+
+- 自上次校準起累積 ≥ 5 筆新任務（不論 skill 類型）
+- 任一 skill 類型新增 ≥ 3 筆實測（含未校準的 analysis）
+- 單一任務 token 超出 skill 上限 ≥ 2 次（不需等 5 筆，立即重算該 skill）
+
+### 2. 計算步驟
+
+1. 從 `logs/AUDIT_LOG_<YYYY>-Q<n>.md` 抽取該 skill 自上次校準後的所有 `estimated_tokens`
+2. 計算實測平均：`avg = sum(estimated_tokens) / count`
+3. 計算新校準係數：`calibration_factor = avg / initial_estimate`
+4. 計算建議上限：`limit = avg × 1.5`，向上取整至千位
+5. 更新本檔「任務級預算」與「校準係數」兩張表
+6. 在 `memory/active_projects/agent-harness/decisions/` 新增 D-XXX 紀錄理由
+
+### 3. Analysis 樣本不足 fallback
+
+當 analysis skill 累積樣本 < 3 筆時，不重算其係數：
+
+- 維持原預估 12K + 上限 20K
+- 在表格備註欄加註「樣本數 X，待 ≥ 3」
+- 在下次 retro 報告中明確列出此狀態
+
+### 4. 異常偏差處理
+
+當新係數與舊係數差距 > 50%（例：1.5 → 2.5），不直接套用：
+
+- 先檢查樣本是否含異常值（單筆超出平均 ×3）
+- 若有，標記異常並暫不納入計算；於 retro 報告說明
+- 若無異常但確實偏移，套用新係數並在 D-XXX 註明風險
+
+### 5. 校準後驗證
+
+- 套用新預算後，下一張 Task Card 的 `max_tool_calls` 與 `max_retries` 依新係數調整
+- 連續 3 筆任務皆在新預算內 → 視為穩定
+- 任一筆超出 → 立即啟動下一次校準（不等 5 筆）
+
 ## 升級觸發條件
 
 當以下任一條件持續 2 週以上，考慮升級到 v2：

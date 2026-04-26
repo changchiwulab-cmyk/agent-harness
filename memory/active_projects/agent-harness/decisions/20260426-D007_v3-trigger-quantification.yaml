@@ -1,0 +1,49 @@
+decision_id: "20260426-D007"
+date: "2026-04-26"
+project: "agent-harness"
+
+context: |
+  README v3 升級觸發條件原為四項質性描述（context 經常超限 / 規則衝突頻繁 /
+  單任務成本持續超標 / 錯誤率上升），無可觀測閾值。
+  在首次 retro（2026-Q2-01）已被勾選為「全未達成 → 維持 v2」，但其實是無法判定。
+  本決策將四項條件改為可量測指標，使升級判斷可被 CI 與 retro 流程自動驗證。
+
+options_considered:
+  - option: "A. 維持質性描述，仰賴主觀判斷"
+    pros: "無需設定數字；新場景出現時不需更新 SOP"
+    cons: "永遠無法達標；retro 報告永遠是「全未達成」；治理流程徒具形式"
+  - option: "B. 量化為硬性閾值（本決策採用）"
+    pros: "retro 可機械化檢查；CI 可標記預警；責任清楚"
+    cons: "首批數值需估算，實際偏離後須修訂"
+  - option: "C. 混合制（量化 + 質性 override）"
+    pros: "保留人工最終判斷"
+    cons: "兩套標準互相矛盾時無解；增加 retro 複雜度"
+
+decision: |
+  採 B。四項指標分別為：
+  1. Context：單月 ≥ 3 次 budget 報告 ≥ 2,700/3,000 tokens（90%）
+  2. 失敗重複：同一 FAILURE_TAXONOMY id 4 週內 ≥ 3 次
+  3. 任務超預算：同一 skill 連續 ≥ 3 筆超 COST_POLICY 上限
+  4. 規則衝突：跨 skill routing 拆分需求單月 ≥ 5 次
+  任一條件持續 ≥ 4 週即觸發 v3 規劃。
+
+reasoning: |
+  - 90% 閾值參考 check_context_budget.rb 既有設計（hard limit 3000）
+  - 4 週窗口對齊 COST_POLICY 升級觸發條件（v1→v2 也用 2 週為基準的 2 倍）
+  - 「3 次」為最小可信頻次（單次可能是雜訊，2 次仍可能是巧合）
+  - 「連續 3 筆」對齊 GLOBAL_RULES「連續失敗 3 次停下」的既定節奏
+  - 規則衝突 5 次/月 來自 ROUTING_RULES 量化拆分閾值的延伸（拆分代表規則無法直接路由）
+
+risk: |
+  數值是首次估算，可能過寬或過嚴。
+  - 過寬 → v3 永遠不觸發，v2 持續累積技術債
+  - 過嚴 → 過早升級，付出額外 context 成本
+  Mitigation：每次 retro 由 D-XXX 修訂；連續 2 次 retro 同一指標近 80% 但未達標，視為閾值需收緊。
+
+revisit_trigger: |
+  - 任一指標達標時：執行 v3 規劃前重新檢視閾值是否合理
+  - 任一指標連續 2 次 retro 達 80% 但未觸發：考慮收緊
+  - 失敗模式新增（FAILURE_TAXONOMY 修訂）：補對應指標
+
+related_task: "20260426-O03"
+status: "active"

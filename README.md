@@ -170,5 +170,18 @@ python system/validate_task_card.py tasks/your-task.yaml
 | **v1** | 單核心代理 + Task Card + Checkpoint + Verifier + Audit | — |
 | **v1.5** | + Gate Policy + Operating Context + Decision Log + Eval Examples + Weekly Review | 馬鞍工程原則導入：驗證集中化、系統自知、決策可追溯 |
 | **v2（現在）** | + Approval Policy + Failure Taxonomy + Execution Log Schema + Rollback Path + Ops Eval | 馬鞍工程落地：批准流程獨立化、失敗模式可引用、執行紀錄結構化 |
-| **v3** | 拆分 bounded specialists（research/sales/content） | 單一代理的 context 經常超限；任務類型間的規則衝突頻繁 |
-| **v4** | Graph orchestration + 進階 checkpoint persistence | 任務間依賴複雜度超過線性拔分能處理的範圍 |
+| **v3** | 拆分 bounded specialists（research/sales/content） | 量化條件達成（見下表） |
+| **v4** | Graph orchestration + 進階 checkpoint persistence | v3 之後，任務間依賴複雜度超出線性拆分（量化標準待 v3 期間定義） |
+
+### v3 升級量化觸發條件
+
+下列任一條件達成 ≥ 4 週時觸發 v3 規劃。每次 retro 檢查並登記。
+
+| 條件 | 量化指標 | 偵測來源 |
+|------|---------|---------|
+| Context 接近上限 | 單月 ≥ 3 次 `check_context_budget.rb` 報告 ≥ 2,700 / 3,000 tokens（90%） | CI 紀錄 |
+| 失敗模式重複 | 同一 FAILURE_TAXONOMY id 在 4 週內出現 ≥ 3 次 | `logs/errors/` + AUDIT_LOG `error_summary` |
+| 任務超預算 | 同一 skill 連續 ≥ 3 筆超出 COST_POLICY 任務級上限 | AUDIT_LOG `estimated_tokens` vs COST_POLICY |
+| 規則衝突 | 跨 skill 任務的 routing 拆分需求單月 ≥ 5 次（依 ROUTING_RULES 量化閾值判定） | Task Card `context` 欄位 |
+
+> 數值依首次 retro 與 token-calibration-v1 設定。若實際偏離，於下次 retro 由 D-XXX 修訂。

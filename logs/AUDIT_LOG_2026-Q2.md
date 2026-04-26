@@ -10,6 +10,33 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260426-O03"
+  date: "2026-04-26"
+  skill_type: "ops"
+  goal: "在 COST_POLICY 補下次校準 SOP，並將 README v3 升級觸發條件由質性改為量化指標"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_edit"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 2
+    - tool_name: "bash"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "system/COST_POLICY.md; README.md; memory/active_projects/agent-harness/decisions/20260426-D007_v3-trigger-quantification.yaml; outputs/drafts/20260426-O03_calibration-v3-summary.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "Stage 3 of 2026-04-26 全面優化。DoD 5/5 通過。校準 SOP 5 步驟（觸發/計算/analysis fallback/異常偏差/驗證）；v3 觸發 4 量化指標（context 90% / 失敗重複 3 次 / 連續超預算 3 筆 / routing 拆分 5 次）。CI 三檢全綠。"
+```
+
+---
+
+```yaml
 - task_id: "20260426-O02"
   date: "2026-04-26"
   skill_type: "ops"
