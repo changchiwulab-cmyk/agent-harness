@@ -1,0 +1,57 @@
+decision_id: "20260426-D009"
+date: "2026-04-26"
+project: "agent-harness"
+
+context: |
+  v1.5 期間，失敗模式的描述散落在 GLOBAL_RULES.md 末段，僅有 ~13 種類別且無結構化 ID。
+  retro 與 error log 引用時無法直接連結到具體模式，導致：
+  - 同一失敗在不同 audit log 中描述不一致
+  - 緩解措施重複描述、版本不一致
+  - 新增模式時不知該寫入何處
+  v2 升級時識別此為「失敗無法可引用」問題，需獨立檔 + 結構化 ID。
+
+options_considered:
+  - option: "A. 維持在 GLOBAL_RULES 末段，自由文字描述"
+    pros: "單檔治理；無需新增交叉引用"
+    cons: "無 ID 可引；新增模式無位可放；緩解措施散文化"
+  - option: "B. 拆為 FAILURE_TAXONOMY.yaml，每模式 id+name+description+mitigation（本決策採用）"
+    pros: "可被 audit log / error log / decision log 引用；新增模式有結構；緩解措施集中"
+    cons: "新增治理檔；GLOBAL_RULES 需保留摘要連結"
+  - option: "C. 以表格形式留在 GLOBAL_RULES，但加 ID"
+    pros: "不需新檔"
+    cons: "GLOBAL_RULES 已逼近 3K token 上限；表格混在敘述中可讀性差"
+
+decision: |
+  採 B。建立 system/FAILURE_TAXONOMY.yaml，14 種失敗模式分四類：
+  - spec（4 種，~42%）：SPEC-01..04
+  - coordination（4 種，~37%）：COORD-01..04
+  - validation（3 種，~21%）：VAL-01..03
+  - security（3 種，獨立維度）：SEC-01..03
+  GLOBAL_RULES 末段保留摘要與檔案指引。
+
+reasoning: |
+  - 14 模式的選擇基於業界常見 agent 失敗分類（spec/coordination/validation/security 四維度）
+  - 百分比為主觀估計，作為 retro 時優先檢視順序的提示
+  - SEC 類獨立維度而非依頻率排序，因為安全失敗的後果不對稱（即使低頻也需優先處理）
+  - 拆檔後，每筆 audit log 的 error_summary 可引用具體 ID（如 SEC-03），而非自由文字
+
+risk: |
+  - 14 模式可能不夠周全，新興失敗（如「prompt injection 被觸發」）尚未涵蓋
+  - 比例（42/37/21）為估計值，未經實證；連續樣本累積後可能偏離
+  Mitigation：retro 時檢查是否出現「無 ID 可分類」的失敗 → 觸發 FAILURE_TAXONOMY 修訂；
+  比例每次 retro 重算。
+
+revisit_trigger: |
+  - 出現 ≥ 2 次無法歸類到既有 14 種的失敗
+  - 任一類別 4 週內未被觸發 → 考慮合併
+  - 安全相關新威脅（如 prompt injection、jailbreak）在實戰中出現 → 新增 SEC-04+
+
+related_task: ""
+status: "active"
+
+# === 證據 ===
+evidence:
+  - "system/FAILURE_TAXONOMY.yaml 為 v2 新增治理檔（README.md 版本規劃表第 14 模組）"
+  - "GLOBAL_RULES.md 末段「失敗分類學」段落僅留摘要與比例，詳情指向 FAILURE_TAXONOMY.yaml"
+  - "20260424-O03 Task Card 註記 14 模式為基礎；O03 系統驗證任務確認 13→14 模式修正"
+  - "logs/errors/2026-04-04_20260404-S01_error.md 已使用 SEC-03 ID 引用（落地證明）"

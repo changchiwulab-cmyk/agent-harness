@@ -10,6 +10,31 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260426-O04"
+  date: "2026-04-26"
+  skill_type: "ops"
+  goal: "補登 v1→v2 三筆關鍵歷史決策至 Decision Log，提高制度可追溯性"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 4
+    - tool_name: "bash"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "memory/active_projects/agent-harness/decisions/20260426-D008/D009/D010_*.yaml; outputs/drafts/20260426-O04_decision-log-backfill-summary.md"
+  error_summary: ""
+  estimated_tokens: "~9K"
+  notes: "Stage 4 of 2026-04-26 全面優化。DoD 7/7 通過。原訂 D008 與既有 D001 重複，已調整為三筆未紀錄決策（Approval 拆檔 / Failure Taxonomy 拆檔 / analysis skill 加入）。每筆含 evidence 段引用 commit / README / 既有檔案。CI 三檢全綠。"
+```
+
+---
+
+```yaml
 - task_id: "20260426-O03"
   date: "2026-04-26"
   skill_type: "ops"
