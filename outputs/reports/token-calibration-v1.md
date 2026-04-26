@@ -1,8 +1,21 @@
-# Token 校準資料對照表 v1
+# Token 校準資料對照表 v1（正式版）
 
-> **用途**：作為 COST_POLICY「校準係數」章節（Stage 3 / B2）的資料依據。
-> **資料來源**：`logs/AUDIT_LOG.md` 全部 8 筆任務紀錄（2026-04-04 ~ 2026-04-09）。
-> **狀態**：草稿，待 Stage 3 晉升入 COST_POLICY.md 後再更新。
+---
+
+## 晉升標記
+
+| 項目 | 內容 |
+|------|------|
+| **原始 draft** | `outputs/drafts/token-calibration-table-v1.md` |
+| **晉升日期** | 2026-04-24 |
+| **晉升任務** | Task Card `20260424-O02`（tasks/2026-04-24_governance-docs-restructure.yaml） |
+| **審閱者** | 人工確認（優化規劃階段核准） |
+| **原始產出日期** | 2026-04-17 |
+| **引用者** | `system/COST_POLICY.md` 校準係數章節 |
+
+### 晉升理由
+COST_POLICY 已以本表為 source of truth，但檔體仍在 drafts/ 造成語意矛盾（正式引用指向非正式來源）。
+晉升至 reports/ 使引用鏈一致：治理規則（system/）→ 正式 artifact（reports/）。
 
 ---
 
@@ -68,11 +81,11 @@
 | ops 建議上限 | 19K | 19K | ✅ |
 | review 建議上限 | 23K | 23K | ✅ |
 
-**結論**：數字與 retro 完全一致，可安全用於 B2 校準係數章節。
+**結論**：數字與 retro 完全一致。
 
 ---
 
-## 五、建議使用方式（Stage 3 / B2 參考）
+## 五、建議使用方式
 
 1. **建立 Task Card 時**：依該 skill_type 的 `calibration_factor`，將原預估乘上該係數作為警戒上限
 2. **下次 retro 觸發條件**：再累積 5 筆任務後（含至少 1 筆 analysis 任務）
@@ -89,11 +102,7 @@
 
 ---
 
-*建檔時間：2026-04-17*
-*Task Card：20260417-O01*
-*資料依據：logs/AUDIT_LOG.md*
-
----
-
-> **已晉升為 `outputs/reports/token-calibration-v1.md`**（2026-04-24，Task `20260424-O02`）
-> 本 draft 保留供歷史追溯，正式引用請指向 reports/ 版本。
+*原始產出時間：2026-04-17*
+*原始 Task Card：20260417-O01*
+*晉升 Task Card：20260424-O02*
+*資料依據：logs/AUDIT_LOG.md（2026-04-04 ~ 2026-04-09，共 8 筆）*
