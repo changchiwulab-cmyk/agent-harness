@@ -10,6 +10,33 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260426-A01"
+  date: "2026-04-26"
+  skill_type: "analysis"
+  goal: "評估 Knowledge Base 主工具：Notion vs Obsidian vs Logseq，產出 Go 決策建議，並貢獻第 1 筆 analysis 校準資料"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "web_search"
+      call_count: 1
+    - tool_name: "file_write"
+      call_count: 2
+    - tool_name: "bash"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260426-A01_kb-tool-selection.md; system/COST_POLICY.md"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "Stage 5 of 2026-04-26 全面優化（Card E）。analysis skill 首次實戰（D010 觸發）。DoD 7/7 通過。建議 Obsidian + Sync 為主、Notion 對外分享副工具、Logseq 暫不採用。Web search 1/3（保留 2 輪備用，新策略首次落地）。Analysis 校準首筆：14K vs 預估 12K，係數 1.17，樣本 1（< 3 不更新上限）。"
+```
+
+---
+
+```yaml
 - task_id: "20260426-O04"
   date: "2026-04-26"
   skill_type: "ops"
