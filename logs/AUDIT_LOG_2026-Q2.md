@@ -10,6 +10,33 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260426-O05"
+  date: "2026-04-26"
+  skill_type: "ops"
+  goal: "修正 PR #51 兩條 Codex review comment：RETRO_FLOW 資料來源更新與 analysis 校準係數內部一致性"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_edit"
+      call_count: 4
+    - tool_name: "file_write"
+      call_count: 2
+    - tool_name: "bash"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "system/RETRO_FLOW.md; system/COST_POLICY.md; outputs/drafts/20260426-A01_kb-tool-selection.md; outputs/drafts/20260426-O05_pr51-review-fixes-summary.md"
+  error_summary: ""
+  estimated_tokens: "~6K"
+  notes: "PR #51 review fixes。Codex P1（RETRO_FLOW 引用過時 AUDIT_LOG 路徑）與 P2（analysis 樣本 1 違反 SOP <3 不重算）兩條皆採納方向修檔。SOP 為事實來源，數據對齊 SOP，非反向。"
+```
+
+---
+
+```yaml
 - task_id: "20260426-A01"
   date: "2026-04-26"
   skill_type: "analysis"

@@ -1,0 +1,49 @@
+task_id: "20260426-O05"
+date: "2026-04-26"
+status: "done"
+
+goal: "修正 PR #51 兩條 Codex review comment：RETRO_FLOW 資料來源更新與 analysis 校準係數內部一致性"
+context: |
+  PR #51 Codex review 識別兩處不一致：
+  - P1：logs/AUDIT_LOG.md 改為索引後，system/RETRO_FLOW.md 仍引用為資料來源 → retro 會
+    silently undercount（找不到任何任務紀錄）
+  - P2：本 PR 同時在 COST_POLICY.md 寫了 analysis 校準係數 1.17，但同一 commit 的新 SOP
+    明文「analysis 樣本 < 3 不重算」→ 自相矛盾
+  兩項皆為已採納原方向下的內部一致性修正，合併處理。
+
+input_data:
+  - "system/RETRO_FLOW.md"
+  - "system/COST_POLICY.md"
+
+definition_of_done:
+  - "system/RETRO_FLOW.md 資料蒐集步驟改為當季 AUDIT_LOG_<YYYY>-Q<n>.md，並指向 logs/AUDIT_LOG.md 索引"
+  - "system/COST_POLICY.md analysis 校準係數列改回「樣本 1，待 ≥ 3」狀態，符合 SOP 第 3 條 fallback"
+  - "spec-consistency / yaml-parse / context-budget CI 全綠"
+  - "AUDIT_LOG_2026-Q2.md 新增 1 筆"
+
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260426-O05_pr51-review-fixes-summary.md"
+
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "git_commit_checkpoint"
+  - "bash"
+
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 0
+
+skill_type: "ops"
+
+checkpoints: []
+actual_tool_calls: 8
+result_summary: "DoD 4/4 通過。RETRO_FLOW 改指季度分檔；COST_POLICY analysis 列改回符合 SOP 的 pending 狀態；A01 摘要同步。CI 三檢全綠。"
+completion_time: "2026-04-26"
+audit_log_ref: "logs/AUDIT_LOG_2026-Q2.md"

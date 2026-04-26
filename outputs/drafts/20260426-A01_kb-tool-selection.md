@@ -151,8 +151,8 @@
 | 實測 tokens（事後估） | ~14K |
 | Web search 用量 | 1/3（保留 2 輪備用 — 符合新策略） |
 | 工具呼叫 | file_read ×2、web_search ×1、file_write ×2、bash ×3 |
-| 校準係數 | 14K / 12K = **1.17** |
-| 樣本數 | 1（仍 < 3，不更新 COST_POLICY 上限，僅備註） |
+| 原始觀測比例 | 14K / 12K = 1.17（**未生效**，依 SOP 第 3 條樣本 < 3 不更新 COST_POLICY 校準係數） |
+| 樣本數 | 1（仍 < 3，COST_POLICY 校準係數欄維持「—」狀態） |
 | 下一筆 analysis 觸發 | 累積至 ≥ 3 筆後重算（依 COST_POLICY 校準 SOP） |
 
 ---

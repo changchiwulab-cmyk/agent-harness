@@ -18,7 +18,8 @@
 
 ### 1. 資料蒐集
 讀取以下內容：
-- `logs/AUDIT_LOG.md`（最近一批紀錄）
+- 當季稽核分檔 `logs/AUDIT_LOG_<YYYY>-Q<n>.md`（最近一批紀錄；索引見 `logs/AUDIT_LOG.md`）
+- 跨季 retro 時，含上一季分檔
 - `logs/errors/`（錯誤紀錄）
 - `logs/approvals/`（核准紀錄）
 
