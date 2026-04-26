@@ -32,6 +32,162 @@
 
 <!-- 新紀錄加在這裡 -->
 
+```yaml
+- task_id: "20260424-O03"
+  date: "2026-04-24"
+  skill_type: "ops"
+  goal: "為 CLAUDE.md/GLOBAL_RULES 3K token 硬限制加 CI 檢查，並對 Execution Log Schema 落地率低做收斂決策"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "file_write"
+      call_count: 5
+    - tool_name: "file_edit"
+      call_count: 4
+    - tool_name: "bash"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "scripts/check_context_budget.rb; scripts/test_check_context_budget.rb; .github/workflows/spec-consistency.yml; system/EXECUTION_LOG_SCHEMA.yaml; memory/active_projects/agent-harness/decisions/20260424-D006_execution-log-scope.yaml; outputs/drafts/20260424-O03_guardrails-summary.md"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "Stage 3 of C 全面優化。DoD 9/9 通過。context budget 首次量化（554/3000, 18.5%）；Execution Log 選 Narrow Scope 僅 failed/partial/high-risk/多 checkpoint 任務寫 runs/。Decision Log D006 為專案第 6 筆結構化決策。"
+```
+
+---
+
+```yaml
+- task_id: "20260424-O02"
+  date: "2026-04-24"
+  skill_type: "ops"
+  goal: "將 token-calibration-table 晉升為治理 artifact，調整 INTAKE_FLOW 主路為快速路徑，正式歸檔 WEEKLY_REVIEW_TEMPLATE"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 3
+    - tool_name: "file_edit"
+      call_count: 4
+    - tool_name: "bash"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/reports/token-calibration-v1.md; outputs/drafts/20260424-O02_restructure-summary.md; system/INTAKE_FLOW.md; system/COST_POLICY.md; system/RETRO_FLOW.md; tasks/archived/WEEKLY_REVIEW_TEMPLATE.md; README.md"
+  error_summary: ""
+  estimated_tokens: "~15K"
+  notes: "Stage 2 of C 全面優化。DoD 8/8 通過。token-calibration 正式晉升（drafts→reports）；INTAKE_FLOW fast-path 升為預設主路；WEEKLY_REVIEW_TEMPLATE git mv 至 tasks/archived/。歷史引用保留，活性引用全部同步。"
+```
+
+---
+
+```yaml
+- task_id: "20260424-O01"
+  date: "2026-04-24"
+  skill_type: "ops"
+  goal: "收斂重複的 task card 驗證器為單一事實來源，補 SECURITY 發現性，清理重複 CI"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 2
+    - tool_name: "file_edit"
+      call_count: 3
+    - tool_name: "bash"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/20260424-O01_cleanup-summary.md; scripts/ (-2); .github/workflows/ (-1, ~1); README.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "Stage 1 of C 全面優化。DoD 8/8 通過。sample-data 發現非空已於 DoD 說明；Python CI step 全撤。spec-consistency / ruby tests / yaml parse 全綠。"
+```
+
+---
+
+```yaml
+- task_id: "20260417-O03"
+  date: "2026-04-17"
+  skill_type: "ops"
+  goal: "為 COST_POLICY 加入校準係數章節，並將 WEEKLY_REVIEW_TEMPLATE 標注為 deprecated"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "file_edit"
+      call_count: 4
+    - tool_name: "bash"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "system/COST_POLICY.md, tasks/WEEKLY_REVIEW_TEMPLATE.md, system/RETRO_FLOW.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "Stage 3 of optimization plan. 新章節數值與 token-calibration-table-v1.md 一致。DoD 7/7 通過，spec consistency 通過。"
+```
+
+---
+
+```yaml
+- task_id: "20260417-O02"
+  date: "2026-04-17"
+  skill_type: "ops"
+  goal: "將 retro-2026-04-15 晉升為正式 report，並封存 vietnam-expansion 專案"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "file_write"
+      call_count: 1
+    - tool_name: "file_edit"
+      call_count: 6
+    - tool_name: "bash"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/reports/retro-2026-Q2-01.md, memory/archived_projects/vietnam-expansion/, system/RETRO_FLOW.md"
+  error_summary: ""
+  estimated_tokens: "~15K"
+  notes: "Stage 2 of optimization plan. 使用者已於規劃階段核准四項決策。發現 examples/ 兩張 Task Card 引用舊路徑，一併修正。DoD 7/7 通過，spec consistency 通過。"
+```
+
+---
+
+```yaml
+- task_id: "20260417-O01"
+  date: "2026-04-17"
+  skill_type: "ops"
+  goal: "填補 retro-2026-04-15 發現的三項證據空白：Error Log 範例、Decision Log D005、Token 校準資料表"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "file_write"
+      call_count: 3
+    - tool_name: "bash"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "logs/errors/2026-04-04_20260404-S01_error.md, memory/active_projects/agent-harness/decisions/20260415-D005_intake-fast-path.yaml, outputs/drafts/token-calibration-table-v1.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "Stage 1 of agent-harness optimization plan. DoD 5/5 通過。spec consistency check 通過。全 allow 權限範圍，無阻斷。"
+```
+
 ---
 
 ```yaml
