@@ -202,6 +202,12 @@ scripts/run_frontend.sh --no-generate
 scripts/run_frontend.sh --no-generate 9000
 ```
 
+查看完整參數說明：
+
+```bash
+scripts/run_frontend.sh --help
+```
+
 開啟：`http://localhost:8000/frontend/index.html`（或對應自訂 port）
 
 ### 目前資料來源

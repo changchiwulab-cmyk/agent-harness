@@ -5,14 +5,36 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PORT="8000"
 NO_GENERATE="false"
 
+print_help() {
+  cat <<'HELP'
+Usage:
+  scripts/run_frontend.sh [--no-generate] [port]
+  scripts/run_frontend.sh --help
+
+Options:
+  --no-generate   Skip manifest generation and only start http.server.
+  --help, -h      Show this help message.
+
+Examples:
+  scripts/run_frontend.sh
+  scripts/run_frontend.sh 9000
+  scripts/run_frontend.sh --no-generate
+  scripts/run_frontend.sh --no-generate 9000
+HELP
+}
+
 for arg in "$@"; do
   case "$arg" in
+    --help|-h)
+      print_help
+      exit 0
+      ;;
     --no-generate)
       NO_GENERATE="true"
       ;;
     ''|*[!0-9]*)
       echo "Unsupported argument: $arg" >&2
-      echo "Usage: scripts/run_frontend.sh [--no-generate] [port]" >&2
+      print_help >&2
       exit 1
       ;;
     *)
