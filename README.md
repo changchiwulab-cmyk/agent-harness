@@ -178,14 +178,19 @@ python system/validate_task_card.py tasks/your-task.yaml
 
 ### 啟動方式
 
-在 repo 根目錄執行（先自動產生 manifest）：
+在 repo 根目錄執行（一鍵啟動，含自動產生 manifest）：
 
 ```bash
-python3 scripts/generate_frontend_manifest.py
-python3 -m http.server 8000
+scripts/run_frontend.sh
 ```
 
-開啟：`http://localhost:8000/frontend/index.html`
+如需自訂 port：
+
+```bash
+scripts/run_frontend.sh 9000
+```
+
+開啟：`http://localhost:8000/frontend/index.html`（或對應自訂 port）
 
 ### 目前資料來源
 
