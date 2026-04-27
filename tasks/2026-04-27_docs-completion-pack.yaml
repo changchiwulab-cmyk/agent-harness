@@ -1,0 +1,48 @@
+task_id: "20260427-A01"
+date: "2026-04-27"
+status: "pending"
+
+# === 任務定義 ===
+goal: "補完三處文件缺口：SECURITY.md 客製化、approvals/ 範本、vietnam-expansion 歸檔說明"
+context: |
+  專案完整度檢視（2026-04-27）發現三處文件層級缺口：
+  1. SECURITY.md 仍為 GitHub 通用模板，未指向本專案的權限與通報路徑
+  2. logs/approvals/ 僅有 .gitkeep，缺第一份範本，新使用者不知格式
+  3. memory/archived_projects/vietnam-expansion/{decisions,references}/ 為空殼，缺歸檔說明
+input_data:
+  - "system/PERMISSIONS.yaml"
+  - "CLAUDE.md"
+  - "logs/errors/ERROR_LOG_TEMPLATE.md"
+  - "memory/archived_projects/vietnam-expansion/context.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "SECURITY.md 已改寫，內容包含：通報窗口、權限策略連結、CLAUDE.md 三條硬規則摘要"
+  - "logs/approvals/APPROVAL_LOG_TEMPLATE.md 已建立，欄位格式對齊 EXECUTION_LOG_SCHEMA.yaml"
+  - "memory/archived_projects/vietnam-expansion/README.md 已建立，說明歸檔原因與時間"
+  - "三檔案皆無遺漏欄位、無模板殘留語句"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260427-A01_docs-completion-summary.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 0
+
+skill_type: "ops"
+
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

@@ -1,0 +1,49 @@
+task_id: "20260427-B02"
+date: "2026-04-27"
+status: "pending"
+
+# === 任務定義 ===
+goal: "明訂 token 校準與 retro 觸發條件，並補入 GATE_POLICY 提醒機制"
+context: |
+  outputs/reports/token-calibration-v1.md 已建立但未定下次校準觸發條件；
+  RETRO_FLOW.md 存在但僅執行 1 次（2026-04-15），缺週期化提醒。
+  此分析需提出可量化的觸發閾值，避免再次「設了但忘了用」。
+input_data:
+  - "system/COST_POLICY.md"
+  - "system/RETRO_FLOW.md"
+  - "system/GATE_POLICY.yaml"
+  - "outputs/reports/token-calibration-v1.md"
+  - "outputs/reports/retro-2026-Q2-01.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "提出 token 校準觸發條件至少 2 條（例：每 N 個任務、誤差 >X%）"
+  - "提出 retro 觸發條件至少 2 條（例：每月、累計任務數）"
+  - "說明每條條件的依據（從現有 19 任務數據推估）"
+  - "草擬 GATE_POLICY.yaml 增補段落（不直接修改 system/，僅提交差異建議）"
+  - "標記哪些建議為 P1（立即採用）/ P2（觀察 1 個月再決定）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260427-B02_calibration-retro-triggers.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+skill_type: "analysis"
+
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

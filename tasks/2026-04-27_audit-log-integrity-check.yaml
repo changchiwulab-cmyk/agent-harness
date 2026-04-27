@@ -1,0 +1,49 @@
+task_id: "20260427-B01"
+date: "2026-04-27"
+status: "pending"
+
+# === 任務定義 ===
+goal: "新增 audit log 完整性驗證腳本，確保每張 done/failed Task Card 都有對應 AUDIT_LOG.md 條目"
+context: |
+  目前 scripts/ 已驗 Task Card schema 與 context budget，但缺執行追蹤層的完整性檢查。
+  任務狀態為 done/failed/partial 時，應在 logs/AUDIT_LOG.md 有對應條目；
+  目前無自動驗證，依賴人工記錄，存在漏記風險。
+input_data:
+  - "logs/AUDIT_LOG.md"
+  - "tasks/*.yaml"
+  - "scripts/check_spec_consistency.rb"
+  - "scripts/test_check_spec_consistency.rb"
+
+# === 完成標準 ===
+definition_of_done:
+  - "scripts/check_audit_completeness.rb 已建立"
+  - "腳本能掃描所有 status 為 done/failed/partial 的 Task Card，回報是否有對應 audit log 條目"
+  - "scripts/test_check_audit_completeness.rb 單元測試覆蓋至少 3 種情境（齊全、漏記、task_id 格式不符）"
+  - ".github/workflows/spec-consistency.yml 已加入此腳本的執行步驟"
+  - "本次掃描現有 19 張 Task Card 的結果列入產出"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260427-B01_audit-integrity-report.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "bash"
+
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 0
+
+skill_type: "ops"
+
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
