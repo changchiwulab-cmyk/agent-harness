@@ -36,3 +36,8 @@ jobs:
         run: |
           ruby scripts/test_check_context_budget.rb
           ruby scripts/check_context_budget.rb
+
+      - name: Audit log integrity check
+        run: |
+          ruby scripts/test_check_audit_completeness.rb
+          ruby scripts/check_audit_completeness.rb

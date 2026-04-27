@@ -1,0 +1,50 @@
+task_id: "20260427-C01"
+date: "2026-04-27"
+status: "done"
+
+# === 任務定義 ===
+goal: "制定 v3（多 agent 架構）升級的可量化觸發條件，避免主觀判斷"
+context: |
+  D003（2026-04-15）決議「暫不升級至 v3」，但未定義何時應升級。
+  缺判準導致：(1) 容易過早升級增加複雜度；(2) 容易過晚升級導致系統失控。
+  本任務需提出具體閾值（context、tool_calls、衝突次數等），並明列 rollback 路徑。
+input_data:
+  - "memory/active_projects/agent-harness/decisions/20260415-D003_v3-upgrade-hold.yaml"
+  - "system/AGENT_CONTEXT.yaml"
+  - "system/GATE_POLICY.yaml"
+  - "logs/AUDIT_LOG.md"
+  - "README.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "列出至少 4 個量化觸發條件，每條含閾值與量測方式"
+  - "提出降級（rollback）條件，若升級後反而劣化如何回退"
+  - "對比 v2 vs v3 的成本/收益（用 6 維度矩陣，符合 analysis skill 格式）"
+  - "明確結論：是否建議現在升級 / 等待哪些訊號"
+  - "附 UPGRADE_TRIGGERS.yaml 草稿（放 outputs/drafts/，不直接寫入 system/）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260427-C01_v3-upgrade-triggers-analysis.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+skill_type: "analysis"
+
+checkpoints:
+  - "126cbbb: complete B02 (calibration retro triggers)"
+actual_tool_calls: 5
+result_summary: "結論：維持 v2，不升級。建立量化判準：P1×4（context 80%、skill 衝突、單 session tool>50、錯誤同類≥3）+ P2×2（月任務>30 連 2 月、跨任依賴>3）+ R×4 rollback。UPGRADE_TRIGGERS.yaml 草稿嵌入 draft 報告。DoD 5/5。"
+completion_time: "2026-04-27"
+audit_log_ref: "logs/AUDIT_LOG.md#20260427-C01"

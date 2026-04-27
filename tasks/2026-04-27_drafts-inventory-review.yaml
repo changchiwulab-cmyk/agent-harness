@@ -1,0 +1,49 @@
+task_id: "20260427-D01"
+date: "2026-04-27"
+status: "done"
+
+# === 任務定義 ===
+goal: "盤點 outputs/drafts/ 6 份未升級內容，分類為 graduate / keep-as-draft / archive"
+context: |
+  outputs/drafts/ 已累積 6 份草稿（最早 2026-04-15），其中部分內容已被後續決策取代。
+  缺乏定期盤點機制 → 草稿堆積 → 失去「draft = 待審」語意。
+  本任務一次性盤點，並建議是否將盤點動作週期化。
+input_data:
+  - "outputs/drafts/"
+  - "outputs/reports/"
+  - "memory/active_projects/agent-harness/decisions/"
+  - "logs/AUDIT_LOG.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "列出 outputs/drafts/ 全部 6 份檔案"
+  - "每份分類為：graduate（移至 reports/）/ keep-as-draft（持續使用中）/ archive（已過期）"
+  - "每筆分類附依據（對應的 task_id 或 decision_id）"
+  - "建議是否將「drafts 盤點」納入 retro 標準項目"
+  - "本任務僅產出建議，不直接搬移檔案（需另開 ops Task Card 執行搬移）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260427-D01_drafts-inventory-review.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 0
+
+skill_type: "review"
+
+checkpoints:
+  - "cfbcd07: draft 5 task cards"
+actual_tool_calls: 8
+result_summary: "盤點 6 份 drafts：3 份建議 archive（已晉升或已落為決策）、3 份建議 keep-as-draft（per-task 執行摘要）。建議 retro 加入 drafts 盤點維度。"
+completion_time: "2026-04-27"
+audit_log_ref: "logs/AUDIT_LOG.md#20260427-D01"

@@ -33,6 +33,173 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260427-C01"
+  date: "2026-04-27"
+  skill_type: "analysis"
+  goal: "制定 v3（多 agent 架構）升級的可量化觸發條件，避免主觀判斷"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/20260427-C01_v3-upgrade-triggers-analysis.md"
+  error_summary: ""
+  estimated_tokens: "~13K"
+  notes: "Stage 5 (final) of A.B.C.D pack. DoD 5/5。結論：維持 v2。建立量化判準 P1×4 + P2×2 + R×4；附 UPGRADE_TRIGGERS.yaml 草稿（不寫入 system/）。第四筆 analysis skill 樣本（達到 C2/3 筆校準觸發門檻）。"
+```
+
+---
+
+```yaml
+- task_id: "20260427-B02"
+  date: "2026-04-27"
+  skill_type: "analysis"
+  goal: "明訂 token 校準與 retro 觸發條件，並補入 GATE_POLICY 提醒機制"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 5
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/20260427-B02_calibration-retro-triggers.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "Stage 4 of A.B.C.D pack. DoD 5/5。建議方案 B（量化條件 + 腳本提醒，不入 GATE_POLICY 強制鏈）；校準 3 條 retro 3 條；P1 4 條 P2 1 條。第三筆 analysis skill 樣本（補齊邊界，距離 C2 觸發只差 1 筆）。"
+```
+
+---
+
+```yaml
+- task_id: "20260427-B01"
+  date: "2026-04-27"
+  skill_type: "ops"
+  goal: "新增 audit log 完整性驗證腳本，確保每張 done/failed Task Card 都有對應 AUDIT_LOG.md 條目"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 5
+    - tool_name: "file_write"
+      call_count: 3
+    - tool_name: "file_edit"
+      call_count: 4
+    - tool_name: "bash"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "scripts/check_audit_completeness.rb; scripts/test_check_audit_completeness.rb; .github/workflows/spec-consistency.yml; logs/AUDIT_LOG.md; outputs/drafts/20260427-B01_audit-integrity-report.md"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "Stage 3 of A.B.C.D pack. DoD 5/5。新增第三個 CI 守門腳本（spec → context budget → audit completeness）；首次掃描補登 4 筆缺漏（2 筆歷史 + D01 + A01）；16 runs 測試覆蓋齊全/漏記/格式不符三情境。"
+```
+
+---
+
+```yaml
+- task_id: "20260427-D01"
+  date: "2026-04-27"
+  skill_type: "review"
+  goal: "盤點 outputs/drafts/ 6 份未升級內容，分類為 graduate / keep-as-draft / archive"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 8
+    - tool_name: "file_write"
+      call_count: 1
+    - tool_name: "bash"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: true
+  output_path: "outputs/drafts/20260427-D01_drafts-inventory-review.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "Stage 1 of A.B.C.D pack. DoD 5/5。3 份建議 archive（已晉升的 retro/calibration + 已落為 D004 的 analysis），3 份 keep-as-draft（per-task 執行摘要）。建議 retro 加入 drafts 盤點維度。"
+```
+
+---
+
+```yaml
+- task_id: "20260427-A01"
+  date: "2026-04-27"
+  skill_type: "ops"
+  goal: "補完三處文件缺口：SECURITY.md 客製化、approvals/ 範本、vietnam-expansion 歸檔說明"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "file_write"
+      call_count: 4
+    - tool_name: "file_edit"
+      call_count: 2
+    - tool_name: "bash"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "SECURITY.md; logs/approvals/APPROVAL_LOG_TEMPLATE.md; memory/archived_projects/vietnam-expansion/README.md; outputs/drafts/20260427-A01_docs-completion-summary.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "Stage 2 of A.B.C.D pack. DoD 4/4。SECURITY.md 改寫為含三條硬規則 + 權限模型 + 通報窗口；APPROVAL_LOG_TEMPLATE 對齊 EXECUTION_LOG_SCHEMA；vietnam-expansion README 含 git mv 重啟範例。"
+```
+
+---
+
+```yaml
+- task_id: "20260415-A01"
+  date: "2026-04-15"
+  skill_type: "analysis"
+  goal: "評估是否應將 create_task_card 從 ask 升為 allow，給出有依據的建議排序"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+  checkpoints: 0
+  approval_needed: false
+  approval_given: true
+  output_path: "outputs/drafts/analysis-create-task-card-permission.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "歷史補登（由 Task Card 20260427-B01 audit 完整性掃描發現缺漏）。專案首個 analysis skill 真實任務；建議升為 allow，已落為 Decision Log D004。"
+```
+
+---
+
+```yaml
+- task_id: "20260409-001"
+  date: "2026-04-09"
+  skill_type: "review"
+  goal: "驗證 Agent Harness v2.0 所有新增組件的可用性與流程完整性"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 9
+  checkpoints: 3
+  approval_needed: false
+  approval_given: true
+  output_path: "logs/runs/20260409-001_system-validation.yaml"
+  error_summary: ""
+  estimated_tokens: "未實測（系統驗證任務）"
+  notes: "歷史補登（由 Task Card 20260427-B01 audit 完整性掃描發現缺漏）。v1.5 → v2.0 升級全流程驗證；DoD 7/7；初次驗證發現 FAILURE_TAXONOMY 漏 SEC-04 已補正。"
+```
+
+---
+
+```yaml
 - task_id: "20260424-O03"
   date: "2026-04-24"
   skill_type: "ops"
