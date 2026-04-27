@@ -1,6 +1,6 @@
 task_id: "20260427-B01"
 date: "2026-04-27"
-status: "pending"
+status: "done"
 
 # === 任務定義 ===
 goal: "新增 audit log 完整性驗證腳本，確保每張 done/failed Task Card 都有對應 AUDIT_LOG.md 條目"
@@ -42,8 +42,9 @@ max_web_searches: 0
 
 skill_type: "ops"
 
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
-audit_log_ref: ""
+checkpoints:
+  - "cb5b8a3: complete A01 (docs completion pack)"
+actual_tool_calls: 12
+result_summary: "新增 check_audit_completeness.rb 與 16 runs 測試；CI 加入新 step；補登 4 筆 audit log 條目（含 2 筆歷史補登）；DoD 5/5。"
+completion_time: "2026-04-27"
+audit_log_ref: "logs/AUDIT_LOG.md#20260427-B01"

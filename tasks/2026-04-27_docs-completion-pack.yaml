@@ -1,6 +1,6 @@
 task_id: "20260427-A01"
 date: "2026-04-27"
-status: "review"
+status: "done"
 
 # === 任務定義 ===
 goal: "補完三處文件缺口：SECURITY.md 客製化、approvals/ 範本、vietnam-expansion 歸檔說明"
