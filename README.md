@@ -168,3 +168,42 @@ python system/validate_task_card.py tasks/your-task.yaml
 | **v2（現在）** | + Approval Policy + Failure Taxonomy + Execution Log Schema + Rollback Path + Ops Eval | 馬鞍工程落地：批准流程獨立化、失敗模式可引用、執行紀錄結構化 |
 | **v3** | 拆分 bounded specialists（research/sales/content） | 單一代理的 context 經常超限；任務類型間的規則衝突頻繁 |
 | **v4** | Graph orchestration + 進階 checkpoint persistence | 任務間依賴複雜度超過線性拔分能處理的範圍 |
+
+## 前端動態介面（本地觀看）
+
+已提供最小版前端看板於 `frontend/`，包含：
+- Task 清單瀏覽
+- Logs 儀表板
+- Decision Timeline（可點擊展開）
+
+### 啟動方式
+
+在 repo 根目錄執行（一鍵啟動，含自動產生 manifest）：
+
+```bash
+scripts/run_frontend.sh
+```
+
+如需自訂 port：
+
+```bash
+scripts/run_frontend.sh 9000
+```
+
+如需跳過 manifest 重新產生（加速本地反覆測試）：
+
+```bash
+scripts/run_frontend.sh --no-generate
+```
+
+也可同時指定 port：
+
+```bash
+scripts/run_frontend.sh --no-generate 9000
+```
+
+開啟：`http://localhost:8000/frontend/index.html`（或對應自訂 port）
+
+### 目前資料來源
+
+前端直接讀取 repo 內既有檔案（`tasks/*.yaml`、`logs/runs/*.yaml`、`memory/active_projects/.../decisions/*.yaml`）進行顯示與篩選。

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agent Harness Dashboard</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Agent Harness 動態看板</h1>
+      <p>清單瀏覽 / Logs 儀表板 / Decision Timeline</p>
+    </header>
+
+    <section class="filters">
+      <label>關鍵字 <input id="keyword" type="text" placeholder="搜尋 task_id、標題、狀態" /></label>
+      <label>開始日期 <input id="dateFrom" type="date" /></label>
+      <label>結束日期 <input id="dateTo" type="date" /></label>
+      <button id="resetFilters" type="button">重設</button>
+    </section>
+
+    <section class="cards" id="summaryCards"></section>
+
+    <main class="grid">
+      <section>
+        <h2>Task 清單</h2>
+        <div id="taskList" class="panel"></div>
+      </section>
+
+      <section>
+        <h2>Decision Timeline</h2>
+        <div id="timeline" class="panel"></div>
+      </section>
+    </main>
+
+    <section>
+      <h2>Logs 儀表板</h2>
+      <div id="logBoard" class="panel"></div>
+    </section>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
