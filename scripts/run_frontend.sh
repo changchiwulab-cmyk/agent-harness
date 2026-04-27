@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PORT="8000"
 NO_GENERATE="false"
-SCRIPT_VERSION="1.3.0"
+SCRIPT_VERSION="1.4.0"
 LAST_UPDATED="2026-04-27"
 
 print_help() {
@@ -15,7 +15,7 @@ Usage:
   scripts/run_frontend.sh --version
 
 Options:
-  --no-generate   Skip manifest generation and only start http.server.
+  --no-generate   Skip frontend/data.json regeneration and only start http.server.
   --help, -h      Show this help message.
   --version, -v   Show script version and last updated date.
 

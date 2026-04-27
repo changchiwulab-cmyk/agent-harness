@@ -33,6 +33,35 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260427-F01"
+  date: "2026-04-27"
+  skill_type: "ops"
+  goal: "收斂 PR #55 為前端平台的最小可審核 baseline：穩定 YAML 解析、防 manifest 漂移、補 generator 測試與 CI 護欄"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 8
+    - tool_name: "file_write"
+      call_count: 5
+    - tool_name: "file_edit"
+      call_count: 6
+    - tool_name: "bash"
+      call_count: 6
+    - tool_name: "github_mcp"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "scripts/generate_frontend_manifest.py; frontend/data.json; frontend/app.js; scripts/test_generate_frontend_manifest.py; .github/workflows/spec-consistency.yml; scripts/run_frontend.sh; README.md; outputs/drafts/20260427-F01_phase0-summary.md; tasks/2026-04-27_frontend-platform-phase0.yaml"
+  error_summary: ""
+  estimated_tokens: "~18K"
+  notes: "Phase 0 of frontend platform plan. PR #55 baseline 收斂：YAML→data.json、多 project decisions glob、generator unit tests (4 cases)、CI 漂移檢查。frontend/manifest.js 移除。Phase 1 (Gate/Approval/Failure 視覺化) 另開 task card。"
+```
+
+---
+
+```yaml
 - task_id: "20260424-O03"
   date: "2026-04-24"
   skill_type: "ops"
