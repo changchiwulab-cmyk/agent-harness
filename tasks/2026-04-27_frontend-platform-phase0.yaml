@@ -1,0 +1,82 @@
+task_id: "20260427-F01"
+date: "2026-04-27"
+status: "pending"
+
+# === 任務定義 ===
+goal: "收斂 PR #55 為前端平台的最小可審核 baseline：穩定 YAML 解析、防 manifest 漂移、補 generator 測試與 CI 護欄"
+
+context: |
+  PR #55（codex/create-dynamic-frontend-interface-o2shz6）引入 frontend/ 看板與
+  scripts/generate_frontend_manifest.py + scripts/run_frontend.sh。功能可運作，
+  但有四個風險使其不適合直接合進 main：
+    (1) frontend/app.js 用單行 regex 抓 YAML top-level key，遇多行字串/巢狀
+        欄位（gate_results、approvals[]、tools_used[]、options_considered[]）
+        會顯示失真 → 違反「可審核」原則。
+    (2) manifest.js 是 generator 寫死的路徑陣列；無 CI 檢查，極易與檔案系統
+        實況漂移（新增/刪除 task 或 decision 後忘記重跑就會錯）。
+    (3) decisions glob 寫死 memory/active_projects/agent-harness/decisions/*.yaml，
+        未來新增 active project 不會被收進來。
+    (4) generator 沒對應測試（對照 O03 的 check_context_budget + 其 ruby tests
+        的標準，新工具進 main 應附測試）。
+
+  本任務只做 Phase 0：把 #55 baseline 收緊。Phase 1（Gate/Approval/Failure
+  視覺化）、Phase 2（Context Budget 儀表板）、Phase 3（Decision Graph）另開
+  Task Card，本卡不涵蓋。
+
+input_data:
+  - "PR #55 (https://github.com/changchiwulab-cmyk/agent-harness/pull/55)"
+  - "frontend/app.js"
+  - "frontend/manifest.js"
+  - "scripts/generate_frontend_manifest.py"
+  - "scripts/run_frontend.sh"
+  - ".github/workflows/spec-consistency.yml"
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+  - "system/GATE_POLICY.yaml"
+  - "system/FAILURE_TAXONOMY.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "generator 改為輸出 frontend/data.json（JSON），由 PyYAML 在產生階段把 tasks/logs/decisions 解析後序列化；frontend 不再做 YAML 解析"
+  - "frontend/app.js 改讀 ./data.json，移除原有 regex parser；保留 keyword/date 篩選與 summary/timeline/log 三個 panel"
+  - "frontend/manifest.js 廢棄並從 repo 移除（資料來源唯一化於 data.json）"
+  - "generator decisions glob 改為 memory/active_projects/*/decisions/*.yaml（多 project 友善）"
+  - "新增 scripts/test_generate_frontend_manifest.py（pytest 或 unittest 皆可）：至少 3 個 case—(a) 空輸入產生空陣列、(b) 多 project decisions 全收齊、(c) 兩次執行對相同輸入產生位元完全相同的 data.json（idempotent）"
+  - ".github/workflows/spec-consistency.yml 新增步驟：python3 scripts/generate_frontend_manifest.py && git diff --exit-code frontend/data.json（漂移即失敗）"
+  - "scripts/run_frontend.sh 行為與 CLI 介面（--no-generate / --help / --version / 自訂 port）不變；僅同步因檔名/路徑變化所需的最小修改"
+  - "README.md「前端動態介面」章節同步更新：去除 manifest 提及、改述 data.json 與漂移檢查"
+  - "validate_task_card.py 對本卡 exit 0；新增的 pytest 全綠；spec-consistency CI 在 PR 上跑通"
+  - "outputs/drafts/20260427-F01_phase0-summary.md 產出實作摘要（變動檔案、測試結果、剩餘風險）"
+  - "logs/AUDIT_LOG.md 新增 1 筆紀錄；若任務出現 failed/partial 或 ≥3 checkpoints，依 D006 narrow scope 寫 logs/runs/"
+
+# === 輸出定義 ===
+expected_output:
+  format: "mixed"
+  location: "outputs/drafts/"
+  filename: "20260427-F01_phase0-summary.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 30
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
