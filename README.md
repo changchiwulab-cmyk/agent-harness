@@ -208,6 +208,12 @@ scripts/run_frontend.sh --no-generate 9000
 scripts/run_frontend.sh --help
 ```
 
+查看腳本版本與最後更新日期：
+
+```bash
+scripts/run_frontend.sh --version
+```
+
 開啟：`http://localhost:8000/frontend/index.html`（或對應自訂 port）
 
 ### 目前資料來源
