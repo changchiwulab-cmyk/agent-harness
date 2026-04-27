@@ -33,6 +33,29 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260427-B02"
+  date: "2026-04-27"
+  skill_type: "analysis"
+  goal: "明訂 token 校準與 retro 觸發條件，並補入 GATE_POLICY 提醒機制"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 5
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/20260427-B02_calibration-retro-triggers.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "Stage 4 of A.B.C.D pack. DoD 5/5。建議方案 B（量化條件 + 腳本提醒，不入 GATE_POLICY 強制鏈）；校準 3 條 retro 3 條；P1 4 條 P2 1 條。第三筆 analysis skill 樣本（補齊邊界，距離 C2 觸發只差 1 筆）。"
+```
+
+---
+
+```yaml
 - task_id: "20260427-B01"
   date: "2026-04-27"
   skill_type: "ops"
