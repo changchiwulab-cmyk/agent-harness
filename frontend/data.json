@@ -4,86 +4,445 @@
       "date": "2026-04-03",
       "decision": "Task Card YAML + git checkpoint",
       "decision_id": "20260403-D001",
+      "options_considered": [
+        {
+          "cons": "無法跨 session 自動查詢；需手動維護 YAML 格式",
+          "option": "Task Card YAML + git checkpoint",
+          "pros": "零基礎設施依賴；git log 即進度追蹤；純文字易讀易改；可離線"
+        },
+        {
+          "cons": "需額外工具；備份複雜；無法用 git diff 審查變更",
+          "option": "SQLite / 輕量資料庫",
+          "pros": "可跨 session 查詢；結構化儲存"
+        },
+        {
+          "cons": "外部依賴；需 API；成本高；context 無法直接注入",
+          "option": "Notion / 外部工具",
+          "pros": "介面友好；可分享"
+        }
+      ],
       "path": "memory/active_projects/agent-harness/decisions/20260403-D001_task-card-over-database.yaml",
       "project": "agent-harness",
       "reasoning": "一人公司規模下，可恢復性（任何時間點都能 git checkout 回到任意狀態） 比即時查詢能力更重要。YAML 純文字可直接被 agent 讀取注入 context， 無需額外 API 呼叫。git 已在工具鏈中，維護成本為零。\n",
       "related_task": "",
       "revisit_trigger": "單一 session 需要管理 20+ 個並行任務，且跨 session 查詢需求頻繁",
+      "risk": "YAML 欄位漂移（不同任務格式不一致）→ 已用 CI schema 驗證緩解",
       "status": "active"
     },
     {
       "date": "2026-04-03",
       "decision": "粗略護欄 + 事後量測",
       "decision_id": "20260403-D002",
+      "options_considered": [
+        {
+          "cons": "無法在任務內即時感知成本；token 預算只能是估算值",
+          "option": "粗略護欄 + 事後量測（v1 採用）",
+          "pros": "零額外基礎設施；Anthropic dashboard 已有月度用量；先跑起來再校正"
+        },
+        {
+          "cons": "需要 middleware；增加複雜度；v1 過早引入",
+          "option": "即時 token 計數（proxy / hook）",
+          "pros": "精確；可在任務中途觸發警示"
+        },
+        {
+          "cons": "沒有任何成本意識，無法校正",
+          "option": "不追蹤",
+          "pros": "零成本"
+        }
+      ],
       "path": "memory/active_projects/agent-harness/decisions/20260403-D002_coarse-guardrails-v1.yaml",
       "project": "agent-harness",
       "reasoning": "v1 目標是「跑起來並累積實測數據」。精確 token 追蹤在沒有基準數據前意義不大； 先累積 audit log，再用實測平均值校正預算（即 RETRO 流程所做的事）。 複雜度留給 v2+ 再引入。\n",
       "related_task": "",
       "revisit_trigger": "單任務成本持續超過建議上限 2 週以上",
+      "risk": "token 預估偏差大（事後 RETRO 驗證：確實低估 25-100%）",
       "status": "active"
     },
     {
       "date": "2026-04-15",
       "decision": "維持 v2，下次 retro（累積 5 筆後）再評估",
       "decision_id": "20260415-D003",
+      "options_considered": [
+        {
+          "cons": "若未來規模快速增長，可能需要緊急升級",
+          "option": "維持 v2，不升級",
+          "pros": "無遷移成本；8 筆任務中無任何觸發條件出現；系統穩定"
+        },
+        {
+          "cons": "目前無實際需求；過早優化；增加維護成本",
+          "option": "啟動 v3 規劃",
+          "pros": "提前準備"
+        }
+      ],
       "path": "memory/active_projects/agent-harness/decisions/20260415-D003_v3-upgrade-hold.yaml",
       "project": "agent-harness",
       "reasoning": "四項觸發條件均未達標：context 未超限、無規則衝突、 token 雖超預估但未超 dashboard 上限、錯誤率僅 1/8（非阻斷性）。 一人公司原則：不做沒有實際需求的架構升級。\n",
       "related_task": "20260409-001",
       "revisit_trigger": "任一 v3 觸發條件持續 2 週以上；或單 session context 超限頻率 > 30%",
+      "risk": "若業務急速擴張，v2 的單代理架構可能成為瓶頸",
       "status": "active"
     },
     {
       "date": "2026-04-15",
       "decision": "升為 allow（PERMISSIONS.yaml 中移入 allow 區塊）",
       "decision_id": "20260415-D004",
+      "options_considered": [
+        {
+          "cons": "8/8 筆全部立即 approve，把關無實質作用；增加流程摩擦",
+          "option": "維持 ask",
+          "pros": "不引入新風險"
+        },
+        {
+          "cons": "需修改 PERMISSIONS + APPROVAL_POLICY 兩個檔案",
+          "option": "條件升為 allow（low/medium risk）",
+          "pros": "消除 ~80% 確認往返；高風險任務仍受保護"
+        },
+        {
+          "cons": "移除所有護欄，高風險任務建立時無確認",
+          "option": "完全升為 allow",
+          "pros": "最大化效率"
+        }
+      ],
       "path": "memory/active_projects/agent-harness/decisions/20260415-D004_create-task-card-promoted-to-allow.yaml",
       "project": "agent-harness",
       "reasoning": "歷史數據明確：8/8 筆任務均為 low risk 且立即 approve，ask 無實質把關。 GATE_POLICY 的 risk_check 是第二道防線，確保即使 Task Card 建立時無確認， 執行後仍會驗證 risk_level 與實際動作一致。 選擇直接 allow（而非條件升）是因為：Task Card 本身是分析輸出，不是危險操作； 真正的風險在執行階段，而非建立 Task Card 階段。\n",
       "related_task": "20260415-A01",
       "revisit_trigger": "出現因 auto-approve Task Card 導致的未預期高風險執行",
+      "risk": "使用者可能在 low-risk Task Card 中描述高風險任務 → 靠 GATE_POLICY risk_check 緩解",
       "status": "active"
     },
     {
       "date": "2026-04-15",
       "decision": "加入快速路徑判斷（fast-path），保留完整流程作為備援",
       "decision_id": "20260415-D005",
+      "options_considered": [
+        {
+          "cons": "當下 0% 使用率，文件與實務脫節；新人讀了會以為必經流程",
+          "option": "維持原 INTAKE_FLOW（完整釐清流程）",
+          "pros": "保留最大彈性；未來若遇模糊需求，流程仍在"
+        },
+        {
+          "cons": "失去釐清工具；未來任務若從外部（非使用者本人）湧入，無對應流程；違反「不刪除既有機制」保守原則",
+          "option": "精簡／刪除 INTAKE_FLOW",
+          "pros": "符合當前實測資料"
+        },
+        {
+          "cons": "需在 INTAKE_FLOW.md 增加 ~10-20 行說明判斷條件",
+          "option": "加入快速路徑判斷（fast-path）",
+          "pros": "如實反映「需求明確直接建 Task Card」的現況；保留完整流程作為備援；文件與實務一致"
+        }
+      ],
       "path": "memory/active_projects/agent-harness/decisions/20260415-D005_intake-fast-path.yaml",
       "project": "agent-harness",
       "reasoning": "事後補填（reasoning 明註原因）：本決策在 2026-04-15 實作 retro 建議時已執行， 但未同步建立 Decision Log。2026-04-17 補建以保留決策可追溯性。 依據： 1. 8/8 實測資料（100% 快速路徑），顯示完整流程當前不必要 2. 但無法排除未來「委外任務」「非本人需求」等模糊情境 3. 保守原則：既有機制不刪除，僅補充判斷邏輯 4. 與 D004（create_task_card 升 allow）思路一致 —— 依實測降低摩擦，但保留上層安全網（GATE_POLICY）\n",
       "related_task": "20260415-create-task-card-permission-analysis",
       "revisit_trigger": "下次 retro 時 INTAKE 完整流程觸發率 ≥ 20% 時重新評估（代表模糊需求開始出現）；\n或連續 20 筆任務仍 0% 觸發，考慮進一步精簡。\n",
+      "risk": "若快速路徑判斷條件寫得太寬，會讓本該走完整釐清的任務也跳過；\n緩解：每次 retro 檢查 INTAKE 觸發率，若完整流程觸發率持續 0%，再評估更精簡。\n",
       "status": "active"
     },
     {
       "date": "2026-04-24",
       "decision": "選 C（Narrow Scope）",
       "decision_id": "20260424-D006",
+      "options_considered": [
+        {
+          "cons": "雙重紀錄（AUDIT_LOG + runs/）；對短小任務過度工程；實證阻力大（近 3 筆未寫）",
+          "option": "A. Enforce：Gate Policy 新增檢查，每任務必寫 runs/",
+          "pros": "資料最完整；gate_results、checkpoint hash、token input/output 皆可追溯"
+        },
+        {
+          "cons": "失去失敗任務詳細 post-mortem 的結構；未來補回成本高",
+          "option": "B. Deprecate：完全刪除 schema，AUDIT_LOG 作唯一事實來源",
+          "pros": "最簡；對齊實際做法"
+        },
+        {
+          "cons": "需定義清楚觸發條件；未來仍可能漂移",
+          "option": "C. Narrow Scope：僅 failed/partial/多 checkpoint 任務才寫 runs/，happy-path 沿用 AUDIT_LOG",
+          "pros": "保留 schema 對高價值場景的分析力；降低 happy-path 負擔；對齊「可控 > 能力」原則"
+        }
+      ],
       "path": "memory/active_projects/agent-harness/decisions/20260424-D006_execution-log-scope.yaml",
       "project": "agent-harness",
       "reasoning": "「可恢復、可審核、可量化」三原則中，量化最需要詳細資料；\n但近 5 筆任務零失敗零 partial，顯示 happy-path 下 AUDIT_LOG 已充分。\nfailed/partial 任務才是需要深度 post-mortem 的場景。\n保留 schema 但限縮使用範圍，既不失能力又不強加儀式負擔。\n",
       "related_task": "20260424-O03",
       "revisit_trigger": "未來出現 2 筆 failed/partial 任務都未寫 runs/ → 升級為 enforce；或累積 10 筆 runs/ 後檢視實際價值",
+      "risk": "觸發條件若模糊，仍可能無人遵守。緩解：在 schema 檔頭明確列出 4 種觸發情境。",
       "status": "active"
     }
   ],
   "logs": [
     {
+      "approvals": [
+        {
+          "action": "建立 Task Card 20260409-001",
+          "approved_by": "human",
+          "status": "approved",
+          "timestamp": "2026-04-09"
+        },
+        {
+          "action": "修改 system/ 下 3 個檔案",
+          "approved_by": "human",
+          "status": "approved",
+          "timestamp": "2026-04-09"
+        }
+      ],
+      "checkpoints": [
+        {
+          "commit": "pending",
+          "stage": "Batch 4 完成（3 新檔 + 2 修改）"
+        },
+        {
+          "commit": "pending",
+          "stage": "Batch 5 完成（1 新檔 + 2 修改）"
+        },
+        {
+          "commit": "pending",
+          "stage": "Gate 驗證通過，DoD #3 修正完成"
+        }
+      ],
       "ended_at": "2026-04-09 00:30",
+      "error_summary": "",
       "gate_results": {
         "completion_check": "pass",
         "risk_check": "pass",
         "rule_check": "pass",
         "schema_check": "pass"
       },
+      "notes": "DoD #3 初次驗證發現 FAILURE_TAXONOMY 僅 13 種（漏 SEC-04 幻覺驅動行動），已補正至 14 種。",
       "path": "logs/runs/20260409-001_system-validation.yaml",
       "run_id": "RUN-20260409-001",
       "skill_type": "review",
       "started_at": "2026-04-09 00:00",
       "status": "completed",
-      "task_id": "20260409-001"
+      "task_id": "20260409-001",
+      "token_estimate": {
+        "input": 0,
+        "output": 0,
+        "total": 0
+      },
+      "tools_used": [
+        {
+          "call_count": 9,
+          "tool": "file_read"
+        }
+      ]
     }
   ],
+  "system_meta": {
+    "approval_policy": {
+      "approval_methods": {
+        "draft_first": {
+          "description": "先產出草稿到 outputs/drafts/，通知使用者有草稿待審",
+          "on_no_response": "草稿保留，不自動發布或移動",
+          "timeout": "不設超時，草稿保留直到被人工處理"
+        },
+        "human_confirm": {
+          "description": "直接向使用者展示內容並等待明確同意",
+          "on_no_response": "停留在等待狀態，不自動執行",
+          "timeout": "不設超時，持續等待"
+        }
+      },
+      "escalation": [
+        {
+          "action": "追加風險說明到草稿，重新通知使用者",
+          "condition": "批准等待中發現新風險"
+        },
+        {
+          "action": "暫停任務，建議使用者重新評估任務範圍",
+          "condition": "同一任務產生 3 次以上批准請求"
+        }
+      ],
+      "triggers": [
+        {
+          "action": "輸出到 outputs/drafts/，等待人工確認",
+          "condition": "risk_level >= high",
+          "method": "human_confirm"
+        },
+        {
+          "action": "產出草稿，不直接執行",
+          "condition": "對外動作（email / 發文 / API call）",
+          "method": "draft_first"
+        },
+        {
+          "action": "列出變更差異，等待確認",
+          "condition": "修改 system/ 目錄下任何檔案",
+          "method": "human_confirm"
+        },
+        {
+          "action": "列出變更差異，等待確認",
+          "condition": "修改 skills/ 目錄下任何檔案",
+          "method": "human_confirm"
+        },
+        {
+          "action": "列出擬寫入內容，等待確認",
+          "condition": "寫入 memory/ 長期記憶",
+          "method": "human_confirm"
+        },
+        {
+          "action": "展示 goal + definition_of_done，等待確認",
+          "condition": "建立新的 Task Card（risk_level >= high）",
+          "method": "human_confirm",
+          "note": "low/medium risk Task Card 已升為 allow（見 PERMISSIONS.yaml）"
+        },
+        {
+          "action": "先存 drafts/，確認後移至 reports/",
+          "condition": "寫入正式報告（outputs/reports/）",
+          "method": "draft_first"
+        }
+      ]
+    },
+    "failure_taxonomy": {
+      "categories": {
+        "coordination": [
+          {
+            "description": "對話 context 被意外清空或截斷",
+            "id": "COORD-01",
+            "mitigation": "git checkpoint 保存進度；重要狀態寫入檔案",
+            "name": "Context 被重置"
+          },
+          {
+            "description": "遇到模糊需求時沒有澄清就硬做",
+            "id": "COORD-02",
+            "mitigation": "不確定的需求先列選項，詢問使用者確認",
+            "name": "模糊需求硬做"
+          },
+          {
+            "description": "任務執行中偏離原始目標",
+            "id": "COORD-03",
+            "mitigation": "每個子任務完成後回頭比對 Task Card goal",
+            "name": "目標偏離"
+          },
+          {
+            "description": "忽略使用者的修正意見或額外指示",
+            "id": "COORD-04",
+            "mitigation": "使用者發言後先確認理解，再繼續執行",
+            "name": "忽略使用者輸入"
+          }
+        ],
+        "security": [
+          {
+            "description": "執行了 deny 清單中的動作",
+            "id": "SEC-01",
+            "mitigation": "動作前比對 PERMISSIONS.yaml deny 清單",
+            "name": "未授權動作"
+          },
+          {
+            "description": "敏感資料出現在不應出現的地方",
+            "id": "SEC-02",
+            "mitigation": "敏感資料不進 context；輸出前檢查",
+            "name": "資料洩漏"
+          },
+          {
+            "description": "遞迴迴圈燒 token、無限重試",
+            "id": "SEC-03",
+            "mitigation": "工具呼叫 5 次 checkpoint；連續失敗 3 次停止",
+            "name": "成本失控"
+          },
+          {
+            "description": "基於幻覺的資訊採取真實動作",
+            "id": "SEC-04",
+            "mitigation": "區分已知事實/推論/待驗證；外部動作前交叉驗證來源",
+            "name": "幻覺驅動行動"
+          }
+        ],
+        "spec": [
+          {
+            "description": "違反任務指定的角色或目標",
+            "id": "SPEC-01",
+            "mitigation": "執行前重讀 Task Card goal，完成後比對",
+            "name": "角色/目標違反"
+          },
+          {
+            "description": "重複執行相同步驟或陷入無限迴圈",
+            "id": "SPEC-02",
+            "mitigation": "每步驟結束記錄進度；連續 3 次相同動作 → 停止",
+            "name": "步驟重複/迴圈"
+          },
+          {
+            "description": "遺失先前對話中的重要資訊",
+            "id": "SPEC-03",
+            "mitigation": "關鍵決策寫入 checkpoint；超過 20 輪主動摘要",
+            "name": "對話歷史遺失"
+          },
+          {
+            "description": "任務已完成但繼續執行，或無法判斷完成點",
+            "id": "SPEC-04",
+            "mitigation": "嚴格比對 definition_of_done；逐條 pass/fail",
+            "name": "不知道何時停止"
+          }
+        ],
+        "validation": [
+          {
+            "description": "任務沒做完就宣告完成",
+            "id": "VAL-01",
+            "mitigation": "Gate Policy completion_check 逐條比對 DoD",
+            "name": "假完成"
+          },
+          {
+            "description": "只查了部分條件就通過",
+            "id": "VAL-02",
+            "mitigation": "checklist 每條都必須明確標記 pass/fail",
+            "name": "驗證不完整"
+          },
+          {
+            "description": "看到格式正確就當內容正確",
+            "id": "VAL-03",
+            "mitigation": "格式驗證和內容驗證分開執行",
+            "name": "驗證判斷錯誤"
+          }
+        ]
+      }
+    },
+    "gate_policy": {
+      "gates": {
+        "completion_check": {
+          "checks": [
+            "逐條列出 definition_of_done",
+            "每條標記 pass 或 fail",
+            "fail 的條目說明缺什麼"
+          ],
+          "description": "definition_of_done 逐條比對",
+          "on_fail": "列出缺漏清單，詢問使用者是否補充或接受現狀",
+          "rollback": "產出標記為 partial，存入 outputs/drafts/ 而非 reports/"
+        },
+        "risk_check": {
+          "checks": [
+            "risk_level 與執行中實際動作的風險等級一致",
+            "high / critical 等級的輸出已存放在 outputs/drafts/",
+            "對外動作（如有）已轉為草稿等待人工確認"
+          ],
+          "description": "風險等級與實際動作是否一致",
+          "on_fail": "輸出移至 outputs/drafts/，等待人工審閱後才可發布",
+          "rollback": "所有產出鎖定在 drafts/；Audit Log 標記 risk_escalated: true"
+        },
+        "rule_check": {
+          "checks": [
+            "使用的工具全部在 Task Card 的 allowed_tools 白名單內",
+            "動作不在 PERMISSIONS.yaml 的 deny 清單中",
+            "ask 等級的動作已取得人工確認",
+            "外部查詢未超過 3 輪",
+            "工具呼叫超過 5 次時已做 checkpoint"
+          ],
+          "description": "執行過程是否違反 GLOBAL_RULES 或 PERMISSIONS",
+          "on_fail": "立即停止 + 寫入 logs/errors/ + 通知使用者",
+          "rollback": "撤銷本次所有未 checkpoint 的變更（git checkout）；已 checkpoint 的保留供檢視"
+        },
+        "schema_check": {
+          "checks": [
+            "task_id 非空且格式為 YYYYMMDD-###",
+            "goal 非空",
+            "definition_of_done 至少 1 條",
+            "skill_type 為有效值（research / writing / ops / review / analysis）",
+            "risk_level 為有效值（low / medium / high / critical）",
+            "allowed_tools 非空"
+          ],
+          "description": "Task Card 欄位完整性與格式正確性",
+          "on_fail": "重試 1 次修正格式，仍失敗 → 停下，寫入 logs/errors/",
+          "rollback": "不產出任何檔案；Task Card 標記 status: blocked"
+        }
+      }
+    }
+  },
   "tasks": [
     {
       "approval_needed": false,
