@@ -611,7 +611,7 @@
       "path": "tasks/2026-04-28_frontend-platform-phase1.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "pending",
+      "status": "review",
       "task_id": "20260428-F02"
     }
   ]

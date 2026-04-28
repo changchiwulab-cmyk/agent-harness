@@ -9,13 +9,14 @@
   <body>
     <header>
       <h1>Agent Harness 動態看板</h1>
-      <p>清單瀏覽 / Logs 儀表板 / Decision Timeline</p>
+      <p>清單瀏覽 / Logs 儀表板 / Decision Timeline / Phase 1：Gate / Approval / Failure / Checkpoint</p>
     </header>
 
-    <section class="filters">
+    <section class="filters" aria-label="Filters">
       <label>關鍵字 <input id="keyword" type="text" placeholder="搜尋 task_id、標題、狀態" /></label>
       <label>開始日期 <input id="dateFrom" type="date" /></label>
       <label>結束日期 <input id="dateTo" type="date" /></label>
+      <button id="filterFailures" type="button" aria-pressed="false" title="只看 status=failed/partial 或任一 gate 為 fail 的 task/run">只看失敗 / Gate Fail</button>
       <button id="resetFilters" type="button">重設</button>
     </section>
 
@@ -36,6 +37,30 @@
     <section>
       <h2>Logs 儀表板</h2>
       <div id="logBoard" class="panel"></div>
+    </section>
+
+    <section class="phase1" aria-label="Phase 1 馬鞍工程視覺化">
+      <h2>Phase 1：馬鞍工程視覺化</h2>
+
+      <details open>
+        <summary>Gate Matrix（每 run 4 燈號：schema / rule / completion / risk）</summary>
+        <div id="gateMatrix" class="panel" aria-live="polite"></div>
+      </details>
+
+      <details>
+        <summary>Approval Trail（跨 run 的批准時間軸）</summary>
+        <div id="approvalTrail" class="panel" aria-live="polite"></div>
+      </details>
+
+      <details>
+        <summary>Failure Map（FAILURE_TAXONOMY 14 類 + 錯誤任務列）</summary>
+        <div id="failureMap" class="panel" aria-live="polite"></div>
+      </details>
+
+      <details>
+        <summary>Checkpoint Chain（每 run 的 commit + stage）</summary>
+        <div id="checkpointChain" class="panel" aria-live="polite"></div>
+      </details>
     </section>
 
     <script src="./app.js" type="module"></script>

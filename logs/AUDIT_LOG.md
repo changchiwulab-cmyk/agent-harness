@@ -33,6 +33,31 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260428-F02"
+  date: "2026-04-28"
+  skill_type: "ops"
+  goal: "把 v2「馬鞍工程」核心結構（Gate Policy 4 層、Approval Trail、Failure Taxonomy、Checkpoint Chain）視覺化於前端 dashboard"
+  status: "partial"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 12
+    - tool_name: "file_write"
+      call_count: 6
+    - tool_name: "file_edit"
+      call_count: 4
+    - tool_name: "bash"
+      call_count: 14
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "scripts/generate_frontend_manifest.py; scripts/test_generate_frontend_manifest.py; frontend/index.html; frontend/app.js; frontend/styles.css; frontend/data.json; README.md; outputs/drafts/20260428-F02_phase1-summary.md; outputs/drafts/20260428-F02_smoke-test.md"
+  error_summary: ""
+  estimated_tokens: "~30K"
+  notes: "Phase 1 馬鞍工程視覺化：generator 擴充 logs/runs + decisions + system_meta 三檔；前端新增 4 panel（Gate Matrix / Approval Trail / Failure Map / Checkpoint Chain）+ 「只看失敗 / Gate Fail」filter；零 npm 依賴。tests 4→9 case 全綠；本地 CI 等價檢查全綠。partial 因 DoD #12 肉眼瀏覽器確認需 GUI 環境（sandbox headless）；其餘 15 條 DoD 全 pass。發現預存 inconsistency：FAILURE_TAXONOMY 實際 15 ID 但文件寫 14（不在本任務範圍處理，已記入 summary）。依 D006，medium-risk 任務不寫 logs/runs/。"
+```
+
+```yaml
 - task_id: "20260427-F01"
   date: "2026-04-27"
   skill_type: "ops"

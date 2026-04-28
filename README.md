@@ -175,13 +175,29 @@ python system/validate_task_card.py tasks/your-task.yaml
 - Task 清單瀏覽
 - Logs 儀表板
 - Decision Timeline（可點擊展開）
+- Phase 1 馬鞍工程視覺化（4 個可收合 panel，下節說明）
 
 資料來源唯一化於 `frontend/data.json`，由 `scripts/generate_frontend_manifest.py` 在產生階段以 PyYAML 解析下列來源後序列化：
 - `tasks/20*.yaml`
 - `logs/runs/*.yaml`
 - `memory/active_projects/*/decisions/*.yaml`（多 project）
+- `system/{GATE_POLICY,APPROVAL_POLICY,FAILURE_TAXONOMY}.yaml`（整檔載入到 `system_meta`，前端唯讀引用）
 
 CI 會跑 `python3 scripts/generate_frontend_manifest.py --check`，若 `frontend/data.json` 與檔案系統實況有漂移即失敗。
+
+### Phase 1：馬鞍工程視覺化 panel
+
+從 Phase 1（task `20260428-F02`）起，前端新增 4 個 panel，目的是讓人 5 秒看懂哪裡卡關。
+所有 panel 維持「零 npm 依賴、純 ES module」原則，只「呈現」既有 YAML 欄位，不做自動推論。
+
+| Panel | 來源 | 說明 |
+|---|---|---|
+| **Gate Matrix** | `logs[*].gate_results` × `system_meta.gate_policy` | 每個 run 顯示 schema / rule / completion / risk 四個燈號（綠 #16a34a / 紅 #dc2626 / 灰 #9ca3af），點 cell 可展開該層 `GATE_POLICY` 的 description / checks / on_fail / rollback。 |
+| **Approval Trail** | `logs[*].approvals[]` | 跨所有 run 合併為時間軸；顯示 action / status / approved_by / timestamp，並對 status 上色（approved / pending / rejected）。 |
+| **Failure Map** | `system_meta.failure_taxonomy.categories` + `logs[*].error_summary` + `tasks[*].status` | 以 4 群（spec / coordination / validation / security）為 grid，每格懸停顯示 mitigation tooltip；右側列出有 `error_summary` 或 status 非 done/review/pending 的任務。**不自動推論失敗類別**，分類由人類在 audit log / run yaml 顯式註記。 |
+| **Checkpoint Chain** | `logs[*].checkpoints[]` | 每個 run 顯示 `commit` + `stage`；commit hash 為 7+ 位 hex 時 render 為 monospace（無外連 GitHub，避免 hard-code 倉庫 URL）；尚未填入 hash（如 `pending`）以斜體顯示。 |
+
+頂部 filter 新增「只看失敗 / Gate Fail」按鈕，會同時過濾 task list、logs 與 4 個 panel：保留 status 為 `failed`/`partial`、或任一 gate 為 `fail` 的紀錄。
 
 ### 啟動方式
 

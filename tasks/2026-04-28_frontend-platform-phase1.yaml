@@ -1,6 +1,6 @@
 task_id: "20260428-F02"
 date: "2026-04-28"
-status: "pending"
+status: "review"
 
 # === 任務定義 ===
 goal: "把 v2「馬鞍工程」的核心結構（Gate Policy 4 層、Approval Trail、Failure Taxonomy 14 類、Checkpoint Chain）視覺化於前端 dashboard，讓人 5 秒看懂哪裡卡關"
@@ -90,8 +90,12 @@ max_web_searches: 0
 skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
-audit_log_ref: ""
+checkpoints:
+  - stage: "generator + tests extended"
+    commit: "35b090f"
+  - stage: "frontend panels + smoke test + summary draft"
+    commit: "pending"
+actual_tool_calls: 36
+result_summary: "15/16 DoD pass + 1 partial（DoD #12 肉眼瀏覽器確認待 GUI 環境補做）。詳見 outputs/drafts/20260428-F02_phase1-summary.md。"
+completion_time: "2026-04-28"
+audit_log_ref: "logs/AUDIT_LOG.md @ 20260428-F02"
