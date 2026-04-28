@@ -607,6 +607,16 @@
     {
       "approval_needed": true,
       "date": "2026-04-28",
+      "goal": "收斂 FAILURE_TAXONOMY 計數不一致：檔案實際 15 條目 vs 文件寫 14，採 Option A 更新文檔（無資訊損失）",
+      "path": "tasks/2026-04-28_failure-taxonomy-count-fix.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260428-O04"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-04-28",
       "goal": "把 v2「馬鞍工程」的核心結構（Gate Policy 4 層、Approval Trail、Failure Taxonomy 14 類、Checkpoint Chain）視覺化於前端 dashboard，讓人 5 秒看懂哪裡卡關",
       "path": "tasks/2026-04-28_frontend-platform-phase1.yaml",
       "risk_level": "medium",

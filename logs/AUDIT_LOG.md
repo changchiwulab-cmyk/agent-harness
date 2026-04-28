@@ -33,6 +33,29 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260428-O04"
+  date: "2026-04-28"
+  skill_type: "ops"
+  goal: "收斂 FAILURE_TAXONOMY 計數不一致：檔案 15 條目 vs 文件 14，採 Option A 更新文檔"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_edit"
+      call_count: 5
+    - tool_name: "bash"
+      call_count: 4
+  checkpoints: 2
+  approval_needed: true
+  approval_given: true
+  output_path: "system/FAILURE_TAXONOMY.yaml; system/GLOBAL_RULES.md; frontend/data.json; tasks/2026-04-28_failure-taxonomy-count-fix.yaml; outputs/drafts/20260428-O04_failure-taxonomy-count-fix.md"
+  error_summary: ""
+  estimated_tokens: "~5K"
+  notes: "純文檔同步：FAILURE_TAXONOMY header + GLOBAL_RULES line 48 計數 14→15。ID 與條目內容、百分比皆不動。Git 歷史溯源：檔案僅一次 commit (f99223f, 2026-04-09)，從一開始就是 14 vs 15 不一致。RUN-20260409-001 historical log 不動以保留 audit trail 完整性。Phase 1 (F02) 同期發現後另起此卡。"
+```
+
+```yaml
 - task_id: "20260428-F02"
   date: "2026-04-28"
   skill_type: "ops"
