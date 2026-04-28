@@ -282,7 +282,7 @@ function renderFailureMap(logs, tasks) {
     }
   });
   tasks.forEach((t) => {
-    if (t.status && t.status !== 'done' && t.status !== 'review' && t.status !== 'pending') {
+    if (t.status && t.status !== 'done') {
       errorItems.push({
         kind: 'task',
         id: t.task_id || '',
