@@ -23,6 +23,12 @@ TASKS_GLOB = "tasks/20*.yaml"
 LOGS_GLOB = "logs/runs/*.yaml"
 DECISIONS_GLOB = "memory/active_projects/*/decisions/*.yaml"
 
+SYSTEM_META_FILES = (
+    "system/GATE_POLICY.yaml",
+    "system/APPROVAL_POLICY.yaml",
+    "system/FAILURE_TAXONOMY.yaml",
+)
+
 TASK_FIELDS = (
     "task_id",
     "date",
@@ -41,6 +47,12 @@ LOG_FIELDS = (
     "started_at",
     "ended_at",
     "gate_results",
+    "approvals",
+    "tools_used",
+    "checkpoints",
+    "token_estimate",
+    "error_summary",
+    "notes",
 )
 
 DECISION_FIELDS = (
@@ -51,6 +63,8 @@ DECISION_FIELDS = (
     "status",
     "related_task",
     "revisit_trigger",
+    "options_considered",
+    "risk",
 )
 
 
@@ -103,11 +117,29 @@ def collect_decisions(root: Path) -> list[dict[str, Any]]:
     return items
 
 
+def collect_system_meta(root: Path) -> dict[str, Any]:
+    """Load full system policy files for read-only reference in the frontend.
+
+    Files are loaded as-is (no field whitelist) so the dashboard can render
+    Gate descriptions, Failure Taxonomy categories, etc. without re-parsing
+    YAML on the client side.
+    """
+    meta: dict[str, Any] = {}
+    for rel_path in SYSTEM_META_FILES:
+        p = root / rel_path
+        if not p.is_file():
+            continue
+        key = Path(rel_path).stem.lower()
+        meta[key] = load_yaml(p)
+    return meta
+
+
 def build(root: Path) -> dict[str, Any]:
     return {
         "tasks": collect_tasks(root),
         "logs": collect_logs(root),
         "decisions": collect_decisions(root),
+        "system_meta": collect_system_meta(root),
     }
 
 

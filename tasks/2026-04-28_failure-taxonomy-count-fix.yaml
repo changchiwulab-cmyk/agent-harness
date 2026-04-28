@@ -1,0 +1,81 @@
+task_id: "20260428-O04"
+date: "2026-04-28"
+status: "review"
+
+# === 任務定義 ===
+goal: "收斂 FAILURE_TAXONOMY 計數不一致：檔案實際 15 條目 vs 文件寫 14，採 Option A 更新文檔（無資訊損失）"
+
+context: |
+  20260428-F02 Phase 1 實作期間發現預存不一致：
+    - system/FAILURE_TAXONOMY.yaml header 註解寫「14 種 Agent 常見失敗模式」
+    - 但檔案內 categories 共 15 個 ID（spec×4 / coordination×4 / validation×3 / security×4）
+    - system/GLOBAL_RULES.md line 48 也寫「14 種常見失敗模式」
+
+  Git 歷史調查（git log -p --follow）顯示：檔案僅一次 commit（f99223f, 2026-04-09 v1.5→v2.0
+  upgrade），從一開始就是 header 14 vs 內容 15。當時 RUN-20260409-001 紀錄寫
+  「漏 SEC-04，已補正至 14 種」是計數誤判（4+4+3+4=15）。
+
+  Option 對照：
+    A. 更新文檔 14 → 15
+       pros: 零資訊損失；改動小（2 行）；對齊 file 為事實來源
+       cons: 需修 system/（ask 級權限）
+    B. 從 FAILURE_TAXONOMY.yaml 移除 1 條目使 = 14
+       pros: 對齊文件計數
+       cons: 損失一個失敗模式分類；需決定移除哪條（每條都是不同模式）；
+             改動觸及 deny 邊界（雖只是條目刪除，仍需保留 audit trail）
+
+  本卡採 Option A：純文檔同步；不影響任何 runtime 行為。
+  Phase 1 的 test_generate_frontend_manifest.py 已使用 assertGreaterEqual(14)
+  對 15 是綠的，本任務完成後仍綠（不需改 test）。
+
+input_data:
+  - "system/FAILURE_TAXONOMY.yaml"
+  - "system/GLOBAL_RULES.md"
+  - "outputs/drafts/20260428-F02_phase1-summary.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "system/FAILURE_TAXONOMY.yaml 第 1 行 header 註解：'14 種' → '15 種'"
+  - "system/GLOBAL_RULES.md line 48：'14 種常見失敗模式' → '15 種常見失敗模式'"
+  - "兩檔以外不動（不改 ID、不改條目內容、不改百分比、不改 Phase 1 task card 歷史記錄）"
+  - "本地 CI 等價檢查全綠：scripts/check_spec_consistency.rb / test_check_spec_consistency.rb / check_context_budget.rb / test_generate_frontend_manifest.py / generate_frontend_manifest.py --check"
+  - "frontend/data.json 因 system_meta 整檔載入會變動 1 行（header comment）；重新產生並 commit"
+  - "AUDIT_LOG.md 新增 1 筆紀錄；不需 logs/runs/（依 D006，low risk happy path）"
+  - "outputs/drafts/20260428-O04_failure-taxonomy-count-fix.md：DoD 對照、變動行 diff、是否需要連動更新 RUN-20260409-001 historical log（建議：不動，保留歷史誤判作為 SEC-04 的反例）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "mixed"
+  location: "outputs/drafts/"
+  filename: "20260428-O04_failure-taxonomy-count-fix.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_edit"
+  - "write_drafts"
+  - "write_logs"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - stage: "task card committed"
+    commit: "fc978cf"
+  - stage: "system docs 14→15 + data.json regen + Codex P2 fix"
+    commit: "pending"
+actual_tool_calls: 9
+result_summary: "system/FAILURE_TAXONOMY.yaml + system/GLOBAL_RULES.md 計數同步 14→15。本地 CI 等價檢查全綠。詳見 outputs/drafts/20260428-O04_failure-taxonomy-count-fix.md。"
+completion_time: "2026-04-28"
+audit_log_ref: "logs/AUDIT_LOG.md @ 20260428-O04"
