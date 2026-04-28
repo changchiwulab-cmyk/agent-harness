@@ -168,3 +168,67 @@ python system/validate_task_card.py tasks/your-task.yaml
 | **v2（現在）** | + Approval Policy + Failure Taxonomy + Execution Log Schema + Rollback Path + Ops Eval | 馬鞍工程落地：批准流程獨立化、失敗模式可引用、執行紀錄結構化 |
 | **v3** | 拆分 bounded specialists（research/sales/content） | 單一代理的 context 經常超限；任務類型間的規則衝突頻繁 |
 | **v4** | Graph orchestration + 進階 checkpoint persistence | 任務間依賴複雜度超過線性拔分能處理的範圍 |
+
+## 前端動態介面（本地觀看）
+
+已提供最小版前端看板於 `frontend/`，包含：
+- Task 清單瀏覽
+- Logs 儀表板
+- Decision Timeline（可點擊展開）
+
+資料來源唯一化於 `frontend/data.json`，由 `scripts/generate_frontend_manifest.py` 在產生階段以 PyYAML 解析下列來源後序列化：
+- `tasks/20*.yaml`
+- `logs/runs/*.yaml`
+- `memory/active_projects/*/decisions/*.yaml`（多 project）
+
+CI 會跑 `python3 scripts/generate_frontend_manifest.py --check`，若 `frontend/data.json` 與檔案系統實況有漂移即失敗。
+
+### 啟動方式
+
+在 repo 根目錄執行（一鍵啟動，含自動重新產生 `data.json`）：
+
+```bash
+scripts/run_frontend.sh
+```
+
+如需自訂 port：
+
+```bash
+scripts/run_frontend.sh 9000
+```
+
+如需跳過 `data.json` 重新產生（加速本地反覆測試）：
+
+```bash
+scripts/run_frontend.sh --no-generate
+```
+
+也可同時指定 port：
+
+```bash
+scripts/run_frontend.sh --no-generate 9000
+```
+
+查看完整參數說明：
+
+```bash
+scripts/run_frontend.sh --help
+```
+
+查看腳本版本與最後更新日期：
+
+```bash
+scripts/run_frontend.sh --version
+```
+
+開啟：`http://localhost:8000/frontend/index.html`（或對應自訂 port）
+
+### 漂移檢查
+
+新增、刪除或重新命名 `tasks/`、`logs/runs/`、`memory/active_projects/*/decisions/` 下的 YAML 後，請重新執行：
+
+```bash
+python3 scripts/generate_frontend_manifest.py
+```
+
+並把更新後的 `frontend/data.json` 一起 commit。CI 會驗證二者一致。

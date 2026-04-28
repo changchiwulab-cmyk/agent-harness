@@ -1,0 +1,249 @@
+{
+  "decisions": [
+    {
+      "date": "2026-04-03",
+      "decision": "Task Card YAML + git checkpoint",
+      "decision_id": "20260403-D001",
+      "path": "memory/active_projects/agent-harness/decisions/20260403-D001_task-card-over-database.yaml",
+      "project": "agent-harness",
+      "reasoning": "一人公司規模下，可恢復性（任何時間點都能 git checkout 回到任意狀態） 比即時查詢能力更重要。YAML 純文字可直接被 agent 讀取注入 context， 無需額外 API 呼叫。git 已在工具鏈中，維護成本為零。\n",
+      "related_task": "",
+      "revisit_trigger": "單一 session 需要管理 20+ 個並行任務，且跨 session 查詢需求頻繁",
+      "status": "active"
+    },
+    {
+      "date": "2026-04-03",
+      "decision": "粗略護欄 + 事後量測",
+      "decision_id": "20260403-D002",
+      "path": "memory/active_projects/agent-harness/decisions/20260403-D002_coarse-guardrails-v1.yaml",
+      "project": "agent-harness",
+      "reasoning": "v1 目標是「跑起來並累積實測數據」。精確 token 追蹤在沒有基準數據前意義不大； 先累積 audit log，再用實測平均值校正預算（即 RETRO 流程所做的事）。 複雜度留給 v2+ 再引入。\n",
+      "related_task": "",
+      "revisit_trigger": "單任務成本持續超過建議上限 2 週以上",
+      "status": "active"
+    },
+    {
+      "date": "2026-04-15",
+      "decision": "維持 v2，下次 retro（累積 5 筆後）再評估",
+      "decision_id": "20260415-D003",
+      "path": "memory/active_projects/agent-harness/decisions/20260415-D003_v3-upgrade-hold.yaml",
+      "project": "agent-harness",
+      "reasoning": "四項觸發條件均未達標：context 未超限、無規則衝突、 token 雖超預估但未超 dashboard 上限、錯誤率僅 1/8（非阻斷性）。 一人公司原則：不做沒有實際需求的架構升級。\n",
+      "related_task": "20260409-001",
+      "revisit_trigger": "任一 v3 觸發條件持續 2 週以上；或單 session context 超限頻率 > 30%",
+      "status": "active"
+    },
+    {
+      "date": "2026-04-15",
+      "decision": "升為 allow（PERMISSIONS.yaml 中移入 allow 區塊）",
+      "decision_id": "20260415-D004",
+      "path": "memory/active_projects/agent-harness/decisions/20260415-D004_create-task-card-promoted-to-allow.yaml",
+      "project": "agent-harness",
+      "reasoning": "歷史數據明確：8/8 筆任務均為 low risk 且立即 approve，ask 無實質把關。 GATE_POLICY 的 risk_check 是第二道防線，確保即使 Task Card 建立時無確認， 執行後仍會驗證 risk_level 與實際動作一致。 選擇直接 allow（而非條件升）是因為：Task Card 本身是分析輸出，不是危險操作； 真正的風險在執行階段，而非建立 Task Card 階段。\n",
+      "related_task": "20260415-A01",
+      "revisit_trigger": "出現因 auto-approve Task Card 導致的未預期高風險執行",
+      "status": "active"
+    },
+    {
+      "date": "2026-04-15",
+      "decision": "加入快速路徑判斷（fast-path），保留完整流程作為備援",
+      "decision_id": "20260415-D005",
+      "path": "memory/active_projects/agent-harness/decisions/20260415-D005_intake-fast-path.yaml",
+      "project": "agent-harness",
+      "reasoning": "事後補填（reasoning 明註原因）：本決策在 2026-04-15 實作 retro 建議時已執行， 但未同步建立 Decision Log。2026-04-17 補建以保留決策可追溯性。 依據： 1. 8/8 實測資料（100% 快速路徑），顯示完整流程當前不必要 2. 但無法排除未來「委外任務」「非本人需求」等模糊情境 3. 保守原則：既有機制不刪除，僅補充判斷邏輯 4. 與 D004（create_task_card 升 allow）思路一致 —— 依實測降低摩擦，但保留上層安全網（GATE_POLICY）\n",
+      "related_task": "20260415-create-task-card-permission-analysis",
+      "revisit_trigger": "下次 retro 時 INTAKE 完整流程觸發率 ≥ 20% 時重新評估（代表模糊需求開始出現）；\n或連續 20 筆任務仍 0% 觸發，考慮進一步精簡。\n",
+      "status": "active"
+    },
+    {
+      "date": "2026-04-24",
+      "decision": "選 C（Narrow Scope）",
+      "decision_id": "20260424-D006",
+      "path": "memory/active_projects/agent-harness/decisions/20260424-D006_execution-log-scope.yaml",
+      "project": "agent-harness",
+      "reasoning": "「可恢復、可審核、可量化」三原則中，量化最需要詳細資料；\n但近 5 筆任務零失敗零 partial，顯示 happy-path 下 AUDIT_LOG 已充分。\nfailed/partial 任務才是需要深度 post-mortem 的場景。\n保留 schema 但限縮使用範圍，既不失能力又不強加儀式負擔。\n",
+      "related_task": "20260424-O03",
+      "revisit_trigger": "未來出現 2 筆 failed/partial 任務都未寫 runs/ → 升級為 enforce；或累積 10 筆 runs/ 後檢視實際價值",
+      "status": "active"
+    }
+  ],
+  "logs": [
+    {
+      "ended_at": "2026-04-09 00:30",
+      "gate_results": {
+        "completion_check": "pass",
+        "risk_check": "pass",
+        "rule_check": "pass",
+        "schema_check": "pass"
+      },
+      "path": "logs/runs/20260409-001_system-validation.yaml",
+      "run_id": "RUN-20260409-001",
+      "skill_type": "review",
+      "started_at": "2026-04-09 00:00",
+      "status": "completed",
+      "task_id": "20260409-001"
+    }
+  ],
+  "tasks": [
+    {
+      "approval_needed": false,
+      "date": "2026-04-04",
+      "goal": "審查 ai-era-solo-business-proposal.md 的邏輯一致性、事實正確性、風險完整性，確認可作為正式使用的策略文件",
+      "path": "tasks/2026-04-04_ai-era-solo-business-proposal-review.yaml",
+      "risk_level": "low",
+      "skill_type": "review",
+      "status": "review",
+      "task_id": "20260404-RV01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-04-04",
+      "goal": "根據研究結果（20260404-S01），產出一份完整的一人公司 AI 時代策略提案，可直接用於自我規劃或向潛在合作方展示",
+      "path": "tasks/2026-04-04_ai-era-solo-business-proposal.yaml",
+      "risk_level": "low",
+      "skill_type": "writing",
+      "status": "review",
+      "task_id": "20260404-W01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-04-04",
+      "goal": "分析 AI 時代一人公司最具長遠獲利潛力的商業項目，結合用戶背景（管理顧問、台灣+越南市場）提供可執行策略建議",
+      "path": "tasks/2026-04-04_ai-era-solo-business-strategy.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "review",
+      "task_id": "20260404-S01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-04-04",
+      "goal": "根據審查報告 RV01 的 3 個必須修改項，修正提案數字矛盾並補充 Retainer 交付差異，產出 v2 正式版",
+      "path": "tasks/2026-04-04_proposal-fix-v2.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260404-O02"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-04-04",
+      "goal": "修正 20260404-R02 review 發現的 2 個 must-fix 問題，完成工具盤點報告定稿",
+      "path": "tasks/2026-04-04_tools-inventory-fix.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260404-O01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-04-04",
+      "goal": "調查並整理一人公司運作所需的工具清單，按功能分類並評估現有採用狀況",
+      "path": "tasks/2026-04-04_tools-inventory-research.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "done",
+      "task_id": "20260404-R01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-04-04",
+      "goal": "審查工具盤點報告的完整性、邏輯一致性與一人公司適用性",
+      "path": "tasks/2026-04-04_tools-inventory-review.yaml",
+      "risk_level": "low",
+      "skill_type": "review",
+      "status": "done",
+      "task_id": "20260404-R02"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-04-09",
+      "goal": "驗證 Agent Harness v2.0 所有新增組件的可用性與流程完整性",
+      "path": "tasks/2026-04-09_system-validation.yaml",
+      "risk_level": "low",
+      "skill_type": "review",
+      "status": "done",
+      "task_id": "20260409-001"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-04-15",
+      "goal": "評估是否應將 create_task_card 從 ask 升為 allow，給出有依據的建議排序",
+      "path": "tasks/2026-04-15_create-task-card-permission-analysis.yaml",
+      "risk_level": "low",
+      "skill_type": "analysis",
+      "status": "done",
+      "task_id": "20260415-A01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-04-17",
+      "goal": "填補 retro-2026-04-15 發現的三項證據空白：Error Log 範例、Decision Log D005、Token 校準資料表",
+      "path": "tasks/2026-04-17_evidence-gap-filling.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260417-O01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-04-17",
+      "goal": "將 retro-2026-04-15 晉升為正式 report，並封存 vietnam-expansion 專案",
+      "path": "tasks/2026-04-17_retro-graduation-and-archive.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260417-O02"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-04-17",
+      "goal": "為 COST_POLICY 加入校準係數章節，並將 WEEKLY_REVIEW_TEMPLATE 標注為 deprecated",
+      "path": "tasks/2026-04-17_system-rule-tuning.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260417-O03"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-04-24",
+      "goal": "收斂重複的 task card 驗證器為單一事實來源，補 SECURITY 發現性，清理重複 CI",
+      "path": "tasks/2026-04-24_cleanup-validator-consolidation.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260424-O01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-04-24",
+      "goal": "為 CLAUDE.md/GLOBAL_RULES 3K token 硬限制加 CI 檢查，並對 Execution Log Schema 落地率低做收斂決策",
+      "path": "tasks/2026-04-24_engineering-guardrails.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260424-O03"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-04-24",
+      "goal": "將 token-calibration-table 晉升為治理 artifact，調整 INTAKE_FLOW 主路為快速路徑，正式歸檔 WEEKLY_REVIEW_TEMPLATE",
+      "path": "tasks/2026-04-24_governance-docs-restructure.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260424-O02"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-04-27",
+      "goal": "收斂 PR #55 為前端平台的最小可審核 baseline：穩定 YAML 解析、防 manifest 漂移、補 generator 測試與 CI 護欄",
+      "path": "tasks/2026-04-27_frontend-platform-phase0.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260427-F01"
+    }
+  ]
+}
