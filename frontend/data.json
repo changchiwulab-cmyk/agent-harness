@@ -244,6 +244,16 @@
       "skill_type": "ops",
       "status": "review",
       "task_id": "20260427-F01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-04-28",
+      "goal": "把 v2「馬鞍工程」的核心結構（Gate Policy 4 層、Approval Trail、Failure Taxonomy 14 類、Checkpoint Chain）視覺化於前端 dashboard，讓人 5 秒看懂哪裡卡關",
+      "path": "tasks/2026-04-28_frontend-platform-phase1.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260428-F02"
     }
   ]
 }

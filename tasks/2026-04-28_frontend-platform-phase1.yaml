@@ -1,0 +1,97 @@
+task_id: "20260428-F02"
+date: "2026-04-28"
+status: "pending"
+
+# === 任務定義 ===
+goal: "把 v2「馬鞍工程」的核心結構（Gate Policy 4 層、Approval Trail、Failure Taxonomy 14 類、Checkpoint Chain）視覺化於前端 dashboard，讓人 5 秒看懂哪裡卡關"
+
+context: |
+  Phase 0（task_id 20260427-F01，PR #58 已合進 main）已把資料管線收斂為
+  PyYAML→frontend/data.json 並加上 CI 漂移檢查。但目前 UI 仍只顯示
+  task_id / status / goal 三個平面欄位；v2 真正有價值的訊息——Gate 結果、
+  Approval 軌跡、Failure 分類、Checkpoint 鏈——完全沒被呈現。
+
+  本卡涵蓋 Phase 1：在不擴大資料來源的前提下，從既有 logs/runs/、tasks/、
+  decisions/ 與 system/ schema 萃取結構化欄位並顯示於新 panel。
+  Phase 2（Context Budget 儀表板）、Phase 3（Decision Graph）另開 task card。
+
+  系統內已存在但未被前端利用的結構：
+    - logs/runs/*.yaml (execution_log)：gate_results{4}、approvals[]、
+      tools_used[]、checkpoints[]、token_estimate{}、error_summary、notes
+    - decisions/*.yaml：options_considered[]、risk、revisit_trigger、
+      related_task、status
+    - tasks/*.yaml：allowed_tools[]、approval_needed、checkpoints[]、
+      max_tool_calls、actual_tool_calls
+    - system/GATE_POLICY.yaml、system/APPROVAL_POLICY.yaml、
+      system/FAILURE_TAXONOMY.yaml（14 類）
+
+  非目標：
+    - 不引入任何前端 framework；維持純靜態 ES module + 零依賴
+    - 不寫入或自動分類失敗（FAILURE 對應由人類在 audit log / run yaml 顯式註記，
+      前端只做呈現）
+    - 不改變 data.json 既有頂層欄位的形狀；只「擴充」內層欄位
+
+input_data:
+  - "frontend/app.js"
+  - "frontend/index.html"
+  - "frontend/styles.css"
+  - "frontend/data.json"
+  - "scripts/generate_frontend_manifest.py"
+  - "scripts/test_generate_frontend_manifest.py"
+  - "system/GATE_POLICY.yaml"
+  - "system/APPROVAL_POLICY.yaml"
+  - "system/FAILURE_TAXONOMY.yaml"
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+  - "logs/runs/*.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "generator 擴充：logs/runs/ 萃取欄位增加 gate_results、approvals、tools_used、checkpoints、token_estimate、error_summary、notes"
+  - "generator 擴充：decisions 萃取欄位增加 options_considered、risk、revisit_trigger、related_task"
+  - "generator 擴充：data.json 新增 system_meta 區塊，從 system/{GATE_POLICY,APPROVAL_POLICY,FAILURE_TAXONOMY}.yaml 整檔載入（前端唯讀引用）"
+  - "frontend/index.html 新增 4 個 panel：Gate Matrix、Approval Trail、Failure Map、Checkpoint Chain；以分頁切換或 collapsible section 呈現，避免單頁過長"
+  - "Gate Matrix：對每個 run 顯示 schema/rule/completion/risk 四個燈號（pass=綠、fail=紅、空=灰）；點擊展開該層 GATE_POLICY 描述"
+  - "Approval Trail：跨所有 run 的 approvals[] 合併為時間軸，欄位顯示 action / status / approved_by / timestamp，並對 status 上色（approved/pending/rejected）"
+  - "Failure Map：以 FAILURE_TAXONOMY 14 類為 grid（4 群：spec/coordination/validation/security），每格顯示 mitigation tooltip；右側列出有 error_summary 或 status≠done 的任務（不自動推論失敗類別）"
+  - "Checkpoint Chain：每個 run 顯示 checkpoints[].commit + stage；commit hash 若為 7+ 位 hex 則 render 為 monospace（不外連 GitHub 以避免 hard-code 倉庫 URL）"
+  - "CSS：新 panel 沿用既有色系（#e5e7eb 邊框、#f7f8fb 背景）；4 燈號使用無障礙友善色（綠 #16a34a、紅 #dc2626、灰 #9ca3af）並含 aria-label"
+  - "frontend/app.js：保留既有 keyword/date 篩選；新增「只看失敗/有 gate fail」過濾按鈕；不引入任何 npm 依賴"
+  - "scripts/test_generate_frontend_manifest.py：擴充至 ≥7 case，新增 (a) gate_results 巢狀欄位 round-trip、(b) approvals[] 陣列保留、(c) system_meta 三檔載入、(d) FAILURE_TAXONOMY 14 類完整"
+  - "本地 smoke test：scripts/run_frontend.sh 啟動後，curl http://localhost:PORT/frontend/data.json 含新欄位；瀏覽器肉眼檢查 4 個新 panel 渲染正常（測試結果寫入 outputs/drafts/）"
+  - "spec-consistency CI 維持綠（含 drift check 與 unit tests）"
+  - "README.md「前端動態介面」章節新增 Phase 1 panel 說明"
+  - "outputs/drafts/20260428-F02_phase1-summary.md：DoD 對照、變動清單、剩餘風險、Phase 2 銜接"
+  - "logs/AUDIT_LOG.md 新增 1 筆紀錄；本任務 risk_level=medium 不需 logs/runs/（依 D006 narrow scope）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "mixed"
+  location: "outputs/drafts/"
+  filename: "20260428-F02_phase1-summary.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 50
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
