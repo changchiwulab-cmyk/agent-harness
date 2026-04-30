@@ -10,6 +10,9 @@ import {
   TASK_FACET_KEYS,
 } from './lib.js';
 
+const REPO_URL = 'https://github.com/changchiwulab-cmyk/agent-harness';
+const SOURCE_REF = 'main';
+
 const state = { tasks: [], logs: [], decisions: [], loaded: false };
 const $ = (id) => document.getElementById(id);
 
@@ -133,6 +136,16 @@ function renderPipelines(filteredTasks) {
   renderPipeline('riskPipeline', agg.byRisk, ['low', 'medium', 'high', 'critical']);
 }
 
+function chipBtn(facet, value, label, extraClass = '') {
+  return `<button type="button" class="chip ${extraClass}" data-facet="${escapeHtml(facet)}" data-value="${escapeHtml(value)}" title="點擊以此篩選">${escapeHtml(label)}</button>`;
+}
+
+function sourceLink(path, label) {
+  if (!path) return `<strong>${escapeHtml(label)}</strong>`;
+  const href = `${REPO_URL}/blob/${SOURCE_REF}/${path}`;
+  return `<a class="source-link" href="${escapeHtml(href)}" target="_blank" rel="noopener" title="開啟 GitHub 原始檔（${escapeHtml(path)}）">${escapeHtml(label)}</a>`;
+}
+
 function renderTasks(tasks) {
   if (!tasks.length) {
     $('taskList').innerHTML = '<small>無符合條件資料</small>';
@@ -143,13 +156,13 @@ function renderTasks(tasks) {
     .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
     .map((t) => {
       const badges = [
-        t.status && `<span class="chip chip-status-${escapeHtml(t.status)}">${escapeHtml(t.status)}</span>`,
-        t.skill_type && `<span class="chip">${escapeHtml(t.skill_type)}</span>`,
-        t.risk_level && `<span class="chip chip-risk-${escapeHtml(t.risk_level)}">${escapeHtml(t.risk_level)}</span>`,
-        t.approval_needed ? '<span class="chip chip-approval">需審核</span>' : '',
+        t.status && chipBtn('status', t.status, t.status, `chip-status-${escapeHtml(t.status)}`),
+        t.skill_type && chipBtn('skill_type', t.skill_type, t.skill_type),
+        t.risk_level && chipBtn('risk_level', t.risk_level, t.risk_level, `chip-risk-${escapeHtml(t.risk_level)}`),
+        t.approval_needed ? chipBtn('approval_needed', 'true', '需審核', 'chip-approval') : '',
       ].filter(Boolean).join(' ');
       return `<article class="item" data-task-id="${escapeHtml(t.task_id || '')}">
-        <strong>${escapeHtml(t.task_id || '')}</strong><br />
+        ${sourceLink(t.path, t.task_id || '')}<br />
         ${escapeHtml(t.title || '')}<br />
         <small>${escapeHtml(t.date || 'N/A')}</small>
         <div class="chips">${badges}</div>
@@ -243,6 +256,23 @@ function bindEvents() {
     $('keyword').value = id;
     applyFilters();
     $('taskList').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  $('taskList').addEventListener('click', (e) => {
+    const btn = e.target.closest('button.chip[data-facet]');
+    if (!btn) return;
+    e.preventDefault();
+    const { facet, value } = btn.dataset;
+    if (!facet) return;
+    const sel = $(FACET_IDS[facet]);
+    if (!sel) return;
+    if (facet === 'skill_type' && !Array.from(sel.options).some((o) => o.value === value)) {
+      const opt = document.createElement('option');
+      opt.value = value;
+      opt.textContent = value;
+      sel.appendChild(opt);
+    }
+    sel.value = sel.value === value ? '' : value;
+    applyFilters();
   });
 }
 

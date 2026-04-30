@@ -122,7 +122,19 @@ small { color: #6b7280; }
   border: 1px solid #e5e7eb;
   font-size: .72rem;
   color: #374151;
+  font-family: inherit;
+  cursor: pointer;
 }
+button.chip { line-height: 1.4; }
+button.chip:hover { filter: brightness(0.95); }
+button.chip:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
+.source-link {
+  font-weight: 700;
+  color: #1f2937;
+  text-decoration: none;
+  border-bottom: 1px dashed #9ca3af;
+}
+.source-link:hover { color: var(--blue); border-bottom-color: var(--blue); }
 .chip-status-done { background: #dcfce7; border-color: #86efac; color: #166534; }
 .chip-status-review { background: #dbeafe; border-color: #93c5fd; color: #1e40af; }
 .chip-status-failed { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
