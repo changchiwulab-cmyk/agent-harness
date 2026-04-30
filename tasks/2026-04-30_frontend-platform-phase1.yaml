@@ -72,7 +72,8 @@ skill_type: "ops"
 checkpoints:
   - stage: "task card created and validated"
   - stage: "phase 1 frontend - gates/facets/pipelines/decision links + lib helpers + tests"
-actual_tool_calls: 26
-result_summary: "DoD 12/12 全綠：8 個 node:test helpers + 既有 4 個 python tests + generator --check 全 pass。後端 data.json 訊號利用度：gate_results、risk_level、approval_needed、related_task、revisit_trigger 全部上線。等人工 review 後合併。"
+  - stage: "consistency fix: task chips become clickable facet filters + task_id links to source"
+actual_tool_calls: 32
+result_summary: "DoD 12/12 全綠：8 個 node:test helpers + 既有 4 個 python tests + generator --check 全 pass。後端 data.json 訊號利用度：gate_results、risk_level、approval_needed、related_task、revisit_trigger 全部上線。後續一致性修正：task chips 與 task_id 與 decision related_task 行為對齊（點擊 chip → 套 facet；點擊 task_id → 開 GitHub source）。等人工 review 後合併。"
 completion_time: "2026-04-30"
 audit_log_ref: "logs/AUDIT_LOG.md"
