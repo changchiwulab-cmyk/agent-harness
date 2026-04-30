@@ -1,0 +1,76 @@
+task_id: "20260430-F02"
+date: "2026-04-30"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "Phase 1：在 Phase 0 baseline 之上把後端 data.json 中尚未呈現的訊號（gate_results、approval/risk、decision↔task 連結）視覺化，並把 app.js 的純邏輯函式抽出加單元測試"
+
+context: |
+  Phase 0（20260427-F01, PR #58 已合併）把前端 baseline 收緊：generator → data.json、
+  CI drift check、generator unit tests。目前 frontend/app.js 只呈現 task_id/title/status
+  與 decision summary，後端早已產出但前端未利用的訊號包含：
+    - logs[].gate_results（schema/rule/completion/risk × pass/fail，是「可審核」原則的核心）
+    - tasks[].risk_level / approval_needed（風險矩陣）
+    - tasks[].skill_type / status（pipeline 視角）
+    - decisions[].related_task（與 task list 的可點擊連結）
+    - decisions[].revisit_trigger（決策再評估觸發條件，目前完全沒呈現）
+
+  另外 app.js 是過程式碼、沒有測試；後續 phase 2/3 會繼續疊加會難以維護。
+  本 phase 只做最小可審核的視覺化 + helpers 抽取，不動 generator 與 data schema。
+
+input_data:
+  - "frontend/index.html"
+  - "frontend/app.js"
+  - "frontend/styles.css"
+  - "frontend/data.json"
+  - "scripts/generate_frontend_manifest.py"
+  - "system/GATE_POLICY.yaml"
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "logs 看板每張卡片呈現 gate_results 四燈號（schema/rule/completion/risk × pass=綠/fail=紅/缺值=灰），並在缺欄位時 fallback 顯示 N/A 而非空白"
+  - "filters 區新增 status / skill_type / risk_level / approval_needed 四個 facet（select 或 chip），與 keyword/date 一起 AND 組合"
+  - "summary cards 多兩張：by-status pipeline（review/done/failed/partial 計數）、by-risk（low/medium/high/critical 計數）"
+  - "decision card 內若 related_task 非空：呈現可點擊連結，點擊將 keyword 帶入 task_id 並重套篩選"
+  - "decision card 補呈現 revisit_trigger 文字（折疊在 details 內）"
+  - "loading / error / empty 三態統一處理：載入時顯示 placeholder、fetch 失敗顯示錯誤卡、過濾後 0 筆顯示「無符合條件資料」"
+  - "frontend/app.js 拆出 frontend/lib.js 收容 pure helpers（escapeHtml / decisionDate / inDateRange / filterTasks / filterDecisions / aggregate）並為每個 helper 寫對應的 node:test 單元測試（frontend/lib.test.mjs，至少 8 個 case）"
+  - "scripts/run_frontend.sh 行為與 CLI 介面不變；generator 不需任何修改；data.json 內容與 schema 不動"
+  - "scripts/generate_frontend_manifest.py --check 仍 pass（確認本 phase 沒造成 drift）"
+  - "node --test frontend/lib.test.mjs 全綠；現有 python -m unittest scripts/test_generate_frontend_manifest.py 仍全綠"
+  - "outputs/drafts/20260430-F02_phase1-summary.md 產出實作摘要（變動檔案、測試結果、UI 截圖描述、剩餘風險）"
+  - "logs/AUDIT_LOG.md 新增 1 筆紀錄；本任務 risk=medium 且 happy path 預期 < 3 checkpoints，依 D006 narrow scope 不寫 logs/runs/"
+
+# === 輸出定義 ===
+expected_output:
+  format: "mixed"
+  location: "outputs/drafts/"
+  filename: "20260430-F02_phase1-summary.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 40
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
