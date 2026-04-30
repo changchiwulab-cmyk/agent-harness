@@ -1,6 +1,6 @@
 task_id: "20260430-F02"
 date: "2026-04-30"
-status: "in_progress"
+status: "review"
 
 # === 任務定義 ===
 goal: "Phase 1：在 Phase 0 baseline 之上把後端 data.json 中尚未呈現的訊號（gate_results、approval/risk、decision↔task 連結）視覺化，並把 app.js 的純邏輯函式抽出加單元測試"
@@ -69,8 +69,10 @@ max_web_searches: 0
 skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - stage: "task card created and validated"
+  - stage: "phase 1 frontend - gates/facets/pipelines/decision links + lib helpers + tests"
+actual_tool_calls: 26
+result_summary: "DoD 12/12 全綠：8 個 node:test helpers + 既有 4 個 python tests + generator --check 全 pass。後端 data.json 訊號利用度：gate_results、risk_level、approval_needed、related_task、revisit_trigger 全部上線。等人工 review 後合併。"
+completion_time: "2026-04-30"
 audit_log_ref: "logs/AUDIT_LOG.md"
