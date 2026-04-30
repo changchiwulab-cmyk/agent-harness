@@ -33,6 +33,31 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260430-F02"
+  date: "2026-04-30"
+  skill_type: "ops"
+  goal: "Phase 1：在 Phase 0 baseline 之上把後端 data.json 中尚未呈現的訊號（gate_results、approval/risk、decision↔task 連結）視覺化，並把 app.js 的純邏輯函式抽出加單元測試"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 12
+    - tool_name: "file_write"
+      call_count: 5
+    - tool_name: "file_edit"
+      call_count: 1
+    - tool_name: "bash"
+      call_count: 8
+  checkpoints: 2
+  approval_needed: true
+  approval_given: true
+  output_path: "frontend/lib.js; frontend/lib.test.mjs; frontend/app.js; frontend/index.html; frontend/styles.css; frontend/data.json; outputs/drafts/20260430-F02_phase1-summary.md; tasks/2026-04-30_frontend-platform-phase1.yaml"
+  error_summary: ""
+  estimated_tokens: "~22K"
+  notes: "Phase 1 of frontend platform plan. Gate matrix (4 lights) / 4 facets / status+risk pipelines / decision related_task linking / revisit_trigger 呈現 / 三態 UI / lib.js + 8 node:test cases。generator 與 data schema 未改。Phase 2 (context budget) 與 Phase 3 (decision graph) 另開 task card。"
+```
+
+```yaml
 - task_id: "20260427-F01"
   date: "2026-04-27"
   skill_type: "ops"

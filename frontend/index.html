@@ -9,33 +9,54 @@
   <body>
     <header>
       <h1>Agent Harness 動態看板</h1>
-      <p>清單瀏覽 / Logs 儀表板 / Decision Timeline</p>
+      <p>Tasks / Gate Results / Decision Timeline</p>
     </header>
 
     <section class="filters">
       <label>關鍵字 <input id="keyword" type="text" placeholder="搜尋 task_id、標題、狀態" /></label>
       <label>開始日期 <input id="dateFrom" type="date" /></label>
       <label>結束日期 <input id="dateTo" type="date" /></label>
+      <label>Status <select id="facet-status"><option value="">全部</option></select></label>
+      <label>Skill <select id="facet-skill_type"><option value="">全部</option></select></label>
+      <label>Risk <select id="facet-risk_level"><option value="">全部</option></select></label>
+      <label>Approval
+        <select id="facet-approval_needed">
+          <option value="">全部</option>
+          <option value="true">需審核</option>
+          <option value="false">免審核</option>
+        </select>
+      </label>
       <button id="resetFilters" type="button">重設</button>
     </section>
 
     <section class="cards" id="summaryCards"></section>
 
+    <section class="pipeline">
+      <div class="pipeline-block">
+        <h3>Status pipeline</h3>
+        <div id="statusPipeline"></div>
+      </div>
+      <div class="pipeline-block">
+        <h3>Risk distribution</h3>
+        <div id="riskPipeline"></div>
+      </div>
+    </section>
+
     <main class="grid">
       <section>
         <h2>Task 清單</h2>
-        <div id="taskList" class="panel"></div>
+        <div id="taskList" class="panel" aria-live="polite"></div>
       </section>
 
       <section>
         <h2>Decision Timeline</h2>
-        <div id="timeline" class="panel"></div>
+        <div id="timeline" class="panel" aria-live="polite"></div>
       </section>
     </main>
 
     <section>
       <h2>Logs 儀表板</h2>
-      <div id="logBoard" class="panel"></div>
+      <div id="logBoard" class="panel" aria-live="polite"></div>
     </section>
 
     <script src="./app.js" type="module"></script>

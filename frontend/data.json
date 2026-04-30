@@ -244,6 +244,16 @@
       "skill_type": "ops",
       "status": "review",
       "task_id": "20260427-F01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-04-30",
+      "goal": "Phase 1：在 Phase 0 baseline 之上把後端 data.json 中尚未呈現的訊號（gate_results、approval/risk、decision↔task 連結）視覺化，並把 app.js 的純邏輯函式抽出加單元測試",
+      "path": "tasks/2026-04-30_frontend-platform-phase1.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260430-F02"
     }
   ]
 }
