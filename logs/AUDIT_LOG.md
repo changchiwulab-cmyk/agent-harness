@@ -33,6 +33,113 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260501-T05"
+  date: "2026-05-01"
+  skill_type: "review"
+  goal: "審查 CLAUDE.md 與 system/GLOBAL_RULES.md 之間是否存在矛盾、遺漏、語意不一致"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/test_review_rules_consistency.md"
+  error_summary: ""
+  estimated_tokens: "~6K"
+  notes: "總評有條件通過。找出2個必須修改（web search優先順序、失敗3次規則缺漏）與3個建議修改。附10條對照表。四層Gate全數PASS。"
+```
+
+---
+
+```yaml
+- task_id: "20260501-T04"
+  date: "2026-05-01"
+  skill_type: "ops"
+  goal: "盤點 tasks/ 下所有 Task Card，整理成 CSV 清單"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 8
+    - tool_name: "file_write"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/test_ops_tasks_inventory.csv; outputs/drafts/test_ops_tasks_inventory.md"
+  error_summary: ""
+  estimated_tokens: "~8K"
+  notes: "盤點21張Task Card，排除2個TEMPLATE。CSV 22行（含標頭）。無缺欄位。先輸出計畫再執行。四層Gate全數PASS。"
+```
+
+---
+
+```yaml
+- task_id: "20260501-T03"
+  date: "2026-05-01"
+  skill_type: "writing"
+  goal: "撰寫 agent-harness 的「快速上手」段落（≤ 300 字），可直接放入 README"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/test_writing_quickstart.md"
+  error_summary: ""
+  estimated_tokens: "~4K"
+  notes: "127字（遠低於300字限制）。結論先行，涵蓋三重點，台灣商業用語，文末附字數。四層Gate全數PASS。"
+```
+
+---
+
+```yaml
+- task_id: "20260501-T02"
+  date: "2026-05-01"
+  skill_type: "analysis"
+  goal: "對「是否在 agent-harness 新增第 6 個 communication skill」做 Go/No-Go 決策分析"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 5
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/test_analysis_communication_skill.md"
+  error_summary: ""
+  estimated_tokens: "~7K"
+  notes: "三選項各跑七維評估，建議維持現狀。附2條高風險假設與具體驗證方式。四層Gate全數PASS。"
+```
+
+---
+
+```yaml
+- task_id: "20260501-T01"
+  date: "2026-05-01"
+  skill_type: "research"
+  goal: "盤點 agent-harness 內現有 5 個 skill 的用途與差異"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 7
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/test_research_skills_inventory.md"
+  error_summary: ""
+  estimated_tokens: "~5K"
+  notes: "盤點5個skill，區分已知事實/合理推論/待驗證三段，來源表格標檔案路徑。四層Gate全數PASS。"
+```
+
+---
+
+```yaml
 - task_id: "20260427-F01"
   date: "2026-04-27"
   skill_type: "ops"
