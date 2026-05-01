@@ -45,5 +45,5 @@ skill_type: "writing"
 checkpoints: []
 actual_tool_calls: 3
 result_summary: "撰寫127字快速上手段落（≤300字），結論先行，涵蓋Task Card必要性/權限三層/輸出先到drafts三重點，文末附字數，台灣商業用語。四層Gate全數PASS。"
-completion_time: "2026-05-01 10:00"
+completion_time: "2026-05-01"
 audit_log_ref: ""
