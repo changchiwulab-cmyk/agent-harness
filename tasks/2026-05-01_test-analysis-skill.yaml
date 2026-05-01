@@ -1,0 +1,52 @@
+# 五方向 Skill 測試 — analysis
+
+task_id: "20260501-T02"
+date: "2026-05-01"
+status: "pending"
+
+# === 任務定義 ===
+goal: "對『是否在 agent-harness 新增第 6 個 communication skill（負責對外訊息）』做 Go/No-Go 決策分析"
+context: "五方向 skill 測試計畫的第 2 張 Task Card。測試 analysis skill 是否能跑出六維評估、含「不做」選項、考量一人公司資源限制。"
+input_data:
+  - "skills/writing/SKILL.md"
+  - "skills/ops/SKILL.md"
+  - "system/PERMISSIONS.yaml"
+  - "system/ROUTING_RULES.md"
+  - "CLAUDE.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "至少列出 3 個選項，且必含「維持現狀（不新增）」"
+  - "每個選項都跑完六維評估（價值/成本/風險/可行性/執行難度/回報）+ 一人公司適配度"
+  - "成本與風險具體化（時間/維護負擔/與既有 writing+ops 的重疊度）"
+  - "明確給出建議排序與理由"
+  - "列出高風險假設（如不成立會推翻結論的假設）"
+  - "輸出符合 analysis skill 的 Markdown 結構"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "test_analysis_communication_skill.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

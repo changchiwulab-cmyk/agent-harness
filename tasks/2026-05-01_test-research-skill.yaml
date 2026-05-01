@@ -1,0 +1,52 @@
+# 五方向 Skill 測試 — research
+
+task_id: "20260501-T01"
+date: "2026-05-01"
+status: "pending"
+
+# === 任務定義 ===
+goal: "盤點 agent-harness 內現有 5 個 skill 的用途與差異，作為 research skill 的功能驗證"
+context: "五方向 skill 測試計畫的第 1 張 Task Card。純內部資料來源，不做 web search，避免外部不確定性干擾測試結果。"
+input_data:
+  - "skills/research/SKILL.md"
+  - "skills/analysis/SKILL.md"
+  - "skills/writing/SKILL.md"
+  - "skills/ops/SKILL.md"
+  - "skills/review/SKILL.md"
+  - "system/ROUTING_RULES.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "涵蓋全部 5 個 skill（research / analysis / writing / ops / review）"
+  - "每個 skill 至少列出：用途、與最相近 skill 的差異、1 個常見失敗模式"
+  - "明確區分『已知事實 / 合理推論 / 待驗證』"
+  - "輸出符合 research skill 的 Markdown 結構（含結論、來源）"
+  - "所有引用都標出檔案路徑作為來源"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "test_research_skills_inventory.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "research"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

@@ -1,0 +1,52 @@
+# 五方向 Skill 測試 — review
+
+task_id: "20260501-T05"
+date: "2026-05-01"
+status: "pending"
+
+# === 任務定義 ===
+goal: "審查 CLAUDE.md 與 system/GLOBAL_RULES.md 之間是否存在矛盾、遺漏、語意不一致"
+context: "五方向 skill 測試計畫的第 5 張 Task Card。測試 review skill 是否會嚴苛挑問題、定位到段落級、不循環驗證。為避免循環驗證，本任務僅審查既有規則檔，不審查同批測試的其他 4 個輸出。"
+input_data:
+  - "CLAUDE.md"
+  - "system/GLOBAL_RULES.md"
+  - "system/PERMISSIONS.yaml"
+  - "system/APPROVAL_POLICY.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "輸出總體評估：通過 / 有條件通過 / 需修改"
+  - "至少找出 1 個可改善的地方（避免全部 OK 的審查偏鬆）"
+  - "每個問題都標註具體位置（檔名 + 段落或行號區間）"
+  - "明確區分『必須修改』與『建議修改』"
+  - "對照 definition_of_done 逐條打勾"
+  - "最後輸出一張對照表：CLAUDE.md 的每條核心規則 ↔ GLOBAL_RULES.md 是否有對應條目"
+  - "輸出符合 review skill 的 Markdown 結構"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "test_review_rules_consistency.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "review"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
