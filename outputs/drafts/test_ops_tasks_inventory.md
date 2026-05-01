@@ -103,9 +103,11 @@
 
 | status | 數量 |
 |--------|------|
-| done | 13 |
+| done | 15 |
 | review | 4 |
-| pending | 4 |
+| pending | 2 |
+
+> 註：本檔於 PR #62 review 後重新產生。T04 / T05 在原始盤點時尚未完成，狀態為 pending；五張測試 Task Card 全部 done 後同步更新此快照，避免與 task card 真實狀態不一致。
 
 ### 按 risk_level 分布
 

@@ -18,5 +18,5 @@ task_id,date,status,skill_type,risk_level,filename
 20260501-T01,2026-05-01,done,research,low,2026-05-01_test-research-skill.yaml
 20260501-T02,2026-05-01,done,analysis,low,2026-05-01_test-analysis-skill.yaml
 20260501-T03,2026-05-01,done,writing,low,2026-05-01_test-writing-skill.yaml
-20260501-T04,2026-05-01,pending,ops,low,2026-05-01_test-ops-skill.yaml
-20260501-T05,2026-05-01,pending,review,low,2026-05-01_test-review-skill.yaml
+20260501-T04,2026-05-01,done,ops,low,2026-05-01_test-ops-skill.yaml
+20260501-T05,2026-05-01,done,review,low,2026-05-01_test-review-skill.yaml
