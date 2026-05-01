@@ -2,7 +2,7 @@
 
 task_id: "20260501-T01"
 date: "2026-05-01"
-status: "pending"
+status: "done"
 
 # === 任務定義 ===
 goal: "盤點 agent-harness 內現有 5 個 skill 的用途與差異，作為 research skill 的功能驗證"
@@ -49,5 +49,4 @@ checkpoints: []
 actual_tool_calls: 7
 result_summary: "盤點 5 個 skill 的用途、差異與失敗模式。區分已知事實/合理推論/待驗證三段。來源表格標出檔案路徑。四層 Gate 全數 PASS。"
 completion_time: "2026-05-01 09:00"
-status: "done"
 audit_log_ref: ""

@@ -2,7 +2,7 @@
 
 task_id: "20260501-T03"
 date: "2026-05-01"
-status: "pending"
+status: "done"
 
 # === 任務定義 ===
 goal: "撰寫 agent-harness 的『快速上手』段落（≤ 300 字），可直接放入 README"
@@ -46,5 +46,4 @@ checkpoints: []
 actual_tool_calls: 3
 result_summary: "撰寫127字快速上手段落（≤300字），結論先行，涵蓋Task Card必要性/權限三層/輸出先到drafts三重點，文末附字數，台灣商業用語。四層Gate全數PASS。"
 completion_time: "2026-05-01 10:00"
-status: "done"
 audit_log_ref: ""

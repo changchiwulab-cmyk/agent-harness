@@ -2,7 +2,7 @@
 
 task_id: "20260501-T02"
 date: "2026-05-01"
-status: "pending"
+status: "done"
 
 # === 任務定義 ===
 goal: "對『是否在 agent-harness 新增第 6 個 communication skill（負責對外訊息）』做 Go/No-Go 決策分析"
@@ -49,5 +49,4 @@ checkpoints: []
 actual_tool_calls: 5
 result_summary: "三選項（維持現狀/新增skill/writing子模式）各跑七維評估，建議維持現狀，附高風險假設2條與具體驗證方式。四層Gate全數PASS。"
 completion_time: "2026-05-01 09:30"
-status: "done"
 audit_log_ref: ""

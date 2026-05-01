@@ -2,7 +2,7 @@
 
 task_id: "20260501-T04"
 date: "2026-05-01"
-status: "pending"
+status: "done"
 
 # === 任務定義 ===
 goal: "盤點 tasks/ 下所有 Task Card，整理成 CSV 清單，欄位含 task_id / date / status / skill_type / risk_level / filename"
@@ -44,7 +44,7 @@ skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
 checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+actual_tool_calls: 9
+result_summary: "盤點21張Task Card，排除2個TEMPLATE，產出CSV（22行含標頭）與MD說明文件。無缺欄位。先輸出計畫再執行。四層Gate全數PASS。"
+completion_time: "2026-05-01 10:30"
 audit_log_ref: ""
