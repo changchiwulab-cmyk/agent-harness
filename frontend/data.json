@@ -244,6 +244,56 @@
       "skill_type": "ops",
       "status": "review",
       "task_id": "20260427-F01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-01",
+      "goal": "對『是否在 agent-harness 新增第 6 個 communication skill（負責對外訊息）』做 Go/No-Go 決策分析",
+      "path": "tasks/2026-05-01_test-analysis-skill.yaml",
+      "risk_level": "low",
+      "skill_type": "analysis",
+      "status": "done",
+      "task_id": "20260501-T02"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-01",
+      "goal": "盤點 tasks/ 下所有 Task Card，整理成 CSV 清單，欄位含 task_id / date / status / skill_type / risk_level / filename",
+      "path": "tasks/2026-05-01_test-ops-skill.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260501-T04"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-01",
+      "goal": "盤點 agent-harness 內現有 5 個 skill 的用途與差異，作為 research skill 的功能驗證",
+      "path": "tasks/2026-05-01_test-research-skill.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "done",
+      "task_id": "20260501-T01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-01",
+      "goal": "審查 CLAUDE.md 與 system/GLOBAL_RULES.md 之間是否存在矛盾、遺漏、語意不一致",
+      "path": "tasks/2026-05-01_test-review-skill.yaml",
+      "risk_level": "low",
+      "skill_type": "review",
+      "status": "done",
+      "task_id": "20260501-T05"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-01",
+      "goal": "撰寫 agent-harness 的『快速上手』段落（≤ 300 字），可直接放入 README",
+      "path": "tasks/2026-05-01_test-writing-skill.yaml",
+      "risk_level": "low",
+      "skill_type": "writing",
+      "status": "done",
+      "task_id": "20260501-T03"
     }
   ]
 }

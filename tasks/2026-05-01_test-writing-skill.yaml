@@ -1,0 +1,49 @@
+# 五方向 Skill 測試 — writing
+
+task_id: "20260501-T03"
+date: "2026-05-01"
+status: "done"
+
+# === 任務定義 ===
+goal: "撰寫 agent-harness 的『快速上手』段落（≤ 300 字），可直接放入 README"
+context: "五方向 skill 測試計畫的第 3 張 Task Card。測試 writing skill 在嚴格篇幅限制下能否做到結論先行、結構清晰、無贅字。"
+input_data:
+  - "CLAUDE.md"
+  - "README.md"
+  - "system/INTAKE_FLOW.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "全文（不含標題與程式碼區塊）字數 ≤ 300 個中文字"
+  - "結論先行：第一段直接點出 harness 是什麼、第一步做什麼"
+  - "至少涵蓋三個重點：Task Card 必要性、權限三層（allow/ask/deny）、輸出先到 drafts/"
+  - "用台灣商業用語，無翻譯腔"
+  - "結尾給出第一個動作（例如：閱讀 tasks/TASK_CARD_TEMPLATE.yaml）"
+  - "在文末附『字數：N』供驗證"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "test_writing_quickstart.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+
+# === 成本控制 ===
+max_tool_calls: 5
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "writing"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 3
+result_summary: "撰寫127字快速上手段落（≤300字），結論先行，涵蓋Task Card必要性/權限三層/輸出先到drafts三重點，文末附字數，台灣商業用語。四層Gate全數PASS。"
+completion_time: "2026-05-01"
+audit_log_ref: ""

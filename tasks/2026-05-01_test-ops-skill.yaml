@@ -1,0 +1,50 @@
+# 五方向 Skill 測試 — ops
+
+task_id: "20260501-T04"
+date: "2026-05-01"
+status: "done"
+
+# === 任務定義 ===
+goal: "盤點 tasks/ 下所有 Task Card，整理成 CSV 清單，欄位含 task_id / date / status / skill_type / risk_level / filename"
+context: "五方向 skill 測試計畫的第 4 張 Task Card。測試 ops skill 能否做結構化資料抽取、不靜默丟資料、先輸出計畫再執行。tasks/examples/ 與 tasks/archived/ 不納入本次盤點，僅處理 tasks/ 根目錄下的 *.yaml（排除 TEMPLATE）。"
+input_data:
+  - "tasks/"
+
+# === 完成標準 ===
+definition_of_done:
+  - "輸出第一段先列『盤點計畫』：要納入哪些檔、排除哪些檔、欄位定義"
+  - "CSV 檔案放在 outputs/drafts/test_ops_tasks_inventory.csv"
+  - "額外輸出 outputs/drafts/test_ops_tasks_inventory.md 作為說明文件（含計畫＋檢核摘要）"
+  - "tasks/ 根目錄下每一張 Task Card 都有一行紀錄（不含 TEMPLATE / DECISION_LOG_TEMPLATE / examples/ / archived/）"
+  - "CSV 欄位完整：task_id, date, status, skill_type, risk_level, filename"
+  - "缺欄位的卡片在 status 欄標記 missing_field 並在說明文件列出"
+  - "輸出檔列數 = 實際納入卡片數 + 1（標頭），於說明文件內顯示驗證數字"
+
+# === 輸出定義 ===
+expected_output:
+  format: "csv"
+  location: "outputs/drafts/"
+  filename: "test_ops_tasks_inventory.csv"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "file_write"
+
+# === 成本控制 ===
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 9
+result_summary: "盤點21張Task Card，排除2個TEMPLATE，產出CSV（22行含標頭）與MD說明文件。無缺欄位。先輸出計畫再執行。四層Gate全數PASS。"
+completion_time: "2026-05-01"
+audit_log_ref: ""
