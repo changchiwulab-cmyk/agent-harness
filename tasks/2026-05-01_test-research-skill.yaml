@@ -46,7 +46,8 @@ skill_type: "research"
 
 # === 執行紀錄（由 agent 填寫）===
 checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+actual_tool_calls: 7
+result_summary: "盤點 5 個 skill 的用途、差異與失敗模式。區分已知事實/合理推論/待驗證三段。來源表格標出檔案路徑。四層 Gate 全數 PASS。"
+completion_time: "2026-05-01 09:00"
+status: "done"
 audit_log_ref: ""
