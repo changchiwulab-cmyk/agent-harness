@@ -20,6 +20,9 @@ jobs:
         with:
           ruby-version: '3.2'
 
+      - name: Install RuboCop
+        run: gem install rubocop --no-document
+
       - name: Ruby syntax check
         run: ruby -c scripts/check_spec_consistency.rb
 
@@ -28,6 +31,9 @@ jobs:
 
       - name: Ruby dual-path syntax check
         run: ruby -c scripts/check_dual_path_categories.rb
+
+      - name: RuboCop dual-path scripts
+        run: rubocop --force-exclusion scripts/check_dual_path_categories.rb scripts/test_check_dual_path_categories.rb
 
       - name: Ruby dual-path unit tests
         run: ruby scripts/test_check_dual_path_categories.rb

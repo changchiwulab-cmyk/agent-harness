@@ -120,6 +120,7 @@ scripts/check_dual_path_categories.rb
 
 此檢查會驗證 `diff_category` 僅能是 A/B/C/D，且當 run status=completed 時，不可仍有 pending 結果。  
 此檢查已有 `scripts/test_check_dual_path_categories.rb` 單元測試，並已接入 spec-consistency CI。
+另含 RuboCop lint（dual-path scripts 範圍）。
 如需只檢查單一檔案，可加上路徑參數（例：`scripts/check_dual_path_categories.rb logs/runs/RUN-20260502-DUAL01.yaml`）。
 
 此檢查已包含：目錄存在性、Task Card 必填欄位 schema、`task_id`/`date` 格式與一致性驗證、`completion_time` 日期驗證（且 `status=done/failed` 時必填）、範例 `input_data` / `expected_output.location` 路徑驗證。
