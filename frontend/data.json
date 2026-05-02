@@ -262,7 +262,7 @@
       "path": "tasks/2026-05-02_taiwan-ai-industry-deep-dive.yaml",
       "risk_level": "low",
       "skill_type": "research",
-      "status": "pending",
+      "status": "review",
       "task_id": "20260502-T03"
     },
     {
@@ -272,7 +272,7 @@
       "path": "tasks/2026-05-02_taiwan-ai-industry-quick-scan.yaml",
       "risk_level": "low",
       "skill_type": "research",
-      "status": "pending",
+      "status": "review",
       "task_id": "20260502-T01"
     },
     {
@@ -282,7 +282,7 @@
       "path": "tasks/2026-05-02_taiwan-ai-industry-standard.yaml",
       "risk_level": "low",
       "skill_type": "research",
-      "status": "pending",
+      "status": "review",
       "task_id": "20260502-T02"
     }
   ]
