@@ -244,6 +244,16 @@
       "skill_type": "ops",
       "status": "review",
       "task_id": "20260427-F01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-02",
+      "goal": "Phase A：補齊規則 enforcement 與觀測自動化（PreToolUse hook、audit log generator、e2e smoke test）",
+      "path": "tasks/2026-05-02_phase-a-enforcement-and-observability.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260502-A01"
     }
   ]
 }

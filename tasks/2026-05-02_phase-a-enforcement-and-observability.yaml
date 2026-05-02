@@ -1,0 +1,71 @@
+task_id: "20260502-A01"
+date: "2026-05-02"
+status: "review"
+
+# === 任務定義 ===
+goal: "Phase A：補齊規則 enforcement 與觀測自動化（PreToolUse hook、audit log generator、e2e smoke test）"
+
+context: |
+  依 outputs/drafts/2026-05-02_project-completeness-analysis.md 第一性原理分析：
+  目前 PERMISSIONS / GATE_POLICY / APPROVAL_POLICY 全是 LLM 自我約束的自然語言指令，
+  缺乏 runtime enforcement；AUDIT_LOG 由 agent 手寫，觀測有自我認知偏差；
+  CI 只跑靜態檢查，沒有「跑一條 dummy Task Card 走完所有 gate」的 smoke test。
+
+  Phase A 目標是補三件事，不擴大架構：
+    (A1) Claude Code PreToolUse hook 比對 PERMISSIONS.yaml deny 清單，攔截在工具執行前
+    (A2) audit log generator：從 tasks/*.yaml + git log 自動推導摘要欄位，agent 只補 notes/error_summary
+    (A3) e2e smoke test：用 dummy Task Card 在 CI 驗證 4 個 gate 都被觸發
+  Phase B（metric loop）/ Phase C（trust gradient）另開 Task Card，本卡不涵蓋。
+
+input_data:
+  - "outputs/drafts/2026-05-02_project-completeness-analysis.md"
+  - "system/PERMISSIONS.yaml"
+  - "system/GATE_POLICY.yaml"
+  - "logs/AUDIT_LOG.md"
+  - "tasks/TASK_CARD_TEMPLATE.yaml"
+  - ".github/workflows/spec-consistency.yml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "新增 .claude/settings.json 內含 PreToolUse hook：對 Bash 執行的 rm/curl/mailx/git push --force 等模式，比對 PERMISSIONS.yaml deny 清單後決定 allow/block；非匹配模式預設 allow"
+  - "新增 scripts/permissions_guard.py：被 hook 呼叫，stdin 取 tool_input、輸出 JSON {decision: allow|block, reason}；含至少 4 個 unit test case（rm 阻擋 / curl 警告 / 一般 ls 放行 / 不認識的工具放行）"
+  - "新增 scripts/generate_audit_log.py：解析 tasks/20*.yaml + git log，輸出 logs/AUDIT_LOG.md 主體（task_id/date/skill_type/goal/status/checkpoints/output_path 等可推導欄位）；保留人工填寫的 notes/error_summary 區塊不覆蓋"
+  - "scripts/test_permissions_guard.py 與 scripts/test_generate_audit_log.py 全綠（pytest）"
+  - "新增 tests/e2e/test_dummy_task_smoke.py：建立暫存 dummy Task Card → 跑 validate_task_card.py → 模擬 4 個 gate 檢查（schema/rule/completion/risk）→ 斷言 4 個都被觸發、最終輸出落到 outputs/drafts/ 而非 reports/"
+  - ".github/workflows/spec-consistency.yml 新增 step：跑 pytest scripts/ tests/e2e/，全綠才算 CI 通過"
+  - "outputs/drafts/20260502-A01_phase-a-summary.md 產出實作摘要（變動檔案、測試結果、首次 hook 觸發紀錄、剩餘風險）"
+  - "logs/AUDIT_LOG.md 新增 1 筆本卡紀錄；若 status=failed/partial 或 checkpoints>=3，依 D006 narrow scope 寫 logs/runs/"
+  - "validate_task_card.py 對本卡 exit 0；spec-consistency CI 整體綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "mixed"
+  location: "outputs/drafts/"
+  filename: "20260502-A01_phase-a-summary.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 35
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 33
+result_summary: "DoD 9/10 完成（第 9 條 audit_log entry 已 append；第 10 條 CI 待 PR push 驗證）。Local CI 全綠：spec consistency / context budget / frontend manifest tests + drift / permissions_guard 11 tests / audit_log 5 tests / e2e smoke 3 tests。等人工 review 後合併。"
+completion_time: "2026-05-02"
+audit_log_ref: "logs/AUDIT_LOG.md"
