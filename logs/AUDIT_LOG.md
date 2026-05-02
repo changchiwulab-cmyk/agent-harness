@@ -33,6 +33,31 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260502-A02"
+  date: "2026-05-02"
+  skill_type: "analysis"
+  goal: "對 T01–T03（S01/W01/RV01/O02 AI 時代提案線）做 Go/No-Go 決策"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 8
+    - tool_name: "write_drafts"
+      call_count: 1
+    - tool_name: "write_logs"
+      call_count: 1
+    - tool_name: "git_commit_checkpoint"
+      call_count: 2
+  checkpoints: 2
+  approval_needed: true
+  approval_given: false
+  output_path: "outputs/drafts/20260502-A02_t01-t03-go-no-go.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "建議選項 D（park + 1-page memo）。關鍵發現：四份原始 draft 因 2026-04-04 當時 outputs/drafts/ 仍在 .gitignore（2026-04-11 才修掉）而未進 git，物理遺失。建議補 CI 健檢：每張 done/review 卡的 expected_output 須在 git 中存在。"
+```
+
+```yaml
 - task_id: "20260427-F01"
   date: "2026-04-27"
   skill_type: "ops"

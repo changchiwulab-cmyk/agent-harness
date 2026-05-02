@@ -252,7 +252,7 @@
       "path": "tasks/2026-05-02_t01-t03-go-no-go-analysis.yaml",
       "risk_level": "low",
       "skill_type": "analysis",
-      "status": "pending",
+      "status": "review",
       "task_id": "20260502-A02"
     }
   ]
