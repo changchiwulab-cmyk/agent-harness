@@ -1,0 +1,67 @@
+task_id: "20260502-T03"
+date: "2026-05-02"
+status: "pending"
+
+# === 任務定義 ===
+goal: "台灣 AI 產業深度報告：5-7 切片量化、政策法規、敏感性表、12 個月機會日曆"
+
+context: |
+  屬「不同深度」實證系列的第 3 張：高投入 deep dive。
+  本卡刻意放寬預算上限（max_tool_calls=10、web_searches=5、預估 token ~45K，
+  超出 COST_POLICY 建議 research 上限 32K）作為 cost-quality 邊界實驗。
+  跑完後 retro 應檢驗「投入翻倍是否帶來等比例品質提升」，數據將回饋 COST_POLICY。
+  範圍只看台灣本地。
+  使用者背景：20+ 年管理顧問、一人公司、Claude 生態深度整合。
+  注意：依 D006，checkpoint >= 3 須寫 logs/runs/；本卡預期 2 次 checkpoint，
+  若實際達 3 次以上請補寫執行紀錄。
+
+input_data:
+  - "memory/user_prefs.md"
+  - "memory/active_projects/agent-harness/context.md"
+  - "outputs/reports/token-calibration-v1.md"
+  - "outputs/drafts/20260502-T01_taiwan-ai-industry-quick-scan.md"
+  - "outputs/drafts/20260502-T02_taiwan-ai-industry-standard.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "涵蓋 5-7 個產業切片，每切片含至少 3 個量化資料（市場規模/成長率/玩家數擇 3，附時效與來源）"
+  - "每個關鍵主張至少 2 個獨立來源交叉驗證"
+  - "獨立節「政策與法規」：個資法 / 主管機關 AI 草案進度 / 半導體與 AI 相關補貼項目"
+  - "敏感性分析表：列出 3-5 個核心假設，逐項說明假設失效時結論如何變動"
+  - "12 個月機會日曆：依季度切分本地關鍵事件 / 補貼窗口 / 國際公司來台動向"
+  - "事實 / 合理推論 / 待驗證 / 高風險假設四態明確分開"
+  - "輸出符合 skills/research/SKILL.md 格式"
+  - "預算限制：~3500-5000 字（含表格）"
+  - "至少 2 次 git checkpoint（建議：完成資料蒐集後 1 次、完成切片分析後 1 次）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260502-T03_taiwan-ai-industry-deep-dive.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "web_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 5
+
+# === Skill 路由 ===
+skill_type: "research"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
