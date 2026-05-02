@@ -244,6 +244,16 @@
       "skill_type": "ops",
       "status": "review",
       "task_id": "20260427-F01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-02",
+      "goal": "對 T01–T03（AI 時代一人公司 提案線：S01 研究 → W01 提案 → RV01 審查 → O02 v2 修正）做 Go/No-Go 決策，給出排序後的下一步建議",
+      "path": "tasks/2026-05-02_t01-t03-go-no-go-analysis.yaml",
+      "risk_level": "low",
+      "skill_type": "analysis",
+      "status": "pending",
+      "task_id": "20260502-A02"
     }
   ]
 }
