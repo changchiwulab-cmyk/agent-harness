@@ -103,15 +103,18 @@ def gate_completion(card: dict, produced_output: Path) -> tuple[bool, list[str]]
     return not misses, misses
 
 
-def gate_risk(card: dict, output_path: Path, gate_policy: dict) -> tuple[bool, str]:
+def gate_risk(card: dict, output_path: Path) -> tuple[bool, str]:
     """Gate 4: risk_level >= high must land in outputs/drafts/, not reports/."""
     if card.get("risk_level") in ("high", "critical"):
         if "outputs/drafts/" not in output_path.as_posix():
             return False, f"high-risk output must be in drafts/, got {output_path}"
-    # Sanity: GATE_POLICY actually defines a risk_check section.
-    if "risk_check" not in gate_policy.get("gates", {}):
-        return False, "GATE_POLICY.yaml missing risk_check section"
     return True, "ok"
+
+
+# All four gate names that GATE_POLICY.yaml is contractually required to define.
+# Pinned here so renaming or removing any of them surfaces in CI rather than
+# silently passing — this is the regression the codex P2 review flagged.
+EXPECTED_GATES = frozenset({"schema_check", "rule_check", "completion_check", "risk_check"})
 
 
 class TestDummyTaskSmoke(unittest.TestCase):
@@ -137,17 +140,29 @@ class TestDummyTaskSmoke(unittest.TestCase):
                 "schema_check": gate_schema(DUMMY_TASK, VALIDATE_SCRIPT),
                 "rule_check": gate_rule(DUMMY_TASK, self.permissions),
                 "completion_check": gate_completion(DUMMY_TASK, output),
-                "risk_check": gate_risk(DUMMY_TASK, output, self.gate_policy),
+                "risk_check": gate_risk(DUMMY_TASK, output),
             }
 
         # Contract assertion: every gate runs and reports a verdict.
-        self.assertEqual(set(results.keys()), {"schema_check", "rule_check", "completion_check", "risk_check"})
+        self.assertEqual(set(results.keys()), EXPECTED_GATES)
         for name, (passed, _detail) in results.items():
             self.assertTrue(passed, f"{name} should pass for the dummy fixture: {_detail}")
 
+    def test_policy_declares_all_four_gates(self):
+        """Regression test for codex P2: all four gate names must exist in
+        GATE_POLICY.yaml. Without this, three of the four gates could be
+        renamed/removed silently and the smoke test would still pass."""
+        declared = set(self.gate_policy.get("gates", {}).keys())
+        missing = EXPECTED_GATES - declared
+        self.assertFalse(
+            missing,
+            f"GATE_POLICY.yaml is missing required gates: {sorted(missing)}. "
+            f"Declared: {sorted(declared)}",
+        )
+
     def test_high_risk_output_in_reports_fails_risk_gate(self):
         wrong_path = Path("outputs/reports/E2E_smoke.md")
-        passed, reason = gate_risk(DUMMY_TASK, wrong_path, self.gate_policy)
+        passed, reason = gate_risk(DUMMY_TASK, wrong_path)
         self.assertFalse(passed)
         self.assertIn("drafts/", reason)
 

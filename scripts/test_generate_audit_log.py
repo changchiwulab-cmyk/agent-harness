@@ -109,6 +109,44 @@ class TestManualNotesPreservation(unittest.TestCase):
             self.assertIn("20260501-X01", new)
 
 
+class TestPreservationWithoutMarkers(unittest.TestCase):
+    """Regression test for codex P1: when running against a hand-written
+    AUDIT_LOG.md that has no AUTO_BEGIN/END markers, existing operator-authored
+    records must survive into the manual notes section, not be silently dropped.
+    """
+
+    def test_unmarked_existing_body_is_preserved_as_manual_notes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            write(root / "tasks" / "20260501_demo.yaml", SAMPLE_TASK)
+
+            output = root / "logs" / "AUDIT_LOG.md"
+            existing = (
+                gen.HEADER.rstrip()
+                + "\n\n```yaml\n"
+                + '- task_id: "OLD-HANDWRITTEN-001"\n'
+                + '  notes: "important historical record"\n'
+                + "```\n"
+            )
+            output.parent.mkdir(parents=True, exist_ok=True)
+            output.write_text(existing, encoding="utf-8")
+
+            with mock.patch.object(gen, "find_checkpoints", return_value=[]):
+                self.assertEqual(
+                    gen.main(["--root", str(root), "--output", str(output)]),
+                    0,
+                )
+
+            regenerated = output.read_text(encoding="utf-8")
+            self.assertIn("OLD-HANDWRITTEN-001", regenerated, "existing record must survive")
+            self.assertIn("important historical record", regenerated)
+            self.assertIn("20260501-X01", regenerated, "new auto record present")
+            # Ordering contract: auto section comes before manual notes.
+            auto_pos = regenerated.index(gen.AUTO_BEGIN)
+            manual_pos = regenerated.index("OLD-HANDWRITTEN-001")
+            self.assertLess(auto_pos, manual_pos)
+
+
 class TestDriftCheck(unittest.TestCase):
     def test_check_mode_detects_stale_output(self):
         with tempfile.TemporaryDirectory() as tmp:
