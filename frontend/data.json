@@ -244,6 +244,46 @@
       "skill_type": "ops",
       "status": "review",
       "task_id": "20260427-F01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-02",
+      "goal": "Phase A：補齊規則 enforcement 與觀測自動化（PreToolUse hook、audit log generator、e2e smoke test）",
+      "path": "tasks/2026-05-02_phase-a-enforcement-and-observability.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260502-A01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-02",
+      "goal": "台灣 AI 產業深度報告：5-7 切片量化、政策法規、敏感性表、12 個月機會日曆",
+      "path": "tasks/2026-05-02_taiwan-ai-industry-deep-dive.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "review",
+      "task_id": "20260502-T03"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-02",
+      "goal": "台灣 AI 產業快速掃描：3 切片 + 3 跨切片趨勢，1 小時內出 executive brief",
+      "path": "tasks/2026-05-02_taiwan-ai-industry-quick-scan.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "review",
+      "task_id": "20260502-T01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-02",
+      "goal": "台灣 AI 產業標準研究：5 切片含本地 vs 國際玩家比較、成熟度與驅動力分析",
+      "path": "tasks/2026-05-02_taiwan-ai-industry-standard.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "review",
+      "task_id": "20260502-T02"
     }
   ]
 }

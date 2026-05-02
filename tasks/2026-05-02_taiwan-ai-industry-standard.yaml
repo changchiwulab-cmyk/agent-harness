@@ -1,0 +1,62 @@
+task_id: "20260502-T02"
+date: "2026-05-02"
+status: "review"
+
+# === 任務定義 ===
+goal: "台灣 AI 產業標準研究：5 切片含本地 vs 國際玩家比較、成熟度與驅動力分析"
+
+context: |
+  屬「不同深度」實證系列的第 2 張：標準 research 投入（max_tool_calls=5、
+  web_searches=3，貼近 COST_POLICY 校準的 research 樣本平均）。
+  搭配 T01（quick scan）、T03（deep dive）做 cost-quality 對照。
+  範圍只看台灣本地。
+  使用者背景：20+ 年管理顧問、一人公司。
+  research SKILL.md 規範：每個事實主張要有來源；推論要標推論依據；不硬湊結論。
+
+input_data:
+  - "memory/user_prefs.md"
+  - "memory/active_projects/agent-harness/context.md"
+  - "outputs/reports/token-calibration-v1.md"
+  - "outputs/drafts/20260502-T01_taiwan-ai-industry-quick-scan.md"  # 若 T01 已跑可參考；未跑則略過
+
+# === 完成標準 ===
+definition_of_done:
+  - "涵蓋至少 5 個產業切片，含本地 vs 國際玩家市佔比較（用比率/排名/玩家數其一表達，不需精確金額）"
+  - "每切片標註成熟度（早期/成長/成熟）+ 1-2 個關鍵驅動力 + 1 個風險因子"
+  - "至少 5 個來源，每個事實主張可追溯到具名來源（含時效）"
+  - "事實 / 合理推論 / 待驗證 / 高風險假設四態明確分開標記"
+  - "1 個獨立段落：對「20+ 年管理顧問背景的一人公司」可能的切入點（純列舉，不評估排序）"
+  - "輸出符合 skills/research/SKILL.md 格式"
+  - "預算限制：~1500-2200 字"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260502-T02_taiwan-ai-industry-standard.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "web_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 5
+max_retries: 3
+max_web_searches: 3
+
+# === Skill 路由 ===
+skill_type: "research"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 4
+result_summary: "DoD 全條通過。5 切片（半導體 / 邊緣 AI / SaaS / 醫療 / 金融）+ 政策補貼 funnel + 顧問切入點 5 列舉。3 web searches 補完 T01 缺口（SaaS 玩家、政策金額、產業數據）。"
+completion_time: "2026-05-02"
+audit_log_ref: "logs/AUDIT_LOG.md"
