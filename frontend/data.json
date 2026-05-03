@@ -244,6 +244,16 @@
       "skill_type": "writing",
       "status": "review",
       "task_id": "20260503-W02"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-03",
+      "goal": "對 tools-inventory 線（R01 research → R02 review → O01 fix）做 mini-Go/No-Go 決策，給出排序後的下一步建議；解除 PR #65 的 CI healthcheck 紅燈",
+      "path": "tasks/2026-05-03_tools-inventory-go-no-go-analysis.yaml",
+      "risk_level": "low",
+      "skill_type": "analysis",
+      "status": "pending",
+      "task_id": "20260503-A03"
     }
   ]
 }
