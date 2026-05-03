@@ -33,6 +33,31 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260503-W02"
+  date: "2026-05-03"
+  skill_type: "writing"
+  goal: "從 audit log 摘要編 1-page 策略快照 memo，固化 4 週前的決策結論"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "write_drafts"
+      call_count: 2
+    - tool_name: "write_logs"
+      call_count: 1
+    - tool_name: "git_commit_checkpoint"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "outputs/drafts/20260503-W02_solo-business-strategy-memo.md"
+  error_summary: ""
+  estimated_tokens: "~6K"
+  notes: "DoD 9.5/10 — 長度從 5022 chars 精簡至 2532 chars，視覺上 ≤ 1.5 頁。≈ 800 字 soft target 未嚴格達標但精神保留。已知 vs ⟨遺失⟩ 區分明確。明文標註不可作為對外提案使用。"
+```
+
+```yaml
 - task_id: "20260503-O05"
   date: "2026-05-03"
   skill_type: "ops"
