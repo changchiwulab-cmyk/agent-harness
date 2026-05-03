@@ -178,12 +178,52 @@
     {
       "approval_needed": true,
       "date": "2026-05-02",
+      "goal": "Phase A：補齊規則 enforcement 與觀測自動化（PreToolUse hook、audit log generator、e2e smoke test）",
+      "path": "tasks/2026-05-02_phase-a-enforcement-and-observability.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260502-A01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-02",
       "goal": "對 T01–T03（AI 時代一人公司 提案線：S01 研究 → W01 提案 → RV01 審查 → O02 v2 修正）做 Go/No-Go 決策，給出排序後的下一步建議",
       "path": "tasks/2026-05-02_t01-t03-go-no-go-analysis.yaml",
       "risk_level": "low",
       "skill_type": "analysis",
       "status": "review",
       "task_id": "20260502-A02"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-02",
+      "goal": "台灣 AI 產業深度報告：5-7 切片量化、政策法規、敏感性表、12 個月機會日曆",
+      "path": "tasks/2026-05-02_taiwan-ai-industry-deep-dive.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "review",
+      "task_id": "20260502-T03"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-02",
+      "goal": "台灣 AI 產業快速掃描：3 切片 + 3 跨切片趨勢，1 小時內出 executive brief",
+      "path": "tasks/2026-05-02_taiwan-ai-industry-quick-scan.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "review",
+      "task_id": "20260502-T01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-02",
+      "goal": "台灣 AI 產業標準研究：5 切片含本地 vs 國際玩家比較、成熟度與驅動力分析",
+      "path": "tasks/2026-05-02_taiwan-ai-industry-standard.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "review",
+      "task_id": "20260502-T02"
     },
     {
       "approval_needed": true,

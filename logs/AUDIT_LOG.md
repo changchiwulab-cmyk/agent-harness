@@ -216,6 +216,104 @@
 ```
 
 ```yaml
+- task_id: "20260502-T03"
+  date: "2026-05-02"
+  skill_type: "research"
+  goal: "台灣 AI 產業深度研究（Deep Dive）：7 切片 + 量化 + 政策 + 12 月日曆 + 敏感性分析"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 5
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 0
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260502-T03_taiwan-ai-industry-deep-dive.md"
+  error_summary: ""
+  estimated_tokens: "~42K"
+  notes: "Cost-quality 系列第 3 張（最高投入）。完整 7 切片含 AI 伺服器 ODM（鴻海/廣達/緯創）、國防 AI、量化財務數據；政策法規含 AI 基本法 2026-01-14 施行 + PDPA 2025-11 修法 + 5 大補貼程式；12 個月機會日曆（COMPUTEX/GTC/SEMICON）；6 條敏感性假設。對 T01/T02 cost-quality 結論：5 search 多出『政策時序 + 敏感性 + 事件日曆』，這三項對顧問決策最直接。"
+```
+
+---
+
+```yaml
+- task_id: "20260502-T02"
+  date: "2026-05-02"
+  skill_type: "research"
+  goal: "台灣 AI 產業標準研究（Standard）：5 切片 + 政策補貼 + 顧問切入點列舉"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 0
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260502-T02_taiwan-ai-industry-standard.md"
+  error_summary: ""
+  estimated_tokens: "~24K"
+  notes: "Cost-quality 系列第 2 張。3 web searches 補完 T01 缺口：本地 SaaS 玩家具名（Appier 唯一獨角獸 + Perfect/iKala/CyberLink/Kdan/Aiello/Trend Micro）、政府補貼具體金額（NT$46B/NT$310M/NT$100K/SBIR）、5 切片含醫療與金融。對顧問背景列舉 5 切入點（不評估 ROI）。"
+```
+
+---
+
+```yaml
+- task_id: "20260502-T01"
+  date: "2026-05-02"
+  skill_type: "research"
+  goal: "台灣 AI 產業快速掃描（Quick Scan）：3 切片 executive brief，作為 cost-quality 對照基準"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 1
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 0
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260502-T01_taiwan-ai-industry-quick-scan.md"
+  error_summary: ""
+  estimated_tokens: "~9K"
+  notes: "Cost-quality 系列第 1 張（最低投入）。1 web search 限制下 3 切片（半導體 / IPC 邊緣 AI / SaaS）+ 3 趨勢 + 2 高風險假設。SaaS 段資料不足明確標 [待驗證]，由 T02 補完。預算狀態 tool_calls 2/3、web_searches 1/1。"
+```
+
+---
+
+```yaml
+- task_id: "20260502-A01"
+  date: "2026-05-02"
+  skill_type: "ops"
+  goal: "Phase A：補齊規則 enforcement 與觀測自動化（PreToolUse hook、audit log generator、e2e smoke test）"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 12
+    - tool_name: "file_write"
+      call_count: 9
+    - tool_name: "file_edit"
+      call_count: 4
+    - tool_name: "bash"
+      call_count: 8
+  checkpoints: 0
+  approval_needed: true
+  approval_given: false
+  output_path: "outputs/drafts/2026-05-02_project-completeness-analysis.md; outputs/drafts/20260502-A01_phase-a-summary.md; tasks/2026-05-02_phase-a-enforcement-and-observability.yaml; .claude/settings.json; scripts/permissions_guard.py; scripts/test_permissions_guard.py; scripts/generate_audit_log.py; scripts/test_generate_audit_log.py; tests/e2e/test_dummy_task_smoke.py; .github/workflows/spec-consistency.yml; frontend/data.json"
+  error_summary: ""
+  estimated_tokens: "~28K"
+  notes: "Phase A of post-v2 第一性原理改善計畫。3 件事落地：(A1) PreToolUse hook 把 PERMISSIONS deny 改 runtime 攔截、(A2) audit log generator opt-in（不接管現有手寫紀錄，等待後續遷移卡）、(A3) e2e dummy task 跑 4 gate contract pinning。Local CI 全綠。Phase B/C 另開 task card。"
+```
+
+---
+
+```yaml
 - task_id: "20260427-F01"
   date: "2026-04-27"
   skill_type: "ops"

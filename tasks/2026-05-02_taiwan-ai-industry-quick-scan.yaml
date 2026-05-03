@@ -1,0 +1,60 @@
+task_id: "20260502-T01"
+date: "2026-05-02"
+status: "review"
+
+# === 任務定義 ===
+goal: "台灣 AI 產業快速掃描：3 切片 + 3 跨切片趨勢，1 小時內出 executive brief"
+
+context: |
+  屬「不同深度」實證系列的第 1 張：低投入快速掃描。
+  搭配 T02（standard）、T03（deep dive）做 cost-quality 對照，跑完 3 張可用實測
+  資料校準 system/COST_POLICY.md 的 research 係數（目前 n=2，本批跑完 n=5）。
+  範圍只看台灣本地，不納入越南/東南亞對照（依 2026-05-02 對話釐清）。
+  使用者背景：20+ 年管理顧問、一人公司、Claude 生態深度整合。
+
+input_data:
+  - "memory/user_prefs.md"
+  - "memory/active_projects/agent-harness/context.md"
+  - "outputs/reports/token-calibration-v1.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "涵蓋至少 3 個產業切片（建議：半導體/晶片 AI、軟體 SaaS、顧問與服務業；可調整但需給理由）"
+  - "每切片：1 句話現況結論 + 1 個代表玩家 + 1 個關鍵風險或機會"
+  - "列出 3 個跨切片趨勢（如：政府補貼方向、人才結構、市場成熟度差距）"
+  - "至少 2 個來源（含時效標註：YYYY-MM 或 YYYY-Qx）"
+  - "明確標記資料不足之處，不硬湊；事實 / 推論 / 待驗證 / 高風險假設四態分開"
+  - "輸出符合 skills/research/SKILL.md 格式（Conclusion / 已知事實 / 合理推論 / 待驗證 / 高風險假設 / 來源）"
+  - "預算限制：~600-1000 字（executive brief，不是完整報告）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260502-T01_taiwan-ai-industry-quick-scan.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "web_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 3
+max_retries: 3
+max_web_searches: 1
+
+# === Skill 路由 ===
+skill_type: "research"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 2
+result_summary: "DoD 7/7 通過。3 切片（半導體 / 邊緣 AI IPC / 軟體 SaaS）+ 3 跨切片趨勢 + 3 來源 + 高風險假設 2 條。1 web search 限制下 SaaS 段量化資料不足，明確標 [待驗證]，由 T02 補完。"
+completion_time: "2026-05-02"
+audit_log_ref: "logs/AUDIT_LOG.md"
