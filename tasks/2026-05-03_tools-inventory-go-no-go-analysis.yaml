@@ -1,6 +1,6 @@
 task_id: "20260503-A03"
 date: "2026-05-03"
-status: "pending"
+status: "in_progress"
 
 # === 任務定義 ===
 goal: "對 tools-inventory 線（R01 research → R02 review → O01 fix）做 mini-Go/No-Go 決策，給出排序後的下一步建議；解除 PR #65 的 CI healthcheck 紅燈"
