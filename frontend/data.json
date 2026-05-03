@@ -272,7 +272,7 @@
       "path": "tasks/2026-05-03_ci-expected-output-existence-check.yaml",
       "risk_level": "low",
       "skill_type": "ops",
-      "status": "checkpoint",
+      "status": "review",
       "task_id": "20260503-O05"
     },
     {

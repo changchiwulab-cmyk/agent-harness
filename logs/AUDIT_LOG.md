@@ -33,6 +33,35 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260503-O05"
+  date: "2026-05-03"
+  skill_type: "ops"
+  goal: "新增 CI 健檢：每張 status: done/review 的 Task Card 其 expected_output 必須在 git 中存在"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "create_output_files"
+      call_count: 3
+    - tool_name: "write_drafts"
+      call_count: 1
+    - tool_name: "write_logs"
+      call_count: 1
+    - tool_name: "bash"
+      call_count: 4
+    - tool_name: "git_commit_checkpoint"
+      call_count: 2
+  checkpoints: 2
+  approval_needed: true
+  approval_given: false
+  output_path: "scripts/check_task_output_exists.py; scripts/test_check_task_output_exists.py; .github/workflows/spec-consistency.yml; outputs/drafts/20260503-O05_ci-healthcheck-summary.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "首次上線即攔到 7 張漂移卡（4 張 AI-proposal + 3 張 tools-inventory）。strict 上線，使用者授權接受 CI 暫紅燈直到 O04 + 後續 A03 處理完 tools-inventory 線。format: multi 自動跳過。5 unit tests 全綠。"
+```
+
+```yaml
 - task_id: "20260502-A02"
   date: "2026-05-02"
   skill_type: "analysis"

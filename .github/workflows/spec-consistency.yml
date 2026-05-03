@@ -50,3 +50,9 @@ jobs:
 
       - name: Frontend manifest drift check
         run: python3 scripts/generate_frontend_manifest.py --check
+
+      - name: Task output existence tests
+        run: python3 scripts/test_check_task_output_exists.py
+
+      - name: Task output existence check
+        run: python3 scripts/check_task_output_exists.py
