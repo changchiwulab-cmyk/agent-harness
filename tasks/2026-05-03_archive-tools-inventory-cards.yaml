@@ -1,0 +1,60 @@
+task_id: "20260503-O06"
+date: "2026-05-03"
+status: "review"
+
+# === 任務定義 ===
+goal: "git mv R01/R02/O01 三張 tools-inventory Task Card 到 tasks/archived/，解除 CI healthcheck 紅燈"
+
+context: |
+  接續 A03 選 B + W03 memo 完成後的第二步。模式與 O04 完全平行。
+  前置條件：W03 memo 已存在於 outputs/drafts/。
+  完成後 python3 scripts/check_task_output_exists.py 應全綠（CI healthcheck 解除）。
+
+input_data:
+  - "tasks/2026-04-04_tools-inventory-research.yaml"
+  - "tasks/2026-04-04_tools-inventory-review.yaml"
+  - "tasks/2026-04-04_tools-inventory-fix.yaml"
+  - "outputs/drafts/20260503-W03_tools-inventory-memo.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "前置條件：W03 memo 存在於 outputs/drafts/"
+  - "git mv 三張 yaml 從 tasks/ 到 tasks/archived/"
+  - "python3 scripts/check_task_output_exists.py 全綠（0 missing）"
+  - "frontend manifest 重產通過（data.json tasks 從 17 → 14）"
+  - "spec consistency CI 在本機通過"
+  - "輸出 outputs/drafts/20260503-O06_archive-summary.md"
+  - "logs/AUDIT_LOG.md 新增 1 筆"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260503-O06_archive-summary.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "write_drafts"
+  - "write_logs"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: [20260503-O06] git mv 完成，healthcheck 全綠"
+actual_tool_calls: 7
+result_summary: "DoD 7/7 達成。git mv 三張卡到 archived/。CI healthcheck 首次全綠（EXIT=0）。frontend tasks 17→14。所有本機 CI 步驟通過。"
+completion_time: "2026-05-03"
+audit_log_ref: "logs/AUDIT_LOG.md"

@@ -33,6 +33,58 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260503-O06"
+  date: "2026-05-03"
+  skill_type: "ops"
+  goal: "git mv R01/R02/O01 三張 tools-inventory 卡到 archived/，解除 CI healthcheck 紅燈"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "bash"
+      call_count: 3
+    - tool_name: "write_drafts"
+      call_count: 1
+    - tool_name: "write_logs"
+      call_count: 1
+    - tool_name: "git_commit_checkpoint"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "outputs/drafts/20260503-O06_archive-summary.md; tasks/archived/2026-04-04_tools-inventory-{research,review,fix}.yaml"
+  error_summary: ""
+  estimated_tokens: "~3K"
+  notes: "CI healthcheck check_task_output_exists.py 首次全綠（EXIT=0）。frontend tasks 17→14（W03 新增 +1、archive -3）。spec consistency / manifest drift / unit tests 全綠。"
+```
+
+
+```yaml
+- task_id: "20260503-W03"
+  date: "2026-05-03"
+  skill_type: "writing"
+  goal: "從 audit log 摘要編工具盤點結構層快照 memo"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "write_drafts"
+      call_count: 1
+    - tool_name: "write_logs"
+      call_count: 1
+    - tool_name: "git_commit_checkpoint"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "outputs/drafts/20260503-W03_tools-inventory-memo.md"
+  error_summary: ""
+  estimated_tokens: "~4K"
+  notes: "DoD 8/8 達成。2257 chars，視覺 ≤ 1 頁。固化 7 類別 + 四態框架 + 知識管理 5 工具。⟨遺失⟩ 標記明確。"
+```
+
+
+```yaml
 - task_id: "20260503-A03"
   date: "2026-05-03"
   skill_type: "analysis"

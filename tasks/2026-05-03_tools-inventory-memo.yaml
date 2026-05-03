@@ -1,0 +1,60 @@
+task_id: "20260503-W03"
+date: "2026-05-03"
+status: "review"
+
+# === 任務定義 ===
+goal: "從 R01/R02/O01 的 audit log 摘要與 Task Card context，編寫 1-page 工具盤點快照 memo，固化 7 大類別架構與四態框架，作為未來重啟時的 input"
+
+context: |
+  接續 20260503-A03 Go/No-Go 選項 B。與 W02（策略提案 memo）模式完全平行。
+  目的：在 archive 三張卡前，把 R01→R02→O01 三輪迭代所產生的**結構層價值**（7 大類別、四態採用狀態框架、知識管理 5 工具清單）固化到一份簡短 memo，讓未來重啟不用從零開始。
+  memo 輸出後，另一張 O06 負責 git mv 三張卡到 tasks/archived/。
+
+input_data:
+  - "outputs/drafts/20260503-A03_tools-inventory-go-no-go.md"
+  - "tasks/2026-04-04_tools-inventory-research.yaml"
+  - "tasks/2026-04-04_tools-inventory-review.yaml"
+  - "tasks/2026-04-04_tools-inventory-fix.yaml"
+  - "logs/AUDIT_LOG.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "輸出單一 markdown 檔案，≤ 800 字（視覺 ≤ 1 頁），含以下段落"
+  - "段落 1 — 為何 park：一段話（gitignore 遺失、4 週時效性風險、無外部使用場景）"
+  - "段落 2 — 7 大工具類別清單（名稱即可，含第 6 類知識管理的 5 個工具名稱）"
+  - "段落 3 — 四態採用狀態框架：✅已用 / ✅推論已用 / 🔍待評估 / ❌不適用（這是 R02 審查確立的標準，重啟時直接沿用）"
+  - "段落 4 — R02 揭示的 2 個必修 + 3 個建議（重啟避雷清單）"
+  - "段落 5 — 重啟條件（什麼情境下值得重做工具盤點）"
+  - "明確區分「已知（從摘要可還原）」與「⟨遺失⟩（具體工具清單、月費評估需重產）」"
+  - "結尾標註：本 memo 由 audit log 摘要編成；不可作為正式工具推薦使用"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260503-W03_tools-inventory-memo.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "write_drafts"
+  - "write_logs"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "writing"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: [20260503-W03] memo 完成（2257 chars，視覺 ≤ 1 頁）"
+actual_tool_calls: 4
+result_summary: "DoD 8/8 達成。memo 涵蓋 5 段（為何 park / 7 類別名稱 + 知識管理 5 工具 / 四態框架 / R02 必修+建議 / 重啟條件）。⟨遺失⟩ 標記明確。明文標註不可作為正式工具推薦。"
+completion_time: "2026-05-03"
+audit_log_ref: "logs/AUDIT_LOG.md"
