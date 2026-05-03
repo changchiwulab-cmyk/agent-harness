@@ -254,6 +254,36 @@
       "skill_type": "analysis",
       "status": "review",
       "task_id": "20260502-A02"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-03",
+      "goal": "把 S01/W01/RV01/O02 四張 ai-era-solo-business 提案線 Task Card 從 tasks/ 移到 tasks/archived/，固化 A02 分析的「park」決策",
+      "path": "tasks/2026-05-03_archive-ai-era-proposal-cards.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260503-O04"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-03",
+      "goal": "新增一條 CI 健檢：每張 status: done/review 的 Task Card，其 expected_output.location/filename 必須在 git 中存在（檔案存在於 working tree 即視為 git 中存在；不存在則 CI 紅）",
+      "path": "tasks/2026-05-03_ci-expected-output-existence-check.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260503-O05"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-03",
+      "goal": "從 S01/W01/RV01/O02 的 audit log 摘要與 Task Card context，編寫 1-page 策略快照 memo，固化 4 週前的決策結論，作為未來重啟此提案線時的高品質 input",
+      "path": "tasks/2026-05-03_solo-business-strategy-memo.yaml",
+      "risk_level": "medium",
+      "skill_type": "writing",
+      "status": "pending",
+      "task_id": "20260503-W02"
     }
   ]
 }

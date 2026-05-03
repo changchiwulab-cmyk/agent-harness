@@ -1,0 +1,70 @@
+task_id: "20260503-O04"
+date: "2026-05-03"
+status: "pending"
+
+# === 任務定義 ===
+goal: "把 S01/W01/RV01/O02 四張 ai-era-solo-business 提案線 Task Card 從 tasks/ 移到 tasks/archived/，固化 A02 分析的「park」決策"
+
+context: |
+  接續 20260502-A02 Go/No-Go 結論（選項 D），且依賴 20260503-W02 的 memo 草稿
+  完成（先有 memo 才能放心搬檔，否則結論層也跟著從 frontend/data.json 隱形）。
+
+  四張卡目前 status 皆為 review，原始 draft 物理遺失，已無實質可恢復的執行路徑。
+  搬到 archived/ 後：
+    1. frontend/data.json 不會再列入這四張（因 generator 用 tasks/20*.yaml 不掃 archived/）
+    2. CI spec consistency 仍會掃（用 tasks/**/*.yaml），需確認 schema 仍通過
+    3. git history 保留完整可追溯性
+
+  本卡不修改任何 yaml 內容（不改 status、不加 archived 標記欄位 — VALID_STATUS 沒有
+  archived），純粹搬檔。歸檔意義由所在目錄表達。
+
+input_data:
+  - "tasks/2026-04-04_ai-era-solo-business-strategy.yaml"
+  - "tasks/2026-04-04_ai-era-solo-business-proposal.yaml"
+  - "tasks/2026-04-04_ai-era-solo-business-proposal-review.yaml"
+  - "tasks/2026-04-04_proposal-fix-v2.yaml"
+  - "outputs/drafts/20260502-A02_t01-t03-go-no-go.md"
+  - "outputs/drafts/20260503-W02_solo-business-strategy-memo.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "前置條件確認：W02 memo 草稿已存在於 outputs/drafts/（沒有 memo 不准搬，避免結論層遺失）"
+  - "git mv 四份 yaml 從 tasks/ 到 tasks/archived/（用 git mv 保留 rename history）"
+  - "spec consistency CI 步驟在本機通過：ruby scripts/check_spec_consistency.rb 全綠"
+  - "frontend manifest 重產通過：python3 scripts/generate_frontend_manifest.py + drift check 全綠（四張卡應從 data.json 中消失）"
+  - "task card 數量檢查：data.json 的 tasks 陣列從 17 → 13"
+  - "輸出 outputs/drafts/20260503-O04_archive-summary.md：列出搬檔清單、新舊路徑、CI 結果、data.json before/after diff 摘要"
+  - "logs/AUDIT_LOG.md 新增 1 筆紀錄（含被歸檔的四個 task_id 列表）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260503-O04_archive-summary.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

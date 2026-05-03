@@ -1,0 +1,71 @@
+task_id: "20260503-W02"
+date: "2026-05-03"
+status: "pending"
+
+# === 任務定義 ===
+goal: "從 S01/W01/RV01/O02 的 audit log 摘要與 Task Card context，編寫 1-page 策略快照 memo，固化 4 週前的決策結論，作為未來重啟此提案線時的高品質 input"
+
+context: |
+  接續 20260502-A02 的 Go/No-Go 分析，使用者拍板選項 D（park + memo）。
+  四份原始 draft（ai-era-solo-business-{strategy,proposal,proposal-review,proposal-v2}.md）
+  因 pre-2026-04-11 gitignore 規則而物理遺失於 git。
+
+  本卡的目的：在徹底遺失內容前，從 result_summary + Task Card context 還原**結論層**
+  快照（不還原已遺失的具體數字、ICP 細節、月度里程碑）。memo 輸出後，未來若有外部
+  使用場景需要重啟，可作為新一輪 W01 的高品質 input，省去 S01 的 web_search 成本。
+
+  另一張 ops 卡（20260503-O04）負責把四張原始 Task Card 移到 tasks/archived/。
+  本卡僅產出 memo 草稿；正式遷入 memory/ 由人工 approve 後另行處理（或追加一張
+  ops 卡執行搬檔，因 write_long_term_memory 為 ask 等級）。
+
+input_data:
+  - "outputs/drafts/20260502-A02_t01-t03-go-no-go.md"
+  - "tasks/2026-04-04_ai-era-solo-business-strategy.yaml"
+  - "tasks/2026-04-04_ai-era-solo-business-proposal.yaml"
+  - "tasks/2026-04-04_ai-era-solo-business-proposal-review.yaml"
+  - "tasks/2026-04-04_proposal-fix-v2.yaml"
+  - "logs/AUDIT_LOG.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "輸出單一 markdown 檔案，總長 ≤ 1.5 頁（≈ 800 字內），含以下段落"
+  - "段落 1 — 為何 park：一段話說明四份原始 draft 物理遺失、距今時間、無外部使用場景"
+  - "段落 2 — 結論快照（5 商業模式 × 一句話定位 + 最推薦項：AI 顧問×產品化服務）"
+  - "段落 3 — 服務菜單骨架（W01 提到的 4 項服務名稱與一句話範疇；具體價格已遺失，明確標註）"
+  - "段落 4 — 台灣 + 越南雙市場 ICP 要點（已遺失細節用「⟨遺失⟩」標記）"
+  - "段落 5 — RV01 揭示的 3 個必修錯誤類型（數字矛盾 ×2、Retainer 交付差異未說明）— 重啟時的避雷清單"
+  - "段落 6 — 重啟條件（什麼情境下值得重做：例如出現具體客戶、合作方審閱需求等）"
+  - "段落 7 — 元層風險：4 週前的市場資料可能過時的具體面向（哪些假設最容易動搖）"
+  - "明確區分「已知（從摘要可還原）」與「⟨遺失⟩（細節層需重產才有）」"
+  - "結尾標註：本 memo 由 audit log 摘要編成，非原 draft 還原；不可作為對外提案使用"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260503-W02_solo-business-strategy-memo.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "writing"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
