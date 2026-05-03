@@ -33,6 +33,33 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260503-O04"
+  date: "2026-05-03"
+  skill_type: "ops"
+  goal: "git mv 4 張 ai-era-solo-business 提案線 Task Card 從 tasks/ 到 tasks/archived/"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "bash"
+      call_count: 4
+    - tool_name: "write_drafts"
+      call_count: 1
+    - tool_name: "write_logs"
+      call_count: 1
+    - tool_name: "git_commit_checkpoint"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "outputs/drafts/20260503-O04_archive-summary.md; tasks/archived/2026-04-04_ai-era-solo-business-{strategy,proposal,proposal-review}.yaml; tasks/archived/2026-04-04_proposal-fix-v2.yaml"
+  error_summary: ""
+  estimated_tokens: "~5K"
+  notes: "DoD 7/7 對應條件達成。frontend tasks 20→16（DoD 原估 17→13，因執行間新加 A02/W02/O04/O05 計數位移，delta 仍 −4）。歸檔卡 status 不改（VALID_STATUS 沒 archived），語意由所在目錄表達。CI 仍紅 — 剩 3 張 tools-inventory 漂移由 A03 處理。"
+```
+
+```yaml
 - task_id: "20260503-W02"
   date: "2026-05-03"
   skill_type: "writing"

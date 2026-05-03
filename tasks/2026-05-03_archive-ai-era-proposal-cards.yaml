@@ -1,6 +1,6 @@
 task_id: "20260503-O04"
 date: "2026-05-03"
-status: "pending"
+status: "review"
 
 # === 任務定義 ===
 goal: "把 S01/W01/RV01/O02 四張 ai-era-solo-business 提案線 Task Card 從 tasks/ 移到 tasks/archived/，固化 A02 分析的「park」決策"
@@ -63,8 +63,9 @@ max_web_searches: 0
 skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
-audit_log_ref: ""
+checkpoints:
+  - "checkpoint: [20260503-O04] 4 張卡 git mv 至 archived/，CI 本機驗證完成"
+actual_tool_calls: 8
+result_summary: "DoD 7/7 對應條件達成。git mv 4 張卡到 archived/，frontend tasks 20→16（delta −4）。spec consistency / manifest drift / unit tests 全綠；O05 healthcheck 仍紅 3 張 tools-inventory（預期，待 A03）。歸檔意義由所在目錄表達；保留 rename history。"
+completion_time: "2026-05-03"
+audit_log_ref: "logs/AUDIT_LOG.md"
