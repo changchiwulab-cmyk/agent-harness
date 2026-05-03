@@ -87,76 +87,6 @@
   "tasks": [
     {
       "approval_needed": false,
-      "date": "2026-04-04",
-      "goal": "審查 ai-era-solo-business-proposal.md 的邏輯一致性、事實正確性、風險完整性，確認可作為正式使用的策略文件",
-      "path": "tasks/2026-04-04_ai-era-solo-business-proposal-review.yaml",
-      "risk_level": "low",
-      "skill_type": "review",
-      "status": "review",
-      "task_id": "20260404-RV01"
-    },
-    {
-      "approval_needed": false,
-      "date": "2026-04-04",
-      "goal": "根據研究結果（20260404-S01），產出一份完整的一人公司 AI 時代策略提案，可直接用於自我規劃或向潛在合作方展示",
-      "path": "tasks/2026-04-04_ai-era-solo-business-proposal.yaml",
-      "risk_level": "low",
-      "skill_type": "writing",
-      "status": "review",
-      "task_id": "20260404-W01"
-    },
-    {
-      "approval_needed": false,
-      "date": "2026-04-04",
-      "goal": "分析 AI 時代一人公司最具長遠獲利潛力的商業項目，結合用戶背景（管理顧問、台灣+越南市場）提供可執行策略建議",
-      "path": "tasks/2026-04-04_ai-era-solo-business-strategy.yaml",
-      "risk_level": "low",
-      "skill_type": "research",
-      "status": "review",
-      "task_id": "20260404-S01"
-    },
-    {
-      "approval_needed": false,
-      "date": "2026-04-04",
-      "goal": "根據審查報告 RV01 的 3 個必須修改項，修正提案數字矛盾並補充 Retainer 交付差異，產出 v2 正式版",
-      "path": "tasks/2026-04-04_proposal-fix-v2.yaml",
-      "risk_level": "low",
-      "skill_type": "ops",
-      "status": "review",
-      "task_id": "20260404-O02"
-    },
-    {
-      "approval_needed": false,
-      "date": "2026-04-04",
-      "goal": "修正 20260404-R02 review 發現的 2 個 must-fix 問題，完成工具盤點報告定稿",
-      "path": "tasks/2026-04-04_tools-inventory-fix.yaml",
-      "risk_level": "low",
-      "skill_type": "ops",
-      "status": "done",
-      "task_id": "20260404-O01"
-    },
-    {
-      "approval_needed": false,
-      "date": "2026-04-04",
-      "goal": "調查並整理一人公司運作所需的工具清單，按功能分類並評估現有採用狀況",
-      "path": "tasks/2026-04-04_tools-inventory-research.yaml",
-      "risk_level": "low",
-      "skill_type": "research",
-      "status": "done",
-      "task_id": "20260404-R01"
-    },
-    {
-      "approval_needed": false,
-      "date": "2026-04-04",
-      "goal": "審查工具盤點報告的完整性、邏輯一致性與一人公司適用性",
-      "path": "tasks/2026-04-04_tools-inventory-review.yaml",
-      "risk_level": "low",
-      "skill_type": "review",
-      "status": "done",
-      "task_id": "20260404-R02"
-    },
-    {
-      "approval_needed": false,
       "date": "2026-04-09",
       "goal": "驗證 Agent Harness v2.0 所有新增組件的可用性與流程完整性",
       "path": "tasks/2026-04-09_system-validation.yaml",
@@ -256,6 +186,16 @@
       "task_id": "20260502-A01"
     },
     {
+      "approval_needed": true,
+      "date": "2026-05-02",
+      "goal": "對 T01–T03（AI 時代一人公司 提案線：S01 研究 → W01 提案 → RV01 審查 → O02 v2 修正）做 Go/No-Go 決策，給出排序後的下一步建議",
+      "path": "tasks/2026-05-02_t01-t03-go-no-go-analysis.yaml",
+      "risk_level": "low",
+      "skill_type": "analysis",
+      "status": "review",
+      "task_id": "20260502-A02"
+    },
+    {
       "approval_needed": false,
       "date": "2026-05-02",
       "goal": "台灣 AI 產業深度報告：5-7 切片量化、政策法規、敏感性表、12 個月機會日曆",
@@ -284,6 +224,66 @@
       "skill_type": "research",
       "status": "review",
       "task_id": "20260502-T02"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-03",
+      "goal": "把 S01/W01/RV01/O02 四張 ai-era-solo-business 提案線 Task Card 從 tasks/ 移到 tasks/archived/，固化 A02 分析的「park」決策",
+      "path": "tasks/2026-05-03_archive-ai-era-proposal-cards.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260503-O04"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-03",
+      "goal": "git mv R01/R02/O01 三張 tools-inventory Task Card 到 tasks/archived/，解除 CI healthcheck 紅燈",
+      "path": "tasks/2026-05-03_archive-tools-inventory-cards.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260503-O06"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-03",
+      "goal": "新增一條 CI 健檢：每張 status: done/review 的 Task Card，其 expected_output.location/filename 必須在 git 中存在（檔案存在於 working tree 即視為 git 中存在；不存在則 CI 紅）",
+      "path": "tasks/2026-05-03_ci-expected-output-existence-check.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260503-O05"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-03",
+      "goal": "從 S01/W01/RV01/O02 的 audit log 摘要與 Task Card context，編寫 1-page 策略快照 memo，固化 4 週前的決策結論，作為未來重啟此提案線時的高品質 input",
+      "path": "tasks/2026-05-03_solo-business-strategy-memo.yaml",
+      "risk_level": "medium",
+      "skill_type": "writing",
+      "status": "review",
+      "task_id": "20260503-W02"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-03",
+      "goal": "對 tools-inventory 線（R01 research → R02 review → O01 fix）做 mini-Go/No-Go 決策，給出排序後的下一步建議；解除 PR #65 的 CI healthcheck 紅燈",
+      "path": "tasks/2026-05-03_tools-inventory-go-no-go-analysis.yaml",
+      "risk_level": "low",
+      "skill_type": "analysis",
+      "status": "review",
+      "task_id": "20260503-A03"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-03",
+      "goal": "從 R01/R02/O01 的 audit log 摘要與 Task Card context，編寫 1-page 工具盤點快照 memo，固化 7 大類別架構與四態框架，作為未來重啟時的 input",
+      "path": "tasks/2026-05-03_tools-inventory-memo.yaml",
+      "risk_level": "medium",
+      "skill_type": "writing",
+      "status": "review",
+      "task_id": "20260503-W03"
     }
   ]
 }

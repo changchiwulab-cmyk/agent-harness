@@ -1,0 +1,78 @@
+task_id: "20260502-A02"
+date: "2026-05-02"
+status: "review"
+
+# === 任務定義 ===
+goal: "對 T01–T03（AI 時代一人公司 提案線：S01 研究 → W01 提案 → RV01 審查 → O02 v2 修正）做 Go/No-Go 決策，給出排序後的下一步建議"
+
+context: |
+  四張 Task Card 長期停在 status: review，從未升級到 done 或正式 report：
+    - 20260404-S01（research）— ai-era-solo-business-strategy.md
+    - 20260404-W01（writing）— ai-era-solo-business-proposal.md
+    - 20260404-RV01（review）— ai-era-solo-business-proposal-review.md
+    - 20260404-O02（ops/writing）— ai-era-solo-business-proposal-v2.md
+  （F01 為前端工程線，與本次決策正交，不在範圍。）
+
+  事實基礎：
+    1. 以上四張卡的 audit log 都記錄產出檔名（outputs/drafts/ai-era-solo-business-*.md），
+       但這些檔案目前在 working tree 與 git 任一 ref 中皆不存在。
+       原因：drafts 在 2026-04-11（commit f32ba4a）才從 .gitignore 移除，T01–T03
+       的草稿產生於 2026-04-04，當時被 gitignore 攔截，後續未補回。
+    2. 因此「升級草稿至 outputs/reports/」在當前狀態下不可行——沒有來源檔可升級。
+    3. RV01 審查報告（已遺失）原本指出 3 項必須修改，O02 v2 是該修正的產物（同樣遺失）。
+    4. 距離產出已過 4 週（今天 2026-05-02），市場資料與假設可能已過期。
+
+  本卡只做「決策分析」，不執行升級、不重新產製內容。任何後續行動（重產、捨棄、
+  封存、部分採用）由本卡建議後另開 Task Card。
+
+input_data:
+  - "tasks/2026-04-04_ai-era-solo-business-strategy.yaml"
+  - "tasks/2026-04-04_ai-era-solo-business-proposal.yaml"
+  - "tasks/2026-04-04_ai-era-solo-business-proposal-review.yaml"
+  - "tasks/2026-04-04_proposal-fix-v2.yaml"
+  - "logs/AUDIT_LOG.md"
+  - "memory/active_projects/agent-harness/context.md"
+  - "skills/analysis/SKILL.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "列出所有可行選項：至少含 (a) 重產 + 升級 reports、(b) 重產但只保留 RV01 修正後的 v2、(c) 全部封存到 tasks/archived/ 並關卡、(d) 暫時 park（status 改為 on_hold 或保留 review，待時機重啟）"
+  - "每個選項完成六維評估：價值 / 成本（含重跑 web_search 與 token 估算） / 風險（資料過期、與當前商業現況落差） / 可行性 / 執行難度 / 回報"
+  - "明確標出高風險假設與待驗證項目（例如：4 週前的市場資料是否仍有效、原本 ICP 假設是否仍成立）"
+  - "對「四張 review 卡的 status 該如何收斂」給出明確建議（done / failed / archived / on_hold 哪一個，每張卡都要有對應）"
+  - "給出排序後的下一步行動清單，每項標註：要不要開新 Task Card、預估成本、是否需要人工輸入"
+  - "輸出 outputs/drafts/20260502-A02_t01-t03-go-no-go.md（含上述五大段落 + TL;DR 一段）"
+  - "logs/AUDIT_LOG.md 新增 1 筆紀錄"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260502-A02_t01-t03-go-no-go.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: [20260502-A02] 進入 in_progress，開始執行分析"
+  - "checkpoint: [20260502-A02] 分析草稿 + audit log 完成"
+actual_tool_calls: 12
+result_summary: "DoD 7/7 達成。輸出 outputs/drafts/20260502-A02_t01-t03-go-no-go.md，建議選項 D（on_hold + 1-page memo）。關鍵發現：四份原始 draft 因 pre-2026-04-11 gitignore 規則而物理遺失於 git。等使用者拍板選項後執行對應後續卡。"
+completion_time: "2026-05-02"
+audit_log_ref: "logs/AUDIT_LOG.md"

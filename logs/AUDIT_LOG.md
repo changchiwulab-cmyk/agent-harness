@@ -33,6 +33,189 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260503-O06"
+  date: "2026-05-03"
+  skill_type: "ops"
+  goal: "git mv R01/R02/O01 三張 tools-inventory 卡到 archived/，解除 CI healthcheck 紅燈"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "bash"
+      call_count: 3
+    - tool_name: "write_drafts"
+      call_count: 1
+    - tool_name: "write_logs"
+      call_count: 1
+    - tool_name: "git_commit_checkpoint"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "outputs/drafts/20260503-O06_archive-summary.md; tasks/archived/2026-04-04_tools-inventory-{research,review,fix}.yaml"
+  error_summary: ""
+  estimated_tokens: "~3K"
+  notes: "CI healthcheck check_task_output_exists.py 首次全綠（EXIT=0）。frontend tasks 17→14（W03 新增 +1、archive -3）。spec consistency / manifest drift / unit tests 全綠。"
+```
+
+
+```yaml
+- task_id: "20260503-W03"
+  date: "2026-05-03"
+  skill_type: "writing"
+  goal: "從 audit log 摘要編工具盤點結構層快照 memo"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "write_drafts"
+      call_count: 1
+    - tool_name: "write_logs"
+      call_count: 1
+    - tool_name: "git_commit_checkpoint"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "outputs/drafts/20260503-W03_tools-inventory-memo.md"
+  error_summary: ""
+  estimated_tokens: "~4K"
+  notes: "DoD 8/8 達成。2257 chars，視覺 ≤ 1 頁。固化 7 類別 + 四態框架 + 知識管理 5 工具。⟨遺失⟩ 標記明確。"
+```
+
+
+```yaml
+- task_id: "20260503-A03"
+  date: "2026-05-03"
+  skill_type: "analysis"
+  goal: "對 tools-inventory 線（R01/R02/O01）做 mini-Go/No-Go，解除 CI healthcheck 紅燈"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "write_drafts"
+      call_count: 1
+    - tool_name: "write_logs"
+      call_count: 1
+    - tool_name: "git_commit_checkpoint"
+      call_count: 2
+  checkpoints: 2
+  approval_needed: true
+  approval_given: false
+  output_path: "outputs/drafts/20260503-A03_tools-inventory-go-no-go.md"
+  error_summary: ""
+  estimated_tokens: "~8K"
+  notes: "DoD 7/7 達成。建議選項 B（archive + W03 memo + O06 archive），與 A02→W02→O04 模式平行。關鍵差異：O01 audit log 已證實 rebuild 不依賴 web_search；但 4 週對 AI 工具列表時效性影響大於對策略提案。三張卡 status 保留 done，搬到 archived/。"
+```
+
+```yaml
+- task_id: "20260503-O04"
+  date: "2026-05-03"
+  skill_type: "ops"
+  goal: "git mv 4 張 ai-era-solo-business 提案線 Task Card 從 tasks/ 到 tasks/archived/"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "bash"
+      call_count: 4
+    - tool_name: "write_drafts"
+      call_count: 1
+    - tool_name: "write_logs"
+      call_count: 1
+    - tool_name: "git_commit_checkpoint"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "outputs/drafts/20260503-O04_archive-summary.md; tasks/archived/2026-04-04_ai-era-solo-business-{strategy,proposal,proposal-review}.yaml; tasks/archived/2026-04-04_proposal-fix-v2.yaml"
+  error_summary: ""
+  estimated_tokens: "~5K"
+  notes: "DoD 7/7 對應條件達成。frontend tasks 20→16（DoD 原估 17→13，因執行間新加 A02/W02/O04/O05 計數位移，delta 仍 −4）。歸檔卡 status 不改（VALID_STATUS 沒 archived），語意由所在目錄表達。CI 仍紅 — 剩 3 張 tools-inventory 漂移由 A03 處理。"
+```
+
+```yaml
+- task_id: "20260503-W02"
+  date: "2026-05-03"
+  skill_type: "writing"
+  goal: "從 audit log 摘要編 1-page 策略快照 memo，固化 4 週前的決策結論"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "write_drafts"
+      call_count: 2
+    - tool_name: "write_logs"
+      call_count: 1
+    - tool_name: "git_commit_checkpoint"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "outputs/drafts/20260503-W02_solo-business-strategy-memo.md"
+  error_summary: ""
+  estimated_tokens: "~6K"
+  notes: "DoD 9.5/10 — 長度從 5022 chars 精簡至 2532 chars，視覺上 ≤ 1.5 頁。≈ 800 字 soft target 未嚴格達標但精神保留。已知 vs ⟨遺失⟩ 區分明確。明文標註不可作為對外提案使用。"
+```
+
+```yaml
+- task_id: "20260503-O05"
+  date: "2026-05-03"
+  skill_type: "ops"
+  goal: "新增 CI 健檢：每張 status: done/review 的 Task Card 其 expected_output 必須在 git 中存在"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "create_output_files"
+      call_count: 3
+    - tool_name: "write_drafts"
+      call_count: 1
+    - tool_name: "write_logs"
+      call_count: 1
+    - tool_name: "bash"
+      call_count: 4
+    - tool_name: "git_commit_checkpoint"
+      call_count: 2
+  checkpoints: 2
+  approval_needed: true
+  approval_given: false
+  output_path: "scripts/check_task_output_exists.py; scripts/test_check_task_output_exists.py; .github/workflows/spec-consistency.yml; outputs/drafts/20260503-O05_ci-healthcheck-summary.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "首次上線即攔到 7 張漂移卡（4 張 AI-proposal + 3 張 tools-inventory）。strict 上線，使用者授權接受 CI 暫紅燈直到 O04 + 後續 A03 處理完 tools-inventory 線。format: multi 自動跳過。5 unit tests 全綠。"
+```
+
+```yaml
+- task_id: "20260502-A02"
+  date: "2026-05-02"
+  skill_type: "analysis"
+  goal: "對 T01–T03（S01/W01/RV01/O02 AI 時代提案線）做 Go/No-Go 決策"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 8
+    - tool_name: "write_drafts"
+      call_count: 1
+    - tool_name: "write_logs"
+      call_count: 1
+    - tool_name: "git_commit_checkpoint"
+      call_count: 2
+  checkpoints: 2
+  approval_needed: true
+  approval_given: false
+  output_path: "outputs/drafts/20260502-A02_t01-t03-go-no-go.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "建議選項 D（park + 1-page memo）。關鍵發現：四份原始 draft 因 2026-04-04 當時 outputs/drafts/ 仍在 .gitignore（2026-04-11 才修掉）而未進 git，物理遺失。建議補 CI 健檢：每張 done/review 卡的 expected_output 須在 git 中存在。"
+```
+
+```yaml
 - task_id: "20260502-T03"
   date: "2026-05-02"
   skill_type: "research"

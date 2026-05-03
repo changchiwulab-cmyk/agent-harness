@@ -1,0 +1,83 @@
+task_id: "20260503-A03"
+date: "2026-05-03"
+status: "review"
+
+# === 任務定義 ===
+goal: "對 tools-inventory 線（R01 research → R02 review → O01 fix）做 mini-Go/No-Go 決策，給出排序後的下一步建議；解除 PR #65 的 CI healthcheck 紅燈"
+
+context: |
+  20260503-O05 健檢首次上線即攔到 7 張 expected_output 漂移卡。其中 4 張 AI-proposal
+  線已由 A02 分析 + O04 archive 處理完。本卡處理剩餘 3 張：
+
+    - 20260404-R01（research, status: done）→ outputs/drafts/solo-company-tools-inventory.md
+    - 20260404-R02（review,   status: done）→ outputs/drafts/tools-inventory-review-report.md
+    - 20260404-O01（ops,      status: done）→ outputs/drafts/solo-company-tools-inventory-v2.md
+
+  與 AI-proposal 線（A02 範圍）的差異：
+    1. 三張皆 status: done（不是 review）— 「曾經完成」的官方紀錄
+    2. AUDIT_LOG 顯示 O01 已在 2026-04-04 用 audit log + memory/ 「重建」過 v2，
+       證明此線 rebuild 可行性高、不依賴 web_search 時間性資料
+    3. 工具盤點本身對日常運作有持續引用價值（不像策略提案需要外部使用場景才有意義）
+    4. R02 揭示具體缺漏（知識管理類別缺失、採用狀態不一致）已被 O01 fix，
+       無未解決的待修正項
+    5. AI 工具迭代極快，4 週前的盤點 fairly likely 已過時；但類別架構（6→7 大類）
+       與評估維度（採用狀態四態）設計可能仍有效
+
+  本卡只做決策分析，不執行 archive、不重產內容。決策後另開後續卡執行。
+
+  解除 CI 紅燈的可能路徑：archive 三張（同 A02→O04 模式）、或重產 + 升級 reports
+  使輸出實際存在、或調整 healthcheck 寬鬆度（不建議）。
+
+input_data:
+  - "tasks/2026-04-04_tools-inventory-research.yaml"
+  - "tasks/2026-04-04_tools-inventory-review.yaml"
+  - "tasks/2026-04-04_tools-inventory-fix.yaml"
+  - "logs/AUDIT_LOG.md"
+  - "outputs/drafts/20260502-A02_t01-t03-go-no-go.md"  # 同類型範本參考
+  - "outputs/drafts/20260503-O05_ci-healthcheck-summary.md"
+  - "outputs/drafts/20260503-O04_archive-summary.md"
+  - "memory/active_projects/agent-harness/context.md"
+  - "skills/analysis/SKILL.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "列出至少 4 個選項：(a) 重產 v3 + 升級 reports/、(b) archive 三張並寫 1-page 工具盤點 memo、(c) archive 三張不寫 memo、(d) 維持現狀調整 healthcheck 為 warn"
+  - "每個選項完成七維評估：價值 / 成本（含 token + 時間估算）/ 風險（資料過期程度）/ 可行性 / 執行難度 / 預期回報 / 一人公司適配度"
+  - "高風險假設與待驗證項目明確列出（如：4 週前的工具盤點是否仍對日常運作有引用價值、AI 工具迭代速度對盤點時效性的影響）"
+  - "三張卡的 status 收斂建議（每張獨立給出 archive / 維持 done / 改 failed 等建議與理由）"
+  - "排序後 next steps，每項標註：是否需要新 Task Card、預估成本、是否需要人工輸入；明確指出哪一步會解除 CI healthcheck 紅燈"
+  - "輸出 outputs/drafts/20260503-A03_tools-inventory-go-no-go.md（含 TL;DR + 五大段落）"
+  - "logs/AUDIT_LOG.md 新增 1 筆紀錄"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260503-A03_tools-inventory-go-no-go.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: [20260503-A03] in_progress，自行接手執行"
+  - "checkpoint: [20260503-A03] 分析 + audit log 完成"
+actual_tool_calls: 9
+result_summary: "DoD 7/7 達成。建議選項 B（archive + W03 memo + O06 archive），與 A02→W02→O04 模式平行。關鍵分析重點：O01 audit log 已證實此線 rebuild path（不依賴 web_search）但 4 週對 AI 工具列表時效性風險大；7 類別 + 四態框架已固化在 audit log，memo 即可保留結構價值。三張卡 status 保留 done，移到 tasks/archived/ 表達歸檔。next steps 已點明哪一步解除 CI 紅燈。"
+completion_time: "2026-05-03"
+audit_log_ref: "logs/AUDIT_LOG.md"

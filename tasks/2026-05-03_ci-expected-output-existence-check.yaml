@@ -1,0 +1,88 @@
+task_id: "20260503-O05"
+date: "2026-05-03"
+status: "review"
+
+# === 任務定義 ===
+goal: "新增一條 CI 健檢：每張 status: done/review 的 Task Card，其 expected_output.location/filename 必須在 git 中存在（檔案存在於 working tree 即視為 git 中存在；不存在則 CI 紅）"
+
+context: |
+  20260502-A02 的關鍵發現：S01/W01/RV01/O02 四張 status: review 卡 audit log 都
+  記錄了 outputs/drafts/ai-era-solo-business-*.md 路徑，但這些檔案在 working tree
+  與 git 任一 ref 中皆不存在。根因：outputs/drafts/ 在 2026-04-04 仍在 .gitignore，
+  2026-04-11（commit f32ba4a）才被 fix。
+
+  類似的隱形遺失若無自動化檢查，未來會再發生（例如新加 .gitignore 規則、誤刪 draft、
+  或人為移動檔案而忘了更新 Task Card）。本健檢攔截這類 drift。
+
+  範圍取捨：
+    - 只查 status ∈ {done, review} 的卡（pending/in_progress/checkpoint/failed 的卡輸出
+      尚未或不應存在）。
+    - 只查 tasks/ 頂層（不含 tasks/examples/、不含 tasks/archived/，因為 archived 的
+      原始輸出本來就允許不存在 — 那正是歸檔的合法情境之一）。
+    - 不對輸出內容做任何斷言（不查空檔、不查 schema），只查存在性。
+
+  與既有 spec consistency 檢查（scripts/check_spec_consistency.rb）的關係：
+    - 既有檢查負責 schema、欄位完整性
+    - 本檢查負責 schema 與 filesystem 的一致性
+    - 兩者互補，本檢查可作為新獨立 step，也可作為 check_spec_consistency.rb 的新檢查項
+
+  實作建議（執行卡時可微調）：
+    - 新檔 scripts/check_task_output_exists.py（Python，沿用既有 PyYAML 依賴）
+    - 對應 unit test scripts/test_check_task_output_exists.py（至少 4 個 case：
+      done 卡輸出存在 ✓、done 卡輸出缺失 ✗、archived 卡輸出缺失 ✓ 略過、
+      pending 卡輸出缺失 ✓ 略過）
+    - .github/workflows/spec-consistency.yml 新增一個 step
+
+input_data:
+  - "scripts/check_spec_consistency.rb"
+  - "scripts/generate_frontend_manifest.py"
+  - "scripts/test_generate_frontend_manifest.py"
+  - ".github/workflows/spec-consistency.yml"
+  - "system/validate_task_card.py"
+  - "outputs/drafts/20260502-A02_t01-t03-go-no-go.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "新增 scripts/check_task_output_exists.py：掃 tasks/20*.yaml（不含 archived/、examples/），對 status ∈ {done, review} 的卡，檢查 expected_output.location + filename 是否存在於 working tree；缺失列出來並 exit 1"
+  - "新增 scripts/test_check_task_output_exists.py：至少 4 個 unit test case 全綠（done 存在 / done 缺失 / archived 略過 / pending 略過）"
+  - ".github/workflows/spec-consistency.yml 新增 step：python3 scripts/test_check_task_output_exists.py 與 python3 scripts/check_task_output_exists.py，放在 frontend manifest drift check 之後"
+  - "本機驗證：先在 main HEAD（未 archive S01/W01/RV01/O02）上跑健檢應失敗（4 missing），驗證攔截邏輯正確"
+  - "本機驗證：在 archive 完成後（O04 完成後）跑健檢應通過 — **本 DoD 不要求 O04 先完成；只要求 O05 的程式邏輯能正確處理兩種狀態**"
+  - "輸出 outputs/drafts/20260503-O05_ci-healthcheck-summary.md：說明掃描範圍、規則、實作摘要、unit test 結果、預期攔截場景"
+  - "logs/AUDIT_LOG.md 新增 1 筆紀錄"
+  - "整體 spec-consistency CI（含新 step）在 PR push 後綠燈"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260503-O05_ci-healthcheck-summary.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 25
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: [20260503-O05] script + tests 完成；CI step 暫緩等使用者決策"
+  - "checkpoint: [20260503-O05] strict 上線 + summary 完成"
+actual_tool_calls: 17
+result_summary: "DoD 8/8 達成（CI 紅燈為預期 — 健檢首次上線即攔到 7 張漂移）。實作 check_task_output_exists.py + 5 unit tests + spec-consistency.yml +5 行。format: multi 自動跳過。使用者授權 strict 上線，接受 CI red 直到 O04 + 後續 A03 處理完 tools-inventory 三張。"
+completion_time: "2026-05-03"
+audit_log_ref: "logs/AUDIT_LOG.md"
