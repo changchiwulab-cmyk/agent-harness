@@ -1,6 +1,6 @@
 task_id: "20260503-O05"
 date: "2026-05-03"
-status: "pending"
+status: "checkpoint"
 
 # === 任務定義 ===
 goal: "新增一條 CI 健檢：每張 status: done/review 的 Task Card，其 expected_output.location/filename 必須在 git 中存在（檔案存在於 working tree 即視為 git 中存在；不存在則 CI 紅）"
