@@ -147,22 +147,13 @@ def split_manual_notes(existing: str) -> str:
         _, _, rest = existing.partition(AUTO_END)
         body = rest.lstrip("\n")
     elif existing.strip():
-        # Fallback: preserve everything after the canonical HEADER. We compare
-        # against HEADER prefix-by-prefix because the existing file's header
-        # may have been hand-customised.
+        # Fallback: preserve all existing contents when markers are absent.
+        # If the file starts with the canonical top-level heading, strip only
+        # that one heading line so we don't duplicate it in the regenerated doc.
         body = existing
-        header_first_line = HEADER.splitlines()[0]
-        if body.startswith(header_first_line):
-            # Skip past the first contiguous block (the header) — anything that
-            # is not a YAML block fence or auto marker.
-            lines = body.splitlines(keepends=True)
-            i = 0
-            # Drop the H1 line plus any non-record prose immediately under it,
-            # up to the first ```yaml fence or YAML record list separator.
-            while i < len(lines) and not lines[i].lstrip().startswith("```yaml") \
-                    and not lines[i].lstrip().startswith("- task_id:"):
-                i += 1
-            body = "".join(lines[i:])
+        heading_line = HEADER.splitlines()[0]
+        if body.startswith(heading_line):
+            body = body[len(heading_line):].lstrip("\n")
         body = body.lstrip("\n")
     else:
         return ""
