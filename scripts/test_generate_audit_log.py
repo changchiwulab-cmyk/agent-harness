@@ -145,6 +145,29 @@ class TestPreservationWithoutMarkers(unittest.TestCase):
             auto_pos = regenerated.index(gen.AUTO_BEGIN)
             manual_pos = regenerated.index("OLD-HANDWRITTEN-001")
             self.assertLess(auto_pos, manual_pos)
+    def test_unmarked_notes_only_body_is_preserved(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            write(root / "tasks" / "20260501_demo.yaml", SAMPLE_TASK)
+
+            output = root / "logs" / "AUDIT_LOG.md"
+            existing = (
+                "# Audit Log\n\n"
+                "## 人工備註\n\n"
+                "- keep this operator note\n"
+            )
+            output.parent.mkdir(parents=True, exist_ok=True)
+            output.write_text(existing, encoding="utf-8")
+
+            with mock.patch.object(gen, "find_checkpoints", return_value=[]):
+                self.assertEqual(
+                    gen.main(["--root", str(root), "--output", str(output)]),
+                    0,
+                )
+
+            regenerated = output.read_text(encoding="utf-8")
+            self.assertIn("keep this operator note", regenerated)
+
 
 
 class TestDriftCheck(unittest.TestCase):
