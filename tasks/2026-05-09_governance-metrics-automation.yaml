@@ -59,7 +59,7 @@ skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
 checkpoints:
-  - "TBD checkpoint: 20260509-N05 governance metrics automation"
+  - "04d9ce8 checkpoint: 20260509-N05 governance metrics automation"
 actual_tool_calls: 6
 result_summary: "DoD 8/8 通過。scripts/governance_metrics.py（M1-M4 採集 + markdown/JSON 雙輸出 + warn/alert 分級退出碼）+ scripts/test_governance_metrics.py（15 個測試全綠）+ system/NATIVE_OVERLAP.yaml（M4 人工 input）+ outputs/drafts/governance-metrics-2026-05.md（首份月度報告）。本月實跑：M1 04/05 月 16+11 ok / M2 比 9.50 ok / M3 覆蓋 92.3% ok / M4 重疊 30% ok。不加進 CI 強制（人工月度觸發）。"
 completion_time: "2026-05-09"
