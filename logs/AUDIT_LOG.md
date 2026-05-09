@@ -33,6 +33,33 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260509-N04"
+  date: "2026-05-09"
+  skill_type: "writing"
+  goal: "起草 agent-governance plugin manifest skeleton（介面契約，不寫實作）"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 2
+    - tool_name: "file_edit"
+      call_count: 3
+    - tool_name: "bash"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/2026-05-09_n04_governance-plugin-skeleton.md"
+  error_summary: ""
+  estimated_tokens: "~16K"
+  notes: "5 command + 4 schema + 2 hook + 2 validator 介面契約全部完成。L2「PostTaskUse hook 是否原生支援」標 [待驗證]。建議下一步：起 task card（risk=high，需人工核准）真正建立 agent-governance 獨立 repo。"
+```
+
+---
+
+```yaml
 - task_id: "20260509-N03"
   date: "2026-05-09"
   skill_type: "ops"
