@@ -21,7 +21,7 @@ input_data:
   - "logs/AUDIT_LOG.md"
   - "tasks/examples/"
   - "outputs/drafts/2026-05-09_v3_extraction_plan.md"  # 依賴 A01 完成
-  - "/root/.claude/plans/ai-bubbly-mountain.md"  # 外部 plan，optional；不可讀時以 README/CLAUDE.md/system/* 為主要依據，未對齊處標 [待驗證]
+  - "/root/.claude/plans/ai-bubbly-mountain.md"  # 外部 plan，optional；2026-05-09 已歸檔至 memory/active_projects/agent-harness/plans/ai-bubbly-mountain.md（repo 內，Task B 對應）
 
 # === 完成標準 ===
 definition_of_done:

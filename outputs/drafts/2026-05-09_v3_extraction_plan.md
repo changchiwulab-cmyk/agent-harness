@@ -7,7 +7,7 @@
 
 > 範圍說明：本文件僅做「規劃」，不動既有代碼或結構。目的是把 v2 的 16 模組逐項裁決，把與 Claude Code 原生重疊的部分砍除，把「治理三件 + 失敗分類學」抽成獨立可發布的治理層。
 >
-> 來源限制：Plan 檔 `/root/.claude/plans/ai-bubbly-mountain.md` 在當前 session 不可讀取（路徑不存在於此環境）。本卡的規劃以 `README.md`、`CLAUDE.md`、`system/`、`logs/AUDIT_LOG.md`、現有 26 張 Task Card 為主要依據；凡無法從這些來源直接證實者，標 `[待驗證]`。
+> Plan 對齊（2026-05-09 N1 補）：上游 plan 已歸檔至 `memory/active_projects/agent-harness/plans/ai-bubbly-mountain.md`，本卡與 plan §8.1 Task A 的對齊報告見 `outputs/drafts/2026-05-09_n01_plan-alignment.md`。原本的 `[待驗證 — 取決於 plan]` 多項已解，僅保留與外部規範相關者（Claude Code 原生 spec、Skills frontmatter 規範）。
 
 ---
 
@@ -263,12 +263,12 @@ agent-governance/
 
 ## 10. 待驗證
 
-| 項目 | 驗證方式 |
-|------|---------|
-| Plan 檔 `ai-bubbly-mountain.md` §8.1 是否與本卡裁決一致 | 取得檔案後逐項 diff |
-| Audit Log 任務數準確值（README 寫 30+，實 17） | 直接讀檔重新計數 |
-| 原生 Skills 的 frontmatter 規範與 SKILL.md 兼容性 | 在分支上做 1 個轉檔示範 |
-| Plugin 能否同時掛 hooks + skills + commands | 查官方 plugin 文件或試做最小範例 |
+| 項目 | 驗證方式 | 狀態 |
+|------|---------|------|
+| Plan 檔 `ai-bubbly-mountain.md` §8.1 是否與本卡裁決一致 | 取得檔案後逐項 diff | ✅ 已解（N1 對齊報告：13/13 條 DoD 全 pass，A01 額外 over-deliver 2 條）|
+| Audit Log 任務數準確值（README 寫 30+，實 17）| 直接讀檔重新計數 | 待 N2 修正 |
+| 原生 Skills 的 frontmatter 規範與 SKILL.md 兼容性 | 在分支上做 1 個轉檔示範 | ✅ 已解（N3 PoC：frontmatter 解析通過，symlink 註冊建立）|
+| Plugin 能否同時掛 hooks + skills + commands | 查官方 plugin 文件或試做最小範例 | 待 N4 後續真正建 plugin repo 時驗證 |
 
 ---
 

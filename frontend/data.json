@@ -316,6 +316,16 @@
       "task_id": "20260509-A01"
     },
     {
+      "approval_needed": false,
+      "date": "2026-05-09",
+      "goal": "把 ai-bubbly-mountain plan 寫進 repo（memory/active_projects/agent-harness/plans/），並對 A01/W01 與 plan §8.1 Task A/B 做逐項對齊，產出對齊報告與 task card 清理",
+      "path": "tasks/2026-05-09_plan-alignment.yaml",
+      "risk_level": "low",
+      "skill_type": "review",
+      "status": "review",
+      "task_id": "20260509-N01"
+    },
+    {
       "approval_needed": true,
       "date": "2026-05-09",
       "goal": "在分支上把 skills/research/SKILL.md 加上原生 Claude Code Skills frontmatter 並建立 .claude/skills/ 註冊路徑，輸出 PoC summary 評估 H1（原生自動路由能否取代 ROUTING_RULES.md）",

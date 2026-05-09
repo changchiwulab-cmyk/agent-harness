@@ -8,7 +8,7 @@
 
 > 來源：本卡建立在 `20260509-A01` 的「保留／抽出清單」之上（治理三件 + DoD 契約 + 失敗分類學），不再把 v2 工程細節包裝成方法論。
 >
-> 限制：Plan 檔 `/root/.claude/plans/ai-bubbly-mountain.md` 在當前 session 不可讀取，方法論主軸與 plan §8.1 Task B 的對齊待後續核對 `[待驗證]`。
+> Plan 對齊（2026-05-09 N1 補）：上游 plan 已歸檔至 `memory/active_projects/agent-harness/plans/ai-bubbly-mountain.md`；本卡與 plan §8.1 Task B 的對齊報告見 `outputs/drafts/2026-05-09_n01_plan-alignment.md`。Plan §1-§7 中尚未被本卡採納的論點，已於對齊報告 §6 列出供下一版補章。
 
 ---
 
@@ -218,12 +218,12 @@
 
 ## 9. 待驗證
 
-| 項目 | 驗證方式 |
-|------|---------|
-| Plan §8.1 Task B 的方法論主軸期待 | 取得 `ai-bubbly-mountain.md` 後對齊 |
-| 《AI Engineering》(Chip Huyen) 章節範圍與本書差異具體點 | 讀完該書 ToC 後重寫 §5 對標表 |
-| Audit log 實際筆數（README 寫 30+，實 17） | 補足／修正 README 文案 |
-| 主軸命題市場接受度 | 部落格前 3 篇 CTR / 留言質量 |
+| 項目 | 驗證方式 | 狀態 |
+|------|---------|------|
+| Plan §8.1 Task B 的方法論主軸期待 | 取得 `ai-bubbly-mountain.md` 後對齊 | ✅ 已解（N1 對齊報告：6 條 DoD 全 pass + W01 over-deliver 1 條；plan §6 一句總結與 T1「用契約取代信任」同向）|
+| 《AI Engineering》(Chip Huyen) 章節範圍與本書差異具體點 | 讀完該書 ToC 後重寫 §5 對標表 | 待 |
+| Audit log 實際筆數（README 寫 30+，實 17）| 補足／修正 README 文案 | 待 N2 修正 |
+| 主軸命題市場接受度 | 部落格前 3 篇 CTR / 留言質量 | 待 |
 
 ---
 

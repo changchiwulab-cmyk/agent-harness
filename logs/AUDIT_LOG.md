@@ -33,6 +33,33 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260509-N01"
+  date: "2026-05-09"
+  skill_type: "review"
+  goal: "plan 歸檔 repo + A01/W01 與 plan §8.1 對齊報告 + 清除已解 [待驗證]"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "file_write"
+      call_count: 2
+    - tool_name: "file_edit"
+      call_count: 6
+    - tool_name: "bash"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/2026-05-09_n01_plan-alignment.md; memory/active_projects/agent-harness/plans/ai-bubbly-mountain.md"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "A01 vs Task A: 5/5 + 2 over-deliver; W01 vs Task B: 5/5 + 2 over-deliver; 順序「先 A 後 B」符合 plan §8.2。Plan §5.3 4 條關鍵指標未被 A01/W01 採納 → 建議開 N5（governance metrics 自動採集）。命名漂移（_ vs -）與工具詞彙差異記錄但不修。"
+```
+
+---
+
+```yaml
 - task_id: "20260509-N04"
   date: "2026-05-09"
   skill_type: "writing"

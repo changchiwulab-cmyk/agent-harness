@@ -20,7 +20,7 @@ input_data:
   - "system/"
   - "skills/"
   - "memory/"
-  - "/root/.claude/plans/ai-bubbly-mountain.md"
+  - "/root/.claude/plans/ai-bubbly-mountain.md"  # 對應 plan §8.1 Task A；於 2026-05-09 已歸檔至 memory/active_projects/agent-harness/plans/ai-bubbly-mountain.md（repo 內）
 
 # === 完成標準 ===
 definition_of_done:
