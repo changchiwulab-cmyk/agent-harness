@@ -288,6 +288,16 @@
     {
       "approval_needed": false,
       "date": "2026-05-09",
+      "goal": "修正 A01 草稿 §1.1 對『README 寫 30+』的錯誤歸因，更新為實際計數，並在 N1 對齊報告中註記 plan 的數據是 snapshot，不更新",
+      "path": "tasks/2026-05-09_audit-count-fix.yaml",
+      "risk_level": "low",
+      "skill_type": "review",
+      "status": "review",
+      "task_id": "20260509-N02"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-09",
       "goal": "起草 agent-governance plugin 的 manifest skeleton 設計文件，定義每個 command / hook / schema / validator 的介面契約，但不寫實作",
       "path": "tasks/2026-05-09_governance-plugin-skeleton.yaml",
       "risk_level": "low",

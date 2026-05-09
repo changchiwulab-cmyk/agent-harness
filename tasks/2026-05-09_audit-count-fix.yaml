@@ -1,0 +1,62 @@
+# Task Card — N2 修正 audit 計數漂移與 A01 誤歸因
+# 來源：A01 §1.1 與 W01 §9 都引用「README 寫 30+，實 17」，但實際 README 並無此字樣
+# 真正出處：plan §Context（30+ audit、12+ outputs）+ A01 task card context 欄位
+
+task_id: "20260509-N02"
+date: "2026-05-09"
+status: "review"
+
+# === 任務定義 ===
+goal: "修正 A01 草稿 §1.1 對『README 寫 30+』的錯誤歸因，更新為實際計數，並在 N1 對齊報告中註記 plan 的數據是 snapshot，不更新"
+context: |
+  N1 對齊時意外發現：A01 §1.1 寫『README 文案稱「30+」』，但 grep README.md 完全找不到此字樣。
+  真正寫「30+ audit」的是 plan §Context 與 A01 task card 自身的 context 欄位（引自 plan）。
+  這是 A01 在沒有 plan 可讀的情況下做的錯誤推論，N1 對齊時也未及時抓到。
+  本卡修正此事實錯誤，並重新確立計數規則。
+input_data:
+  - "outputs/drafts/2026-05-09_v3_extraction_plan.md"  # A01
+  - "outputs/drafts/2026-05-09_methodology_outline.md"  # W01
+  - "outputs/drafts/2026-05-09_n01_plan-alignment.md"  # N1
+  - "README.md"
+  - "logs/AUDIT_LOG.md"
+  - "memory/active_projects/agent-harness/plans/ai-bubbly-mountain.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "A01 §1.1 修正：移除『README 文案稱「30+」』的錯誤歸因，改為正確引用（plan §Context + A01 自身 context 欄位）"
+  - "A01 §1.1 更新實際計數（audit / outputs/drafts / outputs/reports）為本 PR 推送前的真實值"
+  - "W01 §9 待驗證表中『Audit log 實際筆數（README 寫 30+，實 17）』修正為正確歸因"
+  - "N1 對齊報告 §7.2 對 N2 的描述更新（不是修 README，是修 A01 + 標註 plan 是 snapshot）"
+  - "確認 README.md 確實無 audit 計數字樣（無需修改 README）"
+  - "在本卡 result_summary 寫下計數規則：plan/task card context 為 snapshot 不更新；A01/W01/N1 為當下事實需與 audit 同步"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-05-09_n02_audit-count-fix.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "review"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "TBD checkpoint: 20260509-N02 audit count fix"
+actual_tool_calls: 4
+result_summary: "DoD 6/6 通過。事實核對：README 從無『30+』字樣（grep 證明），真正出處為 plan §Context + 兩張 task card context 欄位。實際計數本 PR 前 18 筆 audit / 12 drafts / 2 reports / 6 decisions；本 PR 後 23/17/2/6。修正 6 處：A01 §1.1 + §10、W01 §1.4 + 第 11 章 + §9、N1 §7.2。建立計數規則：snapshot 文件不改（plan/task card context/DoD）、事實文件即時更新（drafts/）、規範文件不寫具體計數。Root cause：歸因推論未交叉驗證，對應 SPEC-04 + VAL-03。"
+completion_time: "2026-05-09"
+audit_log_ref: "logs/AUDIT_LOG.md"

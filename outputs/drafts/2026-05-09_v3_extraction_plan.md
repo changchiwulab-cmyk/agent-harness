@@ -15,7 +15,7 @@
 
 ### 1.1 規模快照
 - v2 已運行約 2 個月（首筆 audit 2026-04-04，最後 2026-05-02）。
-- Audit Log 共 17 筆任務（README 文案稱「30+」，與實況有出入；應更新文案或統計口徑）`[待驗證]`。
+- Audit Log 本 PR 推送前共 **18 筆**任務（grep `^- task_id:` 扣除 1 筆格式範例）；本 PR 加 A01/W01/N3/N4/N1 共 5 筆 → **23 筆**。Plan §Context 與本卡 task card context 欄位的「30+」是 plan 撰寫時的概數，不準（plan 為歷史 snapshot 不更新；事實計數見此處）。
 - `outputs/drafts/` 累積 12+ 草稿；`outputs/reports/` 已晉升 2 份（retro、token-calibration）。
 - Decision Log 累積 6 筆（D001–D006）。
 - 16 模組分布：control 4、execution 5、governance 7。
@@ -266,7 +266,7 @@ agent-governance/
 | 項目 | 驗證方式 | 狀態 |
 |------|---------|------|
 | Plan 檔 `ai-bubbly-mountain.md` §8.1 是否與本卡裁決一致 | 取得檔案後逐項 diff | ✅ 已解（N1 對齊報告：13/13 條 DoD 全 pass，A01 額外 over-deliver 2 條）|
-| Audit Log 任務數準確值（README 寫 30+，實 17）| 直接讀檔重新計數 | 待 N2 修正 |
+| Audit Log 任務數準確值（plan §Context 寫 30+；非 README）| 直接讀檔重新計數 | ✅ 已解（N2：本 PR 前 18 筆，本 PR 後 23 筆）|
 | 原生 Skills 的 frontmatter 規範與 SKILL.md 兼容性 | 在分支上做 1 個轉檔示範 | ✅ 已解（N3 PoC：frontmatter 解析通過，symlink 註冊建立）|
 | Plugin 能否同時掛 hooks + skills + commands | 查官方 plugin 文件或試做最小範例 | 待 N4 後續真正建 plugin repo 時驗證 |
 

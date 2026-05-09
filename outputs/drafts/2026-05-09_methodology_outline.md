@@ -39,7 +39,7 @@
 - **承載章節最廣**：T2 框死在「外包關係」，T3 框死在「未來自己」；T1 可同時承載「為什麼治理 / 如何治理 / 三原則」三條主線。
 - **行銷張力對等**：「用契約取代信任」一句口號可獨立流通；T2 需要「LLM 是外包」這個前提先成立、T3 需要讀者已有「未來困擾」的自覺。
 - **與差異化定位（§5）契合**：LangChain 文件偏工具、Chip Huyen 偏工程、Anthropic 官方偏 best practice，「治理／契約思維」這個切口空缺最大。
-- **實證撐腰**：三原則（可恢復／可審計／可量化）有 Harness 兩個月實證（D001–D006、17 筆 audit），不是口號而是已落地的紀律。
+- **實證撐腰**：三原則（可恢復／可審計／可量化）有 Harness 兩個月實證（D001–D006、18+ 筆 audit），不是口號而是已落地的紀律。
 
 ### T2/T3 的二次用途（不浪費）
 
@@ -112,7 +112,7 @@
 - 字數：3,500
 - 實證：`scripts/permissions_guard.py`（PreToolUse hook，把 PERMISSIONS deny 改 runtime 攔截）+ `scripts/check_context_budget.rb`（CI 限制 CLAUDE.md+GLOBAL_RULES ≤3K token）+ `.github/workflows/spec-consistency.yml`。對應 Phase A enforcement 卡 `20260502-A01`。
 
-### 第 11 章 — Retrospective：從 17 筆 audit 找出 3 個你不知道的自己
+### 第 11 章 — Retrospective：從 20+ 筆 audit 找出 3 個你不知道的自己
 - 核心命題：定期 retro 不是儀式，是把累積的 audit 變成可下決策的訊號。
 - 摘要：方法論——每 5–10 筆任務做一次小 retro，找：(1) 重複出現的失敗模式 ID、(2) 與 Decision Log 不一致的實際做法、(3) 該晉升為 reports/ 的草稿。retro 的產出是 Decision Log，不是備忘錄。
 - 字數：3,000
@@ -222,7 +222,7 @@
 |------|---------|------|
 | Plan §8.1 Task B 的方法論主軸期待 | 取得 `ai-bubbly-mountain.md` 後對齊 | ✅ 已解（N1 對齊報告：6 條 DoD 全 pass + W01 over-deliver 1 條；plan §6 一句總結與 T1「用契約取代信任」同向）|
 | 《AI Engineering》(Chip Huyen) 章節範圍與本書差異具體點 | 讀完該書 ToC 後重寫 §5 對標表 | 待 |
-| Audit log 實際筆數（README 寫 30+，實 17）| 補足／修正 README 文案 | 待 N2 修正 |
+| Audit log 實際筆數（plan §Context 寫 30+；非 README）| 重新計數 | ✅ 已解（N2：本 PR 前 18 筆；README 並無 30+ 字樣，原 A01/W01 對 README 的歸因有誤）|
 | 主軸命題市場接受度 | 部落格前 3 篇 CTR / 留言質量 | 待 |
 
 ---

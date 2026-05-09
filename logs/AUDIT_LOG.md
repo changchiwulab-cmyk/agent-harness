@@ -33,6 +33,33 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260509-N02"
+  date: "2026-05-09"
+  skill_type: "review"
+  goal: "修正 audit 計數錯誤歸因（README 寫 30+ → 實際是 plan/task card context）並校正計數"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "file_search"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 2
+    - tool_name: "file_edit"
+      call_count: 8
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/2026-05-09_n02_audit-count-fix.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "事實核對：README 從無 30+ 字樣；真正出處為 plan §Context + task card context。本 PR 前實 18 筆 audit（A01 自寫 17 也偏少 1）。建立 snapshot/事實/規範三類文件的計數更新規則。Root cause：SPEC-04 + VAL-03（草稿引用未交叉驗證）。"
+```
+
+---
+
+```yaml
 - task_id: "20260509-N01"
   date: "2026-05-09"
   skill_type: "review"
