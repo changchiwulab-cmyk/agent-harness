@@ -55,15 +55,20 @@ class MetricResult:
 
 
 def load_task_cards() -> list[dict]:
-    """Return list of {task_id, status, year_month} for every task card under tasks/."""
+    """Return list of {task_id, status, year_month} for every task card under tasks/.
+
+    Raises yaml.YAMLError on malformed task YAML — main() converts that to exit
+    code 2 (collection error). Silently skipping would let broken cards
+    undercount metrics and report ok/warn for actually broken data.
+    """
     cards = []
     for path in sorted(TASKS_DIR.glob("*.yaml")):
         if path.name in {"TASK_CARD_TEMPLATE.yaml", "DECISION_LOG_TEMPLATE.yaml"}:
             continue
         try:
             data = yaml.safe_load(path.read_text(encoding="utf-8"))
-        except yaml.YAMLError:
-            continue
+        except yaml.YAMLError as exc:
+            raise yaml.YAMLError(f"{path.relative_to(ROOT)}: {exc}") from exc
         if not isinstance(data, dict):
             continue
         task_id = data.get("task_id", "") or ""
@@ -107,14 +112,32 @@ def load_native_overlap() -> dict:
 # --- Metric calculators ----------------------------------------------------
 
 
+def _ym_minus(ym: str, months_back: int) -> str:
+    """Subtract `months_back` calendar months from "YYYY-MM" string."""
+    y, m = int(ym[:4]), int(ym[5:7])
+    total = y * 12 + (m - 1) - months_back
+    return f"{total // 12:04d}-{total % 12 + 1:02d}"
+
+
 def metric_m1(cards: list[dict], today: date) -> MetricResult:
-    """M1 — 月 Task Card 建立數 (last 3 months)."""
+    """M1 — 月 Task Card 建立數.
+
+    Window: 3 calendar months anchored on `today` — `[today-2m, today-1m, today]`.
+    Months with no cards are evaluated as 0 against the threshold so that going
+    dark in the current/recent month surfaces as warn/alert.
+
+    Boot-phase carve-out: months strictly before the earliest observed month are
+    excluded from the window. Otherwise a brand-new project would always alert
+    on its first cycle.
+    """
     counts: dict[str, int] = {}
     for c in cards:
         counts[c["year_month"]] = counts.get(c["year_month"], 0) + 1
-    months = sorted(counts.keys())[-3:]  # last 3 months that have any data
-    recent = [(m, counts[m]) for m in months]
-    # threshold: any 2 consecutive months < 3 → alert; any 1 month < 3 → warn
+    today_ym = f"{today.year:04d}-{today.month:02d}"
+    window_months = [_ym_minus(today_ym, i) for i in (2, 1, 0)]
+    earliest_observed = min(counts.keys()) if counts else today_ym
+    in_scope = [m for m in window_months if m >= earliest_observed]
+    recent = [(m, counts.get(m, 0)) for m in in_scope]
     below = [m for m, c in recent if c < 3]
     if any(
         recent[i][1] < 3 and recent[i + 1][1] < 3
@@ -131,7 +154,13 @@ def metric_m1(cards: list[dict], today: date) -> MetricResult:
         current=", ".join(f"{m}={c}" for m, c in recent) or "(no data)",
         threshold="連續 2 個月 < 3 張 → alert；單月 < 3 張 → warn",
         status=status,
-        details={"counts_by_month": dict(counts), "recent": recent, "below_threshold_months": below},
+        details={
+            "counts_by_month": dict(counts),
+            "recent": recent,
+            "below_threshold_months": below,
+            "window": window_months,
+            "earliest_observed": earliest_observed if counts else None,
+        },
     )
 
 
