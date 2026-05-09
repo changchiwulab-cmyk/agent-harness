@@ -57,7 +57,7 @@ skill_type: "writing"
 
 # === 執行紀錄（由 agent 填寫）===
 checkpoints:
-  - "TBD checkpoint: 20260509-N04 governance plugin skeleton"
+  - "4900614 checkpoint: 20260509-N04 governance plugin skeleton"
 actual_tool_calls: 5
 result_summary: "DoD 8/8 通過。skeleton 含：plugin.json manifest、5 slash command 介面契約、4 schema 草案、2 hook 行為、2 standalone validator、README outline、v2→plugin 對照表、暫不做清單。確認 A01 §4.2 的抽出 6 / 砍除 5 / 重構 5 → plugin 承載全部抽出 + 4 個重構，2 個重構留 user 端（CLAUDE.md + cost calibration）。"
 completion_time: "2026-05-09"
