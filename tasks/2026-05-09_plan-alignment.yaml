@@ -58,7 +58,7 @@ skill_type: "review"
 
 # === 執行紀錄（由 agent 填寫）===
 checkpoints:
-  - "TBD checkpoint: 20260509-N01 plan alignment"
+  - "a245f1e checkpoint: 20260509-N01 plan alignment"
 actual_tool_calls: 6
 result_summary: "DoD 7/7 通過。Plan 已歸檔 repo（memory/active_projects/agent-harness/plans/ai-bubbly-mountain.md）；A01/W01 與 plan §8.1 Task A/B 各 5/5 草案 DoD pass + 各 2 條 over-deliver；命名漂移（_ vs -）+ allowed_tools 詞彙差異記錄但不修；plan §5.3 4 條關鍵指標 A01/W01 都未採納 → 建議開 N5 自動採集；plan §3.5 Memory + §4.1 趨勢 C 也識別為未採納 → N7/N8 候補。"
 completion_time: "2026-05-09"
