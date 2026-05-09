@@ -33,6 +33,52 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260509-M01"
+  date: "2026-05-09"
+  skill_type: "ops"
+  goal: "原生 Memory PoC 卡建立（symlink + namespace 試點）— N07 後續候補"
+  status: "pending"
+  model_used: "—"
+  tools_called: []
+  checkpoints: 0
+  approval_needed: true
+  approval_given: false
+  output_path: "tasks/2026-05-09_native-memory-poc.yaml"
+  error_summary: ""
+  estimated_tokens: "—"
+  notes: "risk=medium，依 N07 §7.1 建立。本 PR 僅含卡片本身，等使用者明示核准後另開 session 執行 PoC（symlink、寫入提示實測、token 預算量測、雙系統決策樹）。"
+```
+
+---
+
+```yaml
+- task_id: "20260509-N06"
+  date: "2026-05-09"
+  skill_type: "ops"
+  goal: "v3 governance plugin bootstrap — 在 drafts/ 完整準備 plugin v0.1.0 檔樹（受工具限制無法直接建外部 repo）"
+  status: "review"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 5
+    - tool_name: "file_write"
+      call_count: 14
+    - tool_name: "file_edit"
+      call_count: 4
+    - tool_name: "bash"
+      call_count: 8
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/agent-governance-bootstrap/; outputs/drafts/2026-05-09_n06_v3-plugin-bootstrap.md; memory/active_projects/agent-harness/decisions/20260509-D007_v3-plugin-bootstrap-decisions.yaml"
+  error_summary: "本 session GitHub MCP 限定 agent-harness 單一 repo，無法直接建外部 agent-governance repo；DoD #6 (harness 切換引用 plugin) 與 #8 (CI 驗證) 留下個 session。"
+  estimated_tokens: "~45K"
+  notes: "使用者於 PR #69 明示核准 + 4 子題決策（D007）：repo=agent-governance / Apache-2.0 / Private / 獨立 repo。本 session 完成 DoD 7/9：plugin.json + 5 commands + 4 schemas + 2 hooks(8 tests) + 2 validators(13 tests) + LICENSE + README + CHANGELOG + CI workflow + D007。Plugin tests 25/25 pass。下個 session 5 步遷移指南見 outputs/drafts/2026-05-09_n06_v3-plugin-bootstrap.md §4。"
+```
+
+---
+
+```yaml
 - task_id: "20260509-N08"
   date: "2026-05-09"
   skill_type: "writing"
@@ -80,25 +126,6 @@
   error_summary: ""
   estimated_tokens: "~10K"
   notes: "建議 Conditional-Go：4 條啟用條件（C1 寫入須人工確認；C2 namespace 限定，不接管 decisions/plans 結構化 YAML；C3 不走雲同步；C4 與 N6 plugin 相容）。比照 N3 Skills symlink 模式可避免雙寫漂移。後續候補 M1 PoC + M2 PERMISSIONS 收斂。3 項待驗證留至 M1 工具實測。"
-```
-
----
-
-```yaml
-- task_id: "20260509-N06"
-  date: "2026-05-09"
-  skill_type: "ops"
-  goal: "v3 governance plugin repo bootstrap（依 N4 skeleton 真正建立 plugin）"
-  status: "pending"
-  model_used: "—"
-  tools_called: []
-  checkpoints: 0
-  approval_needed: true
-  approval_given: false
-  output_path: "—"
-  error_summary: ""
-  estimated_tokens: "—"
-  notes: "risk=high，依 APPROVAL_POLICY explicit_review 不進 runtime。Task Card 已建立並 schema 通過；等使用者明確核准（含 repo 命名、license、public/private、monorepo？）後才轉 in_progress。本 PR 僅含 Task Card 文件本身，未涉及任何 repo 建立或 system/ 修改。"
 ```
 
 ---

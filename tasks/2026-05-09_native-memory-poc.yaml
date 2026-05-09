@@ -1,0 +1,68 @@
+# Task Card — M01 原生 Memory PoC（symlink + namespace 試點）
+# 來源：N07 §7.1（Conditional-Go 後續候補 #1）
+# 上游：N07 已完成（Conditional-Go 4 條啟用條件）；N03 PoC 提供 symlink 模式範例
+
+task_id: "20260509-M01"
+date: "2026-05-09"
+status: "pending"   # medium-risk + 涉及實際寫入測試，等使用者明示核准
+
+# === 任務定義 ===
+goal: "在 agent-harness namespace 試點原生 Memory（symlink 模式），實測 Claude Code 是否真支援指向 repo 內路徑、寫入提示流程、token 預算影響"
+context: |
+  N07 評估結論為 Conditional-Go，4 條啟用條件中 C1/C2/C4 已可規劃，
+  但 C3（寫入路徑不出本機）需工具實測；觸發頻率與 token 影響亦需量測。
+  本卡為 N07 §7.1 列的第一張後續候補（M1 PoC）。
+
+  風險等級 medium：涉及在 .claude/memory/ 下建立 symlink 與一次寫入提示實測，
+  屬於 modify_system_rules 級的權限邊界（PERMISSIONS.yaml 目前無 write_native_memory_with_confirm 欄位）。
+  本 PoC 不修改 PERMISSIONS.yaml（那留 M02 收斂卡）；只做最小驗證。
+
+input_data:
+  - "outputs/drafts/2026-05-09_n07_native-memory-evaluation.md"
+  - "outputs/drafts/2026-05-09_n03_skills-native-poc.md"   # symlink 模式範例
+  - "memory/active_projects/agent-harness/"   # symlink 目標
+  - "system/PERMISSIONS.yaml"
+  - "CLAUDE.md"   # 硬規則 #2 / #4
+
+# === 完成標準 ===
+definition_of_done:
+  - "嘗試建立 .claude/memory/agent-harness → ../../memory/active_projects/agent-harness/ symlink；若 Claude Code 不支援指向 repo 內路徑，記錄失敗模式並改 fallback（C3 條件結論）"
+  - "在新 session 觸發一次寫入提示實測（如：請 Claude 寫一筆使用者偏好），紀錄觸發句、確認流程、實際儲存路徑、是否走雲同步"
+  - "context budget 量測：CLAUDE.md + GLOBAL_RULES + 新增 memory 載入的 token 總和是否仍 ≤ 3K（目前 1197 baseline）"
+  - "雙系統決策樹單頁文件：哪些事入 native Memory（user-level 偏好、跨 session context）、哪些入 memory/active_projects/（結構化決策、plans）、哪些都不入"
+  - "PERMISSIONS.yaml 草案 patch（不套用，僅作為 M02 卡的 input）：新增 write_native_memory_with_confirm（ask 級），保留 auto_write_memory 在 deny"
+  - "PoC 結論：基於上述 4 項實測，給出 Go / No-Go 二選一最終建議（覆蓋 N07 的 Conditional-Go），含 ≥3 條依據"
+  - "若 Go：列出 M02 PERMISSIONS 收斂卡的 DoD 草案 ≥3 條；若 No-Go：說明 plan §3.5 痛點要怎麼以非原生方式處理"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-05-09_m01_native-memory-poc.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "read_memory"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+  # 注意：實際 symlink 建立與寫入提示實測需要在獲准後加入
+  # （symlink 建立可能屬 modify_system_rules，視 .claude/memory/ 是否被視為 system 範圍而定）
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

@@ -1,0 +1,95 @@
+# Execution Log schema — agent-governance v0.1.0
+# Per-task structured run record (ported from agent-harness system/EXECUTION_LOG_SCHEMA.yaml).
+
+required:
+  - task_id
+  - started_at
+  - status
+
+properties:
+  task_id:
+    type: string
+    pattern: '^\d{8}-[A-Z0-9]+$'
+  started_at:
+    type: string
+    format: date-time
+  completion_time:
+    type: string
+    format: date-time
+  status:
+    type: string
+    enum: [started, in_progress, review, done, partial, failed]
+  model_used:
+    type: string
+  tools_called:
+    type: array
+    items:
+      type: object
+      required: [tool_name, call_count]
+      properties:
+        tool_name: { type: string }
+        call_count:
+          type: integer
+          minimum: 0
+  actual_tool_calls:
+    type: integer
+    minimum: 0
+  checkpoints:
+    type: array
+    items:
+      type: string                   # "<commit_hash> <stage_description>"
+  approvals:
+    type: array
+    items:
+      type: object
+      required: [stage, status]
+      properties:
+        stage: { type: string }
+        status:
+          type: string
+          enum: [pending, approved, rejected, skipped]
+        approver: { type: string }
+        decided_at: { type: string, format: date-time }
+  gate_results:
+    type: object
+    properties:
+      schema_check: { $ref: "#/$defs/gate_outcome" }
+      rule_check: { $ref: "#/$defs/gate_outcome" }
+      completion_check: { $ref: "#/$defs/gate_outcome" }
+      risk_check: { $ref: "#/$defs/gate_outcome" }
+  estimated_tokens:
+    type: string                     # accept "~10K" style
+  error_summary:
+    type: string
+  notes:
+    type: string
+
+$defs:
+  gate_outcome:
+    type: object
+    required: [status]
+    properties:
+      status:
+        type: string
+        enum: [pass, fail, warn, n/a]
+      detail:
+        type: string
+
+example:
+  task_id: "20260509-X01"
+  started_at: "2026-05-09T08:00:00Z"
+  completion_time: "2026-05-09T08:30:00Z"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+  actual_tool_calls: 3
+  checkpoints:
+    - "abc1234 X01 first checkpoint"
+  gate_results:
+    schema_check: { status: pass }
+    rule_check: { status: pass }
+    completion_check: { status: pass, detail: "DoD 5/5" }
+    risk_check: { status: pass }
+  estimated_tokens: "~10K"
