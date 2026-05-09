@@ -58,7 +58,7 @@ skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
 checkpoints:
-  - "TBD checkpoint: 20260509-N03 skills native PoC"
+  - "4c65a40 checkpoint: 20260509-N03 skills native registration PoC"
 actual_tool_calls: 7
 result_summary: "DoD 7/7 通過。skills/research/SKILL.md 加 frontmatter（name + description 151 字），原內容不刪改；.claude/skills/research → ../../skills/research symlink 建立（避免雙寫漂移）；H1 結論：部分成立——routing 表可被取代，但「跨 skill 拆 Task Card」原則需保留至 CLAUDE.md。A01 §4.2 第 3 列「保留拆分原則寫進 CLAUDE.md」恰好命中，不需修改裁決。Session 內無法現場驗證自動觸發，需新 session。"
 completion_time: "2026-05-09"
