@@ -12,6 +12,8 @@
 
 ## 0. 前置檢查（30 秒）
 
+> **2026-05-09 校正**：hooks 實際 12 tests（含 `test_rule_gate_rejects_string_allowed_tools`，原文 11 為手動點數錯誤），總計 26。下方數字已更新。
+
 ```bash
 # (a) 你登入的 GitHub 帳號 / org 對 agent-governance 有 repo 建立權
 gh auth status
@@ -21,7 +23,7 @@ gh api user -q .login   # 預期：你或 changchiwulab-cmyk org 成員
 cd ~/path/to/agent-harness
 ls outputs/drafts/agent-governance-bootstrap/   # 應看到 plugin.json README.md LICENSE CHANGELOG.md commands/ hooks/ schemas/ validators/ .github/
 ( cd outputs/drafts/agent-governance-bootstrap && python3 -m unittest hooks.test_hooks validators.test_validators -v )
-# 預期：25 tests OK（hooks 11 + validators 14）
+# 預期：26 tests OK（hooks 12 + validators 14）
 ```
 
 任一步失敗 → 停下來回報，不繼續。
@@ -91,7 +93,7 @@ for f in sorted(Path('schemas').glob('*.yaml')):
 "
 ```
 
-預期全綠（hooks 11 + validators 14 + plugin.json + 4 schemas）。任一失敗 → 停下來，回報後再決定是否繼續。
+預期全綠（hooks 12 + validators 14 + plugin.json + 4 schemas）。任一失敗 → 停下來，回報後再決定是否繼續。
 
 ---
 

@@ -1,0 +1,90 @@
+# Task Card — N06 預備工：runbook 漂移修正 + N06b 切換產物預製
+# 來源：bootstrap-runbook-testing 分支 Explore 查驗發現 + N06b（20260509-N09）pending 期間的有用工
+
+task_id: "20260509-N06p"
+date: "2026-05-09"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "在 N06 bootstrap 進行帶外手動執行的等待期間，修正 runbook 的 test 數量漂移並預製 N06b 切換用的 3 個產物草稿，把 N06b PR 的決策面降到接近零"
+
+context: |
+  PR #70 已 open，承載 outputs/drafts/2026-05-09_n06-bootstrap-runbook.md +
+  tasks/2026-05-09_harness-plugin-switch.yaml（N06b, task_id 20260509-N09, pending）。
+  使用者下一步是本機跑 runbook §1-§4 建 agent-governance v0.1.0 repo，屬帶外手動工。
+
+  本卡覆蓋兩條 lane（皆為 allow 級，純寫 outputs/drafts/）：
+
+  Lane A — runbook 漂移修正：
+    Explore 實測 outputs/drafts/agent-governance-bootstrap/hooks/test_hooks.py 有 12 個
+    def test_*（TestPreToolUseDenyRules 5 + TestPreToolUseHookEntry 2 + TestPostTaskUseGates 5），
+    但 runbook §0 + §3 寫「25 tests OK（hooks 11 + validators 14）」。使用者跑預檢時會看到
+    Ran 26 tests OK 與 runbook 對不上、誤判失敗停下。
+
+  Lane B — N06b 切換產物預製：
+    N06b（20260509-N09）DoD #2/#3/#4 需新增 scripts/check_plugin_present.sh 與修改
+    .claude/settings.json + CLAUDE.md，皆 ask 級，現在不能改正本。但可在
+    outputs/drafts/n06b-switch-preview/ 預製候選版本，使 N06b 核准後 PR 接近 cp + sed。
+
+input_data:
+  - "outputs/drafts/2026-05-09_n06-bootstrap-runbook.md"          # Lane A 修改對象
+  - "outputs/drafts/agent-governance-bootstrap/hooks/test_hooks.py"  # Lane A 真值來源
+  - "outputs/drafts/agent-governance-bootstrap/validators/test_validators.py"
+  - "outputs/drafts/agent-governance-bootstrap/plugin.json"        # Lane B 偵測點來源
+  - "outputs/drafts/agent-governance-bootstrap/hooks/pre_tool_use.py"  # Lane B plugin entrypoint
+  - ".claude/settings.json"                                        # Lane B 參考現況（不修改）
+  - "CLAUDE.md"                                                    # Lane B 參考現況（不修改）
+  - "scripts/permissions_guard.py"                                 # Lane B fallback 對象
+  - "tasks/2026-05-09_harness-plugin-switch.yaml"                  # N06b 卡 DoD 對應
+
+# === 完成標準 ===
+definition_of_done:
+  - "runbook §0 + §3 數字校正為 26（hooks 12 + validators 14），並在 §0 開頭加一行修正註"
+  - "outputs/drafts/n06b-switch-preview/ 內含 4 檔：README.md、check_plugin_present.sh.draft、settings.json.draft、claude-md-prepend.md"
+  - "check_plugin_present.sh.draft 通過 bash -n 語法檢查；settings.json.draft 通過 python json.load"
+  - "CLAUDE.md prepend 草稿 + 現有 CLAUDE.md 加總 ≤ 3000 tokens（用 ruby scripts/check_context_budget.rb 驗）"
+  - "PR #70 補一則 comment 列出：runbook 一行 diff + preview 資料夾索引 + 提醒 N06b 仍 pending"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/n06b-switch-preview/"
+  filename: "README.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+  - "run_tests"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
+
+# === 前置依賴 ===
+preconditions:
+  - "PR #70 已 open（runbook + N06b 卡同 PR）"
+  - "outputs/drafts/agent-governance-bootstrap/ 完整存在（25/26 tests 可跑）"
+
+# === Rollback ===
+rollback: |
+  本卡所有產出皆在 outputs/drafts/，allow 級：
+    - tasks/2026-05-09_n06-prep-runbook-drift-and-switch-preview.yaml（純 yaml，刪即可）
+    - outputs/drafts/2026-05-09_n06-bootstrap-runbook.md（git revert checkpoint commit 還原數字）
+    - outputs/drafts/n06b-switch-preview/（整個資料夾刪除）
+  零 system/ 修改、零 CLAUDE.md / .claude/settings.json 修改，不影響 fallback 路徑與 CI。

@@ -359,6 +359,16 @@
     {
       "approval_needed": false,
       "date": "2026-05-09",
+      "goal": "在 N06 bootstrap 進行帶外手動執行的等待期間，修正 runbook 的 test 數量漂移並預製 N06b 切換用的 3 個產物草稿，把 N06b PR 的決策面降到接近零",
+      "path": "tasks/2026-05-09_n06-prep-runbook-drift-and-switch-preview.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "in_progress",
+      "task_id": "20260509-N06p"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-09",
       "goal": "評估是否在 agent-harness v2.x 啟用 Claude Code 原生 Memory，並產出明確 Go / No-Go / Conditional-Go 建議與條件清單",
       "path": "tasks/2026-05-09_native-memory-evaluation.yaml",
       "risk_level": "low",
