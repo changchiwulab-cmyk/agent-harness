@@ -1,0 +1,62 @@
+# Task Card — Harness v3 治理層抽出規劃
+# 來源：第一性原理檢視結論「砍冗餘 + 深化治理層」
+# 對應 plan：/root/.claude/plans/ai-bubbly-mountain.md §8.1 Task A
+
+task_id: "20260509-A01"
+date: "2026-05-09"
+status: "pending"
+
+# === 任務定義 ===
+goal: "規劃 Harness v3 重構範圍：砍除與 Claude Code 原生重疊的模組，把治理三件（Audit / Decision Log / DoD / Failure Taxonomy）抽成可獨立發布的治理層"
+context: |
+  v2 已運行數個月（30+ audit、12+ outputs）。第一性原理檢視發現結構性問題：
+  1. 強制力結構不對稱（156 行 deny hook 之外幾乎全是 prompt 約束）
+  2. 與 Claude Code 原生功能重疊度估計約 30%（Skills、Memory、subagent 等）
+  3. 治理思想本身（可恢復、可審計、可量化）才是長期價值所在
+  本卡為「規劃階段」—— 只產出重構計畫文件，不動既有代碼。
+input_data:
+  - "README.md"
+  - "CLAUDE.md"
+  - "system/"
+  - "skills/"
+  - "memory/"
+  - "/root/.claude/plans/ai-bubbly-mountain.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "列出 v2 全部 16 模組，每個明確標註：保留 / 砍除 / 抽出 / 重構，並附理由"
+  - "砍除清單對每項給出「與 Claude Code 原生功能重疊」的具體證據（功能對照表）"
+  - "抽出清單定義獨立治理層的邊界：哪些檔案、哪種發佈形態（plugin / MCP server / standalone CLI）、相依關係"
+  - "v3 架構圖（取代 README 三平面十六模組圖），呈現精簡後的模組關係"
+  - "v2 → v3 遷移路徑：相容變更 vs 破壞性變更分列；給出階段性切換策略"
+  - "識別至少 3 個風險點與緩解方案（如：使用者習慣斷裂、原生功能再變動、開源維護成本）"
+  - "輸出為結構化 Markdown，章節順序：現況→診斷→去留判準→模組逐項裁決→架構圖→遷移路徑→風險"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-05-09_v3_extraction_plan.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 2
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

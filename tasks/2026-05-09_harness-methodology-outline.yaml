@@ -1,0 +1,64 @@
+# Task Card — Harness 治理思想方法論大綱
+# 來源：第一性原理檢視結論「方法論化勝過框架本身」
+# 對應 plan：/root/.claude/plans/ai-bubbly-mountain.md §8.1 Task B
+
+task_id: "20260509-W01"
+date: "2026-05-09"
+status: "pending"
+
+# === 任務定義 ===
+goal: "把 Harness v2 沉澱的治理思想（可恢復／可審計／可量化）轉寫成可發表的方法論大綱，適用於書、長文系列、課程三種形態"
+context: |
+  第一性原理判斷：模組會過時，治理思想不會。
+  Harness 真正歷久彌新的價值是 Audit / Decision Log / DoD 契約思維 / 「現階段不做清單」紀律。
+  本卡產出「方法論大綱」，作為內容資產起點。
+  必須先在 v3 規劃（Task 20260509-A01）的「保留清單」確定後再執行，否則容易把該砍的工程細節包裝成方法論。
+input_data:
+  - "README.md"
+  - "CLAUDE.md"
+  - "system/GLOBAL_RULES.md"
+  - "system/FAILURE_TAXONOMY.yaml"
+  - "logs/AUDIT_LOG.md"
+  - "tasks/examples/"
+  - "outputs/drafts/2026-05-09_v3_extraction_plan.md"  # 依賴 A01 完成
+  - "/root/.claude/plans/ai-bubbly-mountain.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "主軸命題以一句話定義（給 3 個候選 + 推薦選項與理由）"
+  - "10-14 章的章節大綱，每章含：標題、核心命題、1-2 段內容摘要、預估字數"
+  - "每章對應至少一個 Harness 實證案例（從 26 張 Task Card / 30+ audit log 中具體抽取）"
+  - "三種發布形態的取捨表：書（深度+權威，但慢）／部落格系列（快+可迭代）／課程（互動+變現），給出推薦順序"
+  - "差異化定位段落：與 LangChain 文件、《AI Engineering》(Chip Huyen)、Anthropic 官方 best practice 文章相比的獨特切入點"
+  - "識別 2 個讀者反對意見並預備回應（如：「治理太重一人公司不需要」「LLM 進步後這些都會自動」）"
+  - "輸出為結構化 Markdown，可直接作為對外提案/發起共筆的起點"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-05-09_methodology_outline.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "web_search"
+  - "write_drafts"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 3
+
+# === Skill 路由 ===
+skill_type: "writing"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
