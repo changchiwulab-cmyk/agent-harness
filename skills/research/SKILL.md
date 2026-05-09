@@ -1,3 +1,8 @@
+---
+name: research
+description: 一人公司的研究分析 skill — 資料調查、產業分析、競品研究、技術評估、事實查核。回答「事實是什麼」。觸發場景：使用者明確要做調查/比較/盤點，或 Task Card 的 skill_type 為 research。輸出規範：結論 → 已知事實 → 合理推論 → 待驗證 → 高風險假設 → 來源。
+---
+
 # Research Skill
 
 ## 用途

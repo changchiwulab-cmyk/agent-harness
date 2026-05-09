@@ -33,6 +33,33 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260509-N03"
+  date: "2026-05-09"
+  skill_type: "ops"
+  goal: "PoC: skills/research/SKILL.md 加原生 Skills frontmatter + .claude/skills/ 註冊，驗證 A01 H1"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 2
+    - tool_name: "file_edit"
+      call_count: 3
+    - tool_name: "bash"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/2026-05-09_n03_skills-native-poc.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "H1 部分成立：routing 表可由 frontmatter description 取代；但「跨 skill 拆 Task Card」原則屬 prompt 層工作流，需保留至 CLAUDE.md。A01 §4.2 裁決不需修改（已預寫此句）。symlink 路徑（.claude/skills/research → ../../skills/research）避免雙寫漂移。session 啟動時序：新 session 才能驗證自動觸發。"
+```
+
+---
+
+```yaml
 - task_id: "20260509-W01"
   date: "2026-05-09"
   skill_type: "writing"

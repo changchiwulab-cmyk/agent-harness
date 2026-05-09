@@ -304,6 +304,16 @@
       "skill_type": "analysis",
       "status": "review",
       "task_id": "20260509-A01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-09",
+      "goal": "在分支上把 skills/research/SKILL.md 加上原生 Claude Code Skills frontmatter 並建立 .claude/skills/ 註冊路徑，輸出 PoC summary 評估 H1（原生自動路由能否取代 ROUTING_RULES.md）",
+      "path": "tasks/2026-05-09_skills-native-registration-poc.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260509-N03"
     }
   ]
 }
