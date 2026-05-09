@@ -1,7 +1,7 @@
 # Task Card — N06-續 agent-harness 切換引用 agent-governance plugin
 # 來源：N06 DoD #6/#8（受工具限制留下個 session）+ D007 決策落地
 
-task_id: "20260509-N06b"
+task_id: "20260509-N09"
 date: "2026-05-09"
 status: "pending"   # 等使用者完成 N06 bootstrap runbook（agent-governance v0.1.0 push 完成）後核准本卡
 
@@ -39,7 +39,7 @@ definition_of_done:
   - "新增 scripts/check_plugin_present.sh 或等價腳本（≤30 行），CI 跑前用來決定 hook 路徑指向 plugin 或 fallback"
   - "agent-harness CI 在 plugin 已安裝時 → 走 plugin hook；plugin 缺席時 → 走 fallback；兩個 case 都綠"
   - "至少跑一次 PreToolUse hook 端到端煙霧測試（手動觸發 Bash deny pattern，確認 block 訊息正確）"
-  - "Decision Log D007 status 從 active → 加上 followup_done: 20260509-N06b 標記"
+  - "Decision Log D007 status 從 active → 加上 followup_done: 20260509-N09 標記"
   - "PR description 列出切換前後 diff 摘要 + rollback 指令（一行 git revert 即可）"
   - "本卡 result_summary 註記實際 plugin 引用方式（git submodule / npm-style ~/.claude/plugins/ / 直接 clone 哪一種）"
 
