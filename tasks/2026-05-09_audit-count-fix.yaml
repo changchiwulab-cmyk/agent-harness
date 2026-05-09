@@ -55,7 +55,7 @@ skill_type: "review"
 
 # === 執行紀錄（由 agent 填寫）===
 checkpoints:
-  - "TBD checkpoint: 20260509-N02 audit count fix"
+  - "c7d64a6 checkpoint: 20260509-N02 audit count fix"
 actual_tool_calls: 4
 result_summary: "DoD 6/6 通過。事實核對：README 從無『30+』字樣（grep 證明），真正出處為 plan §Context + 兩張 task card context 欄位。實際計數本 PR 前 18 筆 audit / 12 drafts / 2 reports / 6 decisions；本 PR 後 23/17/2/6。修正 6 處：A01 §1.1 + §10、W01 §1.4 + 第 11 章 + §9、N1 §7.2。建立計數規則：snapshot 文件不改（plan/task card context/DoD）、事實文件即時更新（drafts/）、規範文件不寫具體計數。Root cause：歸因推論未交叉驗證，對應 SPEC-04 + VAL-03。"
 completion_time: "2026-05-09"
