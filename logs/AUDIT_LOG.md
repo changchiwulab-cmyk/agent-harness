@@ -33,6 +33,31 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260509-A01"
+  date: "2026-05-09"
+  skill_type: "analysis"
+  goal: "規劃 Harness v3 重構範圍：砍除與 Claude Code 原生重疊的模組，把治理三件抽成獨立治理層"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 9
+    - tool_name: "file_search"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "outputs/drafts/2026-05-09_v3_extraction_plan.md"
+  error_summary: ""
+  estimated_tokens: "~22K"
+  notes: "規劃階段，不動既有代碼。16 模組裁決：保留 0 / 砍除 5 / 抽出 6 / 重構 5。治理層 plugin 邊界＋遷移路徑＋4 個風險已列。Plan 檔 /root/.claude/plans/ai-bubbly-mountain.md 此 session 不可讀，相關推論已標 [待驗證]。Risk=medium → drafts/ 等待人工審閱。"
+```
+
+---
+
+```yaml
 - task_id: "20260502-T03"
   date: "2026-05-02"
   skill_type: "research"
