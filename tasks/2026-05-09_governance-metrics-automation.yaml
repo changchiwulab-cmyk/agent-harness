@@ -1,0 +1,66 @@
+# Task Card — N5 plan §5.3 4 條關鍵指標自動採集
+# 來源：N1 對齊報告 §7.1 #1
+# 上游：plan §5.3 4 個指標 + 警訊閾值
+
+task_id: "20260509-N05"
+date: "2026-05-09"
+status: "review"
+
+# === 任務定義 ===
+goal: "建立 governance metrics 自動採集腳本，月度執行 plan §5.3 4 條關鍵指標（task card 月新增數 / drafts:reports 比 / audit 覆蓋率 / 原生重疊度），輸出報告 + 警訊狀態"
+context: |
+  plan §5.3 給出 4 條判定 Harness 是否被作者繞過的關鍵指標。
+  N1 對齊報告 §6.3 識別出 A01/W01 都未採納此清單。
+  本卡把指標自動化採集，讓 retro 時有客觀數據。
+  範圍：腳本 + native_overlap 設定檔 + 月度報告草稿 + 單元測試。
+  不接管月度執行排程（仍由人工觸發；自動排程屬 deny）。
+input_data:
+  - "memory/active_projects/agent-harness/plans/ai-bubbly-mountain.md"  # §5.3
+  - "outputs/drafts/2026-05-09_n01_plan-alignment.md"  # §7.1
+  - "tasks/"  # task card 池
+  - "logs/AUDIT_LOG.md"
+  - "outputs/drafts/"
+  - "outputs/reports/"
+
+# === 完成標準 ===
+definition_of_done:
+  - "scripts/governance_metrics.py：採集 4 條指標，stdout markdown 報告 + --json 選項；CLI 退出碼：0=全 ok、1=任一 warn/alert"
+  - "system/NATIVE_OVERLAP.yaml：M4 重疊度的人工 input 來源（含當前值 + 每模組明細，引 A01 §4.1 表 A）"
+  - "scripts/test_governance_metrics.py：≥4 個單元測試，覆蓋 4 條指標各自的計算邏輯"
+  - "outputs/drafts/governance-metrics-2026-05.md：本月實跑報告，4 條指標各列 current / threshold / status（ok / warn / alert）"
+  - "報告含『本期摘要』段：哪些指標突破閾值、建議動作"
+  - "M3 audit 覆蓋率採窄定義：分母 = 狀態為 review/done/failed/partial 的 task card 數；分子 = audit log 中存在該 task_id 的數"
+  - "scripts/test_governance_metrics.py 全綠（python3 -m pytest 或直接 python3 ... 任一）"
+  - "不加進 spec-consistency 強制：失敗不擋 CI；月度由人工觸發"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "governance-metrics-2026-05.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "TBD checkpoint: 20260509-N05 governance metrics automation"
+actual_tool_calls: 6
+result_summary: "DoD 8/8 通過。scripts/governance_metrics.py（M1-M4 採集 + markdown/JSON 雙輸出 + warn/alert 分級退出碼）+ scripts/test_governance_metrics.py（15 個測試全綠）+ system/NATIVE_OVERLAP.yaml（M4 人工 input）+ outputs/drafts/governance-metrics-2026-05.md（首份月度報告）。本月實跑：M1 04/05 月 16+11 ok / M2 比 9.50 ok / M3 覆蓋 92.3% ok / M4 重疊 30% ok。不加進 CI 強制（人工月度觸發）。"
+completion_time: "2026-05-09"
+audit_log_ref: "logs/AUDIT_LOG.md"

@@ -33,6 +33,33 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260509-N05"
+  date: "2026-05-09"
+  skill_type: "ops"
+  goal: "governance metrics 自動採集腳本 — 落地 plan §5.3 4 條關鍵指標"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 4
+    - tool_name: "file_edit"
+      call_count: 2
+    - tool_name: "bash"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "scripts/governance_metrics.py; scripts/test_governance_metrics.py; system/NATIVE_OVERLAP.yaml; outputs/drafts/governance-metrics-2026-05.md"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "採集 4 指標 + warn/alert 分級。15 unit tests 全綠。本月實跑全 ok：M1 月 16/11 / M2 比 9.50 / M3 覆蓋 92.3%（2 卡漏 audit）/ M4 重疊 30%。M4 採人工 input（NATIVE_OVERLAP.yaml，每季 review）。不加進 spec-consistency CI；月度人工觸發。"
+```
+
+---
+
+```yaml
 - task_id: "20260509-N02"
   date: "2026-05-09"
   skill_type: "review"

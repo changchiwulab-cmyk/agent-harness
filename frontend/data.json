@@ -298,6 +298,16 @@
     {
       "approval_needed": false,
       "date": "2026-05-09",
+      "goal": "建立 governance metrics 自動採集腳本，月度執行 plan §5.3 4 條關鍵指標（task card 月新增數 / drafts:reports 比 / audit 覆蓋率 / 原生重疊度），輸出報告 + 警訊狀態",
+      "path": "tasks/2026-05-09_governance-metrics-automation.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260509-N05"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-09",
       "goal": "起草 agent-governance plugin 的 manifest skeleton 設計文件，定義每個 command / hook / schema / validator 的介面契約，但不寫實作",
       "path": "tasks/2026-05-09_governance-plugin-skeleton.yaml",
       "risk_level": "low",
