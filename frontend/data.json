@@ -292,7 +292,7 @@
       "path": "tasks/2026-05-09_harness-methodology-outline.yaml",
       "risk_level": "low",
       "skill_type": "writing",
-      "status": "pending",
+      "status": "review",
       "task_id": "20260509-W01"
     },
     {
@@ -302,7 +302,7 @@
       "path": "tasks/2026-05-09_harness-v3-governance-extraction.yaml",
       "risk_level": "medium",
       "skill_type": "analysis",
-      "status": "pending",
+      "status": "review",
       "task_id": "20260509-A01"
     }
   ]
