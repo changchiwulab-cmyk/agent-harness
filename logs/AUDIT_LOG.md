@@ -33,6 +33,31 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260509-W01"
+  date: "2026-05-09"
+  skill_type: "writing"
+  goal: "把 Harness 治理思想轉寫成方法論大綱（書／部落格／課程三形態）"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "file_search"
+      call_count: 1
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/2026-05-09_methodology_outline.md"
+  error_summary: ""
+  estimated_tokens: "~18K"
+  notes: "12 章大綱、每章含實證案例、三形態取捨（推薦：部落格→課程→書）、與 LangChain/Chip Huyen/Anthropic 差異化、2 個反對意見預備回應。建立在 A01 的保留／抽出清單之上。Plan §8.1 Task B 對齊與 Chip Huyen ToC 比對標 [待驗證]。零 web_search（max_web_searches=3 全保留）。"
+```
+
+---
+
+```yaml
 - task_id: "20260509-A01"
   date: "2026-05-09"
   skill_type: "analysis"
