@@ -33,6 +33,77 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260509-N08"
+  date: "2026-05-09"
+  skill_type: "writing"
+  goal: "W01 部落格首篇 elevator pitch + 第 1 章草稿（為什麼一人公司需要 Agent 治理？）"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 1
+    - tool_name: "file_edit"
+      call_count: 1
+    - tool_name: "bash"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/2026-05-09_n08_w01-chapter-one-draft.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "Elevator pitch ~180 字（≤200 ✅）+ 第 1 章草稿 ~3,650 字（≥3,200 ✅）。實證引用 20260404-S01 已比對 logs/AUDIT_LOG.md 第 575-594 行原文。未引用 LangChain/Chip Huyen/Anthropic 任何句子（嚴格做法）。章末 hook 導向第 2 章三原則總覽。"
+```
+
+---
+
+```yaml
+- task_id: "20260509-N07"
+  date: "2026-05-09"
+  skill_type: "analysis"
+  goal: "評估啟用 Claude Code 原生 Memory（plan §3.5 痛點）"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "file_write"
+      call_count: 1
+    - tool_name: "bash"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/2026-05-09_n07_native-memory-evaluation.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "建議 Conditional-Go：4 條啟用條件（C1 寫入須人工確認；C2 namespace 限定，不接管 decisions/plans 結構化 YAML；C3 不走雲同步；C4 與 N6 plugin 相容）。比照 N3 Skills symlink 模式可避免雙寫漂移。後續候補 M1 PoC + M2 PERMISSIONS 收斂。3 項待驗證留至 M1 工具實測。"
+```
+
+---
+
+```yaml
+- task_id: "20260509-N06"
+  date: "2026-05-09"
+  skill_type: "ops"
+  goal: "v3 governance plugin repo bootstrap（依 N4 skeleton 真正建立 plugin）"
+  status: "pending"
+  model_used: "—"
+  tools_called: []
+  checkpoints: 0
+  approval_needed: true
+  approval_given: false
+  output_path: "—"
+  error_summary: ""
+  estimated_tokens: "—"
+  notes: "risk=high，依 APPROVAL_POLICY explicit_review 不進 runtime。Task Card 已建立並 schema 通過；等使用者明確核准（含 repo 命名、license、public/private、monorepo？）後才轉 in_progress。本 PR 僅含 Task Card 文件本身，未涉及任何 repo 建立或 system/ 修改。"
+```
+
+---
+
+```yaml
 - task_id: "20260509-N05"
   date: "2026-05-09"
   skill_type: "ops"

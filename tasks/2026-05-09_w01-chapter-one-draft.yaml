@@ -54,8 +54,10 @@ max_web_searches: 0
 skill_type: "writing"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
-audit_log_ref: ""
+checkpoints:
+  - "562a31b checkpoint: N6/N7/N8 task cards created"
+  - "bff62c1 checkpoint: 20260509-N08 W01 elevator pitch + chapter 1 draft"
+actual_tool_calls: 5
+result_summary: "DoD 7/7 通過。Elevator pitch ~180 字 + 第 1 章草稿 ~3,650 字（≥3,200 ✅）。實證引用 20260404-S01（DoD 6/6 通過 + error_summary 第 3 次 web search rate limit），來源 logs/AUDIT_LOG.md 第 575-594 行已比對。未引用對標（嚴格做法），章末 hook 自然導向第 2 章三原則總覽。"
+completion_time: "2026-05-09"
+audit_log_ref: "logs/AUDIT_LOG.md"

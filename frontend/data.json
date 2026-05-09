@@ -338,6 +338,16 @@
     {
       "approval_needed": false,
       "date": "2026-05-09",
+      "goal": "評估是否在 agent-harness v2.x 啟用 Claude Code 原生 Memory，並產出明確 Go / No-Go / Conditional-Go 建議與條件清單",
+      "path": "tasks/2026-05-09_native-memory-evaluation.yaml",
+      "risk_level": "low",
+      "skill_type": "analysis",
+      "status": "review",
+      "task_id": "20260509-N07"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-09",
       "goal": "把 ai-bubbly-mountain plan 寫進 repo（memory/active_projects/agent-harness/plans/），並對 A01/W01 與 plan §8.1 Task A/B 做逐項對齊，產出對齊報告與 task card 清理",
       "path": "tasks/2026-05-09_plan-alignment.yaml",
       "risk_level": "low",
@@ -354,6 +364,26 @@
       "skill_type": "ops",
       "status": "review",
       "task_id": "20260509-N03"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-09",
+      "goal": "依 N4 skeleton 真正建立 agent-governance plugin repo（含 plugin.json / 5 commands / 4 schemas / 2 hooks / 2 validators 的最小可運行版本），並把 agent-harness 切到引用該 plugin",
+      "path": "tasks/2026-05-09_v3-plugin-repo-bootstrap.yaml",
+      "risk_level": "high",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260509-N06"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-09",
+      "goal": "把 W01 第 1 章『為什麼一人公司需要 Agent 治理？』從大綱寫成可發佈的部落格首篇草稿，並附 elevator pitch（單獨可流通版）",
+      "path": "tasks/2026-05-09_w01-chapter-one-draft.yaml",
+      "risk_level": "low",
+      "skill_type": "writing",
+      "status": "review",
+      "task_id": "20260509-N08"
     }
   ]
 }
