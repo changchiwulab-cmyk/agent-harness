@@ -1,0 +1,73 @@
+# Task Card — N6 v3 governance plugin repo bootstrap
+# 來源：PR #68 後續候補 N6（risk=high，需人工核准）
+# 上游：A01（已被使用者接受）；N4（plugin manifest skeleton 已完成）
+
+task_id: "20260509-N06"
+date: "2026-05-09"
+status: "pending"   # 高風險：依 APPROVAL_POLICY explicit_review，未獲核准前不進 runtime
+
+# === 任務定義 ===
+goal: "依 N4 skeleton 真正建立 agent-governance plugin repo（含 plugin.json / 5 commands / 4 schemas / 2 hooks / 2 validators 的最小可運行版本），並把 agent-harness 切到引用該 plugin"
+context: |
+  本卡為 v3.0 第一個工程交付：把 N4 設計 skeleton 從文件變成可運行 plugin。
+  風險高：
+  1. 涉及建立新 GitHub repo（外部動作，超過 write_drafts 範圍）
+  2. agent-harness 切換到引用 plugin 屬於 modify_system_rules（CLAUDE.md / settings.json 變動）
+  3. plugin v0.1.0 一旦發布即影響後續路徑相容性
+  因此本卡 status=pending：
+  - 需使用者明確核准後才轉 in_progress
+  - 核准動作需指定：repo 命名、license、是否真的對外 public、初版是否走 monorepo
+  - 未核准前不得：建立 repo、修改 agent-harness 的 system/ 或 CLAUDE.md
+input_data:
+  - "outputs/drafts/2026-05-09_v3_extraction_plan.md"   # A01
+  - "outputs/drafts/2026-05-09_n04_governance-plugin-skeleton.md"  # N4
+  - "outputs/drafts/2026-05-09_n03_skills-native-poc.md"  # N3 PoC（驗證 Skills 路由）
+  - "system/GATE_POLICY.yaml"
+  - "system/FAILURE_TAXONOMY.yaml"
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+  - "tasks/TASK_CARD_TEMPLATE.yaml"
+  - "tasks/DECISION_LOG_TEMPLATE.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "新 repo agent-governance 建立，目錄結構符合 N4 §2 plugin.json manifest 草案"
+  - "5 個 slash command 各有可運行版本（/task-card /audit /decision /run-log /gate-check），含 N4 §3 規定的 input/output/副作用契約"
+  - "4 個 schema 可被 validate_task_card.py / check_audit_format 引用，並有對應單元測試"
+  - "2 個 hook（pre_tool_use / post_task_use）有可運行 Python 實作 + 各自 ≥3 個單元測試"
+  - "2 個 standalone validator（validate_task_card / check_audit_format）可從 plugin CLI 入口呼叫，退出碼符合 N4 §5"
+  - "agent-harness 完成切換：CLAUDE.md 與 .claude/settings.json 引用 plugin 路徑，不重複維護"
+  - "新 repo 含 README（quick start ≤5 步驟）、LICENSE、CHANGELOG 0.1.0、CI workflow（plugin 自身的 spec-consistency）"
+  - "agent-harness 自身仍可獨立通過 spec-consistency CI（plugin 缺席也不掛）"
+  - "Decision Log D007 紀錄此次切換決策（相依、版本鎖、降版策略）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-05-09_n06_v3-plugin-bootstrap.md"   # 完成報告草稿；正式 release notes 由 plugin repo 自己管理
+
+# === 風險與權限 ===
+risk_level: "high"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+  # 注意：新 repo 建立、CLAUDE.md / settings.json 修改、跨 repo push
+  # 皆需另行於核准時授權，不在本欄位列出。
+
+# === 成本控制 ===
+max_tool_calls: 30
+max_retries: 3
+max_web_searches: 5
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
