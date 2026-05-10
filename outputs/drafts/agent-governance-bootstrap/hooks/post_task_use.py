@@ -45,7 +45,10 @@ def gate_schema(card_path: Path) -> tuple[str, str]:
 
 
 def gate_rule(card: dict, deny_tools: set[str]) -> tuple[str, str]:
-    bad = [t for t in (card.get("allowed_tools") or []) if t in deny_tools]
+    allowed = card.get("allowed_tools") or []
+    if not isinstance(allowed, list):
+        return "fail", f"allowed_tools must be a list, got {type(allowed).__name__}"
+    bad = [t for t in allowed if t in deny_tools]
     return ("fail" if bad else "pass"), ("blocked: " + ", ".join(bad) if bad else "ok")
 
 

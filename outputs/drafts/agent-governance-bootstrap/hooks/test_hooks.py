@@ -144,6 +144,17 @@ class TestPostTaskUseGates(unittest.TestCase):
         self.assertEqual(result["verdict"], "fail")
         self.assertEqual(result["results"]["rule_check"]["status"], "fail")
 
+    def test_rule_gate_rejects_string_allowed_tools(self):
+        # Regression: if a card declares allowed_tools as a string (malformed),
+        # gate_rule must not iterate over its characters — that would silently
+        # let deny-listed tools pass.
+        status, detail = post.gate_rule(
+            {"allowed_tools": "execute_payment"},
+            deny_tools={"execute_payment"},
+        )
+        self.assertEqual(status, "fail")
+        self.assertIn("must be a list", detail)
+
 
 if __name__ == "__main__":
     unittest.main()

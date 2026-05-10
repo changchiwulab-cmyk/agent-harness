@@ -86,14 +86,29 @@ def load_task_cards() -> list[dict]:
 
 
 def load_audit_task_ids() -> set[str]:
-    """Return set of task_ids that have an entry in AUDIT_LOG.md (excluding empty format example)."""
+    """Return set of task_ids that have an entry in AUDIT_LOG.md (excluding empty format example).
+
+    Parses ```yaml fenced blocks the same way validators/check_audit_format.py does,
+    so any valid YAML quoting style is recognised (double, single, unquoted).
+    """
     if not AUDIT_LOG.exists():
         return set()
-    ids = set()
-    for line in AUDIT_LOG.read_text(encoding="utf-8").splitlines():
-        m = re.match(r'^- task_id:\s*"([^"]+)"', line)
-        if m and m.group(1):
-            ids.add(m.group(1))
+    text = AUDIT_LOG.read_text(encoding="utf-8")
+    ids: set[str] = set()
+    for block in re.findall(r"```yaml\n(.*?)\n```", text, re.DOTALL):
+        try:
+            data = yaml.safe_load(block)
+        except yaml.YAMLError:
+            continue
+        if data is None:
+            continue
+        entries = data if isinstance(data, list) else [data] if isinstance(data, dict) else []
+        for entry in entries:
+            if not isinstance(entry, dict):
+                continue
+            tid = entry.get("task_id")
+            if isinstance(tid, str) and tid:
+                ids.add(tid)
     return ids
 
 

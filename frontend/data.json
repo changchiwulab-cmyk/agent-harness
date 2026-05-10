@@ -339,6 +339,16 @@
     {
       "approval_needed": true,
       "date": "2026-05-09",
+      "goal": "把 agent-harness 的 CLAUDE.md / .claude/settings.json 切換為引用 agent-governance plugin v0.1.0，同時保證 agent-harness 自身 CI 在 plugin 缺席時仍綠（fallback 路徑）",
+      "path": "tasks/2026-05-09_harness-plugin-switch.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260509-N09"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-09",
       "goal": "規劃 Harness v3 重構範圍：砍除與 Claude Code 原生重疊的模組，把治理三件（Audit / Decision Log / DoD / Failure Taxonomy）抽成可獨立發布的治理層",
       "path": "tasks/2026-05-09_harness-v3-governance-extraction.yaml",
       "risk_level": "medium",
