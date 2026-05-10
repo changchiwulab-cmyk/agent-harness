@@ -33,6 +33,31 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260502-A01"
+  date: "2026-05-02"
+  skill_type: "ops"
+  goal: "Phase A：補齊規則 enforcement 與觀測自動化（PreToolUse hook、audit log generator、e2e smoke test）"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 8
+    - tool_name: "file_write"
+      call_count: 11
+    - tool_name: "bash"
+      call_count: 14
+  checkpoints: 0
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/20260502-A01_phase-a-summary.md"
+  error_summary: ""
+  estimated_tokens: "~38K"
+  notes: "Phase A 三件套：(A1) .claude/settings.json + scripts/permissions_guard.py（11 unit tests，deny rm -rf / git push --force / 對外 webhook，非匹配預設 allow）；(A2) scripts/generate_audit_log.py（5 tests，從 Task Card + git log 推導，人工備註區段不覆蓋；現有 13 筆手寫紀錄保留雙軌，未強制遷移）；(A3) tests/e2e/test_dummy_task_smoke.py（3 cases，4 gate 純 Python 化身做 contract pinning，不呼叫 LLM）。.github/workflows/spec-consistency.yml 新增 3 step。PR #63 (a75e826) 已 merge 到 main。DoD 10/10：第 9 條 audit_log entry 即本筆；第 10 條 CI 隨 merge 變綠。觀察首週：permissions_guard 攔截事件數、e2e CI 紅燈率；若 4 週零攔截考慮縮為 warning。後續候選卡：phase-a2-audit-log-migration（Task Card schema 擴 model_used/tools_called + 舊紀錄遷移）、phase-b-metric-loop、phase-b-failure-taxonomy-instrumentation。"
+```
+
+---
+
+```yaml
 - task_id: "20260502-T03"
   date: "2026-05-02"
   skill_type: "research"
