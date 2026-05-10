@@ -1,0 +1,51 @@
+# Claude Code 原生功能重疊度 — 人工 input
+#
+# plan §5.3 M4 指標的來源：每季由人工依當前 Claude Code 規範重新評估。
+# 數值來源見 outputs/drafts/2026-05-09_v3_extraction_plan.md §4.1 表 A。
+#
+# 警訊閾值（plan §5.3）：aggregate > 50% → 重構觸發點。
+
+reviewed_on: "2026-05-09"
+reviewer: "agent-harness owner"
+revisit_trigger: "每季度；或 Claude Code 主版本升級時"
+
+aggregate_estimate_pct: 30   # plan §Context 的 baseline；A01 §4.1 表 A 9 模組逐項評估後仍與此 baseline 同量級
+
+# 每模組明細（A01 §4.1 表 A）
+modules:
+  - name: "Skill Executor (skills/)"
+    overlap_pct: 85
+    native: "Claude Code Skills（/skill、自動載入）"
+    evidence: "本 session Skill tool + skills 列表自動列出；N3 PoC 已建立 .claude/skills/research symlink"
+  - name: "Planner/Router (ROUTING_RULES.md)"
+    overlap_pct: 70
+    native: "Skill 自動路由 + 子代理"
+    evidence: "原生會根據 skill description 觸發；表格式手動路由屬冗餘"
+  - name: "Tool Executor (allowed_tools)"
+    overlap_pct: 80
+    native: ".claude/settings.json permissions + PreToolUse"
+    evidence: "Phase A 已有 permissions_guard.py 把 deny 抬到 runtime"
+  - name: "Permission (PERMISSIONS.yaml)"
+    overlap_pct: 75
+    native: "settings.json（allow/ask/deny）"
+    evidence: "兩者語意幾乎 1:1，僅缺風險等級欄位"
+  - name: "Agent Context (AGENT_CONTEXT.yaml)"
+    overlap_pct: 60
+    native: "CLAUDE.md / 系統 prompt"
+    evidence: "內容 ≈ 自我描述段落，與 CLAUDE.md 互相重複"
+  - name: "Context Manager (CLAUDE.md 規則段)"
+    overlap_pct: 50
+    native: "CLAUDE.md 自動載入、自動壓縮"
+    evidence: "「20 輪壓縮」原生已具；token 上限規則仍需 CI 護欄"
+  - name: "Checkpoint (git commit)"
+    overlap_pct: 0
+    native: "—"
+    evidence: "本來就是 git 慣例"
+  - name: "Cost Policy (行為規則段)"
+    overlap_pct: 40
+    native: "平台 dashboard + 模型路由"
+    evidence: "校準資料表是真資產；其餘段落多為提醒"
+  - name: "Interface"
+    overlap_pct: 100
+    native: "Claude Code CLI / web / IDE"
+    evidence: "屬於 runtime，不是模組"

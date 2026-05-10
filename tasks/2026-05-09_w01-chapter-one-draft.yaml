@@ -1,0 +1,63 @@
+# Task Card — N8 W01 部落格首篇 elevator pitch + 第 1 章草稿
+# 來源：PR #68 後續候補 N8（低優）
+# 上游：W01（治理思想方法論大綱已完成）
+
+task_id: "20260509-N08"
+date: "2026-05-09"
+status: "review"
+
+# === 任務定義 ===
+goal: "把 W01 第 1 章『為什麼一人公司需要 Agent 治理？』從大綱寫成可發佈的部落格首篇草稿，並附 elevator pitch（單獨可流通版）"
+context: |
+  W01 outline 已鎖 T1「用契約取代信任」主軸並列出 12 章結構。本卡把第 1 章從大綱
+  （outline 第 55-59 行：3,500 字、實證 20260404-S01 web search rate limit 案例）
+  展開成可讀草稿，作為「方法論寫成內容資產」的第一個外部可發佈件。
+  Elevator pitch 採 ≤200 字、可單獨於社群流通；第 1 章草稿走 outline 規格 ~3,500 字（中文）。
+  本卡只到 drafts/，不發佈、不寫 reports/、不改 W01 outline 本身。
+input_data:
+  - "outputs/drafts/2026-05-09_methodology_outline.md"   # W01
+  - "tasks/2026-04-04_ai-era-solo-business-proposal.yaml"  # 第 3 章實證之一（為章末 hook）
+  - "logs/AUDIT_LOG.md"   # 20260404-S01 web search rate limit 案例
+  - "system/FAILURE_TAXONOMY.yaml"   # 第 2 章鋪陳，第 1 章末端 teaser
+
+# === 完成標準 ===
+definition_of_done:
+  - "Elevator pitch 區塊：≤200 字（中文），含主軸命題、目標讀者、本書承諾，可單獨拷貝至社群"
+  - "第 1 章草稿：≥3,200 字，含 W01 outline 第 1 章規定的 1 反例開場 + 三原則 teaser + Harness 實證引用"
+  - "實證引用至少 1 處明確指向 audit log 中的真實任務（task_id + 一句話事實），不得編造"
+  - "章末 hook：自然導向第 2 章『三原則總覽』，1-2 句"
+  - "字數計算放在文件最末區塊（中文字數實算，扣除 Markdown 標記）"
+  - "未引用任何 W01 未列入的對標（避免擴大主張）：LangChain / Chip Huyen / Anthropic Best Practices 三者只能用 W01 §5 已寫的句子"
+  - "草稿前置 metadata：task_id / date / 章節編號 / status=draft / 字數"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-05-09_n08_w01-chapter-one-draft.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "writing"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "562a31b checkpoint: N6/N7/N8 task cards created"
+  - "bff62c1 checkpoint: 20260509-N08 W01 elevator pitch + chapter 1 draft"
+actual_tool_calls: 5
+result_summary: "DoD 7/7 通過。Elevator pitch ~180 字 + 第 1 章草稿 ~3,650 字（≥3,200 ✅）。實證引用 20260404-S01（DoD 6/6 通過 + error_summary 第 3 次 web search rate limit），來源 logs/AUDIT_LOG.md 第 575-594 行已比對。未引用對標（嚴格做法），章末 hook 自然導向第 2 章三原則總覽。"
+completion_time: "2026-05-09"
+audit_log_ref: "logs/AUDIT_LOG.md"

@@ -1,0 +1,64 @@
+# Task Card — N4 治理 plugin manifest skeleton
+# 來源：A01 §11 建議下一步 #3
+# 上游：A01（已被使用者接受）；N3（已完成，部分驗證 H1）
+
+task_id: "20260509-N04"
+date: "2026-05-09"
+status: "review"
+
+# === 任務定義 ===
+goal: "起草 agent-governance plugin 的 manifest skeleton 設計文件，定義每個 command / hook / schema / validator 的介面契約，但不寫實作"
+context: |
+  A01 §5.2 已給出 plugin 目錄結構草圖；本卡進一步把每個元件「介面 + 行為」明文化，
+  作為下一步實際建立 plugin repo 的單一事實來源。
+  仍是規劃階段，不動既有代碼，不建立新 repo，產出純設計文件至 drafts/。
+input_data:
+  - "outputs/drafts/2026-05-09_v3_extraction_plan.md"  # A01
+  - "outputs/drafts/2026-05-09_n03_skills-native-poc.md"  # N3
+  - "system/GATE_POLICY.yaml"
+  - "system/FAILURE_TAXONOMY.yaml"
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+  - "tasks/TASK_CARD_TEMPLATE.yaml"
+  - "tasks/DECISION_LOG_TEMPLATE.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "plugin.json manifest 草案：含 name / description / commands / skills / hooks 段，每段給最小可運行的範例"
+  - "5 個 slash command 介面契約：/task-card /audit /decision /run-log /gate-check，每個含：用法、input、output、副作用、錯誤處理"
+  - "4 個 schema 草案：task_card / decision_log / execution_log / failure_taxonomy，每個列必填欄位 + 1 個範例"
+  - "2 個 hook 介面：pre_tool_use（從 settings.json + Task Card.allowed_tools 取規則）/ post_task_use（完成後跑 gate-check）；含觸發條件與失敗行為"
+  - "2 個 standalone validator：validate_task_card / check_audit_format，含 CLI 入口與退出碼規範"
+  - "README outline：定位、quick start（≤5 步驟）、與 agent-harness 的解耦聲明、版本兼容矩陣"
+  - "與 v2 對照表：每個 plugin 元件對應 A01 §4.2 的哪個 v2 模組（保留 / 抽出 / 重構）"
+  - "明確列出『暫不做清單』：plugin v3.0 不打算包含的功能（如 cost dashboard、自動 retro 生成）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-05-09_n04_governance-plugin-skeleton.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "writing"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "4900614 checkpoint: 20260509-N04 governance plugin skeleton"
+actual_tool_calls: 5
+result_summary: "DoD 8/8 通過。skeleton 含：plugin.json manifest、5 slash command 介面契約、4 schema 草案、2 hook 行為、2 standalone validator、README outline、v2→plugin 對照表、暫不做清單。確認 A01 §4.2 的抽出 6 / 砍除 5 / 重構 5 → plugin 承載全部抽出 + 4 個重構，2 個重構留 user 端（CLAUDE.md + cost calibration）。"
+completion_time: "2026-05-09"
+audit_log_ref: "logs/AUDIT_LOG.md"

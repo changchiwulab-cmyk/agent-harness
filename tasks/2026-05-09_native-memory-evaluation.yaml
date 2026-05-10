@@ -1,0 +1,69 @@
+# Task Card — N7 評估啟用 Claude Code 原生 Memory
+# 來源：PR #68 後續候補 N7（中優）；plan §3.5 痛點
+# 上游：A01（已被使用者接受）；N3 PoC（驗證 Skills 原生路由可用，可作為類比參照）
+
+task_id: "20260509-N07"
+date: "2026-05-09"
+status: "review"
+
+# === 任務定義 ===
+goal: "評估是否在 agent-harness v2.x 啟用 Claude Code 原生 Memory，並產出明確 Go / No-Go / Conditional-Go 建議與條件清單"
+context: |
+  Plan §3.5 指出 memory/active_projects/ 大多是空的、auto_write_memory 在 deny list，
+  造成「每 session 從零開始」違背 LLM 累積上下文優勢。Plan §4.1 趨勢 B 同步指出原生
+  Memory 將取代自定義 Memory。
+  本卡只做評估，不啟用、不改 PERMISSIONS.yaml、不刪 memory/。
+  關鍵問題：原生 Memory 與本框架硬規則衝突點（auto_write_memory deny / 草稿才出 drafts/）
+  在哪裡？是否能用「人工確認後寫入」的折衷模式並列存在？對 12+ 草稿 / 18+ audit 的工作流
+  影響為何？
+input_data:
+  - "memory/active_projects/agent-harness/plans/ai-bubbly-mountain.md"  # plan §3.5 + §4.1
+  - "outputs/drafts/2026-05-09_v3_extraction_plan.md"  # A01 §4.1 重疊度表 A
+  - "outputs/drafts/2026-05-09_n03_skills-native-poc.md"  # 原生 Skills PoC 經驗
+  - "system/PERMISSIONS.yaml"   # auto_write_memory 在 deny
+  - "system/NATIVE_OVERLAP.yaml"
+  - "CLAUDE.md"   # 硬規則 #2「對外動作只產出草稿」
+  - "memory/active_projects"   # 現況清單（多為空）
+
+# === 完成標準 ===
+definition_of_done:
+  - "原生 Memory 機制摘要（讀取觸發、寫入機制、scope、可控性）≥3 條經驗事實或來源引用"
+  - "與本框架 4 條硬規則的衝突點逐條檢視（含 auto_write_memory deny、drafts/ 規則、Task Card 強制、3 次失敗停下）"
+  - "三選一明確建議（Go / No-Go / Conditional-Go），且建議伴隨 ≥3 條決策依據"
+  - "若建議 Conditional-Go：列出至少 3 條啟用條件（如：寫入仍須人工確認、限定 namespace、與 PERMISSIONS.yaml 補欄位）"
+  - "與 N3 Skills PoC 的對位分析：Memory 是否可比照 .claude/skills/ symlink 模式不接管 memory/ 既有結構"
+  - "對 12+ drafts / 18+ audit 工作流的預期影響（正/負面各 ≥1 點）"
+  - "後續候補 task：若 Go / Conditional-Go，列出 1-2 張可直接建立的後續 Task Card 草案標題"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-05-09_n07_native-memory-evaluation.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "read_memory"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "562a31b checkpoint: N6/N7/N8 task cards created"
+  - "7b79480 checkpoint: 20260509-N07 native memory evaluation -> Conditional-Go"
+actual_tool_calls: 6
+result_summary: "DoD 7/7 通過。建議 Conditional-Go：4 條啟用條件（C1 寫入仍須人工確認；C2 namespace 限定；C3 不走雲同步；C4 與 N6 plugin 相容）。比照 N3 Skills symlink 模式可避免雙寫漂移。後續候補 M1（PoC：symlink + namespace 試點，risk=medium）+ M2（PERMISSIONS.yaml + plan §3.5 收斂，risk=medium）。"
+completion_time: "2026-05-09"
+audit_log_ref: "logs/AUDIT_LOG.md"

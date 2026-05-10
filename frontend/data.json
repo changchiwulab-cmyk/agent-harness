@@ -65,6 +65,17 @@
       "related_task": "20260424-O03",
       "revisit_trigger": "未來出現 2 筆 failed/partial 任務都未寫 runs/ → 升級為 enforce；或累積 10 筆 runs/ 後檢視實際價值",
       "status": "active"
+    },
+    {
+      "date": "2026-05-09",
+      "decision": "- Repo 命名：agent-governance\n- License：Apache-2.0\n- Visibility：Private（v0.1.0 內部驗證後再轉 public）\n- Layout：獨立 repo\n- Bootstrap 走法：本 session 在 outputs/drafts/agent-governance-bootstrap/ 下完整準備檔案樹（plugin.json + 5 commands + 4 schemas + 2 hooks + 2 validators + LICENSE + README + CHANGELOG + CI workflow）；下個 session 由使用者執行：(1) 在 GitHub 新建 private repo agent-governance；(2) git init 並把 outputs/drafts/agent-governance-bootstrap/* 全數搬入；(3) push v0.1.0 tag。\n",
+      "decision_id": "20260509-D007",
+      "path": "memory/active_projects/agent-harness/decisions/20260509-D007_v3-plugin-bootstrap-decisions.yaml",
+      "project": "agent-harness",
+      "reasoning": "四個子題答案均選與 plan §6 + N4 §1.3 解耦聲明對齊的選項。\nApache-2.0 偏好為日後與企業整合保留 patent 條款（MIT 也可，但 Apache 多 patent 保護成本接近於零）。\nPrivate 起步是為了讓 v0.1.0 → v0.2.0 之間的 API breaking change 不被外部使用者卡住；\nv0.2.0 穩定後手動轉 public。\n",
+      "related_task": "20260509-N06",
+      "revisit_trigger": "v0.2.0 plugin 達到 agent-harness 全部 system/ 規格 round-trip 後評估轉 public；或下個 session 試行 bootstrap 後發現非預期問題",
+      "status": "active"
     }
   ],
   "logs": [
@@ -284,6 +295,146 @@
       "skill_type": "research",
       "status": "review",
       "task_id": "20260502-T02"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-09",
+      "goal": "修正 A01 草稿 §1.1 對『README 寫 30+』的錯誤歸因，更新為實際計數，並在 N1 對齊報告中註記 plan 的數據是 snapshot，不更新",
+      "path": "tasks/2026-05-09_audit-count-fix.yaml",
+      "risk_level": "low",
+      "skill_type": "review",
+      "status": "review",
+      "task_id": "20260509-N02"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-09",
+      "goal": "建立 governance metrics 自動採集腳本，月度執行 plan §5.3 4 條關鍵指標（task card 月新增數 / drafts:reports 比 / audit 覆蓋率 / 原生重疊度），輸出報告 + 警訊狀態",
+      "path": "tasks/2026-05-09_governance-metrics-automation.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260509-N05"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-09",
+      "goal": "起草 agent-governance plugin 的 manifest skeleton 設計文件，定義每個 command / hook / schema / validator 的介面契約，但不寫實作",
+      "path": "tasks/2026-05-09_governance-plugin-skeleton.yaml",
+      "risk_level": "low",
+      "skill_type": "writing",
+      "status": "review",
+      "task_id": "20260509-N04"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-09",
+      "goal": "把 Harness v2 沉澱的治理思想（可恢復／可審計／可量化）轉寫成可發表的方法論大綱，適用於書、長文系列、課程三種形態",
+      "path": "tasks/2026-05-09_harness-methodology-outline.yaml",
+      "risk_level": "low",
+      "skill_type": "writing",
+      "status": "review",
+      "task_id": "20260509-W01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-09",
+      "goal": "把 agent-harness 的 CLAUDE.md / .claude/settings.json 切換為引用 agent-governance plugin v0.1.0，同時保證 agent-harness 自身 CI 在 plugin 缺席時仍綠（fallback 路徑）",
+      "path": "tasks/2026-05-09_harness-plugin-switch.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260509-N09"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-09",
+      "goal": "規劃 Harness v3 重構範圍：砍除與 Claude Code 原生重疊的模組，把治理三件（Audit / Decision Log / DoD / Failure Taxonomy）抽成可獨立發布的治理層",
+      "path": "tasks/2026-05-09_harness-v3-governance-extraction.yaml",
+      "risk_level": "medium",
+      "skill_type": "analysis",
+      "status": "review",
+      "task_id": "20260509-A01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-09",
+      "goal": "在 N06 bootstrap 進行帶外手動執行的等待期間，修正 runbook 的 test 數量漂移並預製 N06b 切換用的 3 個產物草稿，把 N06b PR 的決策面降到接近零",
+      "path": "tasks/2026-05-09_n06-prep-runbook-drift-and-switch-preview.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "in_progress",
+      "task_id": "20260509-N10"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-09",
+      "goal": "在 plugin v0.1.0 candidate 推上 agent-governance repo 之前，修掉 Codex 指出的 P1（risk gate 在 output_path 缺席時被略過 → 治理破口）+ P2（gate_completion 對非字串 DoD 入項會 TypeError 崩潰）。屬 plugin tree 內部 hardening，不影響 agent-harness 端",
+      "path": "tasks/2026-05-09_n11-plugin-hardening-codex-p1p2.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "in_progress",
+      "task_id": "20260509-N11"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-09",
+      "goal": "評估是否在 agent-harness v2.x 啟用 Claude Code 原生 Memory，並產出明確 Go / No-Go / Conditional-Go 建議與條件清單",
+      "path": "tasks/2026-05-09_native-memory-evaluation.yaml",
+      "risk_level": "low",
+      "skill_type": "analysis",
+      "status": "review",
+      "task_id": "20260509-N07"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-09",
+      "goal": "在 agent-harness namespace 試點原生 Memory（symlink 模式），實測 Claude Code 是否真支援指向 repo 內路徑、寫入提示流程、token 預算影響",
+      "path": "tasks/2026-05-09_native-memory-poc.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260509-M01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-09",
+      "goal": "把 ai-bubbly-mountain plan 寫進 repo（memory/active_projects/agent-harness/plans/），並對 A01/W01 與 plan §8.1 Task A/B 做逐項對齊，產出對齊報告與 task card 清理",
+      "path": "tasks/2026-05-09_plan-alignment.yaml",
+      "risk_level": "low",
+      "skill_type": "review",
+      "status": "review",
+      "task_id": "20260509-N01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-09",
+      "goal": "在分支上把 skills/research/SKILL.md 加上原生 Claude Code Skills frontmatter 並建立 .claude/skills/ 註冊路徑，輸出 PoC summary 評估 H1（原生自動路由能否取代 ROUTING_RULES.md）",
+      "path": "tasks/2026-05-09_skills-native-registration-poc.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260509-N03"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-09",
+      "goal": "依 N4 skeleton 真正建立 agent-governance plugin repo（含 plugin.json / 5 commands / 4 schemas / 2 hooks / 2 validators 的最小可運行版本），並把 agent-harness 切到引用該 plugin",
+      "path": "tasks/2026-05-09_v3-plugin-repo-bootstrap.yaml",
+      "risk_level": "high",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260509-N06"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-09",
+      "goal": "把 W01 第 1 章『為什麼一人公司需要 Agent 治理？』從大綱寫成可發佈的部落格首篇草稿，並附 elevator pitch（單獨可流通版）",
+      "path": "tasks/2026-05-09_w01-chapter-one-draft.yaml",
+      "risk_level": "low",
+      "skill_type": "writing",
+      "status": "review",
+      "task_id": "20260509-N08"
     }
   ]
 }
