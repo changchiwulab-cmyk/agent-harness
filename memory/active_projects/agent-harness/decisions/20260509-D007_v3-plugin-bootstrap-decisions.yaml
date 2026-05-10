@@ -1,0 +1,60 @@
+decision_id: "20260509-D007"
+date: "2026-05-09"
+project: "agent-harness"
+
+# --- 決策內容 ---
+context: |
+  N06 (20260509-N06) 經使用者明示核准進入 v3 plugin 真正建置階段。
+  本 session 的 GitHub MCP 工具範圍被限定在 changchiwulab-cmyk/agent-harness
+  單一 repo，無法直接於本 session 建立 agent-governance 新 repo，亦無法 push 到外部。
+  因此本決策只記錄四個子題答案 + bootstrap 走法，實際 repo 建立留下個 session。
+
+options_considered:
+  - option: "Repo 命名：agent-governance"
+    pros: "與 N4 skeleton plugin.json name 一致；A01/W01 後續引用路徑統一"
+    cons: "通用名容易撞名（須在 GitHub 上確認）"
+  - option: "Repo 命名：claude-code-governance"
+    pros: "強調 plugin 平台定位"
+    cons: "Claude Code 是 Anthropic 產品名，第三方用會有商標疑慮"
+  - option: "Repo 命名：harness-governance"
+    pros: "明確表達來源"
+    cons: "強綁 harness，但 plugin 目標是解耦"
+  - option: "License：Apache-2.0"
+    pros: "保留 patent 條款；對未來與企業合作友善；OSS 主流"
+    cons: "比 MIT 多幾個段落；僅此而已"
+  - option: "License：MIT"
+    pros: "最簡；社群熟悉度最高"
+    cons: "無 patent 保護"
+  - option: "License：GPLv3"
+    pros: "Copyleft 強制衍生作品開源"
+    cons: "與「被實證、可被引用」目標相衝（會被 close-source 專案忽略）"
+  - option: "Visibility：Private"
+    pros: "v0.1.0 內部驗證階段，可隨意 force push 修整 API"
+    cons: "外部無法查看；plan「抽出為獨立可被引用」目標暫緩"
+  - option: "Visibility：Public"
+    pros: "與 plan 目標一致；W01 部落格未來可直接連結"
+    cons: "v0.1.0 API 未穩定即公開，後續 breaking change 阻力大"
+  - option: "Layout：獨立 repo"
+    pros: "與 N4 §1.3 plugin 與 harness 解耦聲明一致；plugin 進化路徑可獨立"
+    cons: "跨 repo PR 同步成本"
+  - option: "Layout：agent-harness monorepo（packages/agent-governance/）"
+    pros: "初期同步方便"
+    cons: "違背抽出意圖；plugin 永遠會被 harness 包"
+
+decision: |
+  - Repo 命名：agent-governance
+  - License：Apache-2.0
+  - Visibility：Private（v0.1.0 內部驗證後再轉 public）
+  - Layout：獨立 repo
+  - Bootstrap 走法：本 session 在 outputs/drafts/agent-governance-bootstrap/ 下完整準備檔案樹（plugin.json + 5 commands + 4 schemas + 2 hooks + 2 validators + LICENSE + README + CHANGELOG + CI workflow）；下個 session 由使用者執行：(1) 在 GitHub 新建 private repo agent-governance；(2) git init 並把 outputs/drafts/agent-governance-bootstrap/* 全數搬入；(3) push v0.1.0 tag。
+reasoning: |
+  四個子題答案均選與 plan §6 + N4 §1.3 解耦聲明對齊的選項。
+  Apache-2.0 偏好為日後與企業整合保留 patent 條款（MIT 也可，但 Apache 多 patent 保護成本接近於零）。
+  Private 起步是為了讓 v0.1.0 → v0.2.0 之間的 API breaking change 不被外部使用者卡住；
+  v0.2.0 穩定後手動轉 public。
+
+# --- 追蹤 ---
+risk: "high — 涉及新 repo 建立、跨 session 切換工作流。緩解：bootstrap 檔案完整準備好可一鍵 git init；未經 v0.2.0 穩定不轉 public。"
+revisit_trigger: "v0.2.0 plugin 達到 agent-harness 全部 system/ 規格 round-trip 後評估轉 public；或下個 session 試行 bootstrap 後發現非預期問題"
+related_task: "20260509-N06"
+status: "active"

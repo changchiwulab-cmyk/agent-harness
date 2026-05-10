@@ -1,0 +1,78 @@
+# Failure Taxonomy schema — agent-governance v0.1.0
+# Mirrors agent-harness system/FAILURE_TAXONOMY.yaml (15 IDs across 4 groups).
+# This file is the *schema* — concrete instance lives in the user repo.
+
+required:
+  - groups
+
+properties:
+  groups:
+    type: array
+    minItems: 4                       # spec / coordination / validation / security
+    items:
+      type: object
+      required: [name, ids]
+      properties:
+        name:
+          type: string
+          enum: [spec, coordination, validation, security]
+        description:
+          type: string
+        ids:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required: [id, name, description, mitigation]
+            properties:
+              id:
+                type: string
+                pattern: '^(SPEC|COORD|VAL|SEC)-\d{2}$'
+              name:
+                type: string
+              description:
+                type: string
+              mitigation:
+                type: string
+              observed_count:
+                type: integer
+                minimum: 0
+                default: 0
+
+# Stable contract: 4 group names ARE the contract. Adding groups = breaking change.
+
+example:
+  groups:
+    - name: spec
+      description: "Goal / DoD / scope failures."
+      ids:
+        - id: "SPEC-01"
+          name: "目標違反"
+          description: "Output drifts from declared goal."
+          mitigation: "Mandatory goal + DoD in Task Card; completion gate."
+          observed_count: 2
+        - id: "SPEC-04"
+          name: "不知何時停"
+          description: "Agent continues past DoD or beyond stop conditions."
+          mitigation: "Explicit max_tool_calls + DoD checklist."
+    - name: coordination
+      description: "Context / handoff / state failures."
+      ids:
+        - id: "COORD-01"
+          name: "context 被重置"
+          description: "Session loses prior decisions."
+          mitigation: "Decision Log + checkpoint commits."
+    - name: validation
+      description: "Verification / cross-check failures."
+      ids:
+        - id: "VAL-03"
+          name: "草稿引用未交叉驗證"
+          description: "Cited fact never reconciled against source."
+          mitigation: "validate_task_card + check_audit_format CI."
+    - name: security
+      description: "Permission / cost / external action failures."
+      ids:
+        - id: "SEC-03"
+          name: "成本失控"
+          description: "Open-ended tool use without budget."
+          mitigation: "max_tool_calls + max_web_searches per Task Card."

@@ -1,0 +1,65 @@
+# Task Card — N3 PoC：skills/research/SKILL.md → 原生 Skills 註冊
+# 來源：A01 §11 建議下一步 #2，驗證 H1「原生 Skills 自動路由能取代 ROUTING_RULES.md」
+# 上游：20260509-A01（已被使用者接受）
+
+task_id: "20260509-N03"
+date: "2026-05-09"
+status: "review"
+
+# === 任務定義 ===
+goal: "在分支上把 skills/research/SKILL.md 加上原生 Claude Code Skills frontmatter 並建立 .claude/skills/ 註冊路徑，輸出 PoC summary 評估 H1（原生自動路由能否取代 ROUTING_RULES.md）"
+context: |
+  A01 規劃 v3 把 skill executor 整模組砍除，依賴原生 Skills。但這個判斷建立在 H1：
+  「Claude Code Skills 的自動路由能取代 ROUTING_RULES.md 的全部功能」。
+  此假設未實證。本 PoC 用 research skill 一個做實驗：
+  - 加 frontmatter（不破壞 v2 既有 SKILL.md 內容，向後相容）
+  - 建立 .claude/skills/ 註冊（plugin / symlink / copy 任選最低成本路徑）
+  - 觀察並紀錄：能否自動觸發、description 寫多細路由才準、與 ROUTING_RULES.md 表格對照差異
+  - 輸出 PoC summary，給 A01「砍除 skill executor」決策的 evidence base
+input_data:
+  - "skills/research/SKILL.md"
+  - "system/ROUTING_RULES.md"
+  - "outputs/drafts/2026-05-09_v3_extraction_plan.md"  # A01 §11 H1
+  - ".claude/settings.json"
+
+# === 完成標準 ===
+definition_of_done:
+  - "skills/research/SKILL.md 加上 YAML frontmatter（至少 name + description 欄位），原 markdown 內容不刪改"
+  - "frontmatter 用 yaml.safe_load 可解析"
+  - "建立 .claude/skills/ 註冊路徑（plugin manifest / symlink / 直接 copy 任一），文檔說明所選路徑與理由"
+  - "PoC summary 列出觀察項：(a) 能否觸發、(b) description 措辭與路由準度的關係、(c) 與 ROUTING_RULES.md 五類路由表的差異"
+  - "對 H1 給出三選一結論：成立 / 部分成立 / 不成立，並列證據"
+  - "若部分成立或不成立 → 列 A01 §4.2 中應從『砍除』改為『重構』的模組"
+  - "向後相容：原 v2 任何引用 skills/research/SKILL.md 的腳本／文件不受影響"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-05-09_n03_skills-native-poc.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true       # 動 skills/ 屬 ask；使用者已於對話中授權執行 N3
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "modify_skills"         # 加 frontmatter + 建 .claude/skills/ 註冊
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0         # 不需要 web
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "4c65a40 checkpoint: 20260509-N03 skills native registration PoC"
+actual_tool_calls: 7
+result_summary: "DoD 7/7 通過。skills/research/SKILL.md 加 frontmatter（name + description 151 字），原內容不刪改；.claude/skills/research → ../../skills/research symlink 建立（避免雙寫漂移）；H1 結論：部分成立——routing 表可被取代，但「跨 skill 拆 Task Card」原則需保留至 CLAUDE.md。A01 §4.2 第 3 列「保留拆分原則寫進 CLAUDE.md」恰好命中，不需修改裁決。Session 內無法現場驗證自動觸發，需新 session。"
+completion_time: "2026-05-09"
+audit_log_ref: "logs/AUDIT_LOG.md"

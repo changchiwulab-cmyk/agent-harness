@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install deps
+        run: pip install pyyaml
+      - name: Hook tests
+        run: python -m unittest hooks.test_hooks -v
+      - name: Validator tests
+        run: python -m unittest validators.test_validators -v
+      - name: Sanity check plugin.json is valid JSON
+        run: python -c "import json; json.load(open('plugin.json'))"
+      - name: Sanity check schemas parse
+        run: |
+          python -c "
+          import yaml
+          from pathlib import Path
+          for f in Path('schemas').glob('*.yaml'):
+              data = yaml.safe_load(f.read_text())
+              assert isinstance(data, dict), f
+              assert 'required' in data or 'properties' in data, f
+          print('all schemas parse')
+          "

@@ -1,0 +1,65 @@
+# Task Card — N1 plan §8.1 對齊
+# 來源：使用者要求 N1，補 A01/W01 的 plan 對齊
+# 上游：A01（已完成、已被使用者接受）；W01（已完成）
+
+task_id: "20260509-N01"
+date: "2026-05-09"
+status: "review"
+
+# === 任務定義 ===
+goal: "把 ai-bubbly-mountain plan 寫進 repo（memory/active_projects/agent-harness/plans/），並對 A01/W01 與 plan §8.1 Task A/B 做逐項對齊，產出對齊報告與 task card 清理"
+context: |
+  A01/W01 執行時 plan 檔不可讀，數個推論標 [待驗證]。
+  使用者已貼 plan 全文。本卡：
+  1. 把 plan 寫進 repo（離線可用）
+  2. 對齊 §8.1 Task A/B 與已交付的 A01/W01
+  3. 把已被 plan 解掉的 [待驗證] 項從 A01/W01 草稿清除
+  4. 把 plan 路徑從 /root/.claude/plans/... 換成 repo 內路徑
+input_data:
+  - "outputs/drafts/2026-05-09_v3_extraction_plan.md"
+  - "outputs/drafts/2026-05-09_methodology_outline.md"
+  - "tasks/2026-05-09_harness-v3-governance-extraction.yaml"
+  - "tasks/2026-05-09_harness-methodology-outline.yaml"
+  # plan 全文由使用者於對話中貼入，將寫入下列路徑：
+  - "memory/active_projects/agent-harness/plans/ai-bubbly-mountain.md"  # 本卡建立
+
+# === 完成標準 ===
+definition_of_done:
+  - "plan 全文寫入 memory/active_projects/agent-harness/plans/ai-bubbly-mountain.md"
+  - "A01/W01 task card input_data 中 /root/.claude/plans/ai-bubbly-mountain.md 替換為 repo 路徑"
+  - "對齊報告：plan §8.1 Task A 7 條 DoD（草案 5 條 + A01 自加 2 條）逐條 pass/fail/exceed 標註"
+  - "對齊報告：plan §8.1 Task B 6 條 DoD（草案 5 條 + W01 自加 1 條，§3 含 4 條 + W01 自加 2 條）逐條標註"
+  - "A01/W01 草稿中『Plan 檔不可讀』相關 [待驗證] 段落清除或更新為已對齊"
+  - "對 plan §5.3 4 條關鍵指標明確判斷：哪些已落地、哪些待補；是否需開後續 task"
+  - "對 plan §1-7 的論點與 A01/W01 已採納者列出（避免方法論章節漏點）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-05-09_n01_plan-alignment.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "review"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "a245f1e checkpoint: 20260509-N01 plan alignment"
+actual_tool_calls: 6
+result_summary: "DoD 7/7 通過。Plan 已歸檔 repo（memory/active_projects/agent-harness/plans/ai-bubbly-mountain.md）；A01/W01 與 plan §8.1 Task A/B 各 5/5 草案 DoD pass + 各 2 條 over-deliver；命名漂移（_ vs -）+ allowed_tools 詞彙差異記錄但不修；plan §5.3 4 條關鍵指標 A01/W01 都未採納 → 建議開 N5 自動採集；plan §3.5 Memory + §4.1 趨勢 C 也識別為未採納 → N7/N8 候補。"
+completion_time: "2026-05-09"
+audit_log_ref: "logs/AUDIT_LOG.md"

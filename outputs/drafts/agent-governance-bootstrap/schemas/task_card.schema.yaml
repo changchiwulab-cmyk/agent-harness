@@ -1,0 +1,98 @@
+# Task Card schema — agent-governance v0.1.0
+# Mirrors agent-harness tasks/TASK_CARD_TEMPLATE.yaml; ported as plugin source-of-truth.
+
+required:
+  - task_id
+  - date
+  - status
+  - goal
+  - definition_of_done
+  - expected_output
+  - risk_level
+  - allowed_tools
+  - max_tool_calls
+  - skill_type
+
+properties:
+  task_id:
+    type: string
+    pattern: '^\d{8}-[A-Z0-9]+$'   # YYYYMMDD-XXX, allows letter prefixes (A01, R01, N03, M01)
+  date:
+    type: string
+    format: date                    # YYYY-MM-DD
+  status:
+    type: string
+    enum: [pending, in_progress, checkpoint, review, done, failed, partial]
+  goal:
+    type: string
+    minLength: 1
+  context:
+    type: string
+  input_data:
+    type: array
+    items:
+      type: string
+  definition_of_done:
+    type: array
+    minItems: 1
+    items:
+      type: string
+      minLength: 1
+  expected_output:
+    type: object
+    required: [format, location, filename]
+    properties:
+      format: { type: string }
+      location: { type: string }
+      filename: { type: string }
+  risk_level:
+    type: string
+    enum: [low, medium, high, critical]
+  approval_needed:
+    type: boolean
+  allowed_tools:
+    type: array
+    minItems: 1
+    items:
+      type: string
+  max_tool_calls:
+    type: integer
+    minimum: 1
+  max_retries:
+    type: integer
+    minimum: 0
+    default: 3
+  max_web_searches:
+    type: integer
+    minimum: 0
+  skill_type:
+    type: string
+    enum: [research, analysis, writing, ops, review]
+  checkpoints:
+    type: array
+    items: { type: string }
+  actual_tool_calls:
+    type: integer
+    minimum: 0
+  result_summary:
+    type: string
+  completion_time:
+    type: string
+  audit_log_ref:
+    type: string
+
+example:
+  task_id: "20260509-X01"
+  date: "2026-05-09"
+  status: "pending"
+  goal: "example task"
+  definition_of_done:
+    - "concrete pass/fail check"
+  expected_output:
+    format: "md"
+    location: "outputs/drafts/"
+    filename: "example.md"
+  risk_level: "low"
+  allowed_tools: ["file_read", "write_drafts"]
+  max_tool_calls: 5
+  skill_type: "writing"

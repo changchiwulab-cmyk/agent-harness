@@ -1,0 +1,39 @@
+{
+  "$schema": "https://schemas.anthropic.com/claude-code/plugin-v1.json",
+  "name": "agent-governance",
+  "version": "0.1.0",
+  "description": "Governance layer for Claude Code: Task Card contracts, Audit Log, Decision Log, Gate Policy, Failure Taxonomy.",
+  "author": {
+    "name": "agent-governance contributors",
+    "url": "https://github.com/changchiwulab-cmyk/agent-governance"
+  },
+  "license": "Apache-2.0",
+  "engines": {
+    "claude-code": ">=0.x"
+  },
+  "commands": [
+    "commands/task-card.md",
+    "commands/audit.md",
+    "commands/decision.md",
+    "commands/run-log.md",
+    "commands/gate-check.md"
+  ],
+  "skills": [],
+  "hooks": {
+    "PreToolUse": "hooks/pre_tool_use.py",
+    "PostTaskUse": "hooks/post_task_use.py"
+  },
+  "schemas": {
+    "task_card": "schemas/task_card.schema.yaml",
+    "decision_log": "schemas/decision_log.schema.yaml",
+    "execution_log": "schemas/execution_log.schema.yaml",
+    "failure_taxonomy": "schemas/failure_taxonomy.schema.yaml"
+  },
+  "validators": {
+    "validate_task_card": "validators/validate_task_card.py",
+    "check_audit_format": "validators/check_audit_format.py"
+  },
+  "settings": {
+    "deny_patterns_file": "config/deny_patterns.yaml"
+  }
+}
