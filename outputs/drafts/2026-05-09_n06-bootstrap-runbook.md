@@ -12,6 +12,8 @@
 
 ## 0. 前置檢查（30 秒）
 
+> **2026-05-10 校正**：v0.1.0 plugin tree 經 PR #69/#70/#72 hardening 後，hooks 共 14 tests（原文 11 為手動點數錯誤 → PR #71 修正為 12 → PR #72 加 2 條 P1+P2 regression 達 14），總計 28。下方數字已更新。
+
 ```bash
 # (a) 你登入的 GitHub 帳號 / org 對 agent-governance 有 repo 建立權
 gh auth status
@@ -21,7 +23,7 @@ gh api user -q .login   # 預期：你或 changchiwulab-cmyk org 成員
 cd ~/path/to/agent-harness
 ls outputs/drafts/agent-governance-bootstrap/   # 應看到 plugin.json README.md LICENSE CHANGELOG.md commands/ hooks/ schemas/ validators/ .github/
 ( cd outputs/drafts/agent-governance-bootstrap && python3 -m unittest hooks.test_hooks validators.test_validators -v )
-# 預期：25 tests OK（hooks 11 + validators 14）
+# 預期：28 tests OK（hooks 14 + validators 14）
 ```
 
 任一步失敗 → 停下來回報，不繼續。
@@ -91,7 +93,7 @@ for f in sorted(Path('schemas').glob('*.yaml')):
 "
 ```
 
-預期全綠（hooks 11 + validators 14 + plugin.json + 4 schemas）。任一失敗 → 停下來，回報後再決定是否繼續。
+預期全綠（hooks 14 + validators 14 + plugin.json + 4 schemas，共 28 tests）。任一失敗 → 停下來，回報後再決定是否繼續。
 
 ---
 
