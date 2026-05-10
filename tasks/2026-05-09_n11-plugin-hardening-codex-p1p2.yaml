@@ -1,0 +1,87 @@
+# Task Card — N11 plugin v0.1.0 hardening：Codex P1 + P2 修正
+# 來源：PR #71 上 chatgpt-codex-connector[bot] 兩條 review comments
+# 使用者選擇「新 PR 修（推薦）」處理，stack 在 PR #69 上
+
+task_id: "20260509-N11"
+date: "2026-05-09"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "在 plugin v0.1.0 candidate 推上 agent-governance repo 之前，修掉 Codex 指出的 P1（risk gate 在 output_path 缺席時被略過 → 治理破口）+ P2（gate_completion 對非字串 DoD 入項會 TypeError 崩潰）。屬 plugin tree 內部 hardening，不影響 agent-harness 端"
+
+context: |
+  PR #71 review 流程觸發 chatgpt-codex-connector[bot] 兩條評論：
+
+  P1（outputs/drafts/agent-governance-bootstrap/hooks/post_task_use.py:82）：
+    risk = gate_risk(card, output_path) if output_path else ("n/a", "no output path provided")
+    短路導致 high/critical 任務在 output_path 為 None 時得到 risk_check="n/a"，
+    繞過 gate_risk 本身對 None 已有的 fail-closed 邏輯（line 65-69）。
+
+  P2（同檔 line 59）：
+    misses = [line for line in (card.get("definition_of_done") or []) if line not in body]
+    DoD 入項為非字串時 `line not in body` 觸發 TypeError → hook 崩潰，無法返回
+    結構化 verdict。validate_task_card 不嚴格擋型別，所以這是現實 input path。
+
+  使用者於 2026-05-09 選擇「新 PR 修（推薦）」處理（PR #71 維持 drafts-only scope）。
+  本 PR stack 在 PR #69（claude/complete-test-plan-VMGDj）上，merge 順序：#69 → 本 PR
+  → #71（rebase 後 runbook 從 26 → 28 tests）。
+
+input_data:
+  - "outputs/drafts/agent-governance-bootstrap/hooks/post_task_use.py"   # P1 + P2 修改點
+  - "outputs/drafts/agent-governance-bootstrap/hooks/test_hooks.py"      # 加 regression tests
+  - "outputs/drafts/agent-governance-bootstrap/CHANGELOG.md"             # 記錄 hardening
+  - "https://github.com/changchiwulab-cmyk/agent-harness/pull/71#discussion_r3213314884"  # P1
+  - "https://github.com/changchiwulab-cmyk/agent-harness/pull/71#discussion_r3213314886"  # P2
+
+# === 完成標準 ===
+definition_of_done:
+  - "post_task_use.py line 82 改為一律呼叫 gate_risk(card, output_path)（不再對 None 短路）"
+  - "post_task_use.py gate_completion 加型別 guard：DoD 非 list 直接 fail；DoD 入項非 str 直接 fail（含資訊性 detail）"
+  - "test_hooks.py 新增 2 個 regression tests：(a) high risk + None output_path → risk_check fail；(b) DoD 含 int → completion_check fail（不崩潰）"
+  - "plugin 自驗 hooks + validators 全綠，總數從 12+14=26 → 14+14=28"
+  - "CHANGELOG.md 加 [Unreleased] 段記錄 P1+P2 修正並引用 PR #71 review 連結"
+
+# === 輸出定義 ===
+expected_output:
+  format: "py"
+  location: "outputs/drafts/agent-governance-bootstrap/hooks/"
+  filename: "post_task_use.py"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+  - "run_tests"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄 ===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
+
+# === 前置依賴 ===
+preconditions:
+  - "PR #71 仍 open；plugin tree 仍未在 main（PR #69 也 open）"
+  - "使用者尚未跑 PR #70 runbook §1-§4，所以本 hardening 仍可進到 v0.1.0 而非 v0.1.1"
+
+# === Rollback ===
+rollback: |
+  本 PR 觸及 outputs/drafts/agent-governance-bootstrap/ 內 3 檔 + 1 張 yaml：
+    - post_task_use.py（修 2 處）
+    - test_hooks.py（加 2 tests）
+    - CHANGELOG.md（加 [Unreleased] 段）
+    - tasks/2026-05-09_n06-prep-plugin-hardening-codex-p1p2.yaml（純 yaml）
+  Rollback：git revert 本 PR merge commit 即可。零 agent-harness 正本修改。

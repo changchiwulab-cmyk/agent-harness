@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] — pending v0.1.0 tag
+
+### Fixed
+- `hooks/post_task_use.py` — `gate_risk` is now always invoked, even when
+  `output_path` is None. Previously the `run()` short-circuit returned
+  `("n/a", ...)` and bypassed the containment check, so high/critical tasks
+  could pass the gate without writing under `outputs/drafts/`.
+  (Codex P1 — agent-harness PR #71 review thread r3213314884)
+- `hooks/post_task_use.py` — `gate_completion` now type-guards the
+  `definition_of_done` list and its items; non-list values and non-string
+  entries return a structured `fail` verdict instead of raising `TypeError`.
+  (Codex P2 — agent-harness PR #71 review thread r3213314886)
+
+### Added
+- 2 regression tests in `hooks/test_hooks.py`
+  (`test_risk_gate_fails_high_risk_when_no_output_path`,
+  `test_completion_gate_fails_on_non_string_dod_items`).
+  Hook test count: 12 → 14 (validators unchanged at 14; total 28).
+
 ## [0.1.0] — 2026-05-09 (skeleton bootstrap)
 
 ### Added

@@ -155,6 +155,45 @@ class TestPostTaskUseGates(unittest.TestCase):
         self.assertEqual(status, "fail")
         self.assertIn("must be a list", detail)
 
+    def test_risk_gate_fails_high_risk_when_no_output_path(self):
+        # Codex P1 regression: high/critical tasks must fail risk_check when
+        # output_path is None — previously the run() short-circuit returned
+        # "n/a" and bypassed the containment requirement.
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            card_path = tmp_path / "card.yaml"
+            card_path.write_text(
+                yaml.safe_dump(self._build_card(risk_level="high"), allow_unicode=True),
+                encoding="utf-8",
+            )
+            result = post.run(card_path, None, deny_tools=set())
+        self.assertEqual(result["verdict"], "fail")
+        self.assertEqual(result["results"]["risk_check"]["status"], "fail")
+        self.assertIn("risk_check", result["failed_gates"])
+
+    def test_completion_gate_fails_on_non_string_dod_items(self):
+        # Codex P2 regression: if a YAML card has a non-string DoD entry
+        # (e.g. numeric scalar), gate_completion must return a structured
+        # fail instead of raising TypeError on `line not in body`.
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            card_path = tmp_path / "card.yaml"
+            card_path.write_text(
+                yaml.safe_dump(
+                    self._build_card(definition_of_done=["alpha", 42]),
+                    allow_unicode=True,
+                ),
+                encoding="utf-8",
+            )
+            drafts = tmp_path / "outputs" / "drafts"
+            drafts.mkdir(parents=True)
+            output = drafts / "x.md"
+            output.write_text("# x\n\n- alpha\n", encoding="utf-8")
+            result = post.run(card_path, output, deny_tools=set())
+        self.assertEqual(result["verdict"], "fail")
+        self.assertEqual(result["results"]["completion_check"]["status"], "fail")
+        self.assertIn("must be strings", result["results"]["completion_check"]["detail"])
+
 
 if __name__ == "__main__":
     unittest.main()
