@@ -359,6 +359,16 @@
     {
       "approval_needed": false,
       "date": "2026-05-09",
+      "goal": "在 plugin v0.1.0 candidate 推上 agent-governance repo 之前，修掉 Codex 指出的 P1（risk gate 在 output_path 缺席時被略過 → 治理破口）+ P2（gate_completion 對非字串 DoD 入項會 TypeError 崩潰）。屬 plugin tree 內部 hardening，不影響 agent-harness 端",
+      "path": "tasks/2026-05-09_n11-plugin-hardening-codex-p1p2.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "in_progress",
+      "task_id": "20260509-N11"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-09",
       "goal": "評估是否在 agent-harness v2.x 啟用 Claude Code 原生 Memory，並產出明確 Go / No-Go / Conditional-Go 建議與條件清單",
       "path": "tasks/2026-05-09_native-memory-evaluation.yaml",
       "risk_level": "low",
