@@ -1,0 +1,58 @@
+# Decision Log schema — agent-governance v0.1.0
+# Cross-session decisions with explicit revisit_trigger to fight context decay.
+
+required:
+  - decision_id
+  - decision_date
+  - decision
+  - rationale
+  - revisit_trigger
+
+properties:
+  decision_id:
+    type: string
+    pattern: '^D\d{3}$'              # D001, D002, ...
+  decision_date:
+    type: string
+    format: date
+  decision:
+    type: string
+    minLength: 1
+  context:
+    type: string
+  options_considered:
+    type: array
+    items:
+      type: object
+      required: [option, reason]
+      properties:
+        option: { type: string }
+        reason: { type: string }
+  rationale:
+    type: string
+    minLength: 1
+  risk:
+    type: string
+    enum: [low, medium, high, critical]
+  related_task:
+    type: string
+    pattern: '^\d{8}-[A-Z0-9]+$'
+  revisit_trigger:
+    type: string
+    minLength: 1                       # required: empty string is anti-pattern (decisions without revisit conditions rot)
+  status:
+    type: string
+    enum: [active, superseded, expired]
+    default: active
+  superseded_by:
+    type: string
+    pattern: '^D\d{3}$'
+
+example:
+  decision_id: "D007"
+  decision_date: "2026-05-09"
+  decision: "Bootstrap agent-governance plugin as standalone Apache-2.0 private repo."
+  rationale: "v3 extraction plan + N04 skeleton + N06 task card; decoupling enables external reuse without forcing migration cost on agent-harness."
+  risk: "high"
+  related_task: "20260509-N06"
+  revisit_trigger: "Plugin reaches v0.2.0, OR agent-harness CI gates without local copies."

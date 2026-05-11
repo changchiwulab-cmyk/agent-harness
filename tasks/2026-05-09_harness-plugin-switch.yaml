@@ -1,0 +1,92 @@
+# Task Card — N06-續 agent-harness 切換引用 agent-governance plugin
+# 來源：N06 DoD #6/#8（受工具限制留下個 session）+ D007 決策落地
+
+task_id: "20260509-N09"
+date: "2026-05-09"
+status: "pending"   # 等使用者完成 N06 bootstrap runbook（agent-governance v0.1.0 push 完成）後核准本卡
+
+# === 任務定義 ===
+goal: "把 agent-harness 的 CLAUDE.md / .claude/settings.json 切換為引用 agent-governance plugin v0.1.0，同時保證 agent-harness 自身 CI 在 plugin 缺席時仍綠（fallback 路徑）"
+context: |
+  N06 在 PR #69 完成 DoD #1/#2/#3/#4/#5/#7/#9，#6/#8 因工具範圍限制（GitHub MCP 限定
+  agent-harness 單一 repo）留下個 session。bootstrap runbook 已備於
+  outputs/drafts/2026-05-09_n06-bootstrap-runbook.md。
+
+  本卡假設使用者已依 runbook 在 GitHub 建好 changchiwulab-cmyk/agent-governance
+  private repo + push v0.1.0 tag，本卡負責 agent-harness 端的引用切換。
+
+  風險等級 medium：涉及 modify_system_rules（.claude/settings.json）+ modify_claude_md
+  （CLAUDE.md），都是 ask 級權限。但 hook 切換是行為等價（plugin hook 內容是從
+  scripts/permissions_guard.py 移植過去），且保留 fallback 確保 plugin 缺席時 CI 仍綠。
+
+  本卡不刪除 agent-harness 內既有的 system/validate_task_card.py、
+  scripts/permissions_guard.py、scripts/generate_audit_log.py。雙寫並存到 plugin v0.2.0
+  stable 後再由另一張遷移卡處理（見 §5.2 of 2026-05-09_n06_v3-plugin-bootstrap.md）。
+
+input_data:
+  - "outputs/drafts/2026-05-09_n06-bootstrap-runbook.md"   # 本卡上游
+  - "outputs/drafts/agent-governance-bootstrap/plugin.json"  # 引用契約來源
+  - "memory/active_projects/agent-harness/decisions/20260509-D007_v3-plugin-bootstrap-decisions.yaml"
+  - ".claude/settings.json"                                  # 待修改
+  - "CLAUDE.md"                                              # 待修改
+  - "system/PERMISSIONS.yaml"                                # 引用對照
+
+# === 完成標準 ===
+definition_of_done:
+  - "agent-governance v0.1.0 已存在於 changchiwulab-cmyk/agent-governance（前置：runbook §1-§4 完成）"
+  - ".claude/settings.json hook 路徑改為引用 plugin，但保留 fallback（plugin 缺席時降回 scripts/permissions_guard.py）"
+  - "CLAUDE.md 開頭新增 1 段「依賴 agent-governance v0.1.0+，缺席時走本 repo fallback」說明，不超過 5 行（context 預算）"
+  - "新增 scripts/check_plugin_present.sh 或等價腳本（≤30 行），CI 跑前用來決定 hook 路徑指向 plugin 或 fallback"
+  - "agent-harness CI 在 plugin 已安裝時 → 走 plugin hook；plugin 缺席時 → 走 fallback；兩個 case 都綠"
+  - "至少跑一次 PreToolUse hook 端到端煙霧測試（手動觸發 Bash deny pattern，確認 block 訊息正確）"
+  - "Decision Log D007 status 從 active → 加上 followup_done: 20260509-N09 標記"
+  - "PR description 列出切換前後 diff 摘要 + rollback 指令（一行 git revert 即可）"
+  - "本卡 result_summary 註記實際 plugin 引用方式（git submodule / npm-style ~/.claude/plugins/ / 直接 clone 哪一種）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-05-09_n06b-harness-plugin-switch.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true   # modify_system_rules + modify_claude_md 都是 ask
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "modify_settings_json"   # ask 級，本卡核准即授權
+  - "modify_claude_md"       # ask 級，本卡核准即授權
+  - "git_commit_checkpoint"
+  - "run_tests"
+
+# === 成本控制 ===
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 2
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
+
+# === 前置依賴（自我檢查）===
+preconditions:
+  - "使用者本人已完成 outputs/drafts/2026-05-09_n06-bootstrap-runbook.md §1-§4"
+  - "gh repo view changchiwulab-cmyk/agent-governance 顯示 v0.1.0 tag 存在"
+  - "本卡 risk=medium 已得使用者明示核准"
+
+# === Rollback 定義 ===
+rollback: |
+  本卡所有修改都集中在單一 PR：
+    - .claude/settings.json
+    - CLAUDE.md（前 5 行段落）
+    - scripts/check_plugin_present.sh（新檔，可直接刪）
+  Rollback：在 PR merge 前可關 PR；merge 後 git revert HEAD 即可完整還原。
+  agent-governance plugin repo 不在本卡範圍，rollback 不影響它。
