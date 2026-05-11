@@ -1,6 +1,6 @@
 task_id: "20260511-F02"
 date: "2026-05-11"
-status: "in_progress"
+status: "done"
 
 # === 任務定義 ===
 goal: "將 frontend/ 看板擴充為「錯誤儀表板」：把 logs/errors/、logs/runs/ 的失敗紀錄、tasks/ 的失敗/被卡任務、Task Card schema 缺漏，整合成可一眼看到錯誤點的互動式 HTML（含 KPI、時間軸、Chart.js 分類圖、可篩選/排序與 drill-down 詳情）"
@@ -82,8 +82,18 @@ max_web_searches: 0
 skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - commit: "b5135f5"
+    stage: "Opus 完成 Task Card + 規劃草稿（人工審核點）"
+  - commit: "0f4f9b9"
+    stage: "WIP capture: Sonnet sub-agent partial state（stop-hook 強制 commit）"
+actual_tool_calls: 42
+result_summary: |
+  Phase 1 完成。Generator 擴充 collect_errors / detect_task_schema_issues / derive_gate_failures；
+  前端新增錯誤儀表板（4 KPI 卡 + Chart.js 圓餅圖 + 月份柱狀圖 + 可篩選列表 + drill-down），
+  Chart.js 走 ESM CDN 含離線 fallback。8/8 tests pass、drift check OK、CI workflow 不變。
+  DoD 13/13（11 為 static analysis pass，無 in-browser 環境；13 由本 PR 的 audit log entry 完成）。
+  Gate 4 層全綠：schema_check / rule_check / completion_check / risk_check 均通過。
+  Known risk: Chart.js v4 ESM module shape 在 in-browser 才能驗證；R3 已記入 summary。
+completion_time: "2026-05-11"
 audit_log_ref: "logs/AUDIT_LOG.md"
