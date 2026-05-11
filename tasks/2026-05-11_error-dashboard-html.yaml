@@ -1,0 +1,89 @@
+task_id: "20260511-F02"
+date: "2026-05-11"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "將 frontend/ 看板擴充為「錯誤儀表板」：把 logs/errors/、logs/runs/ 的失敗紀錄、tasks/ 的失敗/被卡任務、Task Card schema 缺漏，整合成可一眼看到錯誤點的互動式 HTML（含 KPI、時間軸、Chart.js 分類圖、可篩選/排序與 drill-down 詳情）"
+
+context: |
+  20260427-F01 (Phase 0) 收斂 PR #55 為穩定 baseline 時，已將 Phase 1
+  「Gate / Approval / Failure 視覺化」明確排程為後續任務（見該卡 context 段）。
+  本卡即 Phase 1：把 harness 既有的失敗訊號（logs/errors/ 的 14 類
+  FAILURE_TAXONOMY 事件、logs/runs/ 的 status=failed/partial 與 4 層
+  gate_results、tasks/ 的 status=failed/blocked、以及 Task Card schema 缺漏）
+  在同一個前端介面攤開，讓使用者與 agent 都能在第一時間定位錯誤點。
+
+  資料管道沿用 F01 既有設計：scripts/generate_frontend_manifest.py
+  產出 frontend/data.json（CI 有 drift check）。本卡不引入新 build 工具，
+  只擴充 generator 的 collection 集合與 frontend 的渲染區塊，並引入
+  Chart.js (CDN, ESM build) 做時間軸/分類圖；無 CDN 時降級為純列表。
+
+  執行模式：規劃由 Opus 4.7 完成（本卡 + drafts/ 計畫書）；實作由 Sonnet 4.6
+  sub-agent 在審核通過後接手，產出由 Opus 做 4 層 gate 驗證後 checkpoint。
+
+input_data:
+  - "tasks/2026-04-27_frontend-platform-phase0.yaml  # Phase 0 baseline"
+  - "scripts/generate_frontend_manifest.py            # 待擴充的 generator"
+  - "scripts/test_generate_frontend_manifest.py       # 待擴充的測試"
+  - "scripts/run_frontend.sh                          # 啟動腳本（介面不變）"
+  - "frontend/index.html                              # 待擴充的版面"
+  - "frontend/app.js                                  # 待擴充的渲染邏輯"
+  - "frontend/styles.css                              # 待擴充的樣式"
+  - "frontend/data.json                               # generator 輸出（會被重產）"
+  - "logs/errors/*.md                                 # 錯誤事件來源（含 YAML fenced block）"
+  - "logs/errors/ERROR_LOG_TEMPLATE.md                # 模板，需排除"
+  - "logs/runs/*.yaml                                 # 執行紀錄（含 gate_results）"
+  - "system/FAILURE_TAXONOMY.yaml                     # 14 類失敗對照"
+  - "system/GATE_POLICY.yaml                          # 4 層 gate 名稱"
+  - "system/EXECUTION_LOG_SCHEMA.yaml                 # gate_results schema"
+  - "tasks/TASK_CARD_TEMPLATE.yaml                    # Schema 缺漏判斷依據"
+  - ".github/workflows/spec-consistency.yml           # CI drift check 不可破"
+
+# === 完成標準 ===
+definition_of_done:
+  - "scripts/generate_frontend_manifest.py 新增 collect_errors()：解析 logs/errors/*.md 中第一個 ```yaml fenced block，排除 ERROR_LOG_TEMPLATE.md 與 .gitkeep；至少萃取 error_id, task_id, date, error_type, error_summary, related_rule, resolution, failure_count；產出 payload['errors'] 陣列"
+  - "generator 在 collect_logs() 結果中保留完整 gate_results（4 個欄位 schema_check/rule_check/completion_check/risk_check 全收），並新增衍生欄位 has_gate_failure: bool 與 failed_gates: [str]"
+  - "generator 在 collect_tasks() 增加衍生欄位 schema_issues: [str]，列出 Task Card 缺漏（goal 空、definition_of_done 為空陣列、risk_level 不在合法值、skill_type 不在合法值、status 為 failed/blocked），並把判斷邏輯寫成獨立函式 detect_task_schema_issues(doc) 以便單元測試"
+  - "frontend/data.json 經本任務重產後保持 byte-identical idempotent（連續跑兩次內容一致）；CI drift check (--check) 通過"
+  - "frontend/index.html 新增『錯誤儀表板』區塊，至少含：(a) 4 張 KPI 卡（總錯誤事件數 / Gate 失敗次數 / 失敗任務數 / Schema 缺漏數）；(b) FAILURE_TAXONOMY 分類圓餅圖；(c) 錯誤事件時間軸柱狀圖（按月分桶）；(d) 可篩選（依 error_type / 依 gate / 依 task）與排序的錯誤列表；(e) 點擊任一筆可展開原始 YAML/Markdown 內容"
+  - "frontend/app.js 以 Chart.js v4 ESM CDN 載入；CDN 失敗時降級為純表格（顯示提示但不破版）；既有的 Tasks/Logs/Decisions 區塊保留可用，不被回歸破壞"
+  - "frontend/styles.css 加入儀表板區塊與圖表容器樣式；維持現有色系與 ≤ 900px 的 RWD"
+  - "scripts/test_generate_frontend_manifest.py 新增至少 4 個 case：(i) errors 解析成功且排除 template/gitkeep；(ii) detect_task_schema_issues 對缺 DoD / 缺 risk_level / status=failed 各能命中；(iii) gate_results 中任一 fail 即 has_gate_failure=true 且 failed_gates 列出該欄位；(iv) 含 errors 後仍 idempotent"
+  - "scripts/run_frontend.sh CLI 介面（--no-generate / --help / --version / 自訂 port）行為不變；版本號可升至 1.5.0 並更新 LAST_UPDATED"
+  - "README.md「前端動態介面」章節同步更新：說明錯誤儀表板區塊、Chart.js CDN 來源與離線降級行為"
+  - "validate_task_card.py 對本卡 exit 0；scripts/test_generate_frontend_manifest.py 全綠；本地以 scripts/run_frontend.sh 啟動後手動煙測 4 個 KPI 卡 + 圖表 + 錯誤列表 drill-down 皆顯示正常（截圖或文字觀察記在 summary）"
+  - "outputs/drafts/2026-05-11_F02_error-dashboard-summary.md 產出實作摘要（變動檔案、測試結果、剩餘風險、煙測結果）"
+  - "logs/AUDIT_LOG.md 新增 1 筆紀錄；若任務出現 failed/partial 或 ≥3 checkpoints，依 D006 narrow scope 寫 logs/runs/"
+
+# === 輸出定義 ===
+expected_output:
+  format: "mixed"
+  location: "outputs/drafts/"
+  filename: "2026-05-11_F02_error-dashboard-summary.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 60
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
