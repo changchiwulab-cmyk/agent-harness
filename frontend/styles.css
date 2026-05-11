@@ -62,4 +62,80 @@ small { color: #6b7280; }
 
 @media (max-width: 900px) {
   .grid { grid-template-columns: 1fr; }
+  .charts { grid-template-columns: 1fr; }
+}
+
+/* ---- Error Dashboard ---- */
+.error-dashboard {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: .6rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.error-dashboard h2 {
+  margin: 0 0 .75rem;
+}
+
+.error-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: .75rem;
+  margin-bottom: 1rem;
+}
+
+.error-kpis .kpi.has-issue .value {
+  color: #b91c1c;
+}
+
+.charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.chart-box {
+  background: #fff;
+  padding: .8rem;
+  border-radius: .6rem;
+  border: 1px solid #e5e7eb;
+  min-height: 280px;
+}
+
+.chart-fallback {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.error-controls {
+  display: flex;
+  gap: .75rem;
+  flex-wrap: wrap;
+  align-items: end;
+  margin-bottom: .75rem;
+}
+
+.error-controls select {
+  padding: .45rem .6rem;
+  border: 1px solid #d1d5db;
+  border-radius: .45rem;
+}
+
+.error-detail pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: .8rem;
+  background: #f7f8fb;
+  border: 1px solid #e5e7eb;
+  border-radius: .4rem;
+  padding: .5rem;
+  margin: .5rem 0 0;
+}
+
+.error-path {
+  font-size: .8rem;
+  margin-bottom: .25rem;
+  color: #4b5563;
 }
