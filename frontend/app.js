@@ -40,8 +40,10 @@ async function loadData() {
 
 async function loadChartJs() {
   try {
-    const mod = await import('https://cdn.jsdelivr.net/npm/chart.js@4.4.4/+esm');
-    return mod.default || mod.Chart || mod;
+    // Return the full module namespace so render functions can read both
+    // `Chart` (the class) and `registerables` (the controllers/elements/scales array).
+    // Collapsing to mod.default would lose `registerables`, breaking pie/bar registration.
+    return await import('https://cdn.jsdelivr.net/npm/chart.js@4.4.4/+esm');
   } catch (_e) {
     return null;
   }
@@ -182,7 +184,11 @@ function renderTaxonomyChart(ChartModule, unified) {
     canvas.parentNode.innerHTML = '<p class="chart-fallback">無 taxonomy 資料</p>';
     return;
   }
-  const Chart = ChartModule.Chart || ChartModule;
+  const Chart = ChartModule.Chart || ChartModule.default;
+  if (!Chart) {
+    canvas.parentNode.innerHTML = '<p class="chart-fallback">Chart.js 模組結構非預期</p>';
+    return;
+  }
   Chart.register(...(ChartModule.registerables || []));
   new Chart(canvas, {
     type: 'pie',
@@ -209,7 +215,11 @@ function renderTimelineChart(ChartModule, unified) {
     canvas.parentNode.innerHTML = '<p class="chart-fallback">無時間軸資料</p>';
     return;
   }
-  const Chart = ChartModule.Chart || ChartModule;
+  const Chart = ChartModule.Chart || ChartModule.default;
+  if (!Chart) {
+    canvas.parentNode.innerHTML = '<p class="chart-fallback">Chart.js 模組結構非預期</p>';
+    return;
+  }
   Chart.register(...(ChartModule.registerables || []));
   new Chart(canvas, {
     type: 'bar',
@@ -296,6 +306,11 @@ function bindErrorControls(unified) {
   if (typeFilter) typeFilter.addEventListener('change', applyErrorFilters);
   if (gateFilter) gateFilter.addEventListener('change', applyErrorFilters);
   if (sortEl) sortEl.addEventListener('change', applyErrorFilters);
+
+  // Apply default state on first load so the initial render honors the
+  // default `date_desc` sort (and any preselected filter values), instead
+  // of showing the raw unsorted `unified` order.
+  applyErrorFilters();
 }
 
 function inDateRange(value, from, to) {
@@ -413,7 +428,9 @@ function bindEvents() {
     } else {
       renderChartFallback(unified);
     }
-    renderErrorList(unified);
+    // bindErrorControls runs applyErrorFilters() once internally to apply
+    // default sort/filter state, which calls renderErrorList. No need to
+    // pre-render here.
     bindErrorControls(unified);
   } catch (err) {
     showError(err);
