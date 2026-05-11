@@ -171,15 +171,22 @@ python system/validate_task_card.py tasks/your-task.yaml
 
 ## 前端動態介面（本地觀看）
 
-已提供最小版前端看板於 `frontend/`，包含：
+已提供前端看板於 `frontend/`，包含：
 - Task 清單瀏覽
 - Logs 儀表板
 - Decision Timeline（可點擊展開）
+- **錯誤儀表板**（20260511-F02 新增）：整合 `logs/errors/*.md`、`logs/runs/` 失敗 gate、`tasks/` schema 缺漏，提供：
+  - 4 張 KPI 卡（總錯誤事件數 / Gate 失敗次數 / 失敗任務數 / Schema 缺漏數）
+  - FAILURE_TAXONOMY 分類圓餅圖（由 [Chart.js v4](https://cdn.jsdelivr.net/npm/chart.js@4.4.4/+esm) CDN ESM 載入）
+  - 錯誤事件時間軸柱狀圖（按月分桶）
+  - 可篩選（依 error_type / 依 gate）與排序的錯誤列表，點擊可展開原始內容
+  - **離線降級**：若 Chart.js CDN 載入失敗，自動改以文字清單顯示；KPI 卡與錯誤列表不受影響
 
 資料來源唯一化於 `frontend/data.json`，由 `scripts/generate_frontend_manifest.py` 在產生階段以 PyYAML 解析下列來源後序列化：
 - `tasks/20*.yaml`
 - `logs/runs/*.yaml`
 - `memory/active_projects/*/decisions/*.yaml`（多 project）
+- `logs/errors/*.md`（排除 `ERROR_LOG_TEMPLATE.md` 與 `.gitkeep`）
 
 CI 會跑 `python3 scripts/generate_frontend_manifest.py --check`，若 `frontend/data.json` 與檔案系統實況有漂移即失敗。
 

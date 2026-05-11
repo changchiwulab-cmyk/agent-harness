@@ -33,6 +33,44 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260511-F02"
+  date: "2026-05-11"
+  skill_type: "ops"
+  goal: "把 frontend/ 看板擴充為錯誤儀表板（Phase 1 Gate/Failure 視覺化）"
+  status: "done"
+  model_used: "claude-opus-4-7 (規劃 + gate) + claude-sonnet-4-6 (實作 sub-agent)"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 18
+    - tool_name: "bash"
+      call_count: 12
+    - tool_name: "edit_write"
+      call_count: 5
+    - tool_name: "subagent_spawn"
+      call_count: 1
+    - tool_name: "github_mcp"
+      call_count: 6
+  checkpoints: 2
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/2026-05-11_F02_error-dashboard-summary.md"
+  error_summary: ""
+  estimated_tokens: "~70K"
+  notes: |
+    Phase 1 落地。承接 20260427-F01 留下的 Gate/Approval/Failure 視覺化。
+    擴充 generator (collect_errors / detect_task_schema_issues / derive_gate_failures)、
+    新增前端錯誤儀表板（4 KPI、Chart.js 圓餅+柱狀圖、可篩選列表、drill-down），
+    Chart.js 走 ESM CDN 含 try/catch 文字 fallback。
+    Gate 4 層全 pass、8/8 tests pass、drift OK、CI workflow 0 改動。
+    DoD 13/13（DoD 11 因無 in-browser 環境僅做 static analysis；DoD 13 由本 entry 完成）。
+    執行中發生 1 次主流程錯誤：Opus 為 reproduce CI fail 用 git stash 收 sub-agent WIP，
+    干擾了背景 sub-agent 的 working tree 視角，已用「捨棄重做+restore stash」救援，
+    並寫入經驗：背景 sub-agent 進行中**不得**動 working tree。
+```
+
+---
+
+```yaml
 - task_id: "20260509-M01"
   date: "2026-05-09"
   skill_type: "ops"

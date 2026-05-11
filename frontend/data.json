@@ -78,15 +78,36 @@
       "status": "active"
     }
   ],
+  "errors": [
+    {
+      "date": "2026-04-04",
+      "error_id": "ERR-20260404-001",
+      "error_summary": "第 3 次 web search 遭遇速率限制（rate limit）",
+      "error_type": "tool_failure",
+      "failure_count": 1,
+      "path": "logs/errors/2026-04-04_20260404-S01_error.md",
+      "related_rule": "COST_POLICY：max_web_searches=3（工具呼叫限制）；FAILURE_TAXONOMY：SEC-03（成本失控前兆，3/3 輪全用完的前兆訊號）；邊界觸及 COORD-02",
+      "resolution": "retried_success",
+      "skill_type": "research",
+      "task_id": "20260404-S01",
+      "taxonomy_codes": [
+        "COORD-02",
+        "SEC-03"
+      ]
+    }
+  ],
   "logs": [
     {
       "ended_at": "2026-04-09 00:30",
+      "error_summary": "",
+      "failed_gates": [],
       "gate_results": {
         "completion_check": "pass",
         "risk_check": "pass",
         "rule_check": "pass",
         "schema_check": "pass"
       },
+      "has_gate_failure": false,
       "path": "logs/runs/20260409-001_system-validation.yaml",
       "run_id": "RUN-20260409-001",
       "skill_type": "review",
@@ -102,6 +123,7 @@
       "goal": "審查 ai-era-solo-business-proposal.md 的邏輯一致性、事實正確性、風險完整性，確認可作為正式使用的策略文件",
       "path": "tasks/2026-04-04_ai-era-solo-business-proposal-review.yaml",
       "risk_level": "low",
+      "schema_issues": [],
       "skill_type": "review",
       "status": "review",
       "task_id": "20260404-RV01"
@@ -112,6 +134,7 @@
       "goal": "根據研究結果（20260404-S01），產出一份完整的一人公司 AI 時代策略提案，可直接用於自我規劃或向潛在合作方展示",
       "path": "tasks/2026-04-04_ai-era-solo-business-proposal.yaml",
       "risk_level": "low",
+      "schema_issues": [],
       "skill_type": "writing",
       "status": "review",
       "task_id": "20260404-W01"
@@ -122,6 +145,7 @@
       "goal": "分析 AI 時代一人公司最具長遠獲利潛力的商業項目，結合用戶背景（管理顧問、台灣+越南市場）提供可執行策略建議",
       "path": "tasks/2026-04-04_ai-era-solo-business-strategy.yaml",
       "risk_level": "low",
+      "schema_issues": [],
       "skill_type": "research",
       "status": "review",
       "task_id": "20260404-S01"
@@ -132,6 +156,7 @@
       "goal": "根據審查報告 RV01 的 3 個必須修改項，修正提案數字矛盾並補充 Retainer 交付差異，產出 v2 正式版",
       "path": "tasks/2026-04-04_proposal-fix-v2.yaml",
       "risk_level": "low",
+      "schema_issues": [],
       "skill_type": "ops",
       "status": "review",
       "task_id": "20260404-O02"
@@ -142,6 +167,7 @@
       "goal": "修正 20260404-R02 review 發現的 2 個 must-fix 問題，完成工具盤點報告定稿",
       "path": "tasks/2026-04-04_tools-inventory-fix.yaml",
       "risk_level": "low",
+      "schema_issues": [],
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260404-O01"
@@ -152,6 +178,7 @@
       "goal": "調查並整理一人公司運作所需的工具清單，按功能分類並評估現有採用狀況",
       "path": "tasks/2026-04-04_tools-inventory-research.yaml",
       "risk_level": "low",
+      "schema_issues": [],
       "skill_type": "research",
       "status": "done",
       "task_id": "20260404-R01"
@@ -162,6 +189,7 @@
       "goal": "審查工具盤點報告的完整性、邏輯一致性與一人公司適用性",
       "path": "tasks/2026-04-04_tools-inventory-review.yaml",
       "risk_level": "low",
+      "schema_issues": [],
       "skill_type": "review",
       "status": "done",
       "task_id": "20260404-R02"
@@ -172,6 +200,7 @@
       "goal": "驗證 Agent Harness v2.0 所有新增組件的可用性與流程完整性",
       "path": "tasks/2026-04-09_system-validation.yaml",
       "risk_level": "low",
+      "schema_issues": [],
       "skill_type": "review",
       "status": "done",
       "task_id": "20260409-001"
@@ -182,6 +211,7 @@
       "goal": "評估是否應將 create_task_card 從 ask 升為 allow，給出有依據的建議排序",
       "path": "tasks/2026-04-15_create-task-card-permission-analysis.yaml",
       "risk_level": "low",
+      "schema_issues": [],
       "skill_type": "analysis",
       "status": "done",
       "task_id": "20260415-A01"
@@ -192,6 +222,7 @@
       "goal": "填補 retro-2026-04-15 發現的三項證據空白：Error Log 範例、Decision Log D005、Token 校準資料表",
       "path": "tasks/2026-04-17_evidence-gap-filling.yaml",
       "risk_level": "low",
+      "schema_issues": [],
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260417-O01"
@@ -202,6 +233,7 @@
       "goal": "將 retro-2026-04-15 晉升為正式 report，並封存 vietnam-expansion 專案",
       "path": "tasks/2026-04-17_retro-graduation-and-archive.yaml",
       "risk_level": "medium",
+      "schema_issues": [],
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260417-O02"
@@ -212,6 +244,7 @@
       "goal": "為 COST_POLICY 加入校準係數章節，並將 WEEKLY_REVIEW_TEMPLATE 標注為 deprecated",
       "path": "tasks/2026-04-17_system-rule-tuning.yaml",
       "risk_level": "medium",
+      "schema_issues": [],
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260417-O03"
@@ -222,6 +255,7 @@
       "goal": "收斂重複的 task card 驗證器為單一事實來源，補 SECURITY 發現性，清理重複 CI",
       "path": "tasks/2026-04-24_cleanup-validator-consolidation.yaml",
       "risk_level": "medium",
+      "schema_issues": [],
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260424-O01"
@@ -232,6 +266,7 @@
       "goal": "為 CLAUDE.md/GLOBAL_RULES 3K token 硬限制加 CI 檢查，並對 Execution Log Schema 落地率低做收斂決策",
       "path": "tasks/2026-04-24_engineering-guardrails.yaml",
       "risk_level": "medium",
+      "schema_issues": [],
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260424-O03"
@@ -242,6 +277,7 @@
       "goal": "將 token-calibration-table 晉升為治理 artifact，調整 INTAKE_FLOW 主路為快速路徑，正式歸檔 WEEKLY_REVIEW_TEMPLATE",
       "path": "tasks/2026-04-24_governance-docs-restructure.yaml",
       "risk_level": "medium",
+      "schema_issues": [],
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260424-O02"
@@ -252,6 +288,7 @@
       "goal": "收斂 PR #55 為前端平台的最小可審核 baseline：穩定 YAML 解析、防 manifest 漂移、補 generator 測試與 CI 護欄",
       "path": "tasks/2026-04-27_frontend-platform-phase0.yaml",
       "risk_level": "medium",
+      "schema_issues": [],
       "skill_type": "ops",
       "status": "review",
       "task_id": "20260427-F01"
@@ -262,6 +299,7 @@
       "goal": "Phase A：補齊規則 enforcement 與觀測自動化（PreToolUse hook、audit log generator、e2e smoke test）",
       "path": "tasks/2026-05-02_phase-a-enforcement-and-observability.yaml",
       "risk_level": "medium",
+      "schema_issues": [],
       "skill_type": "ops",
       "status": "review",
       "task_id": "20260502-A01"
@@ -272,6 +310,7 @@
       "goal": "台灣 AI 產業深度報告：5-7 切片量化、政策法規、敏感性表、12 個月機會日曆",
       "path": "tasks/2026-05-02_taiwan-ai-industry-deep-dive.yaml",
       "risk_level": "low",
+      "schema_issues": [],
       "skill_type": "research",
       "status": "review",
       "task_id": "20260502-T03"
@@ -282,6 +321,7 @@
       "goal": "台灣 AI 產業快速掃描：3 切片 + 3 跨切片趨勢，1 小時內出 executive brief",
       "path": "tasks/2026-05-02_taiwan-ai-industry-quick-scan.yaml",
       "risk_level": "low",
+      "schema_issues": [],
       "skill_type": "research",
       "status": "review",
       "task_id": "20260502-T01"
@@ -292,6 +332,7 @@
       "goal": "台灣 AI 產業標準研究：5 切片含本地 vs 國際玩家比較、成熟度與驅動力分析",
       "path": "tasks/2026-05-02_taiwan-ai-industry-standard.yaml",
       "risk_level": "low",
+      "schema_issues": [],
       "skill_type": "research",
       "status": "review",
       "task_id": "20260502-T02"
@@ -302,6 +343,7 @@
       "goal": "修正 A01 草稿 §1.1 對『README 寫 30+』的錯誤歸因，更新為實際計數，並在 N1 對齊報告中註記 plan 的數據是 snapshot，不更新",
       "path": "tasks/2026-05-09_audit-count-fix.yaml",
       "risk_level": "low",
+      "schema_issues": [],
       "skill_type": "review",
       "status": "review",
       "task_id": "20260509-N02"
@@ -312,6 +354,7 @@
       "goal": "建立 governance metrics 自動採集腳本，月度執行 plan §5.3 4 條關鍵指標（task card 月新增數 / drafts:reports 比 / audit 覆蓋率 / 原生重疊度），輸出報告 + 警訊狀態",
       "path": "tasks/2026-05-09_governance-metrics-automation.yaml",
       "risk_level": "low",
+      "schema_issues": [],
       "skill_type": "ops",
       "status": "review",
       "task_id": "20260509-N05"
@@ -322,6 +365,7 @@
       "goal": "起草 agent-governance plugin 的 manifest skeleton 設計文件，定義每個 command / hook / schema / validator 的介面契約，但不寫實作",
       "path": "tasks/2026-05-09_governance-plugin-skeleton.yaml",
       "risk_level": "low",
+      "schema_issues": [],
       "skill_type": "writing",
       "status": "review",
       "task_id": "20260509-N04"
@@ -332,6 +376,7 @@
       "goal": "把 Harness v2 沉澱的治理思想（可恢復／可審計／可量化）轉寫成可發表的方法論大綱，適用於書、長文系列、課程三種形態",
       "path": "tasks/2026-05-09_harness-methodology-outline.yaml",
       "risk_level": "low",
+      "schema_issues": [],
       "skill_type": "writing",
       "status": "review",
       "task_id": "20260509-W01"
@@ -342,6 +387,7 @@
       "goal": "把 agent-harness 的 CLAUDE.md / .claude/settings.json 切換為引用 agent-governance plugin v0.1.0，同時保證 agent-harness 自身 CI 在 plugin 缺席時仍綠（fallback 路徑）",
       "path": "tasks/2026-05-09_harness-plugin-switch.yaml",
       "risk_level": "medium",
+      "schema_issues": [],
       "skill_type": "ops",
       "status": "pending",
       "task_id": "20260509-N09"
@@ -352,6 +398,7 @@
       "goal": "規劃 Harness v3 重構範圍：砍除與 Claude Code 原生重疊的模組，把治理三件（Audit / Decision Log / DoD / Failure Taxonomy）抽成可獨立發布的治理層",
       "path": "tasks/2026-05-09_harness-v3-governance-extraction.yaml",
       "risk_level": "medium",
+      "schema_issues": [],
       "skill_type": "analysis",
       "status": "review",
       "task_id": "20260509-A01"
@@ -362,6 +409,7 @@
       "goal": "在 N06 bootstrap 進行帶外手動執行的等待期間，修正 runbook 的 test 數量漂移並預製 N06b 切換用的 3 個產物草稿，把 N06b PR 的決策面降到接近零",
       "path": "tasks/2026-05-09_n06-prep-runbook-drift-and-switch-preview.yaml",
       "risk_level": "low",
+      "schema_issues": [],
       "skill_type": "ops",
       "status": "in_progress",
       "task_id": "20260509-N10"
@@ -372,6 +420,7 @@
       "goal": "在 plugin v0.1.0 candidate 推上 agent-governance repo 之前，修掉 Codex 指出的 P1（risk gate 在 output_path 缺席時被略過 → 治理破口）+ P2（gate_completion 對非字串 DoD 入項會 TypeError 崩潰）。屬 plugin tree 內部 hardening，不影響 agent-harness 端",
       "path": "tasks/2026-05-09_n11-plugin-hardening-codex-p1p2.yaml",
       "risk_level": "low",
+      "schema_issues": [],
       "skill_type": "ops",
       "status": "in_progress",
       "task_id": "20260509-N11"
@@ -382,6 +431,7 @@
       "goal": "評估是否在 agent-harness v2.x 啟用 Claude Code 原生 Memory，並產出明確 Go / No-Go / Conditional-Go 建議與條件清單",
       "path": "tasks/2026-05-09_native-memory-evaluation.yaml",
       "risk_level": "low",
+      "schema_issues": [],
       "skill_type": "analysis",
       "status": "review",
       "task_id": "20260509-N07"
@@ -392,6 +442,7 @@
       "goal": "在 agent-harness namespace 試點原生 Memory（symlink 模式），實測 Claude Code 是否真支援指向 repo 內路徑、寫入提示流程、token 預算影響",
       "path": "tasks/2026-05-09_native-memory-poc.yaml",
       "risk_level": "medium",
+      "schema_issues": [],
       "skill_type": "ops",
       "status": "pending",
       "task_id": "20260509-M01"
@@ -402,6 +453,7 @@
       "goal": "把 ai-bubbly-mountain plan 寫進 repo（memory/active_projects/agent-harness/plans/），並對 A01/W01 與 plan §8.1 Task A/B 做逐項對齊，產出對齊報告與 task card 清理",
       "path": "tasks/2026-05-09_plan-alignment.yaml",
       "risk_level": "low",
+      "schema_issues": [],
       "skill_type": "review",
       "status": "review",
       "task_id": "20260509-N01"
@@ -412,6 +464,7 @@
       "goal": "在分支上把 skills/research/SKILL.md 加上原生 Claude Code Skills frontmatter 並建立 .claude/skills/ 註冊路徑，輸出 PoC summary 評估 H1（原生自動路由能否取代 ROUTING_RULES.md）",
       "path": "tasks/2026-05-09_skills-native-registration-poc.yaml",
       "risk_level": "medium",
+      "schema_issues": [],
       "skill_type": "ops",
       "status": "review",
       "task_id": "20260509-N03"
@@ -422,6 +475,7 @@
       "goal": "依 N4 skeleton 真正建立 agent-governance plugin repo（含 plugin.json / 5 commands / 4 schemas / 2 hooks / 2 validators 的最小可運行版本），並把 agent-harness 切到引用該 plugin",
       "path": "tasks/2026-05-09_v3-plugin-repo-bootstrap.yaml",
       "risk_level": "high",
+      "schema_issues": [],
       "skill_type": "ops",
       "status": "review",
       "task_id": "20260509-N06"
@@ -432,9 +486,21 @@
       "goal": "把 W01 第 1 章『為什麼一人公司需要 Agent 治理？』從大綱寫成可發佈的部落格首篇草稿，並附 elevator pitch（單獨可流通版）",
       "path": "tasks/2026-05-09_w01-chapter-one-draft.yaml",
       "risk_level": "low",
+      "schema_issues": [],
       "skill_type": "writing",
       "status": "review",
       "task_id": "20260509-N08"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-11",
+      "goal": "將 frontend/ 看板擴充為「錯誤儀表板」：把 logs/errors/、logs/runs/ 的失敗紀錄、tasks/ 的失敗/被卡任務、Task Card schema 缺漏，整合成可一眼看到錯誤點的互動式 HTML（含 KPI、時間軸、Chart.js 分類圖、可篩選/排序與 drill-down 詳情）",
+      "path": "tasks/2026-05-11_error-dashboard-html.yaml",
+      "risk_level": "medium",
+      "schema_issues": [],
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260511-F02"
     }
   ]
 }

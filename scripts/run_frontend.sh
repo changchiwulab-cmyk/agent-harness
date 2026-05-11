@@ -4,8 +4,8 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PORT="8000"
 NO_GENERATE="false"
-SCRIPT_VERSION="1.4.0"
-LAST_UPDATED="2026-04-27"
+SCRIPT_VERSION="1.5.0"
+LAST_UPDATED="2026-05-11"
 
 print_help() {
   cat <<'HELP'

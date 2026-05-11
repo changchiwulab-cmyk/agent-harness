@@ -21,6 +21,27 @@
 
     <section class="cards" id="summaryCards"></section>
 
+    <a id="errors"></a>
+    <section class="error-dashboard">
+      <h2>錯誤儀表板</h2>
+      <div class="error-kpis">
+        <article class="card kpi" data-kpi="errors"><div class="label">錯誤事件</div><div class="value" id="kpiErrors">…</div></article>
+        <article class="card kpi" data-kpi="gate-fails"><div class="label">Gate 失敗</div><div class="value" id="kpiGateFails">…</div></article>
+        <article class="card kpi" data-kpi="failed-tasks"><div class="label">失敗/封鎖任務</div><div class="value" id="kpiFailedTasks">…</div></article>
+        <article class="card kpi" data-kpi="schema-issues"><div class="label">Schema 缺漏</div><div class="value" id="kpiSchemaIssues">…</div></article>
+      </div>
+      <div class="charts">
+        <div class="chart-box"><canvas id="taxonomyChart"></canvas></div>
+        <div class="chart-box"><canvas id="timelineChart"></canvas></div>
+      </div>
+      <div class="error-controls">
+        <label>類型 <select id="errorTypeFilter"><option value="">全部</option></select></label>
+        <label>Gate <select id="gateFilter"><option value="">全部</option></select></label>
+        <label>排序 <select id="errorSort"><option value="date_desc">日期新→舊</option><option value="date_asc">日期舊→新</option></select></label>
+      </div>
+      <div id="errorList" class="panel"></div>
+    </section>
+
     <main class="grid">
       <section>
         <h2>Task 清單</h2>
