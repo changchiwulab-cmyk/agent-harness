@@ -80,8 +80,8 @@ skill_type: "ops"
 checkpoints:
   - "2026-05-11: worktree /tmp/wt-rebase-70 squash-72 staged 完成；6 衝突已解（5 take theirs + frontend manifest 重生）；全部測試綠"
 actual_tool_calls: 0  # 主動作未執行，僅準備
-result_summary: ""
-completion_time: ""
+result_summary: "外部動作（squash merge #70/#72/#71，2026-05-10 21:29-21:33 UTC）取代本 N12 提案；session 後段修掉 merge 60dc6d0 在 post_task_use.py 留下的 dirty merge debris（P2 hardening 被靜默回退），plugin 28/28、governance 21/21、spec OK、manifest up-to-date。詳 outputs/drafts/2026-05-11_n12-batch-merge-audit.md §8。"
+completion_time: "2026-05-11"
 audit_log_ref: "logs/AUDIT_LOG.md"
 
 # === 前置依賴 ===
