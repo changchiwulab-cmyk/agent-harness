@@ -189,6 +189,68 @@ class TestMetricM4(unittest.TestCase):
         self.assertIn("error", result.details)
 
 
+class TestLoadAuditTaskIds(unittest.TestCase):
+    """Regression: load_audit_task_ids must accept any YAML quoting style.
+
+    The original implementation regexed `^- task_id: "..."` only, so single-
+    quoted or unquoted entries (which check_audit_format.py accepts) would be
+    silently dropped from M3 coverage.
+    """
+
+    def _run_against(self, audit_text: str, tmp_path: Path) -> set[str]:
+        original = gm.AUDIT_LOG
+        try:
+            audit_file = tmp_path / "AUDIT_LOG.md"
+            audit_file.write_text(audit_text, encoding="utf-8")
+            gm.AUDIT_LOG = audit_file
+            return gm.load_audit_task_ids()
+        finally:
+            gm.AUDIT_LOG = original
+
+    def test_picks_up_single_quoted_and_unquoted_ids(self):
+        import tempfile
+        audit = (
+            "# Audit Log\n"
+            "```yaml\n"
+            "- task_id: \"20260501-001\"\n"
+            "  date: \"2026-05-01\"\n"
+            "  status: done\n"
+            "```\n"
+            "```yaml\n"
+            "- task_id: '20260501-002'\n"
+            "  date: '2026-05-01'\n"
+            "  status: done\n"
+            "```\n"
+            "```yaml\n"
+            "- task_id: 20260501-003\n"
+            "  date: 2026-05-01\n"
+            "  status: done\n"
+            "```\n"
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            ids = self._run_against(audit, Path(tmp))
+        self.assertEqual(ids, {"20260501-001", "20260501-002", "20260501-003"})
+
+    def test_skips_empty_template_entry(self):
+        import tempfile
+        audit = (
+            "# Audit Log\n"
+            "```yaml\n"
+            "- task_id: \"\"\n"
+            "  date: \"\"\n"
+            "  status: \"\"\n"
+            "```\n"
+            "```yaml\n"
+            "- task_id: \"20260501-001\"\n"
+            "  date: \"2026-05-01\"\n"
+            "  status: done\n"
+            "```\n"
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            ids = self._run_against(audit, Path(tmp))
+        self.assertEqual(ids, {"20260501-001"})
+
+
 class TestMainExitCode(unittest.TestCase):
     def test_main_runs_against_real_repo(self):
         # Smoke test: should not crash on the actual repo layout.

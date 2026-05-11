@@ -339,12 +339,42 @@
     {
       "approval_needed": true,
       "date": "2026-05-09",
+      "goal": "把 agent-harness 的 CLAUDE.md / .claude/settings.json 切換為引用 agent-governance plugin v0.1.0，同時保證 agent-harness 自身 CI 在 plugin 缺席時仍綠（fallback 路徑）",
+      "path": "tasks/2026-05-09_harness-plugin-switch.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260509-N09"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-09",
       "goal": "規劃 Harness v3 重構範圍：砍除與 Claude Code 原生重疊的模組，把治理三件（Audit / Decision Log / DoD / Failure Taxonomy）抽成可獨立發布的治理層",
       "path": "tasks/2026-05-09_harness-v3-governance-extraction.yaml",
       "risk_level": "medium",
       "skill_type": "analysis",
       "status": "review",
       "task_id": "20260509-A01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-09",
+      "goal": "在 N06 bootstrap 進行帶外手動執行的等待期間，修正 runbook 的 test 數量漂移並預製 N06b 切換用的 3 個產物草稿，把 N06b PR 的決策面降到接近零",
+      "path": "tasks/2026-05-09_n06-prep-runbook-drift-and-switch-preview.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "in_progress",
+      "task_id": "20260509-N10"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-09",
+      "goal": "在 plugin v0.1.0 candidate 推上 agent-governance repo 之前，修掉 Codex 指出的 P1（risk gate 在 output_path 缺席時被略過 → 治理破口）+ P2（gate_completion 對非字串 DoD 入項會 TypeError 崩潰）。屬 plugin tree 內部 hardening，不影響 agent-harness 端",
+      "path": "tasks/2026-05-09_n11-plugin-hardening-codex-p1p2.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "in_progress",
+      "task_id": "20260509-N11"
     },
     {
       "approval_needed": false,
