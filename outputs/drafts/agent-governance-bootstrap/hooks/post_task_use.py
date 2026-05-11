@@ -45,7 +45,6 @@ def gate_schema(card_path: Path) -> tuple[str, str]:
 
 
 def gate_rule(card: dict, deny_tools: set[str]) -> tuple[str, str]:
-    bad = [t for t in (card.get("allowed_tools") or []) if t in deny_tools]
     allowed = card.get("allowed_tools") or []
     if not isinstance(allowed, list):
         return "fail", f"allowed_tools must be a list, got {type(allowed).__name__}"
@@ -57,7 +56,6 @@ def gate_completion(card: dict, output_path: Path) -> tuple[str, str]:
     if not output_path or not output_path.exists():
         return "fail", "output not produced"
     body = output_path.read_text(encoding="utf-8")
-    misses = [line for line in (card.get("definition_of_done") or []) if line not in body]
     dod = card.get("definition_of_done") or []
     if not isinstance(dod, list):
         return "fail", f"definition_of_done must be a list, got {type(dod).__name__}"
@@ -87,7 +85,6 @@ def run(task_card_path: Path, output_path: Path | None, deny_tools: set[str]) ->
     schema = gate_schema(task_card_path)
     rule = gate_rule(card, deny_tools)
     completion = gate_completion(card, output_path) if output_path else ("n/a", "no output path provided")
-    risk = gate_risk(card, output_path) if output_path else ("n/a", "no output path provided")
     risk = gate_risk(card, output_path)
 
     results = dict(zip(

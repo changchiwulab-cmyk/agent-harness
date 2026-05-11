@@ -1,6 +1,6 @@
 # Audit Draft — N12 Batch Merge PR #70 + #72 onto main
 
-**Status：DRAFT — squash 結果已於 worktree 準備完成，待人工授權 force-push + retarget + squash merge**
+**Status：DONE — N12 提案被外部動作取代（#70/#72/#71 已直接 squash merged 進 main）；session 後續修掉 merge 殘留 dirty 程式碼**
 
 **Task Card：** `tasks/2026-05-11_n12-batch-merge-70-72.yaml`
 **準備日期：** 2026-05-11
@@ -96,3 +96,47 @@ git push --force-with-lease=claude/plugin-v0.1.0-hardening-codex-p1p2:0dd128f3e8
 ---
 
 **本草稿待 human 審核後升正至 `logs/AUDIT_LOG.md` 並寫入 `logs/runs/2026-05-11_n12.yaml`（依 `system/EXECUTION_LOG_SCHEMA.yaml`）。**
+
+---
+
+## 8. 實際結果（post-N12 update，2026-05-11 session 後段）
+
+N12 提案（force-push + retarget + squash merge #72，close #70）**並未執行**。在 session 修 PR #75 CI failure 期間發現 origin 已有外部動作：
+
+### 8.1 外部 merge 軌跡
+
+| Commit on `origin/main` | PR | 來源 |
+|---|---|---|
+| `5828261` | #70 | squash merged 2026-05-10 21:29 UTC |
+| `3c59b8b` | #72 | squash merged 2026-05-10 21:31 UTC |
+| `7eaac46` | #71 | squash merged 2026-05-10 21:33 UTC |
+
+GitHub squash-merge 在 web UI / API 可繞過 `mergeable_state: dirty`（squash 自動做三方 merge），這解釋了為何 N12 提案被視為冗餘 — 外部已直接走 squash 路徑完成。
+
+### 8.2 Merge 殘留 dirty code 修正
+
+外部 merge `60dc6d0`（main → branch）對 `outputs/drafts/agent-governance-bootstrap/hooks/post_task_use.py` 的衝突解法是「兩邊版本都保留」：
+
+- `gate_rule`：保留舊 `bad = ...` + 新 `allowed = ...; bad = ...` — 新版覆寫舊版，functional 但 dirty
+- `gate_completion` line 60：保留舊 `misses = [line for line in (...) if line not in body]` 在新版 type guard 之前 — **執行時 OLD 行先跑、非字串 DoD 直接 TypeError**，#72 的 P2 hardening 等於被回退
+- `run()`：保留舊 `risk = gate_risk(card, output_path) if output_path else (...)` + 新 `risk = gate_risk(card, output_path)` — 新版覆寫舊版，functional 但 dirty
+
+PR #75 validate-spec CI 失敗的後續驗證跑 plugin self-tests 時，`test_completion_gate_fails_on_non_string_dod_items` 觸發上述 TypeError → 1 errors。
+
+修正：本 session 額外 commit 清掉三處舊版殘留，僅保留 hardened 版。
+
+### 8.3 修正後驗證
+
+| Gate | 命令 | 結果 |
+|---|---|---|
+| Plugin hooks self-tests | `python3 -m unittest hooks.test_hooks` | 14/14 OK |
+| Plugin validators self-tests | `python3 -m unittest validators.test_validators` | 14/14 OK |
+| Governance metrics tests | `python3 -m unittest scripts.test_governance_metrics` | 21/21 OK |
+| Spec consistency | `ruby scripts/check_spec_consistency.rb` | OK |
+| Frontend manifest | `python3 scripts/generate_frontend_manifest.py --check` | OK: up to date (35 tasks) |
+
+### 8.4 教訓
+
+- 外部 web-UI squash merge 與本 session 同時進行，session 對 GitHub state 的快取會延遲。後續再遇 `mergeable_state: dirty` 應主動 fetch + 比對 main HEAD 而非僅信任 list_pull_requests state。
+- Squash merge 對「不可三方解掉」的衝突有時會以「保留兩邊」交付一個編譯但語意破損的檔案；本案是 P2 hardening 被靜默回退。CI 必須能跑 plugin self-tests，否則此類退化進到 main 不會被擋。建議 `.github/workflows/spec-consistency.yml` 加 plugin self-tests step（M02 候補）。
+- N12 card 與本 audit 的價值轉為「外部動作後的 forensics 紀錄」而非執行授權，已調整 status: review → done。
