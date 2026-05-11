@@ -3,7 +3,7 @@
 # 但 #70/#72 vs 已 merge 的 #69 出現 6 個衝突；經評估 #72 為 #70 superset，
 # 走「skip #70 (superseded) + 把 #72 內容 squash 進 main」最乾淨。
 
-task_id: "20260509-N12"
+task_id: "20260511-N12"
 date: "2026-05-11"
 status: "review"  # squash result prepared in worktree, waiting for human approval to push
 

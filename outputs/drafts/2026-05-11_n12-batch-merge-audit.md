@@ -2,7 +2,7 @@
 
 **Status：DRAFT — squash 結果已於 worktree 準備完成，待人工授權 force-push + retarget + squash merge**
 
-**Task Card：** `tasks/2026-05-09_n12-batch-merge-70-72.yaml`
+**Task Card：** `tasks/2026-05-11_n12-batch-merge-70-72.yaml`
 **準備日期：** 2026-05-11
 **執行者：** Claude (agent-harness session)
 **Risk level：** high（force-push + main 改動 + 跨 PR 拓樸重整）
@@ -81,7 +81,7 @@ git push --force-with-lease=claude/plugin-v0.1.0-hardening-codex-p1p2:0dd128f3e8
 
 ## 6. Rollback 計畫
 
-見 Task Card `tasks/2026-05-09_n12-batch-merge-70-72.yaml` § rollback。重點：
+見 Task Card `tasks/2026-05-11_n12-batch-merge-70-72.yaml` § rollback。重點：
 
 - Force-push 可逆（保留原 SHA `0dd128f` 於本 audit）
 - Base retarget 可逆（直接 PATCH 回原 base）
