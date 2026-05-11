@@ -443,7 +443,7 @@
       "path": "tasks/2026-05-11_n12-batch-merge-70-72.yaml",
       "risk_level": "high",
       "skill_type": "ops",
-      "status": "review",
+      "status": "done",
       "task_id": "20260511-N12"
     }
   ]
