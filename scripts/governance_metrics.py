@@ -262,6 +262,15 @@ def metric_m4(overlap_data: dict) -> MetricResult:
             status="alert",
             details={"error": "missing input"},
         )
+    if isinstance(pct, bool) or not isinstance(pct, (int, float)):
+        return MetricResult(
+            id="M4",
+            name="Claude Code 原生功能重疊度",
+            current=f"(invalid type: {type(pct).__name__})",
+            threshold="> 50% → alert；40-50% → warn",
+            status="alert",
+            details={"error": f"aggregate_estimate_pct must be int or float, got {type(pct).__name__}: {pct!r}"},
+        )
     if pct > 50:
         status = "alert"
     elif pct >= 40:
