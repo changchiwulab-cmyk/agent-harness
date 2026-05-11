@@ -1,0 +1,110 @@
+# Task Card — N12 batch merge PR #70 + #72 onto main (post-#69)
+# 來源：使用者 2026-05-11 確認 #69 merge 後仍要把 #70+#72 內容收進 main，
+# 但 #70/#72 vs 已 merge 的 #69 出現 6 個衝突；經評估 #72 為 #70 superset，
+# 走「skip #70 (superseded) + 把 #72 內容 squash 進 main」最乾淨。
+
+task_id: "20260511-N12"
+date: "2026-05-11"
+status: "done"  # external action (user/automation) merged #70 #72 #71 directly; post-merge debris fix applied
+
+# === 任務定義 ===
+goal: "把 PR #72 head (claude/plugin-v0.1.0-hardening-codex-p1p2) 內含的 plugin v0.1.0 hardening 內容（同時涵蓋 PR #70 全部 unique 內容：N06 runbook、N06b card）以單一 squash commit 帶進 main，#70 標 superseded by #72 後關閉。#71 留待 main 更新後再 rebase 處理。"
+
+context: |
+  時序（2026-05-11）：
+    1. #69 (claude/complete-test-plan-VMGDj) squash merged 到 main — 含 plugin v0.1.0 candidate
+       全部 test plan 內容
+    2. #70 (claude/setup-agent-governance-v0.1.0-87beH, 25 commits) 與 main 衝突 — 因為 #69 已帶
+       入大量同檔修改
+    3. #72 (claude/plugin-v0.1.0-hardening-codex-p1p2, stacked on #70 +1 commit) 同樣衝突，但
+       內容是 #70 的 strict superset（Codex P1 risk gate + P2 DoD type guard）
+    4. 經 worktree 試算：merge --squash #72 onto main 產出 6 個衝突，全部可用「take theirs +
+       重生 frontend manifest」乾淨解掉，淨 diff 9 files / +546 / -9
+    5. Plugin self-tests 28/28、governance metrics 21/21、2 張新 card validate ✅、spec OK、
+       manifest up-to-date — 全綠
+
+  原 verbal approval 是「#69 → #70 → #72 → #71 全 squash」，本 card 是 topology 變更後（#69 已
+  merge 改變 base、#72 為 #70 superset）的修正方案，需重新確認。
+
+  Signing infra issue：本 session 期間 environment-runner code-sign server 持續回 400
+  `missing source`，無法在 sandbox commit。實際 commit + push 動作待 infra 恢復或人工執行。
+
+input_data:
+  - "/tmp/wt-rebase-70 (worktree, branch squash-72, staged squash result)"
+  - "https://github.com/changchiwulab-cmyk/agent-harness/pull/70"
+  - "https://github.com/changchiwulab-cmyk/agent-harness/pull/72"
+  - "outputs/drafts/2026-05-11_n12-batch-merge-audit.md (執行紀錄草稿)"
+
+# === 完成標準 ===
+definition_of_done:
+  - "PR #72 head branch force-pushed 為 squash-72 內容（單一 commit 基於 main）"
+  - "PR #72 base 從 claude/setup-agent-governance-v0.1.0-87beH 改為 main"
+  - "PR #72 squash merged 進 main，single commit 包含 N06 runbook + N06b card + N11 card + plugin hardening"
+  - "PR #70 close as superseded by #72，留 comment 指 superseding commit SHA"
+  - "main 上 plugin self-tests 28/28 綠 (hooks 14 + validators 14)"
+  - "main 上 governance metrics tests 21/21 綠"
+  - "main 上 ruby scripts/check_spec_consistency.rb 通過"
+  - "main 上 python3 scripts/generate_frontend_manifest.py --check 通過"
+  - "audit log 正本寫入 logs/AUDIT_LOG.md（從 outputs/drafts/2026-05-11_n12-batch-merge-audit.md 升正）"
+  - "#71 後續：待 main 更新後 rebase；本 card 不負責，另開 N13"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-05-11_n12-batch-merge-audit.md"
+
+# === 風險與權限 ===
+risk_level: "high"  # force-push 既有 PR branch + 改動 main + 跨 3 PR 拓樸重整
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+  - "github_mcp_pr_read"
+  - "github_mcp_pr_update"      # retarget base
+  - "github_mcp_pr_merge"       # squash merge
+  - "github_mcp_issue_write"    # close #70 comment
+  - "push_branch"               # force-push #72 head
+
+# === 成本控制 ===
+max_tool_calls: 30
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄 ===
+checkpoints:
+  - "2026-05-11: worktree /tmp/wt-rebase-70 squash-72 staged 完成；6 衝突已解（5 take theirs + frontend manifest 重生）；全部測試綠"
+actual_tool_calls: 0  # 主動作未執行，僅準備
+result_summary: "外部動作（squash merge #70/#72/#71，2026-05-10 21:29-21:33 UTC）取代本 N12 提案；session 後段修掉 merge 60dc6d0 在 post_task_use.py 留下的 dirty merge debris（P2 hardening 被靜默回退），plugin 28/28、governance 21/21、spec OK、manifest up-to-date。詳 outputs/drafts/2026-05-11_n12-batch-merge-audit.md §8。"
+completion_time: "2026-05-11"
+audit_log_ref: "logs/AUDIT_LOG.md"
+
+# === 前置依賴 ===
+preconditions:
+  - "#69 已 merge 進 main (commit on main: 4d34e92 or similar)"
+  - "#70、#72 仍 open"
+  - "signing infra 恢復，可正常 sign commits"
+
+# === Rollback ===
+rollback: |
+  本 card 動作分三段，各有獨立 rollback：
+
+  (1) Force-push #72 branch:
+      - 原 head 0dd128f 已記於 audit；若需復原 `git push --force-with-lease origin
+        0dd128f3e8a33568a4836a7bba0f1d6d55cd3dfd:refs/heads/claude/plugin-v0.1.0-hardening-codex-p1p2`
+
+  (2) Retarget #72 base 至 main:
+      - 可逆，重新 PATCH PR base 回 claude/setup-agent-governance-v0.1.0-87beH
+
+  (3) Squash merge #72:
+      - 不可直接逆轉。Rollback = `git revert <squash-commit-sha>` 在 main 上新增 revert commit。
+        重新打開 #70/#72 PR 不適用（GitHub 不允許重開 merged-via-squash PR），需以新 branch
+        cherry-pick 還原。
+
+  (4) Close #70:
+      - 完全可逆（GitHub UI reopen）。

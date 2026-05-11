@@ -55,6 +55,13 @@ class TestValidateTaskCard(unittest.TestCase):
         errors = vtc.validate(path)
         self.assertTrue(any("definition_of_done" in e for e in errors), errors)
 
+    def test_non_string_dod_item_fails(self):
+        bad = {**VALID_CARD, "definition_of_done": ["alpha", 42, ["nested"]]}
+        path = self._write(bad)
+        errors = vtc.validate(path)
+        self.assertTrue(any("definition_of_done[1]" in e and "int" in e for e in errors), errors)
+        self.assertTrue(any("definition_of_done[2]" in e and "list" in e for e in errors), errors)
+
     def test_invalid_skill_type_fails(self):
         bad = {**VALID_CARD, "skill_type": "marketing"}
         path = self._write(bad)

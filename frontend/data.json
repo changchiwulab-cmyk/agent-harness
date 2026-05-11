@@ -435,6 +435,16 @@
       "skill_type": "writing",
       "status": "review",
       "task_id": "20260509-N08"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-11",
+      "goal": "把 PR #72 head (claude/plugin-v0.1.0-hardening-codex-p1p2) 內含的 plugin v0.1.0 hardening 內容（同時涵蓋 PR #70 全部 unique 內容：N06 runbook、N06b card）以單一 squash commit 帶進 main，#70 標 superseded by #72 後關閉。#71 留待 main 更新後再 rebase 處理。",
+      "path": "tasks/2026-05-11_n12-batch-merge-70-72.yaml",
+      "risk_level": "high",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260511-N12"
     }
   ]
 }

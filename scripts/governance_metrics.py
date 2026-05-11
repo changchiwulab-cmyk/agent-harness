@@ -86,6 +86,14 @@ def load_task_cards() -> list[dict]:
 
 
 def load_audit_task_ids() -> set[str]:
+    """Return set of task_ids that have an entry in AUDIT_LOG.md (excluding empty format example)."""
+    if not AUDIT_LOG.exists():
+        return set()
+    ids = set()
+    for line in AUDIT_LOG.read_text(encoding="utf-8").splitlines():
+        m = re.match(r'^- task_id:\s*"([^"]+)"', line)
+        if m and m.group(1):
+            ids.add(m.group(1))
     """Return set of task_ids that have an entry in AUDIT_LOG.md (excluding empty format example).
 
     Parses ```yaml fenced blocks the same way validators/check_audit_format.py does,
@@ -253,6 +261,15 @@ def metric_m4(overlap_data: dict) -> MetricResult:
             threshold="> 50% → alert；40-50% → warn",
             status="alert",
             details={"error": "missing input"},
+        )
+    if isinstance(pct, bool) or not isinstance(pct, (int, float)):
+        return MetricResult(
+            id="M4",
+            name="Claude Code 原生功能重疊度",
+            current=f"(invalid type: {type(pct).__name__})",
+            threshold="> 50% → alert；40-50% → warn",
+            status="alert",
+            details={"error": f"aggregate_estimate_pct must be int or float, got {type(pct).__name__}: {pct!r}"},
         )
     if pct > 50:
         status = "alert"
