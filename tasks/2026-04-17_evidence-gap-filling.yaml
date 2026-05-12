@@ -36,6 +36,7 @@ approval_needed: false
 allowed_tools:
   - "file_read"
   - "file_write"
+  - "bash"
 
 # === 成本控制 ===
 max_tool_calls: 10
