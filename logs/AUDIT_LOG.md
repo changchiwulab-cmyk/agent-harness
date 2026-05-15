@@ -754,3 +754,28 @@
   estimated_tokens: "~18K"
   notes: "6 大類別 20+ 工具。web search 3 輪全部用完。outputs/drafts/ 因 .gitignore 不入版控，Task Card 狀態記錄在 YAML。"
 ```
+
+---
+
+```yaml
+- task_id: "20260515-001"
+  date: "2026-05-15"
+  skill_type: "ops"
+  goal: "建立並執行測試計畫，驗證前端與後端順利運行"
+  status: "done"
+  model_used: "claude-sonnet-4-6（測試執行子代理）；claude-opus（計畫/驗證）"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 5
+    - tool_name: "bash"
+      call_count: 8
+    - tool_name: "agent_delegate"
+      call_count: 1
+  checkpoints: 2
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260515-001_frontend-backend-test-plan.md"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "前端/後端皆順利運行。Sonnet 4.6 子代理執行 9 項，初次 8/9（B3 drift fail）；B3 根因為本任務新增 Task Card 致 data.json 落後（git diff 僅 10 insertions），重生並提交 data.json 後 --check exit 0 → 9/9。4 層 gate 全 pass。免寫 logs/runs/（done、checkpoints<3、risk low）。"
+```

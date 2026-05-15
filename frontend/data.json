@@ -435,6 +435,16 @@
       "skill_type": "writing",
       "status": "review",
       "task_id": "20260509-N08"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-15",
+      "goal": "建立並執行測試計畫，驗證專案前端（靜態看板）與後端（data.json 產生器）皆可順利運行",
+      "path": "tasks/2026-05-15_frontend-backend-runtime-test-plan.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260515-001"
     }
   ]
 }
