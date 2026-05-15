@@ -343,7 +343,7 @@
       "path": "tasks/2026-05-09_harness-plugin-switch.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "pending",
+      "status": "done",
       "task_id": "20260509-N09"
     },
     {
@@ -363,7 +363,7 @@
       "path": "tasks/2026-05-09_n06-prep-runbook-drift-and-switch-preview.yaml",
       "risk_level": "low",
       "skill_type": "ops",
-      "status": "in_progress",
+      "status": "done",
       "task_id": "20260509-N10"
     },
     {

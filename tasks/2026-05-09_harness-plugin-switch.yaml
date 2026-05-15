@@ -3,7 +3,7 @@
 
 task_id: "20260509-N09"
 date: "2026-05-09"
-status: "pending"   # 等使用者完成 N06 bootstrap runbook（agent-governance v0.1.0 push 完成）後核准本卡
+status: "done"   # 2026-05-15 使用者回報 repo 已建好 + 明示核准 N06b 後執行
 
 # === 任務定義 ===
 goal: "把 agent-harness 的 CLAUDE.md / .claude/settings.json 切換為引用 agent-governance plugin v0.1.0，同時保證 agent-harness 自身 CI 在 plugin 缺席時仍綠（fallback 路徑）"
@@ -70,10 +70,22 @@ max_web_searches: 2
 skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - commit: "5082db6"
+    stage: "N06b 切換：套用 N10 預製產物到正本 + D007 followup"
+actual_tool_calls: 14
+result_summary: |
+  使用者 2026-05-15 回報「repo 已建好 + 核准 N06b」後執行。套用 N10 預製於
+  outputs/drafts/n06b-switch-preview/ 的 3 產物到正本位置。DoD 9 項：
+  #2/#3/#4/#5/#6/#7/#8/#9 全通過（見 outputs/drafts/2026-05-09_n06b-harness-plugin-switch.md）。
+  #1（agent-governance v0.1.0 存在）由使用者具結；本 agent GitHub scope 限 agent-harness
+  單一 repo + 無 gh CLI，無法獨立查驗，但切換安全性不依賴它（plugin 缺席自動降回
+  scripts/permissions_guard.py，CI/行為不受影響）。
+  引用方式：npm-style 原生 ~/.claude/plugins/agent-governance/；agent-harness 不 vendor /
+  不 submodule，僅 runtime 由 check_plugin_present.sh 偵測路由（D007 解耦對齊）。
+  雙路徑實測：缺席→fallback block（exit 2）；模擬 plugin 在→走 plugin hook（exit 0）。
+  context budget 1287/3000；spec CI + 全測試套件無回歸。
+completion_time: "2026-05-15"
 audit_log_ref: "logs/AUDIT_LOG.md"
 
 # === 前置依賴（自我檢查）===

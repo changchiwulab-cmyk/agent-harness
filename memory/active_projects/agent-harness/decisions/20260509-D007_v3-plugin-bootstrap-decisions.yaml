@@ -58,3 +58,4 @@ risk: "high — 涉及新 repo 建立、跨 session 切換工作流。緩解：b
 revisit_trigger: "v0.2.0 plugin 達到 agent-harness 全部 system/ 規格 round-trip 後評估轉 public；或下個 session 試行 bootstrap 後發現非預期問題"
 related_task: "20260509-N06"
 status: "active"
+followup_done: "20260509-N09"   # agent-harness 端切換引用 plugin 完成（N06b）；轉 public 仍待 v0.2.0

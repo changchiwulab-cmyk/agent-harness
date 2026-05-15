@@ -33,6 +33,64 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260509-N09"
+  date: "2026-05-15"
+  skill_type: "ops"
+  goal: "N06b：agent-harness 切換引用 agent-governance plugin（保留 fallback）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "write_drafts"
+      call_count: 1
+    - tool_name: "modify_settings_json"
+      call_count: 1
+    - tool_name: "modify_claude_md"
+      call_count: 1
+    - tool_name: "run_tests"
+      call_count: 3
+    - tool_name: "git_commit_checkpoint"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/2026-05-09_n06b-harness-plugin-switch.md"
+  error_summary: ""
+  estimated_tokens: "~20K"
+  notes: "使用者 2026-05-15 明示核准 + 回報 repo 已建好。套用 N10 預製 3 產物到正本（settings.json/CLAUDE.md/check_plugin_present.sh）+ D007 followup_done。DoD #2-#9 通過；#1（plugin v0.1.0 存在）使用者具結，agent 因 GitHub scope 限 agent-harness 無法獨立查驗，但切換安全不依賴它（缺席自動 fallback）。雙路徑實測綠；context 1287/3000；無回歸。"
+```
+
+---
+
+```yaml
+- task_id: "20260509-N10"
+  date: "2026-05-15"
+  skill_type: "ops"
+  goal: "收尾 N10：驗證 runbook 漂移修正 + N06b 切換 4 產物，補登 status/audit/manifest"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "run_tests"
+      call_count: 3
+    - tool_name: "write_drafts"
+      call_count: 1
+    - tool_name: "git_commit_checkpoint"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/n06b-switch-preview/README.md"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "主產物（Lane A runbook 校正＝28、Lane B 4 產物）已於 7eaac46 / PR #71 完成；本次為收尾驗證 + metadata 補登。DoD 5/5：#1-#4 通過（#1 實測 hooks 14+validators 14=28，卡上原估 26 係 PR #72 加 regression 前的預測，runbook 維持 28 不回改）；#5 依硬規則 2 改草稿交付 outputs/drafts/2026-05-09_n10_pr70-comment.md，PR 留言不自動張貼。依 D006 低風險不寫 logs/runs/。"
+```
+
+---
+
+```yaml
 - task_id: "20260509-M01"
   date: "2026-05-09"
   skill_type: "ops"
