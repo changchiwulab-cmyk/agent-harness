@@ -20,14 +20,29 @@ jobs:
         with:
           ruby-version: '3.2'
 
+      - name: Install RuboCop
+        run: gem install rubocop --no-document
+
       - name: Ruby syntax check
         run: ruby -c scripts/check_spec_consistency.rb
 
       - name: Ruby unit tests
         run: ruby scripts/test_check_spec_consistency.rb
 
+      - name: Ruby dual-path syntax check
+        run: ruby -c scripts/check_dual_path_categories.rb
+
+      - name: RuboCop dual-path scripts
+        run: rubocop --force-exclusion scripts/check_dual_path_categories.rb scripts/test_check_dual_path_categories.rb
+
+      - name: Ruby dual-path unit tests
+        run: ruby scripts/test_check_dual_path_categories.rb
+
       - name: Spec consistency check
         run: scripts/check_spec_consistency.rb
+
+      - name: Validate dual-path run categories
+        run: scripts/check_dual_path_categories.rb
 
       - name: YAML parse check
         run: ruby -e 'require "yaml"; Dir.glob("**/*.yaml").each{|p| YAML.load_file(p)}; puts "ALL_YAML_OK"'
