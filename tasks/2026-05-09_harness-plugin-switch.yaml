@@ -71,7 +71,7 @@ skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
 checkpoints:
-  - commit: ""                      # backfill: 20260515-N09 切換 commit hash
+  - commit: "5082db6"
     stage: "N06b 切換：套用 N10 預製產物到正本 + D007 followup"
 actual_tool_calls: 14
 result_summary: |
