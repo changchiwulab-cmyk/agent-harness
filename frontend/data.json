@@ -443,7 +443,7 @@
       "path": "tasks/2026-05-15_frontend-backend-runtime-test-plan.yaml",
       "risk_level": "low",
       "skill_type": "ops",
-      "status": "pending",
+      "status": "done",
       "task_id": "20260515-001"
     }
   ]
