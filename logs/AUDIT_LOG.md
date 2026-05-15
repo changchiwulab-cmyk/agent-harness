@@ -33,6 +33,33 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260509-N10"
+  date: "2026-05-15"
+  skill_type: "ops"
+  goal: "收尾 N10：驗證 runbook 漂移修正 + N06b 切換 4 產物，補登 status/audit/manifest"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "run_tests"
+      call_count: 3
+    - tool_name: "write_drafts"
+      call_count: 1
+    - tool_name: "git_commit_checkpoint"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/n06b-switch-preview/README.md"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "主產物（Lane A runbook 校正＝28、Lane B 4 產物）已於 7eaac46 / PR #71 完成；本次為收尾驗證 + metadata 補登。DoD 5/5：#1-#4 通過（#1 實測 hooks 14+validators 14=28，卡上原估 26 係 PR #72 加 regression 前的預測，runbook 維持 28 不回改）；#5 依硬規則 2 改草稿交付 outputs/drafts/2026-05-09_n10_pr70-comment.md，PR 留言不自動張貼。依 D006 低風險不寫 logs/runs/。"
+```
+
+---
+
+```yaml
 - task_id: "20260509-M01"
   date: "2026-05-09"
   skill_type: "ops"
