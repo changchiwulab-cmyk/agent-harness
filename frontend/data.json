@@ -343,7 +343,7 @@
       "path": "tasks/2026-05-09_harness-plugin-switch.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "pending",
+      "status": "done",
       "task_id": "20260509-N09"
     },
     {
