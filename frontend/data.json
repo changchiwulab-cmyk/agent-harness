@@ -437,6 +437,16 @@
       "task_id": "20260509-N08"
     },
     {
+      "approval_needed": true,
+      "date": "2026-05-15",
+      "goal": "把 logs/AUDIT_LOG.md 從手寫格式遷移為 generate_audit_log.py 的 AUTO/MANUAL 結構，零遺失保留 31 筆人工備註，並接上 Task Card↔AUDIT_LOG drift 的 commit 硬擋",
+      "path": "tasks/2026-05-15_audit-integrity.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260515-003"
+    },
+    {
       "approval_needed": false,
       "date": "2026-05-15",
       "goal": "建立並執行測試計畫，驗證專案前端（靜態看板）與後端（data.json 產生器）皆可順利運行",
