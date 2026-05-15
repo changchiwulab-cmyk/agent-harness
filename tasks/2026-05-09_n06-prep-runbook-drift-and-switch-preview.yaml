@@ -71,7 +71,7 @@ skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
 checkpoints:
-  - commit: ""                      # backfill: checkpoint: 20260515-N10 收尾 commit hash
+  - commit: "cc06fba"
     stage: "N10 收尾：DoD 驗證 + Task Card/audit 更新"
 actual_tool_calls: 13
 result_summary: |
