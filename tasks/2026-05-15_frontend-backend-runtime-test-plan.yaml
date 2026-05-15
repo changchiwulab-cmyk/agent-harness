@@ -1,0 +1,79 @@
+# Task Card — 前端 / 後端執行測試計畫
+# 命名規則：YYYY-MM-DD_[簡述].yaml
+
+task_id: "20260515-001"
+date: "2026-05-15"
+status: "pending"              # pending → in_progress → checkpoint → review → done / failed
+
+# === 任務定義 ===
+goal: "建立並執行測試計畫，驗證專案前端（靜態看板）與後端（data.json 產生器）皆可順利運行"
+context: |
+  使用者要求做一個測試計畫並立即執行，確認專案前端與後端能順利運行；
+  測試執行改由 Sonnet 4.6 子代理（Agent model=sonnet）跑。
+
+  專案架構（盤點結果）：
+    - 前端：frontend/{index.html, app.js, styles.css, data.json}，
+      靜態站，由 scripts/run_frontend.sh 透過 python3 -m http.server 提供。
+      app.js 讀 ./data.json 渲染 summary / timeline / log 三個 panel。
+    - 後端：scripts/generate_frontend_manifest.py，從 tasks/、logs/runs/、
+      memory/active_projects/*/decisions/ 解析後序列化為 frontend/data.json；
+      支援 --check（drift 偵測）。既有測試：
+      scripts/test_generate_frontend_manifest.py（unittest）。
+    - 環境：Python 3.11、PyYAML 已具備；pytest 未安裝（測試以
+      python3 -m unittest 執行）。
+
+  限制：PERMISSIONS.yaml deny 含 spawn_background_process。前端伺服器測試
+  必須以 timeout 包覆並於探測後確實關閉，不得留下常駐背景程序。
+
+input_data:
+  - "frontend/index.html"
+  - "frontend/app.js"
+  - "frontend/data.json"
+  - "scripts/run_frontend.sh"
+  - "scripts/generate_frontend_manifest.py"
+  - "scripts/test_generate_frontend_manifest.py"
+  - "system/PERMISSIONS.yaml"
+
+# === 完成標準（最重要的欄位）===
+definition_of_done:
+  - "Task Card 通過 system/validate_task_card.py（exit 0）"
+  - "測試計畫文件產出至 outputs/drafts/，內容含：前端/後端定義、測試項目清單、每項的指令與預期結果與通過標準、環境前提、限制（背景程序 deny）"
+  - "後端單元測試實際執行：python3 -m unittest（scripts/test_generate_frontend_manifest.py）全數通過"
+  - "後端 drift 檢查實際執行：python3 scripts/generate_frontend_manifest.py --check 回傳 exit 0（data.json 與來源一致）"
+  - "前端執行驗證：以 timeout 包覆短暫啟動 http.server，curl /frontend/index.html 與 /frontend/data.json 皆 HTTP 200、data.json 為合法 JSON，驗證後伺服器確實關閉（無殘留背景程序）"
+  - "測試執行由 Sonnet 4.6 子代理（Agent model=sonnet）完成；pass/fail 與輸出摘要回填測試計畫文件"
+  - "四層 gate（schema → rule → completion → risk）結果記錄；logs/AUDIT_LOG.md 新增 1 筆；若 status 為 failed/partial 或 checkpoints >= 3 則依 EXECUTION_LOG_SCHEMA 寫 logs/runs/"
+  - "全程不刪除任何檔案、不執行對外動作、不留下背景程序（符合 PERMISSIONS deny 清單）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260515-001_frontend-backend-test-plan.md"
+
+# === 風險與權限 ===
+risk_level: "low"              # 純讀取 + 跑既有測試 + 短暫本地伺服器探測 + 草稿輸出
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "bash"
+  - "write_drafts"
+  - "write_logs"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 30             # ops 校準係數 1.56（>=1.5）→ 較基準上調一檔
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
