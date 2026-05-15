@@ -779,3 +779,26 @@
   estimated_tokens: "~14K"
   notes: "前端/後端皆順利運行。Sonnet 4.6 子代理執行 9 項，初次 8/9（B3 drift fail）；B3 根因為本任務新增 Task Card 致 data.json 落後（git diff 僅 10 insertions），重生並提交 data.json 後 --check exit 0 → 9/9。4 層 gate 全 pass。免寫 logs/runs/（done、checkpoints<3、risk low）。"
 ```
+
+---
+
+```yaml
+- task_id: "20260515-002"
+  date: "2026-05-15"
+  skill_type: "review"
+  goal: "審查專案目前完整度與缺點，對照 0502 分析評估進展"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 5
+    - tool_name: "bash"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260515-002_project-completeness-review.md"
+  error_summary: ""
+  estimated_tokens: "~17K"
+  notes: "完整度：治理骨架 ~90%、自我執行/改善系統 ~55%。0502 進展：A1 runtime hook + A3 e2e 已落地（①部分解、⑧已解）；規格≠執行、學習開環、前端非控制面、v3 半遷移仍在。活體症狀 18/35 卡塞 review、drafts 24:reports 2。納入本 session 第一手 data.json drift footgun 證據。4 gate 全 pass。"
+```
