@@ -12,7 +12,7 @@ date: '2026-05-15'
 skill_type: ops
 goal: 把 logs/AUDIT_LOG.md 從手寫格式遷移為 generate_audit_log.py 的 AUTO/MANUAL 結構，零遺失保留 31
   筆人工備註，並接上 Task Card↔AUDIT_LOG drift 的 commit 硬擋
-status: review
+status: done
 risk_level: medium
 approval_needed: true
 output_path: outputs/drafts/20260515-003_phase0-audit-integrity-summary.md
@@ -26,8 +26,7 @@ checkpoints:
 actual_tool_calls: 27
 result_summary: DoD 9/9 達成。AUDIT_LOG 遷移為 AUTO(37)+人工備註(31)；33 個保留欄位字串 0 遺失，--check
   exit 0。覆蓋率差集揭露先前 6/37 卡漏 audit（self-reporting gap 證據）。drift guard 掛入 settings.json（warn
-  預設，使用者選 warn 一輪再切 block），CI 端硬擋。全測試綠（migrate 4/guard 6/e2e 4 + 既有）。等人工審閱 settings.json/CI
-  兩項 ask 變更後轉 done。
+  預設），CI 端硬擋。全測試綠（migrate 4/guard 6/e2e 4 + 既有）。CI 於 2030abc 全綠。兩項 ask 變更（settings.json/CI）經人工核准（APR-20260515-001），status=done。
 completion_time: '2026-05-15'
 ```
 
