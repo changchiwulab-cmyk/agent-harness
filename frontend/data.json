@@ -443,7 +443,7 @@
       "path": "tasks/2026-05-16_frontend-phase0-closure-and-hardening.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "review",
+      "status": "done",
       "task_id": "20260516-F02"
     },
     {
