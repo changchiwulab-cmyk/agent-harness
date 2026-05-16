@@ -21,7 +21,7 @@ input_data:
 
 # === 完成標準 ===
 definition_of_done:
-  - "tests/e2e/test_dummy_task_smoke.py 新增 test：low-risk dummy（risk_level=low）→ gate_risk 允許 outputs/reports/ 路徑"
+  - "tests/e2e/test_dummy_task_smoke.py 新增 golden-path test：low-risk 自動任務（無核准）走完四層 gate，產物落在 outputs/drafts/（PERMISSIONS：low == 草稿產出）；並新增 gate_approval 契約，斷言寫入 outputs/reports/ 之未授權變體必須 fail、授權變體（approval_needed + write_reports）才 pass"
   - "新增 test：依 EXECUTION_LOG_SCHEMA.yaml execution_log 必填欄位驗證一筆合成 execution log，且 gate_results 四欄皆 pass"
   - "既有 4 個 test 全部仍 pass，無回歸"
   - "python3 tests/e2e/test_dummy_task_smoke.py 在本機與 CI 皆 exit 0"
@@ -54,7 +54,9 @@ skill_type: "ops"
 # === 執行紀錄（由 agent 填寫）===
 checkpoints:
   - "4dc84dd 建立兩張 Task Card（完成拆解）"
-actual_tool_calls: 10
-result_summary: "DoD 5/5 通過。test_dummy_task_smoke.py 4→6 test（+ low-risk reports 放行 + execution-log schema 契約），無回歸。全 CI 套件本機綠。"
+  - "910e2d7 初版實作 + PR #82"
+  - "Codex P1 修正：golden path 改 drafts/ + 新增 gate_approval 核准守衛"
+actual_tool_calls: 16
+result_summary: "DoD 5/5 通過。test_dummy_task_smoke.py 4→8 test。Codex P1 指出原 fixture 讓 low-risk 無核准卻寫 reports/ 全 gate 通過，違反 PERMISSIONS（write_reports 屬 ask）；已修正：golden path 落 drafts/，reports/ 改為核准守衛負向斷言。全 CI 套件本機綠。"
 completion_time: "2026-05-16"
 audit_log_ref: "logs/AUDIT_LOG.md"

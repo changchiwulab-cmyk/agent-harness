@@ -770,8 +770,8 @@
   approval_given: false
   output_path: "outputs/drafts/20260516-001_golden-path-summary.md"
   error_summary: ""
-  estimated_tokens: "~22K"
-  notes: "DoD 5/5 通過。test_dummy_task_smoke.py 6/6（4 既有 + 2 新正向斷言），無回歸。全 CI 套件本機綠。"
+  estimated_tokens: "~26K"
+  notes: "DoD 5/5 通過。test_dummy_task_smoke.py 4→8 test，無回歸。Codex PR #82 P1 指出原 low-risk→reports/ fixture 違反 PERMISSIONS（write_reports 屬 ask）；已修正：golden path 落 drafts/，新增 gate_approval 核准守衛負向斷言。全 CI 套件本機綠。"
 
 - task_id: "20260516-002"
   date: "2026-05-16"

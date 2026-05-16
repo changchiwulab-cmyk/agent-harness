@@ -112,21 +112,56 @@ def gate_risk(card: dict, output_path: Path) -> tuple[bool, str]:
     return True, "ok"
 
 
-# A clean low-risk card: the golden path where output may go straight to
-# outputs/reports/ without the drafts/ detour the risk gate forces on high-risk.
+# A clean low-risk *auto* card. Per PERMISSIONS.yaml a low-risk task is
+# "草稿產出" (auto_execute, approval_needed: false) and its artefact lands in
+# outputs/drafts/. Writing to outputs/reports/ is the ask-level
+# `write_reports` action and is modelled by AUTHORISED_REPORT_TASK below — the
+# golden path must NOT bless an unauthorised report write (codex P1).
 LOW_RISK_TASK = {
     **DUMMY_TASK,
     "task_id": "20260516-E2E",
     "date": "2026-05-16",
-    "goal": "smoke-test the low-risk golden path (reports/ allowed)",
+    "goal": "smoke-test the low-risk auto golden path (drafts/, no approval)",
     "risk_level": "low",
     "approval_needed": False,
     "expected_output": {
         "format": "md",
-        "location": "outputs/reports/",
+        "location": "outputs/drafts/",
         "filename": "20260516-E2E_smoke.md",
     },
 }
+
+# An *authorised* reports/ write: outputs/reports/ is the ask-level
+# `write_reports` action, so the card must declare approval AND carry the tool.
+AUTHORISED_REPORT_TASK = {
+    **DUMMY_TASK,
+    "task_id": "20260516-RPT",
+    "date": "2026-05-16",
+    "goal": "smoke-test an authorised reports/ write",
+    "risk_level": "medium",
+    "approval_needed": True,
+    "allowed_tools": ["file_read", "write_reports"],
+    "expected_output": {
+        "format": "md",
+        "location": "outputs/reports/",
+        "filename": "20260516-RPT_smoke.md",
+    },
+}
+
+
+def gate_approval(card: dict) -> tuple[bool, str]:
+    """Policy contract: writing to outputs/reports/ is the ask-level
+    ``write_reports`` action (PERMISSIONS.yaml). Such a card must declare
+    ``approval_needed: True`` AND carry ``write_reports`` in allowed_tools,
+    so CI cannot bless an unauthorised report write.
+    """
+    dest = (card.get("expected_output") or {}).get("location", "")
+    if "outputs/reports/" in dest:
+        if not card.get("approval_needed"):
+            return False, "reports/ output requires approval_needed: True"
+        if "write_reports" not in (card.get("allowed_tools") or []):
+            return False, "reports/ output requires write_reports in allowed_tools"
+    return True, "ok"
 
 
 def validate_execution_log(log: dict, schema: dict) -> tuple[bool, list[str]]:
@@ -213,14 +248,15 @@ class TestDummyTaskSmoke(unittest.TestCase):
         self.assertFalse(passed)
         self.assertIn("definition_of_done", output)
 
-    def test_low_risk_golden_path_allows_reports_dir(self):
-        """Golden path: a clean low-risk card flows through all four gates and
-        its output is allowed straight into outputs/reports/ — the risk gate
-        only forces the drafts/ detour for high/critical risk."""
+    def test_low_risk_auto_golden_path_lands_in_drafts(self):
+        """Golden path: a clean low-risk auto card flows through all four
+        gates plus the approval contract, and its artefact lands in
+        outputs/drafts/ — the policy-correct destination for a no-approval
+        low-risk task (PERMISSIONS.yaml: low == 草稿產出)."""
         with tempfile.TemporaryDirectory() as tmp:
-            reports = Path(tmp) / "outputs" / "reports"
-            reports.mkdir(parents=True)
-            output = reports / LOW_RISK_TASK["expected_output"]["filename"]
+            drafts = Path(tmp) / "outputs" / "drafts"
+            drafts.mkdir(parents=True)
+            output = drafts / LOW_RISK_TASK["expected_output"]["filename"]
             output.write_text(
                 "# smoke output\n\n"
                 + "\n".join(f"- {d}" for d in LOW_RISK_TASK["definition_of_done"]),
@@ -237,10 +273,41 @@ class TestDummyTaskSmoke(unittest.TestCase):
         self.assertEqual(set(results.keys()), EXPECTED_GATES)
         for name, (passed, detail) in results.items():
             self.assertTrue(passed, f"{name} should pass on golden path: {detail}")
-        # The discriminating assertion: reports/ is accepted for low risk,
-        # whereas the high-risk fixture is contractually barred from it.
-        self.assertTrue(gate_risk(LOW_RISK_TASK, output)[0])
-        self.assertFalse(gate_risk(DUMMY_TASK, output)[0])
+        self.assertEqual(LOW_RISK_TASK["expected_output"]["location"], "outputs/drafts/")
+        self.assertTrue(gate_approval(LOW_RISK_TASK)[0])
+
+    def test_reports_path_requires_approval_and_write_reports_tool(self):
+        """Approval guardrail (codex P1): writing to outputs/reports/ is the
+        ask-level write_reports action. An unauthorised reports/ write —
+        approval_needed False, only write_drafts — MUST fail the approval
+        contract so CI cannot bless it; the authorised variant passes."""
+        unauthorised = {
+            **DUMMY_TASK,
+            "expected_output": {
+                "format": "md",
+                "location": "outputs/reports/",
+                "filename": "rogue.md",
+            },
+            "approval_needed": False,
+            "allowed_tools": ["file_read", "write_drafts"],
+        }
+        passed, reason = gate_approval(unauthorised)
+        self.assertFalse(passed)
+        self.assertIn("approval_needed", reason)
+
+        # Approval declared but the write_reports tool still missing.
+        no_tool = {**unauthorised, "approval_needed": True}
+        passed, reason = gate_approval(no_tool)
+        self.assertFalse(passed)
+        self.assertIn("write_reports", reason)
+
+        # Fully authorised reports/ write passes.
+        self.assertTrue(gate_approval(AUTHORISED_REPORT_TASK)[0])
+
+    def test_high_risk_barred_from_reports_dir(self):
+        """The risk gate independently bars high/critical output from any
+        non-drafts path regardless of approval."""
+        self.assertFalse(gate_risk(DUMMY_TASK, Path("outputs/reports/x.md"))[0])
 
     def test_execution_log_matches_schema_contract(self):
         """A produced execution log must carry every field the schema
