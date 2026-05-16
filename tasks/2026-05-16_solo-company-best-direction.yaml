@@ -1,0 +1,74 @@
+# Task Card: 一人公司最佳發展方向決策 + 12 個月執行路線
+# 建立日期：2026-05-16
+
+task_id: "20260516-A01"
+date: "2026-05-16"
+status: "pending"              # pending → in_progress → checkpoint → review → done / failed
+
+# === 任務定義 ===
+goal: "以 R01 前瞻研究 + T01-T03 為輸入，對一人公司候選發展方向做六維評估與排序，選出最佳方向並產出 12 個月可落地執行路線"
+context: |
+  使用者需求第二部分：進一步規劃一人公司最好的發展方向。
+  使用者選擇產出深度＝「決策建議 + 12 個月執行路線」。
+  接力卡：依 ROUTING_RULES 規則 2，research（R01）與 analysis（本卡）拆兩張，以 output 檔接力。
+  本卡為 T03 明確指向的「決策請另開 analysis Task Card」。
+
+  決策問題：在未來 2026–2030 AI 衝擊下，20+ 年管理顧問背景的一人公司，
+  最值得投入的單一主方向（可含 1 個疊加品）是什麼？
+  候選方向至少涵蓋 T03 列出的六個切入點 + 「不做／維持現狀」選項。
+  analysis SKILL.md 規範：每個選項都要評估（不只推薦一個）、必含「不做」選項、
+  成本與風險量化（金額/時間/機率，不只高低）、納入一人公司資源限制、結論可追溯。
+
+input_data:
+  - "outputs/drafts/20260516-R01_taiwan-ai-future-foresight.md"   # R01 完成後接力輸入（主）
+  - "outputs/drafts/20260502-T03_taiwan-ai-industry-deep-dive.md"
+  - "outputs/drafts/20260502-T02_taiwan-ai-industry-standard.md"
+  - "memory/active_projects/agent-harness/context.md"
+  - "skills/analysis/SKILL.md"
+
+# === 完成標準（最重要的欄位）===
+definition_of_done:
+  - "至少 6 個候選方向 + 1 個「不做／維持現狀」選項，每個跑六維評估（價值/成本/風險/可行性/執行難度/預期回報）+ 一人公司適配度"
+  - "成本與風險量化（客單區間 NT$、啟動時間、獲客成本或成功機率），不只用高/低"
+  - "給出明確排序與「最佳主方向 + 1 疊加品」建議，結論可逐點追溯到 R01/T03 證據"
+  - "12 個月執行路線：分季里程碑、獲客 funnel、政策／補貼／展會日曆對接點、每季可驗證指標"
+  - "風險逆轉條件：列出最佳方向的 2-3 個高風險假設，若失效則改採哪個備選"
+  - "事實 / 合理推論 / 待驗證 / 高風險假設四態明確分開標記"
+  - "輸出符合 skills/analysis/SKILL.md 格式"
+  - "預算限制：~2500-3500 字"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260516-A01_solo-company-best-direction.md"
+
+# === 風險與權限 ===
+risk_level: "low"              # 純讀取 / 分析 / 草稿產出
+approval_needed: false
+allowed_tools:
+  - "read_project_files"
+  - "file_search"
+  - "web_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "read_memory"
+
+# === 成本控制（analysis；尚無實測校準，保守配置）===
+max_tool_calls: 6
+max_retries: 3
+max_web_searches: 2           # 主要靠 R01/T03 接力，web 僅補關鍵缺口
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 依賴 ===
+depends_on: "20260516-R01"     # R01 完成並產出草稿後才執行本卡
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
