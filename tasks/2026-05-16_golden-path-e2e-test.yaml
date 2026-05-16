@@ -1,0 +1,59 @@
+# Task Card — 最佳情境（golden path）e2e 測試擴充
+# 來源：使用者要求規劃並實作專案「最佳/最壞測試方案」中的最佳情境部分
+
+task_id: "20260516-001"
+date: "2026-05-16"
+status: "pending"
+
+# === 任務定義 ===
+goal: "擴充 e2e golden-path smoke test：新增 low-risk 產物可進 reports/ 與 execution-log schema 符合兩條正向斷言"
+context: |
+  專案的「測試」分兩層：L1 程式碼層（CI 已涵蓋 schema/drift/budget）、
+  L2 Harness 執行層（四層 Gate + Failure Taxonomy）。L2 目前只有
+  tests/e2e/test_dummy_task_smoke.py 一支，且只測 high-risk dummy 走四層 gate。
+  缺「一切正常時流程能完整跑通且產物正確落地」的正向證明：
+  low-risk 任務可放行到 outputs/reports/，且 audit/execution log 符合
+  system/EXECUTION_LOG_SCHEMA.yaml。本卡補上這兩條正向斷言。
+input_data:
+  - "tests/e2e/test_dummy_task_smoke.py"
+  - "system/GATE_POLICY.yaml"
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "tests/e2e/test_dummy_task_smoke.py 新增 test：low-risk dummy（risk_level=low）→ gate_risk 允許 outputs/reports/ 路徑"
+  - "新增 test：依 EXECUTION_LOG_SCHEMA.yaml execution_log 必填欄位驗證一筆合成 execution log，且 gate_results 四欄皆 pass"
+  - "既有 4 個 test 全部仍 pass，無回歸"
+  - "python3 tests/e2e/test_dummy_task_smoke.py 在本機與 CI 皆 exit 0"
+  - "frontend/data.json 重新產生並與檔案系統一致（CI drift check 綠）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "mixed"
+  location: "outputs/drafts/"
+  filename: "20260516-001_golden-path-summary.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
