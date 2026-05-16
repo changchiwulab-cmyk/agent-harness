@@ -1,0 +1,57 @@
+# Task Card: 金融科技產業顧問服務提案撰寫
+# 建立日期：2026-04-24
+
+task_id: "20260424-F01"
+date: "2026-04-24"
+status: "pending"
+
+# === 任務定義 ===
+goal: "撰寫針對台灣中小型金融機構（信用合作社、保險代理、P2P 借貸平台）的 AI 顧問服務提案書"
+context: >
+  台灣金融科技市場受金管會監管框架約束，大型銀行自建 AI 能力，
+  但中小型金融機構（信合社、保代、新創 fintech）資源有限、缺乏技術人才。
+  顧問切入點在於：風險模型解讀、法遵自動化（KYC/AML）、客戶分群與流失預測。
+  此提案書用於業務開發，需具備說服力，清楚說明服務內容、交付物、費用結構。
+input_data:
+  - "memory/user_prefs.md"
+  - "memory/active_projects/agent-harness/context.md"
+  - "tasks/2026-04-04_ai-era-solo-business-proposal.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "提案書包含：背景痛點、服務方案、交付物清單、費用結構、成效指標"
+  - "三個服務層級（基礎診斷 / 專案導入 / 長期顧問）報價邏輯清楚"
+  - "針對信合社、保代、Fintech 新創各有一段客製化痛點說明"
+  - "法遵風險段落明確（顧問提供建議，不承擔合規判斷責任）"
+  - "文件長度 1,500–2,500 字，結論在前，段落精煉"
+  - "台灣商務語境，用語專業且易讀"
+  - "輸出格式符合 skills/writing/SKILL.md 規範"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260424-O06_fintech-service-proposal.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "web_search"
+  - "file_write"
+
+# === 成本控制 ===
+max_tool_calls: 6
+max_retries: 3
+max_web_searches: 2
+
+# === Skill 路由 ===
+skill_type: "writing"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
