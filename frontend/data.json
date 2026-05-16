@@ -93,6 +93,21 @@
       "started_at": "2026-04-09 00:00",
       "status": "completed",
       "task_id": "20260409-001"
+    },
+    {
+      "ended_at": "2026-05-16 00:00",
+      "gate_results": {
+        "completion_check": "pass",
+        "risk_check": "pass",
+        "rule_check": "pass",
+        "schema_check": "pass"
+      },
+      "path": "logs/runs/20260516-001_ai-industry-impact.yaml",
+      "run_id": "RUN-20260516-001",
+      "skill_type": "research + analysis",
+      "started_at": "2026-05-16 00:00",
+      "status": "completed",
+      "task_id": "20260516-R01 + 20260516-A01"
     }
   ],
   "tasks": [
@@ -435,6 +450,26 @@
       "skill_type": "writing",
       "status": "review",
       "task_id": "20260509-N08"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-16",
+      "goal": "以 R01 前瞻研究 + T01-T03 為輸入，對一人公司候選發展方向做六維評估與排序，選出最佳方向並產出 12 個月可落地執行路線",
+      "path": "tasks/2026-05-16_solo-company-best-direction.yaml",
+      "risk_level": "low",
+      "skill_type": "analysis",
+      "status": "review",
+      "task_id": "20260516-A01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-16",
+      "goal": "前瞻研究未來 2026–2030 AI 產業演進，將如何衝擊台灣各產業（贏家／輸家／結構轉移），作為一人公司方向決策（A01）的事實輸入",
+      "path": "tasks/2026-05-16_taiwan-ai-future-foresight.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "review",
+      "task_id": "20260516-R01"
     }
   ]
 }
