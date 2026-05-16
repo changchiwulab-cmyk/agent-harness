@@ -1,0 +1,73 @@
+# Task Card — Phase 2：Review/Approval backlog 可視化 + 批次核准記錄
+
+task_id: "20260515-005"
+date: "2026-05-15"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "提供 approval backlog 可視化（待簽核 Task Card + 草稿 + 已核准統計 + 等待天數）與批次核准『記錄』工具，保留人工簽核、不自動核准，與既有 logs/approvals/ schema 及 RETRO_FLOW 對齊"
+
+context: |
+  依已核准計畫 ticklish-dazzling-crescent.md Phase 2，承接 Phase 0/1
+  （20260515-003/004 已 done，APR-20260515-001/002）。痛點：待人工核准的
+  backlog（outputs/drafts/、status=review 且 approval_needed 的卡、
+  logs/approvals/）沒有彙整視圖，易積壓且不可見（0515-002 審查：drafts
+  24:reports 2、18/35 卡塞 review）。
+  計畫定調「可視化 + 批次人工核准，不自動核准，人工簽核保留」。故：
+   - 掃描器：列出「pending 簽核」= approval_needed:true 且 status=review 且
+     logs/approvals/ 無對應 task_id；附等待天數；草稿與已核准為輔助統計。
+   - 批次記錄器：--approve 由『操作者』執行以記錄一批人工決策，沿用
+     Phase 0/1 的 approval log schema（APR-YYYYMMDD-NNN，sequential），
+     已存在則拒絕重複；不翻 Task Card 狀態（狀態轉換仍為獨立明確動作）。
+  Agent 僅在轉達明確人工批次決策時才呼叫 --approve（與 Phase 0/1 現行流程
+  一致：人在對話核准 → 記錄 approval log）。純 scripts/+logs/+drafts/+
+  1 個 CI 測試 step；無 system/、.claude/ 變更。可逆。
+
+input_data:
+  - "/root/.claude/plans/ticklish-dazzling-crescent.md"
+  - "system/APPROVAL_POLICY.yaml / system/RETRO_FLOW.md（消費 logs/approvals/）"
+  - "logs/approvals/2026-05-15_20260515-003_approval.md（schema 範式）"
+  - "tasks/20*.yaml（approval_needed/status 來源）/ outputs/drafts/"
+
+# === 完成標準 ===
+definition_of_done:
+  - "新增 scripts/approval_backlog.py：預設 scan 模式輸出（a）Pending 簽核清單：tasks/20*.yaml 中 approval_needed==true 且 status=='review' 且 logs/approvals/ 無同 task_id → 列 task_id/goal(截斷)/risk/等待天數（今日−date）（b）outputs/drafts/ 總數與最舊檔齡（c）logs/approvals/ 已核准數與最新一筆；無 pending 時明示 backlog clear"
+  - "scripts/approval_backlog.py 提供 --approve TASKID[,TASKID...] --by NAME [--note TEXT]：對每個 task_id 在 logs/approvals/ 寫一筆與 Phase 0/1 同 schema 的紀錄（approval_id=APR-YYYYMMDD-NNN sequential、method human_confirm、approved_by=傳入 NAME、decision approved）；該 task_id 已有 approval 則拒絕該筆並非零退出；不修改 Task Card status"
+  - "新增 scripts/test_approval_backlog.py：≥6 case（pending 偵測命中 / 已有 approval 則排除 / 等待天數計算 / --approve 寫出正確檔且 approval_id sequential / 重複 approve 被拒 / 無 tasks 時 scan 不爆）；全綠"
+  - ".github/workflows/spec-consistency.yml 新增 approval_backlog 測試 step（scan 為報告非 gate，不使 CI 因 backlog 非空而失敗）"
+  - "對真實 repo 跑一次 scan，輸出納入摘要；確認與 logs/approvals/ 既有 APR-20260515-001/002 一致、RETRO_FLOW 消費路徑不破"
+  - "outputs/drafts/20260515-005_phase2-approval-backlog-summary.md 摘要（變動檔、scan 實跑輸出、批次記錄示範、與 APPROVAL_POLICY/RETRO_FLOW 對齊說明、剩餘風險、回滾）"
+  - "validate_task_card.py 對本卡 exit 0；AUDIT_LOG 與 data.json 重生且兩 --check exit 0；全 Python/Ruby CI 本地全綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "mixed"
+  location: "outputs/drafts/"
+  filename: "20260515-005_phase2-approval-backlog-summary.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 40
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
