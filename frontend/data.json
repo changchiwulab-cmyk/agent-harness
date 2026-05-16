@@ -93,6 +93,21 @@
       "started_at": "2026-04-09 00:00",
       "status": "completed",
       "task_id": "20260409-001"
+    },
+    {
+      "ended_at": "2026-05-16 00:50",
+      "gate_results": {
+        "completion_check": "pass",
+        "risk_check": "pass",
+        "rule_check": "pass",
+        "schema_check": "pass"
+      },
+      "path": "logs/runs/20260516-V01_skill-frontend-backend-sync.yaml",
+      "run_id": "RUN-20260516-V01",
+      "skill_type": "review",
+      "started_at": "2026-05-16 00:00",
+      "status": "completed",
+      "task_id": "20260516-V01"
     }
   ],
   "tasks": [
@@ -443,7 +458,7 @@
       "path": "tasks/2026-05-16_skill-and-frontend-backend-sync-verification.yaml",
       "risk_level": "low",
       "skill_type": "review",
-      "status": "in_progress",
+      "status": "done",
       "task_id": "20260516-V01"
     }
   ]

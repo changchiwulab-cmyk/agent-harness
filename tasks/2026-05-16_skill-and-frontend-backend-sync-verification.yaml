@@ -1,6 +1,6 @@
 task_id: "20260516-V01"
 date: "2026-05-16"
-status: "in_progress"
+status: "done"
 
 # === 任務定義 ===
 goal: "驗證 skill 執行機制正常運作，並端到端測試「修改後端任務資料 → 前端 data.json 自動對齊」這條鏈；所有測試實跑不略過，全程依專案規定走完"
@@ -74,8 +74,11 @@ max_web_searches: 0
 skill_type: "review"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - "439e91c — Task Card 建立 + schema gate 通過"
+  - "b35d53d — 70 測試 + e2e 全綠 + 前後端自動對齊鏈端到端驗證"
+  - "pending — 報告/run log/audit/收尾 + push + draft PR"
+actual_tool_calls: 29
+result_summary: "DoD 11/11 達成。70 既有測試 + e2e 四層 gate 全綠（0 略過）；validate_task_card exit 0；以建卡為真實後端變更觸發，端到端實證對齊鏈（drift exit1→重產 34→35 含 V01→drift exit0→HTTP+實跑 app.js 渲染確認）；四層 gate 全 pass。rule_check 對背景測試 http.server 據實揭露並緩解。"
+completion_time: "2026-05-16"
 audit_log_ref: "logs/AUDIT_LOG.md"

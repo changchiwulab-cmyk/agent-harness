@@ -33,6 +33,31 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260516-V01"
+  date: "2026-05-16"
+  skill_type: "review"
+  goal: "驗證 skill 機制正常 + 端到端測試「修改後端任務資料→前端 data.json 自動對齊」鏈，全測試實跑不略過"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 13
+    - tool_name: "file_write"
+      call_count: 4
+    - tool_name: "bash"
+      call_count: 12
+  checkpoints: 3
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260516-V01_skill-frontend-backend-sync-verification.md; tasks/2026-05-16_skill-and-frontend-backend-sync-verification.yaml; logs/runs/20260516-V01_skill-frontend-backend-sync.yaml; frontend/data.json"
+  error_summary: ""
+  estimated_tokens: "~30K"
+  notes: "review 型純驗證。70 既有測試 + e2e 四層 gate 全綠（0 略過）。以建卡為真實後端變更觸發：drift exit1→重產 data.json 34→35（含 V01）→drift exit0→HTTP 服務+實跑 app.js 渲染管線確認前端呈現。四層 gate 全 pass。rule_check 透明備註：前端測試背景 http.server（run_frontend.sh 同機制、即終止、guard 未攔）已緩解。pkill -f 自匹配致一次 commit 未生效，已偵測重做（協調類失敗自我修復，未達連續 3 次）。"
+```
+
+---
+
+```yaml
 - task_id: "20260509-M01"
   date: "2026-05-09"
   skill_type: "ops"
