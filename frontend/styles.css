@@ -60,6 +60,16 @@ small { color: #6b7280; }
 .timeline-item summary { cursor: pointer; font-weight: 600; }
 .timeline-item details { margin-top: .25rem; }
 
+.gates { margin-top: .4rem; display: flex; flex-wrap: wrap; gap: .3rem; }
+.gate {
+  font-size: .72rem;
+  padding: .1rem .4rem;
+  border-radius: .35rem;
+  border: 1px solid transparent;
+}
+.gate-pass { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+.gate-fail { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
+
 @media (max-width: 900px) {
   .grid { grid-template-columns: 1fr; }
 }

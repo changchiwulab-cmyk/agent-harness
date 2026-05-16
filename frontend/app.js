@@ -41,6 +41,10 @@ function inDateRange(value, from, to) {
   return true;
 }
 
+function logDate(item) {
+  return String(item.ended_at || item.started_at || '').slice(0, 10);
+}
+
 function applyFilters() {
   const keyword = $('keyword').value.toLowerCase().trim();
   const from = $('dateFrom').value;
@@ -56,17 +60,22 @@ function applyFilters() {
     return (!keyword || blob.includes(keyword)) && inDateRange(d._date, from, to);
   });
 
-  render(tasks, decisions);
+  const logs = state.logs.filter((l) => {
+    const blob = `${l.run_id || ''} ${l.task_id || ''} ${l.status || ''} ${l.skill_type || ''}`.toLowerCase();
+    return (!keyword || blob.includes(keyword)) && inDateRange(logDate(l), from, to);
+  });
+
+  render(tasks, decisions, logs);
 }
 
-function renderSummary(filteredTasks, filteredDecisions) {
+function renderSummary(filteredTasks, filteredDecisions, filteredLogs) {
   const done = filteredTasks.filter((x) => x.status === 'done').length;
   const failed = filteredTasks.filter((x) => x.status === 'failed').length;
   const cards = [
     ['Tasks', filteredTasks.length],
     ['Done', done],
     ['Failed', failed],
-    ['Logs', state.logs.length],
+    ['Logs', filteredLogs.length],
     ['Decisions', filteredDecisions.length],
   ];
   $('summaryCards').innerHTML = cards
@@ -100,22 +109,38 @@ function renderTimeline(decisions) {
     .join('') || '<small>無符合條件資料</small>';
 }
 
-function renderLogs() {
-  $('logBoard').innerHTML = state.logs
+const GATE_KEYS = ['schema_check', 'rule_check', 'completion_check', 'risk_check'];
+
+function renderGates(gate) {
+  if (!gate || typeof gate !== 'object') return '';
+  const chips = GATE_KEYS
+    .filter((k) => k in gate)
+    .map((k) => {
+      const val = String(gate[k]);
+      const cls = val === 'pass' ? 'gate-pass' : 'gate-fail';
+      return `<span class="gate ${cls}">${escapeHtml(k.replace('_check', ''))}: ${escapeHtml(val)}</span>`;
+    })
+    .join(' ');
+  return chips ? `<div class="gates">${chips}</div>` : '';
+}
+
+function renderLogs(logs) {
+  $('logBoard').innerHTML = logs
     .map((l) => `
       <article class="item">
         <strong>${escapeHtml(l.run_id || '')}</strong><br />
         task: ${escapeHtml(l.task_id || 'N/A')}<br />
         <small>${escapeHtml(l.status || 'unknown')} · ${escapeHtml(l.ended_at || l.started_at || 'N/A')}</small>
+        ${renderGates(l.gate_results)}
       </article>`)
     .join('') || '<small>找不到 log 資料</small>';
 }
 
-function render(tasks, decisions) {
-  renderSummary(tasks, decisions);
+function render(tasks, decisions, logs) {
+  renderSummary(tasks, decisions, logs);
   renderTasks(tasks);
   renderTimeline(decisions);
-  renderLogs();
+  renderLogs(logs);
 }
 
 function showError(err) {

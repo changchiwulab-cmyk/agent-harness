@@ -45,11 +45,11 @@ jobs:
       - name: Install Python dependencies
         run: pip install --no-cache-dir pyyaml
 
-      - name: Frontend manifest tests
-        run: python3 scripts/test_generate_frontend_manifest.py
+      - name: Frontend data tests
+        run: python3 scripts/test_generate_frontend_data.py
 
-      - name: Frontend manifest drift check
-        run: python3 scripts/generate_frontend_manifest.py --check
+      - name: Frontend data drift check
+        run: python3 scripts/generate_frontend_data.py --check
 
       - name: Permissions guard tests
         run: python3 scripts/test_permissions_guard.py

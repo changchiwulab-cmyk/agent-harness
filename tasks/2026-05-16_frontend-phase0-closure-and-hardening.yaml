@@ -1,0 +1,88 @@
+task_id: "20260516-F02"
+date: "2026-05-16"
+status: "done"
+
+# === 任務定義 ===
+goal: "收斂前端 Phase 0 殘留並結案：①F01 review→done ②app.js 渲染 gate_results + logs 篩選對齊 ③generator/test 更名去 manifest 殘留 ④開立 Phase 1 視覺化 Task Card"
+
+context: |
+  專案架構盤點（前端獨立作業完整度）發現：前端 Phase 0（F01）技術完整且已併入
+  main、CI 等價檢查全綠，但有 4 個殘留缺口：
+    (1) F01 Task Card 仍停 status: review / approval_needed: true，但 AUDIT_LOG
+        已記 status: done、程式已上 main → 卡片未結案，治理一致性破口（違反
+        harness「可審核」原則：Task Card 應為單一事實來源）。
+    (2) generator 已把 gate_results 收進 data.json 的 logs，但 app.js 未渲染
+        （死資料）；且 logs 與 summary 的「Logs」卡用全量 state.logs.length，
+        不隨 keyword/date 篩選變動，與 tasks/decisions 行為不一致。
+    (3) 腳本仍名 generate_frontend_manifest.py / test_generate_frontend_manifest.py
+        但早已不產 manifest（產 data.json），命名誤導。
+    (4) Phase 1（Gate/Approval/Failure 視覺化）尚未開 Task Card，後續工作未排程。
+  本卡只做 Phase 0 收尾 + 為 Phase 1 開卡（不執行 Phase 1 本身）。
+  更名範圍限 operational 引用；歷史記錄（F01 卡內文、drafts summary、AUDIT_LOG
+  既有行）刻意保留舊名以維持可審計性，不改寫過去狀態。
+
+input_data:
+  - "tasks/2026-04-27_frontend-platform-phase0.yaml"
+  - "outputs/drafts/20260427-F01_phase0-summary.md"
+  - "frontend/app.js"
+  - "frontend/data.json"
+  - "scripts/generate_frontend_manifest.py"
+  - "scripts/test_generate_frontend_manifest.py"
+  - "scripts/run_frontend.sh"
+  - ".github/workflows/spec-consistency.yml"
+  - "README.md"
+  - "logs/AUDIT_LOG.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "①F01 結案：tasks/2026-04-27_frontend-platform-phase0.yaml status review→done；result_summary 追加結案註記（程式已併 main、CI 等價檢查綠、由 20260516-F02 收尾、腳本已更名）。F01 既有 AUDIT_LOG 紀錄已 status done，不重複新增"
+  - "②frontend/app.js：logs 套用與 tasks/decisions 相同的 keyword/date 篩選；summary『Logs』卡改用 filtered logs 計數；logBoard 新增渲染 gate_results 四鍵（schema_check/rule_check/completion_check/risk_check）pass/fail，全部經 escapeHtml 防 XSS；保留既有 panel 與錯誤態"
+  - "③git mv scripts/generate_frontend_manifest.py→scripts/generate_frontend_data.py 與 test 對應檔；同步更新 operational 引用（test import、script 內 self-reference 字串、scripts/run_frontend.sh、.github/workflows/spec-consistency.yml、README.md）；歷史記錄（F01 卡內文/各 drafts summary/AUDIT_LOG 既有行）保留舊名不改寫"
+  - "④新增 Phase 1 視覺化 Task Card：tasks/2026-05-16_frontend-phase1-gate-approval-failure-viz.yaml（task_id 20260516-F03，status pending，goal+DoD 涵蓋 gate_results 進階視覺化／approvals／failure taxonomy 呈現），通過 validate_task_card.py"
+  - "system/validate_task_card.py 對本卡與 F03 卡皆 exit 0"
+  - "python3 scripts/generate_frontend_data.py --check exit 0（drift 綠）；python3 scripts/test_generate_frontend_data.py 4 tests 全綠"
+  - "前端本地 smoke：python3 -m http.server 起站後 curl index.html 與 data.json 皆 HTTP 200；互動 UI 無法自動驗證則於 summary 明記限制"
+  - "outputs/drafts/20260516-F02_phase0-closure-summary.md 產出實作摘要（變動清單、DoD 對照、測試結果、剩餘風險與 rollback）"
+  - "logs/AUDIT_LOG.md 新增 1 筆 F02 紀錄；依 D006 narrow scope，無 failed/partial 且 checkpoints<3 則免寫 logs/runs/"
+  - "分階段 git checkpoint commit；最終 push 到 claude/review-project-structure-1Il7v 並建立 draft PR"
+
+# === 輸出定義 ===
+expected_output:
+  format: "mixed"
+  location: "outputs/drafts/"
+  filename: "20260516-F02_phase0-closure-summary.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "create_output_files"
+  - "create_task_card"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 60
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "607605b checkpoint: task card created"
+  - "7e58cd9 checkpoint: ① F01 review→done + ② app.js logs filter & gate_results"
+  - "33cd076 checkpoint: ③ rename generate_frontend_manifest → generate_frontend_data"
+  - "bdd05c6 checkpoint: ④ F03 card + summary + audit + F02 record"
+  - "7002731 fix: Codex P2 #80 — logDate aligned to ended_at||started_at"
+  - "a4baa8e checkpoint: F02 record bdd05c6 + Codex P2 fix"
+  - "ffc0ec7 checkpoint: dashboard static snapshot (visual verification artifact)"
+actual_tool_calls: 52
+result_summary: "DoD 1-10 全達。F01 review→done、app.js 補 logs 篩選+gate_results chip、generator/test 更名（僅 operational 引用，歷史保留舊名）、F03 Phase 1 規劃卡 pending、Codex P2（logDate 對齊 ended_at||started_at）已修、靜態快照產出供視覺驗證、draft PR #80。人工 sign-off 於 2026-05-16 給出（接受快照+程式碼審查為足夠依據，未強制本機互動驗證），review→done 結案。F03（Phase 1）仍 pending 待另排程。"
+completion_time: "2026-05-16"
+audit_log_ref: "logs/AUDIT_LOG.md"

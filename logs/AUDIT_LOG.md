@@ -438,6 +438,31 @@
   error_summary: ""
   estimated_tokens: "~18K"
   notes: "Phase 0 of frontend platform plan. PR #55 baseline 收斂：YAML→data.json、多 project decisions glob、generator unit tests (4 cases)、CI 漂移檢查。frontend/manifest.js 移除。Phase 1 (Gate/Approval/Failure 視覺化) 另開 task card。"
+
+- task_id: "20260516-F02"
+  date: "2026-05-16"
+  skill_type: "ops"
+  goal: "收斂前端 Phase 0 殘留並結案：①F01 review→done ②app.js 渲染 gate_results + logs 篩選對齊 ③generator/test 更名去 manifest 殘留 ④開立 Phase 1 視覺化 Task Card"
+  status: "done"
+  model_used: "withheld"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 14
+    - tool_name: "file_write"
+      call_count: 4
+    - tool_name: "file_edit"
+      call_count: 22
+    - tool_name: "bash"
+      call_count: 24
+    - tool_name: "create_task_card"
+      call_count: 2
+  checkpoints: 7
+  approval_needed: true
+  approval_given: true
+  output_path: "tasks/2026-04-27_frontend-platform-phase0.yaml; frontend/app.js; frontend/styles.css; scripts/generate_frontend_data.py; scripts/test_generate_frontend_data.py; scripts/run_frontend.sh; .github/workflows/spec-consistency.yml; README.md; frontend/data.json; tasks/2026-05-16_frontend-phase1-gate-approval-failure-viz.yaml; tasks/2026-05-16_frontend-phase0-closure-and-hardening.yaml; outputs/drafts/20260516-F02_phase0-closure-summary.md; outputs/drafts/20260516-F02_dashboard-snapshot.html"
+  error_summary: ""
+  estimated_tokens: "~28K"
+  notes: "源於專案架構盤點。F01 卡 review→done（AUDIT 既有 F01 紀錄已 done，不重複）。app.js 補 logs 篩選 + gate_results chip（escapeHtml）。generate_frontend_manifest→generate_frontend_data 更名僅改 operational 引用，歷史記錄刻意保留舊名（可審計）。F03（Phase 1）pending 開卡。Post-review：採納 Codex P2（#80）將 logDate 對齊 ended_at||started_at；產靜態快照供視覺驗證（互動/跨午夜需本機，已註記）。人工 sign-off 於 2026-05-16 給出（接受快照+程式碼審查為足夠依據），F02 review→done 結案。model_used 依 session policy 不寫入 repo artifact。"
 ```
 
 ---

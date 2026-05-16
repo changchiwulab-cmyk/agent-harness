@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Unit tests for scripts/generate_frontend_manifest.py."""
+"""Unit tests for scripts/generate_frontend_data.py."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-import generate_frontend_manifest as gen
+import generate_frontend_data as gen
 
 
 def write(path: Path, body: str) -> None:

@@ -124,7 +124,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if check:
         if not OUTPUT.exists() or OUTPUT.read_text(encoding="utf-8") != rendered:
-            print(f"DRIFT: {OUTPUT.relative_to(ROOT)} is out of date. Re-run scripts/generate_frontend_manifest.py.", file=sys.stderr)
+            print(f"DRIFT: {OUTPUT.relative_to(ROOT)} is out of date. Re-run scripts/generate_frontend_data.py.", file=sys.stderr)
             return 1
         print(f"OK: {OUTPUT.relative_to(ROOT)} is up to date.")
         return 0
