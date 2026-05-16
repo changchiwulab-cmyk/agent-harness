@@ -601,6 +601,113 @@
 ---
 
 ```yaml
+- task_id: "20260421-O01"
+  date: "2026-04-21"
+  skill_type: "ops"
+  goal: "掃描 tasks/ 目錄下所有 Task Cards，產出結構化的任務狀態摘要表"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "bash"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/tasks-status-summary.md"
+  error_summary: ""
+  estimated_tokens: "~8K"
+  notes: "掃描 14 張 Task Cards（排除 2 個模板），Markdown 表格含 5 個欄位，依日期倒序，附狀態/skill/時間三維統計。DoD 4/4 通過。"
+```
+
+---
+
+```yaml
+- task_id: "20260421-V01"
+  date: "2026-04-21"
+  skill_type: "review"
+  goal: "審查 system/GLOBAL_RULES.md 的完整性、一致性，找出潛在缺漏、矛盾或需強化的規則"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/global-rules-review-report.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "有條件通過。必須修改 2 項（M1 輸出路徑區分、M2 Checkpoint 格式定義），建議修改 4 項（Skill 路由引用/記憶路徑/高風險假設範圍/COST_POLICY 引用）。DoD 5/5 通過。"
+```
+
+---
+
+```yaml
+- task_id: "20260421-A01"
+  date: "2026-04-21"
+  skill_type: "analysis"
+  goal: "分析一人顧問公司從台灣進入越南市場的可行性，產出 Go / No-Go 建議與關鍵決策依據"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/vietnam-market-analysis.md"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "Conditional Go 建議。3 個選項完整六維評估（含不做選項），3 項支持/3 項反對依據，2 項高風險假設含結論變化說明，3 項待驗證含驗證方式，建議下一步 3 項。DoD 5/5 通過。"
+```
+
+---
+
+```yaml
+- task_id: "20260421-W01"
+  date: "2026-04-21"
+  skill_type: "writing"
+  goal: "撰寫一份面向新使用者的 AI Agent 使用說明文件草稿（約 600 字）"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/ai-agent-usage-guide.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "約 650 字，含前言/快速開始（3 步驟）/常見錯誤（3 項）/注意事項（4 項）四節，台灣商業顧問語氣，所有術語有說明。DoD 4/4 通過。"
+```
+
+---
+
+```yaml
+- task_id: "20260421-R01"
+  date: "2026-04-21"
+  skill_type: "research"
+  goal: "調查一人公司（顧問型）常見的客戶開發方法與工具，整理可立即行動的策略清單"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/client-development-strategies.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "4 大客戶開發管道（轉介紹/內容行銷/直接開發/策略合作），每管道含描述/適用場景/2-3 步驟/預期效果。三層標記完整，含優先行動建議。DoD 4/4 通過。"
+```
+
+---
+
+```yaml
 - task_id: "20260404-O02"
   date: "2026-04-04"
   skill_type: "ops"
