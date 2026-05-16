@@ -176,12 +176,12 @@ python system/validate_task_card.py tasks/your-task.yaml
 - Logs 儀表板
 - Decision Timeline（可點擊展開）
 
-資料來源唯一化於 `frontend/data.json`，由 `scripts/generate_frontend_manifest.py` 在產生階段以 PyYAML 解析下列來源後序列化：
+資料來源唯一化於 `frontend/data.json`，由 `scripts/generate_frontend_data.py` 在產生階段以 PyYAML 解析下列來源後序列化：
 - `tasks/20*.yaml`
 - `logs/runs/*.yaml`
 - `memory/active_projects/*/decisions/*.yaml`（多 project）
 
-CI 會跑 `python3 scripts/generate_frontend_manifest.py --check`，若 `frontend/data.json` 與檔案系統實況有漂移即失敗。
+CI 會跑 `python3 scripts/generate_frontend_data.py --check`，若 `frontend/data.json` 與檔案系統實況有漂移即失敗。
 
 ### 啟動方式
 
@@ -228,7 +228,7 @@ scripts/run_frontend.sh --version
 新增、刪除或重新命名 `tasks/`、`logs/runs/`、`memory/active_projects/*/decisions/` 下的 YAML 後，請重新執行：
 
 ```bash
-python3 scripts/generate_frontend_manifest.py
+python3 scripts/generate_frontend_data.py
 ```
 
 並把更新後的 `frontend/data.json` 一起 commit。CI 會驗證二者一致。

@@ -253,7 +253,7 @@
       "path": "tasks/2026-04-27_frontend-platform-phase0.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "review",
+      "status": "done",
       "task_id": "20260427-F01"
     },
     {
@@ -435,6 +435,16 @@
       "skill_type": "writing",
       "status": "review",
       "task_id": "20260509-N08"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-16",
+      "goal": "收斂前端 Phase 0 殘留並結案：①F01 review→done ②app.js 渲染 gate_results + logs 篩選對齊 ③generator/test 更名去 manifest 殘留 ④開立 Phase 1 視覺化 Task Card",
+      "path": "tasks/2026-05-16_frontend-phase0-closure-and-hardening.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260516-F02"
     }
   ]
 }

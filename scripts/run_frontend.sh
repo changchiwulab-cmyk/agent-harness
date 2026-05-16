@@ -58,7 +58,7 @@ done
 
 cd "$ROOT_DIR"
 if [[ "$NO_GENERATE" != "true" ]]; then
-  python3 scripts/generate_frontend_manifest.py
+  python3 scripts/generate_frontend_data.py
 fi
 
 echo "Frontend available at: http://localhost:${PORT}/frontend/index.html"
