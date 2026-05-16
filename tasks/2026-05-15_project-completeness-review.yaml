@@ -1,0 +1,67 @@
+# Task Card — 專案完整度與缺點審查（2026-05-15 快照）
+
+task_id: "20260515-002"
+date: "2026-05-15"
+status: "done"
+
+# === 任務定義 ===
+goal: "審查 Agent Harness v2 目前（2026-05-15）的完整度與缺點，對照 2026-05-02 既有分析評估進展，產出可追溯的審查報告"
+context: |
+  使用者要求「分析這個專案目前完整度，有沒有缺點？」。
+  已有前作 outputs/drafts/2026-05-02_project-completeness-analysis.md（10 項缺點 +
+  A/B/C 三階段改善計畫）。本卡做 2026-05-15 快照：對照三平面/16 模組現況、
+  評估自 0502 以來進展（哪些缺點已解/部分解）、列現存缺點，並納入本 session
+  第一手證據（data.json drift footgun、checkpoint hash 手動回填、review 狀態瓶頸）。
+  純讀取 + 草稿輸出，不修改任何系統檔。
+
+input_data:
+  - "outputs/drafts/2026-05-02_project-completeness-analysis.md"
+  - "README.md / CLAUDE.md / system/*"
+  - "tasks/*.yaml（35 卡狀態分布）"
+  - "logs/AUDIT_LOG.md（31 筆）/ logs/runs/（1 筆）"
+  - "scripts/test_*.* + .github/workflows/spec-consistency.yml"
+  - "本 session PR #79 drift 事件第一手紀錄"
+
+# === 完成標準 ===
+definition_of_done:
+  - "Task Card 通過 system/validate_task_card.py（exit 0）"
+  - "報告產出至 outputs/drafts/20260515-002_project-completeness-review.md"
+  - "報告含：(a) 完整度評估（三平面/16 模組對照現況）(b) 自 2026-05-02 以來進展（既有 10 缺點逐項標 已解/部分解/未解）(c) 現存缺點清單依嚴重度排序，含本 session 第一手證據 (d) 建議下一步"
+  - "明確區分 已知事實 / 合理推論 / 待驗證 / 高風險假設；結論可追溯到證據，不把推論當事實"
+  - "四層 gate 結果記錄；logs/AUDIT_LOG.md 新增 1 筆；status/checkpoints<3/risk low → 免寫 logs/runs/"
+  - "全程不修改 system/、skills/、memory/，不刪檔，不對外動作"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260515-002_project-completeness-review.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "bash"
+  - "write_drafts"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "write_logs"
+
+# === 成本控制 ===
+max_tool_calls: 25
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "review"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - commit: "single-commit"
+    stage: "完整度審查報告 + Task Card 定稿 + data.json 重生（同一 commit，規避 drift footgun）"
+actual_tool_calls: 9
+result_summary: "完整度：治理規格骨架 ~90%，自我執行/自我改善系統 ~55%。自 0502 進展：A1 runtime hook、A3 e2e 已落地（缺點①部分解、⑧已解）；根因型缺點（規格≠執行、學習開環、前端非控制面、v3 半遷移）仍在。活體症狀：18/35 卡塞 review、drafts 24:reports 2。納入本 session 第一手 drift footgun 證據。4 gate 全 pass。"
+completion_time: "2026-05-15"
+audit_log_ref: "logs/AUDIT_LOG.md"

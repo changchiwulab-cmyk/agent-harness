@@ -1,0 +1,77 @@
+# Task Card — Phase 1：三條硬規則機制化（warn 預設，關鍵 hard-block）
+
+task_id: "20260515-004"
+date: "2026-05-15"
+status: "done"
+
+# === 任務定義 ===
+goal: "把 CLAUDE.md 三條硬規則從純自律變成可觀測/可機檢：規則1/2 以 PreToolUse warn 提醒，規則3 以 EXECUTION_LOG schema 欄位 + CI validator 硬檢；唯二 hard-block 維持 drift(P0) 與 PERMISSIONS deny-list"
+
+context: |
+  依已核准計畫 ticklish-dazzling-crescent.md Phase 1，承接 Phase 0（20260515-003,
+  已 done，APR-20260515-001 核准）。三條硬規則目前全靠 prompt 自律：
+  (1) 沒有 Task Card 不執行 (2) 對外動作只出草稿 (3) 連續失敗 3 次停。
+  計畫定調「預設 warn，僅 drift 與 deny-list 兩件 hard-block」「以 hook + 既有
+  schema 為主，避免新抽象」。故：
+   - 規則1/2 → 啟發式 warn（false-positive 容忍，永不擋），沿用既有
+     PreToolUse hook chain（permissions_guard → audit_drift_guard → harness_guard）。
+   - 規則3 → 不做脆弱的 runtime stateful daemon；改沿用 harness 既有
+     「schema + validator + CI」模式（如 validate_task_card / generate_*--check）：
+     EXECUTION_LOG_SCHEMA.yaml 加失敗計數欄位 + check_failure_policy.py 機檢
+     「consecutive_failures>=3 必須 stopped 且有 logs/errors/ 對應」。
+  全程可逆（git checkpoint + revert）；改 system/、.claude/ 屬 ask，收尾交人工核准。
+
+input_data:
+  - "/root/.claude/plans/ticklish-dazzling-crescent.md"
+  - "CLAUDE.md（三條硬規則 + 驗證失敗處理）"
+  - "system/EXECUTION_LOG_SCHEMA.yaml / system/FAILURE_TAXONOMY.yaml"
+  - "system/PERMISSIONS.yaml（deny-list，唯二硬擋之一）"
+  - "scripts/permissions_guard.py / scripts/audit_drift_guard.py（hook chain 範式）"
+  - "logs/errors/ERROR_LOG_TEMPLATE.md / .claude/settings.json"
+
+# === 完成標準 ===
+definition_of_done:
+  - "新增 scripts/harness_guard.py：PreToolUse，僅對 Write/Edit 評估。規則1 啟發式（寫 outputs/|system/|skills/|scripts/|.github/|.claude/ 但 git working tree 無 tasks/*.yaml 新增或修改）→ decision allow + warning；規則2 啟發式（寫 outputs/reports/ 或 outputs/ 下非 drafts/ 的對外產出）→ allow + warning。永不 block、fail-open、無 tasks 路徑時零成本放行"
+  - "新增 scripts/test_harness_guard.py：≥6 case（規則1 命中 warn / 有 task card 不 warn / 規則2 reports 路徑 warn / drafts 路徑不 warn / 非 Write|Edit 放行 / 壞 JSON fail-open）；全綠"
+  - "system/EXECUTION_LOG_SCHEMA.yaml 新增 retry_policy 區塊：consecutive_failures(int) 與 failure_policy_action(enum: none|warned|stopped)，含註解對應 CLAUDE.md 規則3 與『驗證失敗處理』（schema 重試1次 / 規則立即停 / 完成驗證列缺漏 / 風險→drafts）"
+  - "新增 scripts/check_failure_policy.py + scripts/test_check_failure_policy.py：掃 logs/runs/*.y*ml，斷言任一 consecutive_failures>=3 之 run 必須 failure_policy_action==stopped 且 logs/errors/ 有同 task_id 紀錄；違反 exit 1；無 logs/runs/ 時 exit 0（vacuously true）；測試 ≥4 case 全綠"
+  - ".claude/settings.json 於 hook chain 末端追加 harness_guard.py（permissions_guard、audit_drift_guard 之後並存，順序不影響各自決策）"
+  - ".github/workflows/spec-consistency.yml 新增 harness_guard 測試、check_failure_policy 測試與執行 step"
+  - "唯二 hard-block 不變（AUDIT_LOG drift / PERMISSIONS deny-list）；新增機制皆 warn 或 CI-artifact 檢查，不在 runtime 擋使用者"
+  - "outputs/drafts/20260515-004_phase1-enforce-hard-rules-summary.md 產出摘要（變動檔、warn 範例、規則3 機檢示範含一筆人工構造的違規 fixture 跑出 exit 1、剩餘風險、回滾、ask 變更清單）"
+  - "validate_task_card.py 對本卡 exit 0；AUDIT_LOG 與 data.json 重生且兩 --check exit 0；全 Python/Ruby CI 本地全綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "mixed"
+  location: "outputs/drafts/"
+  filename: "20260515-004_phase1-enforce-hard-rules-summary.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 45
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - commit: "b44d0c4"
+    stage: "Phase 1 Task Card 建立並通過 schema 驗證"
+actual_tool_calls: 18
+result_summary: "DoD 9/9。規則1/2 → harness_guard.py PreToolUse warn（9 tests）；規則3 → EXECUTION_LOG_SCHEMA retry_policy 欄位 + check_failure_policy.py CI 機檢（6 tests，構造違規 fixture exit 1、真實 repo exit 0、舊檔向後相容）。settings.json 加 Write|Edit matcher、CI 加 2 測試+規則3 gate。唯二 hard-block 不變且實證為活體（rm -rf 被 permissions_guard 擋）。待人工核准 3 項 ask 變更（EXECUTION_LOG_SCHEMA/settings.json/CI）。"
+completion_time: "2026-05-15"
+audit_log_ref: "logs/AUDIT_LOG.md"

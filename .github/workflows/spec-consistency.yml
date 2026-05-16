@@ -14,6 +14,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          # Full history: generate_audit_log.py derives `checkpoints` via
+          # `git log --grep="checkpoint: [task_id]"`. A shallow clone hides
+          # those commits, so the drift check would always report drift.
+          fetch-depth: 0
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@0cb964fd540e0a24c900370abf38a33466142735 # v1.305.0
@@ -56,6 +61,27 @@ jobs:
 
       - name: Audit log generator tests
         run: python3 scripts/test_generate_audit_log.py
+
+      - name: Audit log migration tests
+        run: python3 scripts/test_migrate_audit_log.py
+
+      - name: Audit drift guard tests
+        run: python3 scripts/test_audit_drift_guard.py
+
+      - name: Harness guard tests
+        run: python3 scripts/test_harness_guard.py
+
+      - name: Failure policy tests
+        run: python3 scripts/test_check_failure_policy.py
+
+      - name: Approval backlog tests
+        run: python3 scripts/test_approval_backlog.py
+
+      - name: Audit log drift check
+        run: python3 scripts/generate_audit_log.py --check
+
+      - name: Failure policy check (CLAUDE.md rule 3)
+        run: python3 scripts/check_failure_policy.py
 
       - name: E2E dummy task smoke test
         run: python3 tests/e2e/test_dummy_task_smoke.py
