@@ -7,6 +7,28 @@
 
 <!-- AUTO_AUDIT_BEGIN -->
 ```yaml
+task_id: 20260515-005
+date: '2026-05-15'
+skill_type: ops
+goal: 提供 approval backlog 可視化（待簽核 Task Card + 草稿 + 已核准統計 + 等待天數）與批次核准『記錄』工具，保留人工簽核、不自動核准，與既有
+  logs/approvals/ schema 及 RETRO_FLOW 對齊
+status: review
+risk_level: medium
+approval_needed: true
+output_path: outputs/drafts/20260515-005_phase2-approval-backlog-summary.md
+checkpoints:
+- commit: 68243f4
+  subject: 'checkpoint: [20260515-005] Phase 2 Task Card 建立並通過 schema 驗證'
+actual_tool_calls: 13
+result_summary: DoD 9/9。approval_backlog.py：scan（pending=approval_needed&review&無approval
+  + 等待天數 + drafts/approved 統計）+ --approve 批次記錄器（同 Phase 0/1 schema、sequential APR
+  id、重複拒絕、--by 強制、不翻 status）。8 tests 全綠。真實 repo scan 即時揭露 5 張卡塞 review（最久 19d，含 1
+  high）+ 27 drafts，驗證 0515-002 症狀。與 APPROVAL_POLICY/RETRO_FLOW 對齊，無 system/ 變更。待人工核准
+  1 項 ask（CI 測試 step）。三階段計畫全交付。
+completion_time: '2026-05-15'
+```
+
+```yaml
 task_id: 20260515-004
 date: '2026-05-15'
 skill_type: ops

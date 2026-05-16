@@ -439,6 +439,16 @@
     {
       "approval_needed": true,
       "date": "2026-05-15",
+      "goal": "提供 approval backlog 可視化（待簽核 Task Card + 草稿 + 已核准統計 + 等待天數）與批次核准『記錄』工具，保留人工簽核、不自動核准，與既有 logs/approvals/ schema 及 RETRO_FLOW 對齊",
+      "path": "tasks/2026-05-15_approval-backlog.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260515-005"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-15",
       "goal": "把 logs/AUDIT_LOG.md 從手寫格式遷移為 generate_audit_log.py 的 AUTO/MANUAL 結構，零遺失保留 31 筆人工備註，並接上 Task Card↔AUDIT_LOG drift 的 commit 硬擋",
       "path": "tasks/2026-05-15_audit-integrity.yaml",
       "risk_level": "medium",

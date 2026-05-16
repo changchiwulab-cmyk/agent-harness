@@ -74,6 +74,9 @@ jobs:
       - name: Failure policy tests
         run: python3 scripts/test_check_failure_policy.py
 
+      - name: Approval backlog tests
+        run: python3 scripts/test_approval_backlog.py
+
       - name: Audit log drift check
         run: python3 scripts/generate_audit_log.py --check
 
