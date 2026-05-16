@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="UTF-8" />
+<title>Agent Harness Dashboard — static snapshot</title>
+<style>:root {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #1f2937;
+  background: #f7f8fb;
+}
+
+body {
+  margin: 0;
+  padding: 1.2rem;
+}
+
+header { margin-bottom: 1rem; }
+header h1 { margin: 0; }
+header p { margin: .2rem 0 0; color: #6b7280; }
+
+.filters {
+  display: flex;
+  gap: .75rem;
+  flex-wrap: wrap;
+  align-items: end;
+  margin-bottom: 1rem;
+}
+
+.filters input, .filters button {
+  padding: .45rem .6rem;
+  border: 1px solid #d1d5db;
+  border-radius: .45rem;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: .75rem;
+  margin-bottom: 1rem;
+}
+
+.card, .panel .item, .panel {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: .6rem;
+}
+
+.card { padding: .8rem; }
+.card .label { color: #6b7280; font-size: .85rem; }
+.card .value { font-size: 1.5rem; font-weight: 700; }
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 1rem;
+}
+
+.panel { padding: .6rem; min-height: 120px; }
+.panel .item {
+  padding: .6rem;
+  margin-bottom: .55rem;
+}
+
+small { color: #6b7280; }
+.timeline-item summary { cursor: pointer; font-weight: 600; }
+.timeline-item details { margin-top: .25rem; }
+
+.gates { margin-top: .4rem; display: flex; flex-wrap: wrap; gap: .3rem; }
+.gate {
+  font-size: .72rem;
+  padding: .1rem .4rem;
+  border-radius: .35rem;
+  border: 1px solid transparent;
+}
+.gate-pass { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+.gate-fail { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr; }
+}
+
+.snapshot-note{background:#fffbeb;border:1px solid #fcd34d;color:#92400e;
+padding:.5rem .75rem;border-radius:.5rem;margin-bottom:1rem;font-size:.85rem;}
+</style></head><body>
+<header><h1>Agent Harness 動態看板</h1>
+<p>清單瀏覽 / Logs 儀表板 / Decision Timeline</p></header>
+<div class="snapshot-note">靜態快照（由真實 app.js render 邏輯離線產生，預設未篩選視圖；
+資料：36 tasks / 1 logs / 7 decisions）。
+互動篩選需實際起 scripts/run_frontend.sh。</div>
+<section class="cards" id="summaryCards"><article class="card"><div class="label">Tasks</div><div class="value">36</div></article><article class="card"><div class="label">Done</div><div class="value">12</div></article><article class="card"><div class="label">Failed</div><div class="value">0</div></article><article class="card"><div class="label">Logs</div><div class="value">1</div></article><article class="card"><div class="label">Decisions</div><div class="value">7</div></article></section>
+<main class="grid">
+<section><h2>Task 清單</h2><div class="panel">
+      <article class="item">
+        <strong>20260516-F02</strong><br />
+        收斂前端 Phase 0 殘留並結案：①F01 review→done ②app.js 渲染 gate_results + logs 篩選對齊 ③generator/test 更名去 manifest 殘留 ④開立 Phase 1 視覺化 Task Card<br />
+        <small>2026-05-16 · review · ops</small>
+      </article>
+      <article class="item">
+        <strong>20260516-F03</strong><br />
+        前端 Phase 1：在 Phase 0 baseline 上補 Gate / Approval / Failure 三類治理資料的專屬視覺化（聚合面板，非單筆 chip）<br />
+        <small>2026-05-16 · pending · ops</small>
+      </article>
+      <article class="item">
+        <strong>20260509-N02</strong><br />
+        修正 A01 草稿 §1.1 對『README 寫 30+』的錯誤歸因，更新為實際計數，並在 N1 對齊報告中註記 plan 的數據是 snapshot，不更新<br />
+        <small>2026-05-09 · review · review</small>
+      </article>
+      <article class="item">
+        <strong>20260509-N05</strong><br />
+        建立 governance metrics 自動採集腳本，月度執行 plan §5.3 4 條關鍵指標（task card 月新增數 / drafts:reports 比 / audit 覆蓋率 / 原生重疊度），輸出報告 + 警訊狀態<br />
+        <small>2026-05-09 · review · ops</small>
+      </article>
+      <article class="item">
+        <strong>20260509-N04</strong><br />
+        起草 agent-governance plugin 的 manifest skeleton 設計文件，定義每個 command / hook / schema / validator 的介面契約，但不寫實作<br />
+        <small>2026-05-09 · review · writing</small>
+      </article>
+      <article class="item">
+        <strong>20260509-W01</strong><br />
+        把 Harness v2 沉澱的治理思想（可恢復／可審計／可量化）轉寫成可發表的方法論大綱，適用於書、長文系列、課程三種形態<br />
+        <small>2026-05-09 · review · writing</small>
+      </article>
+      <article class="item">
+        <strong>20260509-N09</strong><br />
+        把 agent-harness 的 CLAUDE.md / .claude/settings.json 切換為引用 agent-governance plugin v0.1.0，同時保證 agent-harness 自身 CI 在 plugin 缺席時仍綠（fallback 路徑）<br />
+        <small>2026-05-09 · pending · ops</small>
+      </article>
+      <article class="item">
+        <strong>20260509-A01</strong><br />
+        規劃 Harness v3 重構範圍：砍除與 Claude Code 原生重疊的模組，把治理三件（Audit / Decision Log / DoD / Failure Taxonomy）抽成可獨立發布的治理層<br />
+        <small>2026-05-09 · review · analysis</small>
+      </article>
+      <article class="item">
+        <strong>20260509-N10</strong><br />
+        在 N06 bootstrap 進行帶外手動執行的等待期間，修正 runbook 的 test 數量漂移並預製 N06b 切換用的 3 個產物草稿，把 N06b PR 的決策面降到接近零<br />
+        <small>2026-05-09 · in_progress · ops</small>
+      </article>
+      <article class="item">
+        <strong>20260509-N11</strong><br />
+        在 plugin v0.1.0 candidate 推上 agent-governance repo 之前，修掉 Codex 指出的 P1（risk gate 在 output_path 缺席時被略過 → 治理破口）+ P2（gate_completion 對非字串 DoD 入項會 TypeError 崩潰）。屬 plugin tree 內部 hardening，不影響 agent-harness 端<br />
+        <small>2026-05-09 · in_progress · ops</small>
+      </article>
+      <article class="item">
+        <strong>20260509-N07</strong><br />
+        評估是否在 agent-harness v2.x 啟用 Claude Code 原生 Memory，並產出明確 Go / No-Go / Conditional-Go 建議與條件清單<br />
+        <small>2026-05-09 · review · analysis</small>
+      </article>
+      <article class="item">
+        <strong>20260509-M01</strong><br />
+        在 agent-harness namespace 試點原生 Memory（symlink 模式），實測 Claude Code 是否真支援指向 repo 內路徑、寫入提示流程、token 預算影響<br />
+        <small>2026-05-09 · pending · ops</small>
+      </article>
+      <article class="item">
+        <strong>20260509-N01</strong><br />
+        把 ai-bubbly-mountain plan 寫進 repo（memory/active_projects/agent-harness/plans/），並對 A01/W01 與 plan §8.1 Task A/B 做逐項對齊，產出對齊報告與 task card 清理<br />
+        <small>2026-05-09 · review · review</small>
+      </article>
+      <article class="item">
+        <strong>20260509-N03</strong><br />
+        在分支上把 skills/research/SKILL.md 加上原生 Claude Code Skills frontmatter 並建立 .claude/skills/ 註冊路徑，輸出 PoC summary 評估 H1（原生自動路由能否取代 ROUTING_RULES.md）<br />
+        <small>2026-05-09 · review · ops</small>
+      </article>
+      <article class="item">
+        <strong>20260509-N06</strong><br />
+        依 N4 skeleton 真正建立 agent-governance plugin repo（含 plugin.json / 5 commands / 4 schemas / 2 hooks / 2 validators 的最小可運行版本），並把 agent-harness 切到引用該 plugin<br />
+        <small>2026-05-09 · review · ops</small>
+      </article>
+      <article class="item">
+        <strong>20260509-N08</strong><br />
+        把 W01 第 1 章『為什麼一人公司需要 Agent 治理？』從大綱寫成可發佈的部落格首篇草稿，並附 elevator pitch（單獨可流通版）<br />
+        <small>2026-05-09 · review · writing</small>
+      </article>
+      <article class="item">
+        <strong>20260502-A01</strong><br />
+        Phase A：補齊規則 enforcement 與觀測自動化（PreToolUse hook、audit log generator、e2e smoke test）<br />
+        <small>2026-05-02 · review · ops</small>
+      </article>
+      <article class="item">
+        <strong>20260502-T03</strong><br />
+        台灣 AI 產業深度報告：5-7 切片量化、政策法規、敏感性表、12 個月機會日曆<br />
+        <small>2026-05-02 · review · research</small>
+      </article>
+      <article class="item">
+        <strong>20260502-T01</strong><br />
+        台灣 AI 產業快速掃描：3 切片 + 3 跨切片趨勢，1 小時內出 executive brief<br />
+        <small>2026-05-02 · review · research</small>
+      </article>
+      <article class="item">
+        <strong>20260502-T02</strong><br />
+        台灣 AI 產業標準研究：5 切片含本地 vs 國際玩家比較、成熟度與驅動力分析<br />
+        <small>2026-05-02 · review · research</small>
+      </article>
+      <article class="item">
+        <strong>20260427-F01</strong><br />
+        收斂 PR #55 為前端平台的最小可審核 baseline：穩定 YAML 解析、防 manifest 漂移、補 generator 測試與 CI 護欄<br />
+        <small>2026-04-27 · done · ops</small>
+      </article>
+      <article class="item">
+        <strong>20260424-O01</strong><br />
+        收斂重複的 task card 驗證器為單一事實來源，補 SECURITY 發現性，清理重複 CI<br />
+        <small>2026-04-24 · done · ops</small>
+      </article>
+      <article class="item">
+        <strong>20260424-O03</strong><br />
+        為 CLAUDE.md/GLOBAL_RULES 3K token 硬限制加 CI 檢查，並對 Execution Log Schema 落地率低做收斂決策<br />
+        <small>2026-04-24 · done · ops</small>
+      </article>
+      <article class="item">
+        <strong>20260424-O02</strong><br />
+        將 token-calibration-table 晉升為治理 artifact，調整 INTAKE_FLOW 主路為快速路徑，正式歸檔 WEEKLY_REVIEW_TEMPLATE<br />
+        <small>2026-04-24 · done · ops</small>
+      </article>
+      <article class="item">
+        <strong>20260417-O01</strong><br />
+        填補 retro-2026-04-15 發現的三項證據空白：Error Log 範例、Decision Log D005、Token 校準資料表<br />
+        <small>2026-04-17 · done · ops</small>
+      </article>
+      <article class="item">
+        <strong>20260417-O02</strong><br />
+        將 retro-2026-04-15 晉升為正式 report，並封存 vietnam-expansion 專案<br />
+        <small>2026-04-17 · done · ops</small>
+      </article>
+      <article class="item">
+        <strong>20260417-O03</strong><br />
+        為 COST_POLICY 加入校準係數章節，並將 WEEKLY_REVIEW_TEMPLATE 標注為 deprecated<br />
+        <small>2026-04-17 · done · ops</small>
+      </article>
+      <article class="item">
+        <strong>20260415-A01</strong><br />
+        評估是否應將 create_task_card 從 ask 升為 allow，給出有依據的建議排序<br />
+        <small>2026-04-15 · done · analysis</small>
+      </article>
+      <article class="item">
+        <strong>20260409-001</strong><br />
+        驗證 Agent Harness v2.0 所有新增組件的可用性與流程完整性<br />
+        <small>2026-04-09 · done · review</small>
+      </article>
+      <article class="item">
+        <strong>20260404-RV01</strong><br />
+        審查 ai-era-solo-business-proposal.md 的邏輯一致性、事實正確性、風險完整性，確認可作為正式使用的策略文件<br />
+        <small>2026-04-04 · review · review</small>
+      </article>
+      <article class="item">
+        <strong>20260404-W01</strong><br />
+        根據研究結果（20260404-S01），產出一份完整的一人公司 AI 時代策略提案，可直接用於自我規劃或向潛在合作方展示<br />
+        <small>2026-04-04 · review · writing</small>
+      </article>
+      <article class="item">
+        <strong>20260404-S01</strong><br />
+        分析 AI 時代一人公司最具長遠獲利潛力的商業項目，結合用戶背景（管理顧問、台灣+越南市場）提供可執行策略建議<br />
+        <small>2026-04-04 · review · research</small>
+      </article>
+      <article class="item">
+        <strong>20260404-O02</strong><br />
+        根據審查報告 RV01 的 3 個必須修改項，修正提案數字矛盾並補充 Retainer 交付差異，產出 v2 正式版<br />
+        <small>2026-04-04 · review · ops</small>
+      </article>
+      <article class="item">
+        <strong>20260404-O01</strong><br />
+        修正 20260404-R02 review 發現的 2 個 must-fix 問題，完成工具盤點報告定稿<br />
+        <small>2026-04-04 · done · ops</small>
+      </article>
+      <article class="item">
+        <strong>20260404-R01</strong><br />
+        調查並整理一人公司運作所需的工具清單，按功能分類並評估現有採用狀況<br />
+        <small>2026-04-04 · done · research</small>
+      </article>
+      <article class="item">
+        <strong>20260404-R02</strong><br />
+        審查工具盤點報告的完整性、邏輯一致性與一人公司適用性<br />
+        <small>2026-04-04 · done · review</small>
+      </article></div></section>
+<section><h2>Decision Timeline</h2><div class="panel">
+      <article class="item timeline-item">
+        <details>
+          <summary>2026-04-03｜20260403-D001</summary>
+          <div>Task Card YAML + git checkpoint</div>
+          <small>一人公司規模下，可恢復性（任何時間點都能 git checkout 回到任意狀態） 比即時查詢能力更重要。YAML 純文字可直接被 agent 讀取注入 context， 無需額外 API 呼叫。git 已在工具鏈中，維護成本為零。
+</small>
+        </details>
+      </article>
+      <article class="item timeline-item">
+        <details>
+          <summary>2026-04-03｜20260403-D002</summary>
+          <div>粗略護欄 + 事後量測</div>
+          <small>v1 目標是「跑起來並累積實測數據」。精確 token 追蹤在沒有基準數據前意義不大； 先累積 audit log，再用實測平均值校正預算（即 RETRO 流程所做的事）。 複雜度留給 v2+ 再引入。
+</small>
+        </details>
+      </article>
+      <article class="item timeline-item">
+        <details>
+          <summary>2026-04-15｜20260415-D003</summary>
+          <div>維持 v2，下次 retro（累積 5 筆後）再評估</div>
+          <small>四項觸發條件均未達標：context 未超限、無規則衝突、 token 雖超預估但未超 dashboard 上限、錯誤率僅 1/8（非阻斷性）。 一人公司原則：不做沒有實際需求的架構升級。
+</small>
+        </details>
+      </article>
+      <article class="item timeline-item">
+        <details>
+          <summary>2026-04-15｜20260415-D004</summary>
+          <div>升為 allow（PERMISSIONS.yaml 中移入 allow 區塊）</div>
+          <small>歷史數據明確：8/8 筆任務均為 low risk 且立即 approve，ask 無實質把關。 GATE_POLICY 的 risk_check 是第二道防線，確保即使 Task Card 建立時無確認， 執行後仍會驗證 risk_level 與實際動作一致。 選擇直接 allow（而非條件升）是因為：Task Card 本身是分析輸出，不是危險操作； 真正的風險在執行階段，而非建立 Task Card 階段。
+</small>
+        </details>
+      </article>
+      <article class="item timeline-item">
+        <details>
+          <summary>2026-04-15｜20260415-D005</summary>
+          <div>加入快速路徑判斷（fast-path），保留完整流程作為備援</div>
+          <small>事後補填（reasoning 明註原因）：本決策在 2026-04-15 實作 retro 建議時已執行， 但未同步建立 Decision Log。2026-04-17 補建以保留決策可追溯性。 依據： 1. 8/8 實測資料（100% 快速路徑），顯示完整流程當前不必要 2. 但無法排除未來「委外任務」「非本人需求」等模糊情境 3. 保守原則：既有機制不刪除，僅補充判斷邏輯 4. 與 D004（create_task_card 升 allow）思路一致 —— 依實測降低摩擦，但保留上層安全網（GATE_POLICY）
+</small>
+        </details>
+      </article>
+      <article class="item timeline-item">
+        <details>
+          <summary>2026-04-24｜20260424-D006</summary>
+          <div>選 C（Narrow Scope）</div>
+          <small>「可恢復、可審核、可量化」三原則中，量化最需要詳細資料；
+但近 5 筆任務零失敗零 partial，顯示 happy-path 下 AUDIT_LOG 已充分。
+failed/partial 任務才是需要深度 post-mortem 的場景。
+保留 schema 但限縮使用範圍，既不失能力又不強加儀式負擔。
+</small>
+        </details>
+      </article>
+      <article class="item timeline-item">
+        <details>
+          <summary>2026-05-09｜20260509-D007</summary>
+          <div>- Repo 命名：agent-governance
+- License：Apache-2.0
+- Visibility：Private（v0.1.0 內部驗證後再轉 public）
+- Layout：獨立 repo
+- Bootstrap 走法：本 session 在 outputs/drafts/agent-governance-bootstrap/ 下完整準備檔案樹（plugin.json + 5 commands + 4 schemas + 2 hooks + 2 validators + LICENSE + README + CHANGELOG + CI workflow）；下個 session 由使用者執行：(1) 在 GitHub 新建 private repo agent-governance；(2) git init 並把 outputs/drafts/agent-governance-bootstrap/* 全數搬入；(3) push v0.1.0 tag。
+</div>
+          <small>四個子題答案均選與 plan §6 + N4 §1.3 解耦聲明對齊的選項。
+Apache-2.0 偏好為日後與企業整合保留 patent 條款（MIT 也可，但 Apache 多 patent 保護成本接近於零）。
+Private 起步是為了讓 v0.1.0 → v0.2.0 之間的 API breaking change 不被外部使用者卡住；
+v0.2.0 穩定後手動轉 public。
+</small>
+        </details>
+      </article></div></section>
+</main>
+<section><h2>Logs 儀表板</h2><div class="panel">
+      <article class="item">
+        <strong>RUN-20260409-001</strong><br />
+        task: 20260409-001<br />
+        <small>completed · 2026-04-09 00:30</small>
+        <div class="gates"><span class="gate gate-pass">schema: pass</span> <span class="gate gate-pass">rule: pass</span> <span class="gate gate-pass">completion: pass</span> <span class="gate gate-pass">risk: pass</span></div>
+      </article></div></section>
+</body></html>
