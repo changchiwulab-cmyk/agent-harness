@@ -435,6 +435,26 @@
       "skill_type": "writing",
       "status": "review",
       "task_id": "20260509-N08"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-16",
+      "goal": "新增 failure-injection 測試套件：對 FAILURE_TAXONOMY 14 模式逐一注入壞輸入並斷言對應 guardrail 觸發，並掛進 CI",
+      "path": "tasks/2026-05-16_failure-injection-suite.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260516-002"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-16",
+      "goal": "擴充 e2e golden-path smoke test：新增 low-risk 產物可進 reports/ 與 execution-log schema 符合兩條正向斷言",
+      "path": "tasks/2026-05-16_golden-path-e2e-test.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260516-001"
     }
   ]
 }

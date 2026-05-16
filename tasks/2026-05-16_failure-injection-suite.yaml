@@ -1,0 +1,61 @@
+# Task Card — 最壞情境（failure injection）測試套件
+# 來源：使用者要求規劃並實作專案「最佳/最壞測試方案」中的最壞情境部分
+
+task_id: "20260516-002"
+date: "2026-05-16"
+status: "done"
+
+# === 任務定義 ===
+goal: "新增 failure-injection 測試套件：對 FAILURE_TAXONOMY 14 模式逐一注入壞輸入並斷言對應 guardrail 觸發，並掛進 CI"
+context: |
+  Harness 的四層 Gate 與 guardrail 靠 Claude 自然語言推理執行，但沒有任何測試
+  證明「壞情境真的會被擋下」。現有 smoke test 只覆蓋 14 種失敗模式中的 2 種
+  （缺 DoD、錯路徑），其餘 12 種是空白。本卡補上故障注入矩陣：每個
+  FAILURE_TAXONOMY.yaml 失敗模式都要有對應的壞輸入 + guardrail 斷言，
+  並以動態比對防止失敗分類學漂移。
+input_data:
+  - "system/FAILURE_TAXONOMY.yaml"
+  - "system/GATE_POLICY.yaml"
+  - "system/PERMISSIONS.yaml"
+  - "tests/e2e/test_dummy_task_smoke.py"
+
+# === 完成標準 ===
+definition_of_done:
+  - "新增 tests/e2e/test_failure_injection.py，覆蓋 FAILURE_TAXONOMY.yaml 全部 14 個失敗模式 id"
+  - "每個 case 斷言對應 on_fail / rollback 契約（deny 工具→rule fail；high-risk→reports 被擋；缺 DoD→schema fail；部分 DoD→completion fail；連續 3 次相同動作→停止；模糊需求無 goal→不執行；對外動作→鎖 drafts）"
+  - "測試動態讀取 FAILURE_TAXONOMY.yaml 比對：若新增/刪除失敗模式而無對應 case 即 fail（防漂移）"
+  - ".github/workflows/spec-consistency.yml 新增步驟執行 tests/e2e/test_failure_injection.py"
+  - "新套件與既有 CI step 全部 exit 0，無回歸"
+  - "frontend/data.json 重新產生並與檔案系統一致（CI drift check 綠）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "mixed"
+  location: "outputs/drafts/"
+  filename: "20260516-002_failure-injection-summary.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 25
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "4dc84dd 建立兩張 Task Card（完成拆解）"
+actual_tool_calls: 12
+result_summary: "DoD 6/6 通過。新增 test_failure_injection.py，覆蓋 15 個 taxonomy 模式 + drift guard，掛進 CI，無回歸。發現 FAILURE_TAXONOMY 實為 15 模式但文件寫 14（SEC-04 後補未同步）；改 system/ 屬 ask 權限，已列摘要待人工決策，未自行修改。"
+completion_time: "2026-05-16"
+audit_log_ref: "logs/AUDIT_LOG.md"

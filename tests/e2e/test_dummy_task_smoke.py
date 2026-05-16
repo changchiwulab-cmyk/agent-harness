@@ -27,6 +27,7 @@ ROOT = Path(__file__).resolve().parents[2]
 VALIDATE_SCRIPT = ROOT / "system" / "validate_task_card.py"
 PERMISSIONS_PATH = ROOT / "system" / "PERMISSIONS.yaml"
 GATE_POLICY_PATH = ROOT / "system" / "GATE_POLICY.yaml"
+EXECUTION_LOG_SCHEMA_PATH = ROOT / "system" / "EXECUTION_LOG_SCHEMA.yaml"
 
 
 DUMMY_TASK = {
@@ -111,6 +112,78 @@ def gate_risk(card: dict, output_path: Path) -> tuple[bool, str]:
     return True, "ok"
 
 
+# A clean low-risk *auto* card. Per PERMISSIONS.yaml a low-risk task is
+# "草稿產出" (auto_execute, approval_needed: false) and its artefact lands in
+# outputs/drafts/. Writing to outputs/reports/ is the ask-level
+# `write_reports` action and is modelled by AUTHORISED_REPORT_TASK below — the
+# golden path must NOT bless an unauthorised report write (codex P1).
+LOW_RISK_TASK = {
+    **DUMMY_TASK,
+    "task_id": "20260516-E2E",
+    "date": "2026-05-16",
+    "goal": "smoke-test the low-risk auto golden path (drafts/, no approval)",
+    "risk_level": "low",
+    "approval_needed": False,
+    "expected_output": {
+        "format": "md",
+        "location": "outputs/drafts/",
+        "filename": "20260516-E2E_smoke.md",
+    },
+}
+
+# An *authorised* reports/ write: outputs/reports/ is the ask-level
+# `write_reports` action, so the card must declare approval AND carry the tool.
+AUTHORISED_REPORT_TASK = {
+    **DUMMY_TASK,
+    "task_id": "20260516-RPT",
+    "date": "2026-05-16",
+    "goal": "smoke-test an authorised reports/ write",
+    "risk_level": "medium",
+    "approval_needed": True,
+    "allowed_tools": ["file_read", "write_reports"],
+    "expected_output": {
+        "format": "md",
+        "location": "outputs/reports/",
+        "filename": "20260516-RPT_smoke.md",
+    },
+}
+
+
+def gate_approval(card: dict) -> tuple[bool, str]:
+    """Policy contract: writing to outputs/reports/ is the ask-level
+    ``write_reports`` action (PERMISSIONS.yaml). Such a card must declare
+    ``approval_needed: True`` AND carry ``write_reports`` in allowed_tools,
+    so CI cannot bless an unauthorised report write.
+    """
+    dest = (card.get("expected_output") or {}).get("location", "")
+    if "outputs/reports/" in dest:
+        if not card.get("approval_needed"):
+            return False, "reports/ output requires approval_needed: True"
+        if "write_reports" not in (card.get("allowed_tools") or []):
+            return False, "reports/ output requires write_reports in allowed_tools"
+    return True, "ok"
+
+
+def validate_execution_log(log: dict, schema: dict) -> tuple[bool, list[str]]:
+    """Assert a produced execution log carries every top-level key the
+    EXECUTION_LOG_SCHEMA.yaml contract declares, and that all four gate
+    verdicts are recorded as ``pass``.
+
+    This pins the structural contract of EXECUTION_LOG_SCHEMA.yaml so a
+    renamed/removed field surfaces in CI rather than silently producing
+    incomplete audit records.
+    """
+    schema_log = schema.get("execution_log") or {}
+    produced = log.get("execution_log") or {}
+    misses = [key for key in schema_log if key not in produced]
+
+    gate_results = produced.get("gate_results") or {}
+    for gate in ("schema_check", "rule_check", "completion_check", "risk_check"):
+        if gate_results.get(gate) != "pass":
+            misses.append(f"gate_results.{gate} != pass")
+    return not misses, misses
+
+
 # All four gate names that GATE_POLICY.yaml is contractually required to define.
 # Pinned here so renaming or removing any of them surfaces in CI rather than
 # silently passing — this is the regression the codex P2 review flagged.
@@ -122,6 +195,9 @@ class TestDummyTaskSmoke(unittest.TestCase):
     def setUpClass(cls):
         cls.permissions = yaml.safe_load(PERMISSIONS_PATH.read_text(encoding="utf-8"))
         cls.gate_policy = yaml.safe_load(GATE_POLICY_PATH.read_text(encoding="utf-8"))
+        cls.exec_log_schema = yaml.safe_load(
+            EXECUTION_LOG_SCHEMA_PATH.read_text(encoding="utf-8")
+        )
 
     def test_all_four_gates_fire_for_high_risk_dummy(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -171,6 +247,91 @@ class TestDummyTaskSmoke(unittest.TestCase):
         passed, output = gate_schema(bad, VALIDATE_SCRIPT)
         self.assertFalse(passed)
         self.assertIn("definition_of_done", output)
+
+    def test_low_risk_auto_golden_path_lands_in_drafts(self):
+        """Golden path: a clean low-risk auto card flows through all four
+        gates plus the approval contract, and its artefact lands in
+        outputs/drafts/ — the policy-correct destination for a no-approval
+        low-risk task (PERMISSIONS.yaml: low == 草稿產出)."""
+        with tempfile.TemporaryDirectory() as tmp:
+            drafts = Path(tmp) / "outputs" / "drafts"
+            drafts.mkdir(parents=True)
+            output = drafts / LOW_RISK_TASK["expected_output"]["filename"]
+            output.write_text(
+                "# smoke output\n\n"
+                + "\n".join(f"- {d}" for d in LOW_RISK_TASK["definition_of_done"]),
+                encoding="utf-8",
+            )
+
+            results = {
+                "schema_check": gate_schema(LOW_RISK_TASK, VALIDATE_SCRIPT),
+                "rule_check": gate_rule(LOW_RISK_TASK, self.permissions),
+                "completion_check": gate_completion(LOW_RISK_TASK, output),
+                "risk_check": gate_risk(LOW_RISK_TASK, output),
+            }
+
+        self.assertEqual(set(results.keys()), EXPECTED_GATES)
+        for name, (passed, detail) in results.items():
+            self.assertTrue(passed, f"{name} should pass on golden path: {detail}")
+        self.assertEqual(LOW_RISK_TASK["expected_output"]["location"], "outputs/drafts/")
+        self.assertTrue(gate_approval(LOW_RISK_TASK)[0])
+
+    def test_reports_path_requires_approval_and_write_reports_tool(self):
+        """Approval guardrail (codex P1): writing to outputs/reports/ is the
+        ask-level write_reports action. An unauthorised reports/ write —
+        approval_needed False, only write_drafts — MUST fail the approval
+        contract so CI cannot bless it; the authorised variant passes."""
+        unauthorised = {
+            **DUMMY_TASK,
+            "expected_output": {
+                "format": "md",
+                "location": "outputs/reports/",
+                "filename": "rogue.md",
+            },
+            "approval_needed": False,
+            "allowed_tools": ["file_read", "write_drafts"],
+        }
+        passed, reason = gate_approval(unauthorised)
+        self.assertFalse(passed)
+        self.assertIn("approval_needed", reason)
+
+        # Approval declared but the write_reports tool still missing.
+        no_tool = {**unauthorised, "approval_needed": True}
+        passed, reason = gate_approval(no_tool)
+        self.assertFalse(passed)
+        self.assertIn("write_reports", reason)
+
+        # Fully authorised reports/ write passes.
+        self.assertTrue(gate_approval(AUTHORISED_REPORT_TASK)[0])
+
+    def test_high_risk_barred_from_reports_dir(self):
+        """The risk gate independently bars high/critical output from any
+        non-drafts path regardless of approval."""
+        self.assertFalse(gate_risk(DUMMY_TASK, Path("outputs/reports/x.md"))[0])
+
+    def test_execution_log_matches_schema_contract(self):
+        """A produced execution log must carry every field the schema
+        declares and record all four gate verdicts as pass on the golden
+        path."""
+        produced = {
+            "execution_log": {
+                key: "" for key in self.exec_log_schema["execution_log"]
+            }
+        }
+        produced["execution_log"]["gate_results"] = {
+            "schema_check": "pass",
+            "rule_check": "pass",
+            "completion_check": "pass",
+            "risk_check": "pass",
+        }
+        ok, misses = validate_execution_log(produced, self.exec_log_schema)
+        self.assertTrue(ok, f"execution log missing schema fields: {misses}")
+
+        # Negative control: a half-recorded gate set must fail the contract.
+        produced["execution_log"]["gate_results"]["risk_check"] = ""
+        ok, misses = validate_execution_log(produced, self.exec_log_schema)
+        self.assertFalse(ok)
+        self.assertIn("gate_results.risk_check != pass", misses)
 
 
 if __name__ == "__main__":
