@@ -12,7 +12,7 @@ date: '2026-05-15'
 skill_type: ops
 goal: 把 CLAUDE.md 三條硬規則從純自律變成可觀測/可機檢：規則1/2 以 PreToolUse warn 提醒，規則3 以 EXECUTION_LOG
   schema 欄位 + CI validator 硬檢；唯二 hard-block 維持 drift(P0) 與 PERMISSIONS deny-list
-status: review
+status: done
 risk_level: medium
 approval_needed: true
 output_path: outputs/drafts/20260515-004_phase1-enforce-hard-rules-summary.md
