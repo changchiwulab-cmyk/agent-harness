@@ -1,0 +1,76 @@
+# Task Card: 未來 AI 產業對台灣產業衝擊的前瞻研究（2026–2030）
+# 建立日期：2026-05-16
+
+task_id: "20260516-R01"
+date: "2026-05-16"
+status: "review"               # pending → in_progress → checkpoint → review → done / failed
+
+# === 任務定義 ===
+goal: "前瞻研究未來 2026–2030 AI 產業演進，將如何衝擊台灣各產業（贏家／輸家／結構轉移），作為一人公司方向決策（A01）的事實輸入"
+context: |
+  使用者需求：分析未來 AI 產業會影響台灣哪些產業，進一步規劃一人公司最佳發展方向。
+  使用者選擇「完整重新前瞻研究」（deep-dive profile，比照 T03 的 8 calls / 5 searches + 超 5 次 checkpoint）。
+
+  既有前作（2026-05-02，僅兩週前，作為基準避免重工）：
+  - 20260502-T01/T02/T03 已盤點「當前」AI 影響台灣哪些產業（7 切片 + 量化 + 政策 + 12 月日曆 + 敏感性分析）
+  - T03 刻意停在「僅列舉切入點、不做 Go/No-Go」，決策另開 analysis 卡（即本系列 A01）
+
+  本卡與 T01-T03 的差異化（不重做現況，只做「未來」增量）：
+  - 時間軸：聚焦未來 2026–2030 的「變化」與「轉折點」，非 2026 現況快照
+  - 角度：哪些台灣產業會被 AI 放大（贏家）、被替代或壓縮（輸家）、結構重組（中間態）
+  - 必含：T03 六條高風險假設在未來情境下的演化方向
+  使用者背景：20+ 年跨產業管理顧問、一人公司（沿用 T01-T03 假設）。
+  research SKILL.md 規範：每個事實主張要有具名來源含時效；推論標依據；資料不足明說，不硬湊。
+
+input_data:
+  - "outputs/drafts/20260502-T01_taiwan-ai-industry-quick-scan.md"
+  - "outputs/drafts/20260502-T02_taiwan-ai-industry-standard.md"
+  - "outputs/drafts/20260502-T03_taiwan-ai-industry-deep-dive.md"
+  - "memory/active_projects/agent-harness/context.md"
+  - "skills/research/SKILL.md"
+
+# === 完成標準（最重要的欄位）===
+definition_of_done:
+  - "明確標註研究時間軸為未來 2026–2030，且每段點出「相對 T03 現況的變化」而非重述現況"
+  - "至少 6 個台灣產業／領域，各標示未來 AI 衝擊方向（放大贏家 / 替代壓縮輸家 / 結構重組）+ 1 個轉折訊號 + 預估時點區間"
+  - "至少 1 段獨立分析：AI 對「管理顧問／知識服務業」本身的未來衝擊（與使用者職涯直接相關）"
+  - "T03 六條高風險假設逐條給出未來情境演化方向（惡化 / 持平 / 緩解）"
+  - "至少 5 個來源，每個事實主張可追溯到具名來源含時效；前瞻推論明確標為推論並附依據"
+  - "事實 / 合理推論 / 待驗證 / 高風險假設四態明確分開標記"
+  - "輸出符合 skills/research/SKILL.md 格式；明確聲明此檔為 A01 決策卡的事實輸入"
+  - "預算限制：~2500-3500 字"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260516-R01_taiwan-ai-future-foresight.md"
+
+# === 風險與權限 ===
+risk_level: "low"              # 純讀取 / 研究 / 草稿產出
+approval_needed: false
+allowed_tools:
+  - "read_project_files"
+  - "file_search"
+  - "web_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "read_memory"
+
+# === 成本控制（deep-dive profile，比照 T03）===
+max_tool_calls: 9             # 超過 5 次先 checkpoint（GLOBAL_RULES）
+max_retries: 3
+max_web_searches: 5           # deep-dive；超過 3 輪需 checkpoint 後續行
+
+# === Skill 路由 ===
+skill_type: "research"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: [20260516-R01/A01] 完成需求拆解"
+  - "checkpoint: [20260516-R01] 前瞻研究草稿完成，4 層 gate 通過"
+actual_tool_calls: 6
+result_summary: "DoD 全條通過。6 切片（半導體/AI伺服器、實體AI/機器人、智慧醫療、SME製造、白領壓縮輸家、顧問業）+ 顧問業獨立分析 + T03 六假設未來演化。新增前瞻變量：政策斷層、知識工作壓縮、能源天花板、實體AI。5 web searches 達上限。"
+completion_time: "2026-05-16"
+audit_log_ref: "logs/AUDIT_LOG.md; logs/runs/20260516-001_ai-industry-impact.yaml"

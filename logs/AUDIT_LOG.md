@@ -33,6 +33,46 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260516-R01"
+  date: "2026-05-16"
+  skill_type: "research"
+  goal: "前瞻研究未來 2026–2030 AI 產業如何衝擊台灣各產業，作為一人公司方向決策(A01)的事實輸入"
+  status: "done"
+  model_used: "claude"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 5
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 2
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260516-R01_taiwan-ai-future-foresight.md"
+  error_summary: ""
+  estimated_tokens: "~24K"
+  notes: "DoD 全條通過。差異化於 T01-T03（2026 現況）：聚焦 2026-2030 變化軸，新增政策斷層/知識工作壓縮/能源天花板/實體AI 四前瞻變量 + T03 六假設未來演化。5 web searches 達上限後 checkpoint。"
+```
+
+```yaml
+- task_id: "20260516-A01"
+  date: "2026-05-16"
+  skill_type: "analysis"
+  goal: "以 R01 前瞻研究 + T01-T03 為輸入，六維評估一人公司候選方向，選最佳方向 + 12 個月執行路線"
+  status: "done"
+  model_used: "claude"
+  tools_called:
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260516-A01_solo-company-best-direction.md"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "首筆 analysis 實測樣本（COST_POLICY 校準係數待累積）。7 選項六維評估，建議主方向=B(AI落地治理/價值實現陪跑)+A(SME獲客funnel)，疊加F(教育訓練)，排除E/G。純接力 R01/T03 無新 web search。草稿待人工審閱。"
+```
+
+```yaml
 - task_id: "20260509-M01"
   date: "2026-05-09"
   skill_type: "ops"
