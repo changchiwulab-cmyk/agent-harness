@@ -1,0 +1,72 @@
+task_id: "20260516-F03"
+date: "2026-05-16"
+status: "pending"
+
+# === 任務定義 ===
+goal: "前端 Phase 1：在 Phase 0 baseline 上補 Gate / Approval / Failure 三類治理資料的專屬視覺化（聚合面板，非單筆 chip）"
+
+context: |
+  前置：F01（Phase 0 baseline）已結案、F02 已收尾並在 log item 加上 gate_results
+  四鍵 pass/fail 的「單筆 chip」。本卡為 plan §Phase 1，建立在其上做「聚合/專屬」
+  視覺化，不重做 chip。F01 summary「仍存在的限制」明列 Phase 1 範圍：
+  gate_results / approvals / failure 尚無專屬呈現。Phase 2（Context Budget 儀表板）、
+  Phase 3（Decision Graph）仍各自獨立開卡，本卡不涵蓋。
+  本卡為 pending 規劃卡，待人工排程後另起 session 執行；建立本卡不執行實作。
+
+input_data:
+  - "frontend/app.js"
+  - "frontend/data.json"
+  - "scripts/generate_frontend_data.py"
+  - "logs/runs/*.yaml（gate_results 來源）"
+  - "logs/approvals/（approval 紀錄來源，目前僅 .gitkeep）"
+  - "logs/errors/（failure 紀錄來源）"
+  - "system/FAILURE_TAXONOMY.yaml"
+  - "system/GATE_POLICY.yaml"
+  - "system/APPROVAL_POLICY.yaml"
+  - "outputs/drafts/20260427-F01_phase0-summary.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "Gate 面板：彙總所有 logs 的四道 gate（schema/rule/completion/risk）通過率與 fail 清單，fail 項可連到對應 task_id/run_id；沿用 escapeHtml 防 XSS"
+  - "Approval 面板：generator 擴充收集 approval 維度（task card 的 approval_needed/approval_given 或 logs/approvals/ 內容），前端呈現待批/已批/被拒分佈"
+  - "Failure 面板：讀取 logs/errors/ 並依 system/FAILURE_TAXONOMY.yaml 分類彙整，呈現各 failure type 次數與最近案例連結"
+  - "generator（scripts/generate_frontend_data.py）對應擴充收集上述三類資料進 data.json，維持 deterministic / sorted / 位元級 idempotent，--check 漂移檢查仍有效"
+  - "scripts/test_generate_frontend_data.py 補對應測試（approval 收集、failure 收集、空輸入仍空陣列、idempotency），全綠"
+  - "三面板套用既有 keyword/date 篩選一致行為；無資料時顯示友善空狀態而非空白"
+  - "README『前端動態介面』章節同步補述三面板與資料來源"
+  - "system/validate_task_card.py 對本卡 exit 0；spec-consistency CI 全綠"
+  - "outputs/drafts/20260516-F03_phase1-gate-approval-failure-summary.md 產出實作摘要（變動清單、DoD 對照、測試結果、剩餘風險與 rollback）"
+  - "logs/AUDIT_LOG.md 新增 1 筆紀錄；依 D006 narrow scope，failed/partial 或 ≥3 checkpoints 才寫 logs/runs/"
+
+# === 輸出定義 ===
+expected_output:
+  format: "mixed"
+  location: "outputs/drafts/"
+  filename: "20260516-F03_phase1-gate-approval-failure-summary.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 40
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

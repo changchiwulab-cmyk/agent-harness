@@ -443,8 +443,18 @@
       "path": "tasks/2026-05-16_frontend-phase0-closure-and-hardening.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "pending",
+      "status": "review",
       "task_id": "20260516-F02"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-16",
+      "goal": "前端 Phase 1：在 Phase 0 baseline 上補 Gate / Approval / Failure 三類治理資料的專屬視覺化（聚合面板，非單筆 chip）",
+      "path": "tasks/2026-05-16_frontend-phase1-gate-approval-failure-viz.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260516-F03"
     }
   ]
 }
