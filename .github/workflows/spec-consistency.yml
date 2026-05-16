@@ -68,8 +68,17 @@ jobs:
       - name: Audit drift guard tests
         run: python3 scripts/test_audit_drift_guard.py
 
+      - name: Harness guard tests
+        run: python3 scripts/test_harness_guard.py
+
+      - name: Failure policy tests
+        run: python3 scripts/test_check_failure_policy.py
+
       - name: Audit log drift check
         run: python3 scripts/generate_audit_log.py --check
+
+      - name: Failure policy check (CLAUDE.md rule 3)
+        run: python3 scripts/check_failure_policy.py
 
       - name: E2E dummy task smoke test
         run: python3 tests/e2e/test_dummy_task_smoke.py

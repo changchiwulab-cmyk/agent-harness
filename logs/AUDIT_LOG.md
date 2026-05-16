@@ -7,6 +7,27 @@
 
 <!-- AUTO_AUDIT_BEGIN -->
 ```yaml
+task_id: 20260515-004
+date: '2026-05-15'
+skill_type: ops
+goal: 把 CLAUDE.md 三條硬規則從純自律變成可觀測/可機檢：規則1/2 以 PreToolUse warn 提醒，規則3 以 EXECUTION_LOG
+  schema 欄位 + CI validator 硬檢；唯二 hard-block 維持 drift(P0) 與 PERMISSIONS deny-list
+status: review
+risk_level: medium
+approval_needed: true
+output_path: outputs/drafts/20260515-004_phase1-enforce-hard-rules-summary.md
+checkpoints:
+- commit: b44d0c4
+  subject: 'checkpoint: [20260515-004] Phase 1 Task Card 建立並通過 schema 驗證'
+actual_tool_calls: 18
+result_summary: DoD 9/9。規則1/2 → harness_guard.py PreToolUse warn（9 tests）；規則3 → EXECUTION_LOG_SCHEMA
+  retry_policy 欄位 + check_failure_policy.py CI 機檢（6 tests，構造違規 fixture exit 1、真實 repo
+  exit 0、舊檔向後相容）。settings.json 加 Write|Edit matcher、CI 加 2 測試+規則3 gate。唯二 hard-block
+  不變且實證為活體（rm -rf 被 permissions_guard 擋）。待人工核准 3 項 ask 變更（EXECUTION_LOG_SCHEMA/settings.json/CI）。
+completion_time: '2026-05-15'
+```
+
+```yaml
 task_id: 20260515-003
 date: '2026-05-15'
 skill_type: ops

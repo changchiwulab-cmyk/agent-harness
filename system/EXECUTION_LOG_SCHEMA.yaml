@@ -38,6 +38,19 @@ execution_log:
       # - commit: "abc1234"
       #   stage: "完成資料蒐集"
 
+  # --- 失敗與重試（CLAUDE.md 規則3 + 「驗證失敗處理」）---
+  # 規則3：連續失敗 3 次就停下來，寫 logs/errors/ 並通知使用者，不自行硬修。
+  # 機檢：scripts/check_failure_policy.py 斷言 consecutive_failures>=3 之 run
+  #       必為 failure_policy_action=stopped 且 logs/errors/ 有同 task_id 紀錄。
+  retry_policy:
+    consecutive_failures: 0           # 連續失敗次數（成功歸零）
+    failure_policy_action: "none"     # none | warned（第2次提醒）| stopped（第3次停）
+    # 「驗證失敗處理」對照（CLAUDE.md）：
+    #   schema 失敗 → 重試 1 次，仍失敗 stopped
+    #   規則失敗 → 立即 stopped + error log
+    #   完成驗證失敗 → 列缺漏，詢問是否補充（不自動算 stopped）
+    #   風險驗證(risk>=high) → 輸出到 drafts/，等人工（非失敗）
+
   # --- 成本估算 ---
   token_estimate:
     input: 0

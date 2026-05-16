@@ -447,6 +447,16 @@
       "task_id": "20260515-003"
     },
     {
+      "approval_needed": true,
+      "date": "2026-05-15",
+      "goal": "把 CLAUDE.md 三條硬規則從純自律變成可觀測/可機檢：規則1/2 以 PreToolUse warn 提醒，規則3 以 EXECUTION_LOG schema 欄位 + CI validator 硬檢；唯二 hard-block 維持 drift(P0) 與 PERMISSIONS deny-list",
+      "path": "tasks/2026-05-15_enforce-hard-rules.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260515-004"
+    },
+    {
       "approval_needed": false,
       "date": "2026-05-15",
       "goal": "建立並執行測試計畫，驗證專案前端（靜態看板）與後端（data.json 產生器）皆可順利運行",
