@@ -1,0 +1,81 @@
+task_id: "20260516-V01"
+date: "2026-05-16"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "驗證 skill 執行機制正常運作，並端到端測試「修改後端任務資料 → 前端 data.json 自動對齊」這條鏈；所有測試實跑不略過，全程依專案規定走完"
+
+context: |
+  使用者 /goal：「測試skill正常運作，前端測試到自動對齊後端任務資料修改作動，
+  測試不能略過，要按照專案規定下去跑完」。
+
+  本任務為 review（驗證/回測）型，不修改 generator/skill/system 邏輯，只做驗證：
+    (1) Skill 機制：validate_task_card.py 對本卡與既有卡有效；e2e dummy task
+        跑完 schema→rule→completion→risk 四層 gate 契約，證明 skill/gate
+        執行流程正常。
+    (2) 前端↔後端自動對齊鏈：frontend/data.json 由
+        scripts/generate_frontend_manifest.py 從 tasks/ + logs/runs/ +
+        memory/active_projects/*/decisions/ 序列化產生；CI 用 --check 偵測漂移。
+        本卡建立本身即一筆「後端任務資料變更」，用來實證：變更後 drift 必被
+        偵測（exit 1），重產後 data.json 自動對齊（task 34→35 且含本卡
+        task_id），drift 回 pass，且 HTTP 服務的 data.json 確實呈現對齊後資料。
+    (3) 不得略過任何既有測試套件。
+
+  baseline（執行前）：data.json = 34 tasks / 1 log / 7 decisions，drift check OK。
+
+input_data:
+  - "frontend/ (index.html, app.js, data.json)"
+  - "scripts/generate_frontend_manifest.py"
+  - "scripts/test_*.py / scripts/test_*.rb"
+  - "tests/e2e/test_dummy_task_smoke.py"
+  - "scripts/check_spec_consistency.rb"
+  - "system/validate_task_card.py"
+  - "system/GATE_POLICY.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "全部既有測試套件實跑且全綠（不得略過）：test_generate_frontend_manifest.py、test_permissions_guard.py、test_generate_audit_log.py、test_governance_metrics.py、test_check_context_budget.rb、test_check_spec_consistency.rb、tests/e2e/test_dummy_task_smoke.py"
+  - "scripts/check_spec_consistency.rb 回 OK；全 repo *.yaml 可被 PyYAML/Ruby 解析"
+  - "Skill 機制驗證：python system/validate_task_card.py 對本卡 exit 0；e2e 四層 gate (schema→rule→completion→risk) 全部 fire 且 pass"
+  - "前端↔後端自動對齊鏈端到端：建立本卡後 generate_frontend_manifest.py --check 偵測到 drift（exit 1）；重產後 data.json task 數 34→35 且含 task_id 20260516-V01；--check 回 pass（exit 0）"
+  - "前端整合：啟動 http server，HTTP GET frontend/index.html、app.js、data.json 皆 200，且 HTTP 服務的 data.json 內含 20260516-V01（證明前端呈現對齊後的後端資料）"
+  - "每關鍵階段做 git checkpoint commit（拆解後 / 測試全綠後 / 對齊鏈驗證後 / 進入收尾前）"
+  - "依 system/GATE_POLICY.yaml 四層 gate 逐層驗證並在報告記錄 pass/fail"
+  - "outputs/drafts/20260516-V01_skill-frontend-backend-sync-verification.md 產出驗證報告（含每項測試結果、對齊鏈證據、四層 gate 結果、剩餘風險）"
+  - "logs/runs/ 新增本任務執行紀錄（checkpoints≥3 觸發 EXECUTION_LOG_SCHEMA narrow scope）"
+  - "logs/AUDIT_LOG.md 新增 1 筆紀錄"
+  - "變更 commit 並 push 到 claude/test-skill-backend-sync-QPSBz；建立 draft PR"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260516-V01_skill-frontend-backend-sync-verification.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "bash"
+  - "write_drafts"
+  - "write_logs"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "create_task_card"
+
+# === 成本控制 ===
+max_tool_calls: 40
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "review"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
