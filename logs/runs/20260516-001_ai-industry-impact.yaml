@@ -2,7 +2,8 @@
 
 execution_log:
   run_id: "RUN-20260516-001"
-  task_id: "20260516-R01 + 20260516-A01"
+  task_id: "20260516-R01"            # 本 run 的 canonical Task Card ID（單一）
+  related_tasks: ["20260516-A01"]    # 接力卡（R01→A01 同一 run，以 output 檔接力）
   skill_type: "research + analysis"
   started_at: "2026-05-16 00:00"
   ended_at: "2026-05-16 00:00"
@@ -23,8 +24,8 @@ execution_log:
       stage: "完成需求拆解：研究卡(R01)+決策卡(A01)"
     - commit: "def5e3c"
       stage: "R01 前瞻研究草稿完成，4 層 gate 通過"
-    - commit: "pending"
-      stage: "A01 決策草稿完成 + 執行紀錄 + audit log"
+    - commit: "770c0b2"
+      stage: "A01 決策草稿完成 + 執行紀錄 + audit log（本 run 內容收尾 commit）"
 
   token_estimate:
     input: 0
