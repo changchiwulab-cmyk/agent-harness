@@ -42,7 +42,7 @@ function inDateRange(value, from, to) {
 }
 
 function logDate(item) {
-  return String(item.started_at || item.ended_at || '').slice(0, 10);
+  return String(item.ended_at || item.started_at || '').slice(0, 10);
 }
 
 function applyFilters() {

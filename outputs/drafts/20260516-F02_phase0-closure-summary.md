@@ -67,6 +67,13 @@ data.json over HTTP → tasks 36 / logs 1 / decisions 7；F01=done、F02=pending
 - **Rollback**：本批變更皆在 `claude/review-project-structure-1Il7v`，`git revert`
   範圍 commit 即可；rename 由 git 歷史可還原；F01 status 可單獨 revert。
 
+## Review 修正（PR #80）
+
+- **Codex P2（frontend/app.js:45）**：`logDate` 篩選原以 `started_at` 優先，但 log row
+  顯示以 `ended_at` 優先；跨午夜 run 會「顯示在範圍內卻被篩掉」。已修：`logDate`
+  改為 `ended_at || started_at`，與顯示來源一致。採納（建議有效，1 行、屬 ② 同一
+  deliverable 的一致性修正，非新任務）。
+
 ## 後續
 
 - F03（Phase 1：Gate/Approval/Failure 聚合視覺化）已 pending，待人工排程另起 session。
