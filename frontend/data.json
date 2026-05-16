@@ -435,6 +435,16 @@
       "skill_type": "writing",
       "status": "review",
       "task_id": "20260509-N08"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-16",
+      "goal": "驗證 skill 執行機制正常運作，並端到端測試「修改後端任務資料 → 前端 data.json 自動對齊」這條鏈；所有測試實跑不略過，全程依專案規定走完",
+      "path": "tasks/2026-05-16_skill-and-frontend-backend-sync-verification.yaml",
+      "risk_level": "low",
+      "skill_type": "review",
+      "status": "in_progress",
+      "task_id": "20260516-V01"
     }
   ]
 }
