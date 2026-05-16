@@ -1,6 +1,6 @@
 task_id: "20260427-F01"
 date: "2026-04-27"
-status: "review"
+status: "done"
 
 # === 任務定義 ===
 goal: "收斂 PR #55 為前端平台的最小可審核 baseline：穩定 YAML 解析、防 manifest 漂移、補 generator 測試與 CI 護欄"
@@ -77,6 +77,6 @@ skill_type: "ops"
 # === 執行紀錄（由 agent 填寫）===
 checkpoints: []
 actual_tool_calls: 25
-result_summary: "DoD 11/11 對應產物完成（CI 綠待 PR push 後驗證）。frontend 由 manifest.js 改為 PyYAML→data.json，drift check 進 CI；4 個 unit tests 全綠；多 project decisions glob 落地。等人工 review 後合併。"
+result_summary: "DoD 11/11 對應產物完成。frontend 由 manifest.js 改為 PyYAML→data.json，drift check 進 CI；4 個 unit tests 全綠；多 project decisions glob 落地。【結案註記 2026-05-16】程式已併入 main 且 CI 等價檢查全綠，由 20260516-F02 收尾結案（review→done）；generator/test 已於 F02 更名為 generate_frontend_data.py（本卡 DoD/context 之舊檔名為歷史記錄，保留不改寫）。"
 completion_time: "2026-04-27"
 audit_log_ref: "logs/AUDIT_LOG.md"
