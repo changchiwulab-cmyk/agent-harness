@@ -12,7 +12,7 @@ date: '2026-05-15'
 skill_type: ops
 goal: 提供 approval backlog 可視化（待簽核 Task Card + 草稿 + 已核准統計 + 等待天數）與批次核准『記錄』工具，保留人工簽核、不自動核准，與既有
   logs/approvals/ schema 及 RETRO_FLOW 對齊
-status: review
+status: done
 risk_level: medium
 approval_needed: true
 output_path: outputs/drafts/20260515-005_phase2-approval-backlog-summary.md
