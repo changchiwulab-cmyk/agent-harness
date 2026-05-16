@@ -78,6 +78,8 @@ checkpoints:
   - "607605b checkpoint: task card created"
   - "7e58cd9 checkpoint: ① F01 review→done + ② app.js logs filter & gate_results"
   - "33cd076 checkpoint: ③ rename generate_frontend_manifest → generate_frontend_data"
+  - "bdd05c6 checkpoint: ④ F03 card + summary + audit + F02 record"
+  - "7002731 fix: Codex P2 #80 — logDate aligned to ended_at||started_at"
 actual_tool_calls: 45
 result_summary: "DoD 1-8 全達；#9 AUDIT 已補（依 D006 narrow-scope 不寫 runs/，理由見 summary）；#10 push/draft PR 為最後一步。F01 review→done、app.js 補 logs 篩選+gate_results chip、generator/test 更名（僅 operational 引用，歷史保留舊名）、F03 Phase 1 規劃卡 pending。本卡 approval_needed: true，狀態 review 等人工確認產出後方可結案為 done（沿用 F01 結案機制，避免 agent 自我結案反模式）。"
 completion_time: "2026-05-16"
