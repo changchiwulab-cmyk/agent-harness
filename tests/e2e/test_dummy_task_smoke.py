@@ -27,6 +27,7 @@ ROOT = Path(__file__).resolve().parents[2]
 VALIDATE_SCRIPT = ROOT / "system" / "validate_task_card.py"
 PERMISSIONS_PATH = ROOT / "system" / "PERMISSIONS.yaml"
 GATE_POLICY_PATH = ROOT / "system" / "GATE_POLICY.yaml"
+EXECUTION_LOG_SCHEMA_PATH = ROOT / "system" / "EXECUTION_LOG_SCHEMA.yaml"
 
 
 DUMMY_TASK = {
@@ -111,6 +112,43 @@ def gate_risk(card: dict, output_path: Path) -> tuple[bool, str]:
     return True, "ok"
 
 
+# A clean low-risk card: the golden path where output may go straight to
+# outputs/reports/ without the drafts/ detour the risk gate forces on high-risk.
+LOW_RISK_TASK = {
+    **DUMMY_TASK,
+    "task_id": "20260516-E2E",
+    "date": "2026-05-16",
+    "goal": "smoke-test the low-risk golden path (reports/ allowed)",
+    "risk_level": "low",
+    "approval_needed": False,
+    "expected_output": {
+        "format": "md",
+        "location": "outputs/reports/",
+        "filename": "20260516-E2E_smoke.md",
+    },
+}
+
+
+def validate_execution_log(log: dict, schema: dict) -> tuple[bool, list[str]]:
+    """Assert a produced execution log carries every top-level key the
+    EXECUTION_LOG_SCHEMA.yaml contract declares, and that all four gate
+    verdicts are recorded as ``pass``.
+
+    This pins the structural contract of EXECUTION_LOG_SCHEMA.yaml so a
+    renamed/removed field surfaces in CI rather than silently producing
+    incomplete audit records.
+    """
+    schema_log = schema.get("execution_log") or {}
+    produced = log.get("execution_log") or {}
+    misses = [key for key in schema_log if key not in produced]
+
+    gate_results = produced.get("gate_results") or {}
+    for gate in ("schema_check", "rule_check", "completion_check", "risk_check"):
+        if gate_results.get(gate) != "pass":
+            misses.append(f"gate_results.{gate} != pass")
+    return not misses, misses
+
+
 # All four gate names that GATE_POLICY.yaml is contractually required to define.
 # Pinned here so renaming or removing any of them surfaces in CI rather than
 # silently passing — this is the regression the codex P2 review flagged.
@@ -122,6 +160,9 @@ class TestDummyTaskSmoke(unittest.TestCase):
     def setUpClass(cls):
         cls.permissions = yaml.safe_load(PERMISSIONS_PATH.read_text(encoding="utf-8"))
         cls.gate_policy = yaml.safe_load(GATE_POLICY_PATH.read_text(encoding="utf-8"))
+        cls.exec_log_schema = yaml.safe_load(
+            EXECUTION_LOG_SCHEMA_PATH.read_text(encoding="utf-8")
+        )
 
     def test_all_four_gates_fire_for_high_risk_dummy(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -171,6 +212,59 @@ class TestDummyTaskSmoke(unittest.TestCase):
         passed, output = gate_schema(bad, VALIDATE_SCRIPT)
         self.assertFalse(passed)
         self.assertIn("definition_of_done", output)
+
+    def test_low_risk_golden_path_allows_reports_dir(self):
+        """Golden path: a clean low-risk card flows through all four gates and
+        its output is allowed straight into outputs/reports/ — the risk gate
+        only forces the drafts/ detour for high/critical risk."""
+        with tempfile.TemporaryDirectory() as tmp:
+            reports = Path(tmp) / "outputs" / "reports"
+            reports.mkdir(parents=True)
+            output = reports / LOW_RISK_TASK["expected_output"]["filename"]
+            output.write_text(
+                "# smoke output\n\n"
+                + "\n".join(f"- {d}" for d in LOW_RISK_TASK["definition_of_done"]),
+                encoding="utf-8",
+            )
+
+            results = {
+                "schema_check": gate_schema(LOW_RISK_TASK, VALIDATE_SCRIPT),
+                "rule_check": gate_rule(LOW_RISK_TASK, self.permissions),
+                "completion_check": gate_completion(LOW_RISK_TASK, output),
+                "risk_check": gate_risk(LOW_RISK_TASK, output),
+            }
+
+        self.assertEqual(set(results.keys()), EXPECTED_GATES)
+        for name, (passed, detail) in results.items():
+            self.assertTrue(passed, f"{name} should pass on golden path: {detail}")
+        # The discriminating assertion: reports/ is accepted for low risk,
+        # whereas the high-risk fixture is contractually barred from it.
+        self.assertTrue(gate_risk(LOW_RISK_TASK, output)[0])
+        self.assertFalse(gate_risk(DUMMY_TASK, output)[0])
+
+    def test_execution_log_matches_schema_contract(self):
+        """A produced execution log must carry every field the schema
+        declares and record all four gate verdicts as pass on the golden
+        path."""
+        produced = {
+            "execution_log": {
+                key: "" for key in self.exec_log_schema["execution_log"]
+            }
+        }
+        produced["execution_log"]["gate_results"] = {
+            "schema_check": "pass",
+            "rule_check": "pass",
+            "completion_check": "pass",
+            "risk_check": "pass",
+        }
+        ok, misses = validate_execution_log(produced, self.exec_log_schema)
+        self.assertTrue(ok, f"execution log missing schema fields: {misses}")
+
+        # Negative control: a half-recorded gate set must fail the contract.
+        produced["execution_log"]["gate_results"]["risk_check"] = ""
+        ok, misses = validate_execution_log(produced, self.exec_log_schema)
+        self.assertFalse(ok)
+        self.assertIn("gate_results.risk_check != pass", misses)
 
 
 if __name__ == "__main__":

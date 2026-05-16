@@ -3,7 +3,7 @@
 
 task_id: "20260516-002"
 date: "2026-05-16"
-status: "pending"
+status: "done"
 
 # === 任務定義 ===
 goal: "新增 failure-injection 測試套件：對 FAILURE_TAXONOMY 14 模式逐一注入壞輸入並斷言對應 guardrail 觸發，並掛進 CI"
@@ -53,8 +53,9 @@ max_web_searches: 0
 skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
-audit_log_ref: ""
+checkpoints:
+  - "4dc84dd 建立兩張 Task Card（完成拆解）"
+actual_tool_calls: 12
+result_summary: "DoD 6/6 通過。新增 test_failure_injection.py，覆蓋 15 個 taxonomy 模式 + drift guard，掛進 CI，無回歸。發現 FAILURE_TAXONOMY 實為 15 模式但文件寫 14（SEC-04 後補未同步）；改 system/ 屬 ask 權限，已列摘要待人工決策，未自行修改。"
+completion_time: "2026-05-16"
+audit_log_ref: "logs/AUDIT_LOG.md"

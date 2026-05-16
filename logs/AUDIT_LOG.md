@@ -753,4 +753,42 @@
   error_summary: ""
   estimated_tokens: "~18K"
   notes: "6 大類別 20+ 工具。web search 3 輪全部用完。outputs/drafts/ 因 .gitignore 不入版控，Task Card 狀態記錄在 YAML。"
+
+- task_id: "20260516-001"
+  date: "2026-05-16"
+  skill_type: "ops"
+  goal: "擴充 e2e golden-path smoke test：新增 low-risk 產物可進 reports/ 與 execution-log schema 符合兩條正向斷言"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "bash"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260516-001_golden-path-summary.md"
+  error_summary: ""
+  estimated_tokens: "~22K"
+  notes: "DoD 5/5 通過。test_dummy_task_smoke.py 6/6（4 既有 + 2 新正向斷言），無回歸。全 CI 套件本機綠。"
+
+- task_id: "20260516-002"
+  date: "2026-05-16"
+  skill_type: "ops"
+  goal: "新增 failure-injection 測試套件：對 FAILURE_TAXONOMY 模式逐一注入並斷言 guardrail 觸發，並掛進 CI"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "bash"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260516-002_failure-injection-summary.md"
+  error_summary: ""
+  estimated_tokens: "~24K"
+  notes: "DoD 6/6 通過。新增 test_failure_injection.py，覆蓋全部 15 個 taxonomy 模式 + drift guard。發現 FAILURE_TAXONOMY 實為 15 模式但檔頭/文件寫 14（SEC-04 後補未更新文件）；改 system/ 屬 ask 權限，已列入摘要待人工決策，未自行修改。"
 ```
