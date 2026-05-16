@@ -1,0 +1,87 @@
+# Task Card: 補寫 2026-04-04 組 7 個缺失 artifacts
+# 建立日期：2026-04-17
+# 來源：20260417-O02 調查報告
+
+task_id: "20260417-W01"
+date: "2026-04-17"
+status: "pending"
+
+# === 任務定義 ===
+goal: "補寫 2026-04-04 組 7 個 expected_output markdown，使 outputs/drafts/ 與 7 張 status: done task card 一致"
+context: >
+  20260417-O02 調查（outputs/drafts/investigation-2026-04-04-missing-artifacts.md）
+  確認 2026-04-04 組 7 個 expected_output 從未實際寫入檔案系統，但原始 7 張 task card
+  已填 result_summary 且使用者決定保留 status: done（不降級）。本任務補寫實際 markdown，
+  使系統內部一致性恢復。
+
+  注意：原始 7 張卡 status 不變動；本任務是獨立的「artifact 補寫」工作，
+  在 outputs/drafts/ 產生 7 個檔案，不回寫原 task card。
+
+input_data:
+  # 來源卡（提供 goal / context / result_summary 作為寫作依據）
+  - "tasks/2026-04-04_tools-inventory-research.yaml"        # R01 → solo-company-tools-inventory.md
+  - "tasks/2026-04-04_tools-inventory-review.yaml"          # R02 → tools-inventory-review-report.md
+  - "tasks/2026-04-04_tools-inventory-fix.yaml"             # O01 → solo-company-tools-inventory-v2.md
+  - "tasks/2026-04-04_ai-era-solo-business-strategy.yaml"   # S01 → ai-era-solo-business-strategy.md
+  - "tasks/2026-04-04_ai-era-solo-business-proposal.yaml"   # W01 → ai-era-solo-business-proposal.md
+  - "tasks/2026-04-04_ai-era-solo-business-proposal-review.yaml"  # RV01 → ai-era-solo-business-proposal-review.md
+  - "tasks/2026-04-04_proposal-fix-v2.yaml"                 # O02 → ai-era-solo-business-proposal-v2.md
+  # 支援資料
+  - "memory/user_prefs.md"
+  - "memory/active_projects/agent-harness/context.md"
+  - "skills/writing/SKILL.md"
+  - "skills/research/SKILL.md"
+  - "skills/review/SKILL.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "outputs/drafts/solo-company-tools-inventory.md 存在（6 大類別 20+ 工具，含採用狀況）"
+  - "outputs/drafts/tools-inventory-review-report.md 存在（對 R01 的審查，3 層審查格式）"
+  - "outputs/drafts/solo-company-tools-inventory-v2.md 存在（整合 R02 審查建議的 v2）"
+  - "outputs/drafts/ai-era-solo-business-strategy.md 存在（5 個商業模式 + 台越市場 + 管顧差異化）"
+  - "outputs/drafts/ai-era-solo-business-proposal.md 存在（定位 + 服務菜單 + ICP + 12 個月計畫）"
+  - "outputs/drafts/ai-era-solo-business-proposal-review.md 存在（對 W01 的審查）"
+  - "outputs/drafts/ai-era-solo-business-proposal-v2.md 存在（整合 RV01 的 M1/M2/M3 修正）"
+  - "每份文件符合原始 task card 的 DoD 條列（但本卡 DoD 只驗證檔案存在 + 格式合規，不重跑各 skill 的 DoD 逐條）"
+  - "AUDIT_LOG 新增 20260417-W01 紀錄，output_path 列出 7 檔"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "[7 files; see definition_of_done]"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+
+# === 成本控制 ===
+# 重要：7 個 markdown × 平均 15-20K tokens 預估 ≈ 105-140K tokens
+# 超過 COST_POLICY.md 單任務上限（writing 30K、research 32K）
+# 建議執行時切成 ≥ 3 批 checkpoint，每批 2-3 檔
+max_tool_calls: 30
+max_retries: 3
+max_web_searches: 3
+
+# === Skill 路由 ===
+# 複合任務：R01/O01 屬 research、R02/RV01 屬 review、S01/W01/O02 屬 writing
+# 主 skill 標為 writing（7 張有 4 張寫作性質），執行時逐檔切換子 skill
+skill_type: "writing"
+
+# === 預備執行計畫（執行前再確認）===
+# Batch 1: R01 + O01（tools inventory 系列，research skill）
+# Batch 2: R02（review skill）
+# Batch 3: S01 + W01（strategy + proposal，writing skill）
+# Batch 4: RV01（review skill）
+# Batch 5: O02（proposal v2，writing skill）
+# 每 batch 結束 checkpoint commit
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
