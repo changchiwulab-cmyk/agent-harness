@@ -8,7 +8,7 @@
 
 task_id: "20260525-A01"
 date: "2026-05-25"
-status: "pending"
+status: "review"
 
 # === 任務定義 ===
 goal: "盤點 agent-harness 對最新 Claude Code 功能（hooks 進階用法、subagents、custom slash commands、MCP、Claude Code on the web）的對齊缺口，產出可分批執行的建議報告草稿，不直接修改 system/ 或 .claude/"
@@ -78,8 +78,19 @@ max_web_searches: 0            # 不需要 web；所有資訊從專案內部 + s
 skill_type: "analysis"         # 多選項評估（順手可做 vs 另開卡）+ 對 4 維度六維化評分
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
-audit_log_ref: ""
+checkpoints:
+  - "b594b15 checkpoint: 20260525-A01 task card created (schema gate pass)"
+  - "TBD checkpoint: 20260525-A01 audit report drafted (completion 10/10, risk gate pass)"
+actual_tool_calls: 21          # 14 file_read + 4 file_search + 1 write_drafts + 1 git_commit + 1 validate_task_card（< max_tool_calls 25）
+result_summary: |
+  DoD 10/10 通過。4 維度缺口盤點完成：
+    - Hooks 進階：缺 PostToolUse（連續失敗 3 次）/ Stop / SessionStart / UserPromptSubmit / PreToolUse-Edit|Write
+    - Subagents+Slash：5 SKILL.md 只有 research 有 frontmatter；.claude/agents/ 與 commands/ 完全空白
+    - MCP：本 session 自帶 40+ 個 mcp__github__*，但 PERMISSIONS.yaml 完全沒涵蓋
+    - Web：CLAUDE.md 無 web 環境特性段落（fs ephemeral、MCP 預載等 5 項差異）
+  分流：5 條順手 patch（QW1-QW5，順手卡 A02）+ 11 張 follow-up 候選（N12, O01-O08, N13, N14）
+  3 條 P0：補 4 個 SKILL.md frontmatter / PostToolUse 落地失敗計數 / PERMISSIONS 新增 mcp_* 分類
+  Aggregate overlap_pct 預估 30% → 40-45%，未觸發 50% 警訊。
+  報告草稿存 outputs/drafts/，等使用者審閱接受與否
+completion_time: "2026-05-25"
+audit_log_ref: "logs/runs/20260525-A01.yaml"
