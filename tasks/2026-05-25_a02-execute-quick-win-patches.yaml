@@ -64,7 +64,7 @@ skill_type: "ops"                 # 純執行 patch，已有明確計畫
 
 # === 執行紀錄（由 agent 填寫）===
 checkpoints:
-  - "TBD checkpoint: 20260525-A02 quick-win patches + 3 follow-up task cards"
+  - "5d17410 checkpoint: 20260525-A02 quick-win patches + 3 follow-up task cards"
 actual_tool_calls: 14            # 6 read + 4 edit + 3 write + 1 commit（< max 15）
 result_summary: |
   DoD 10/10 通過。5 條 patch 全部落地（QW1-QW5），3 張 follow-up 卡（N12/O05/O01）建立並通過 schema gate。

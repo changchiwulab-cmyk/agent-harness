@@ -26,7 +26,7 @@ execution_log:
       call_count: 1              # 將於 push 前 commit
 
   checkpoints:
-    - commit: "TBD"
+    - commit: "5d17410"
       stage: "A02 5 條 patch 完成 + 3 張 follow-up 卡建立（schema 全通過）"
 
   token_estimate:
