@@ -108,6 +108,21 @@
       "started_at": "2026-05-25 04:30",
       "status": "completed",
       "task_id": "20260525-A01"
+    },
+    {
+      "ended_at": "2026-05-25 05:45",
+      "gate_results": {
+        "completion_check": "pass",
+        "risk_check": "pass",
+        "rule_check": "pass",
+        "schema_check": "pass"
+      },
+      "path": "logs/runs/20260525-A02.yaml",
+      "run_id": "RUN-20260525-002",
+      "skill_type": "ops",
+      "started_at": "2026-05-25 05:30",
+      "status": "completed",
+      "task_id": "20260525-A02"
     }
   ],
   "tasks": [
@@ -454,12 +469,52 @@
     {
       "approval_needed": true,
       "date": "2026-05-25",
+      "goal": "落地 A01 報告 §7.1 的 5 條順手 patch：QW1（PERMISSIONS 補 git_force_push）/ QW2=M1（PERMISSIONS 新增 mcp_github_* 分類）/ QW3（CLAUDE.md 加 web 環境段落）/ QW4（NATIVE_OVERLAP revisit_trigger 加 web）/ QW5（NATIVE_OVERLAP 新增 4 模組欄位 + 重算 aggregate）",
+      "path": "tasks/2026-05-25_a02-execute-quick-win-patches.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260525-A02"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-25",
       "goal": "盤點 agent-harness 對最新 Claude Code 功能（hooks 進階用法、subagents、custom slash commands、MCP、Claude Code on the web）的對齊缺口，產出可分批執行的建議報告草稿，不直接修改 system/ 或 .claude/",
       "path": "tasks/2026-05-25_claude-code-application-audit.yaml",
       "risk_level": "high",
       "skill_type": "analysis",
       "status": "review",
       "task_id": "20260525-A01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-26",
+      "goal": "為 skills/{analysis,ops,review,writing}/SKILL.md 加上 YAML frontmatter（沿用 N03 research 的格式），並建立對應的 .claude/skills/ symlink，使 5 個 skill 都能被 Claude Code 原生 Skills 自動載入",
+      "path": "tasks/2026-05-26_n12-skill-frontmatter-backfill.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260526-N12"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-26",
+      "goal": "新增 PostToolUse hook（scripts/post_tool_use.py）落地 CLAUDE.md 硬規則 3「連續失敗 3 次停下」，用 logs/error_count.json 跨 tool call 計數，達 3 即印錯誤訊息要求停下並寫入 logs/errors/",
+      "path": "tasks/2026-05-26_o01-posttooluse-failure-counter.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260526-O01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-26",
+      "goal": "建立 .claude/commands/ 下 3 條核心 slash commands：/task-new（從 TEMPLATE 產草稿）、/task-validate（wrap validate_task_card.py）、/gate-check（跑 GATE_POLICY 四層 self-check）",
+      "path": "tasks/2026-05-26_o05-core-slash-commands.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260526-O05"
     }
   ]
 }

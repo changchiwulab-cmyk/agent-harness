@@ -1,0 +1,67 @@
+# Execution log for Task Card 20260525-A02
+# Note: risk_level=medium 不強制要求 run log，但本卡涉及 3 個 system 檔案修改 + 影響後續多張卡，
+# 為溯源完整性仍記錄（EXECUTION_LOG_SCHEMA 使用範圍條件 #3 邊緣個案：跨多系統檔案的 medium 任務）
+
+execution_log:
+  run_id: "RUN-20260525-002"
+  task_id: "20260525-A02"
+  skill_type: "ops"
+  started_at: "2026-05-25 05:30"
+  ended_at: "2026-05-25 05:45"
+  status: "completed"
+
+  # --- 執行細節 ---
+  tools_used:
+    - tool: "file_read"
+      call_count: 6              # CLAUDE.md, PERMISSIONS.yaml, NATIVE_OVERLAP.yaml + 3 patch ref
+    - tool: "modify_system_rules"
+      call_count: 3              # PERMISSIONS.yaml (QW1 + QW2) + NATIVE_OVERLAP.yaml (QW4 + QW5) — 2 個檔案，3 個 Edit 操作
+    - tool: "modify_claude_md"
+      call_count: 1              # CLAUDE.md QW3 web 段落
+    - tool: "create_output_files"
+      call_count: 3              # 3 張 follow-up task card
+    - tool: "validate_task_card"
+      call_count: 4              # A02 + N12 + O05 + O01
+    - tool: "git_commit_checkpoint"
+      call_count: 1              # 將於 push 前 commit
+
+  checkpoints:
+    - commit: "TBD"
+      stage: "A02 5 條 patch 完成 + 3 張 follow-up 卡建立（schema 全通過）"
+
+  token_estimate:
+    input: 12000
+    output: 6500
+    total: 18500
+
+  approvals:
+    - action: "QW1-QW5 順手 patch（modify_system_rules + modify_claude_md）"
+      status: "approved"
+      approved_by: "human (inline_confirm on PR #84)"
+      timestamp: "2026-05-25 05:25"
+    - action: "建立 N12 / O05 / O01 follow-up Task Card（create_task_card → allow）"
+      status: "approved"
+      approved_by: "allow（PERMISSIONS allow 第 10 條）"
+      timestamp: "2026-05-25 05:42"
+
+  output_path: "(in-place: system/PERMISSIONS.yaml + system/NATIVE_OVERLAP.yaml + CLAUDE.md)"
+  error_summary: ""
+  gate_results:
+    schema_check: "pass"         # 4 張 task card 全通過 validate_task_card.py
+    rule_check: "pass"           # 工具皆在 A02 allowed_tools 白名單；無 web search；無 deny 動作
+    completion_check: "pass"     # 10 條 DoD 全達成（5 patches + 3 cards + 3 verifications）
+    risk_check: "pass"           # medium 風險，已取得 inline_confirm；無 risk_escalated
+
+  notes: |
+    A02 落地 5 條順手 patch：
+      QW1 PERMISSIONS deny + git_force_push（修補規則漂移）
+      QW2/M1 PERMISSIONS 新增 mcp_github_* 7 條分類（allow read + ask write*3 + deny merge/delete/force_branch）
+      QW3 CLAUDE.md 新增「Web 環境特性」段落（5 項差異，+132 tokens，總計 1329 < 3000 limit）
+      QW4 NATIVE_OVERLAP revisit_trigger 加 web
+      QW5 NATIVE_OVERLAP 新增 4 個模組（hooks_advanced / subagents_slash / mcp / web）、aggregate_estimate_pct 30 → 42、reviewed_on 更新至 2026-05-25
+    同時建立 3 張 follow-up Task Card：
+      N12 (20260526-N12) 補 4 個 SKILL.md frontmatter，risk: low
+      O05 (20260526-O05) 3 條核心 slash commands，risk: low
+      O01 (20260526-O01) PostToolUse 失敗計數 hook，risk: medium
+    未執行 N12/O05/O01 內容，留給後續 session（避免單一 PR 過於膨脹）。
+    驗證：ruby check_context_budget.rb / check_spec_consistency.rb / YAML parse / test_permissions_guard.py 全綠。

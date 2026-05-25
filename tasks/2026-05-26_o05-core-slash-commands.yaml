@@ -1,0 +1,64 @@
+# Task Card — O05：3 條核心 custom slash commands
+# 來源：A01 audit 報告 §4.3 建議 S3（P0）
+# 上游：無（不依賴其他卡）
+# 下游：20260526-O06（擴充 slash commands /checkpoint, /retro, /audit-log）
+
+task_id: "20260526-O05"
+date: "2026-05-26"
+status: "pending"
+
+# === 任務定義 ===
+goal: "建立 .claude/commands/ 下 3 條核心 slash commands：/task-new（從 TEMPLATE 產草稿）、/task-validate（wrap validate_task_card.py）、/gate-check（跑 GATE_POLICY 四層 self-check）"
+
+context: |
+  目前 .claude/commands/ 完全空白，INTAKE_FLOW.md / RETRO_FLOW.md / validate_task_card.py 都
+  靠使用者手動呼叫。3 條核心 command 落地後可顯著降低 Task Card 生命週期的人工成本：
+    - /task-new：硬規則 1（沒有 Task Card 不執行）的入口
+    - /task-validate：Gate Policy 第一層 schema_check 的快捷
+    - /gate-check：四層驗證的快捷（避免人工逐條檢查）
+  本卡不涉及任何系統規則修改，只建立新檔案，風險低。
+
+input_data:
+  - "tasks/TASK_CARD_TEMPLATE.yaml"           # /task-new 的範本
+  - "system/validate_task_card.py"            # /task-validate 包裝對象
+  - "system/GATE_POLICY.yaml"                 # /gate-check 的 4 層定義
+  - "outputs/drafts/2026-05-25_claude-code-application-audit.md"  # §4.3 S3 草案
+
+# === 完成標準 ===
+definition_of_done:
+  - "建立 .claude/commands/task-new.md：frontmatter 含 description, argument-hint <goal 描述>, allowed-tools (Read, Write)；body 指示從 TEMPLATE 產草稿、計算 task_id 與檔名"
+  - "建立 .claude/commands/task-validate.md：frontmatter 含 description, argument-hint <task_card_path>, allowed-tools (Bash)；body 指示呼叫 python3 system/validate_task_card.py $1 並摘要結果"
+  - "建立 .claude/commands/gate-check.md：frontmatter 含 description, argument-hint <task_id>, allowed-tools (Read, Bash)；body 指示跑四層 self-check（schema → rule 工具白名單 → completion DoD 對照 → risk 檔案位置）"
+  - "3 個 command frontmatter 用 yaml.safe_load 解析無錯"
+  - "新建 e2e 測試（tests/e2e/test_slash_commands.py）驗證 3 個 .md 的 frontmatter 結構（不實際呼叫 Claude Code）"
+  - "ruby scripts/check_spec_consistency.rb 通過"
+  - "README.md（如有）或 system/INTAKE_FLOW.md 更新提及這 3 條 command 的用法"
+
+expected_output:
+  format: "md"
+  location: ".claude/commands/"
+  filename: "(3 個檔案: task-new.md, task-validate.md, gate-check.md)"
+
+# === 風險與權限 ===
+risk_level: "low"                    # 新建檔案，不修改既有規則或 skills
+approval_needed: true                # .claude/ 屬 system 區域，建議仍走 ask
+allowed_tools:
+  - "file_read"
+  - "modify_system_rules"            # .claude/commands/ 視同 system
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

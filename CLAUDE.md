@@ -31,6 +31,14 @@
 git commit 作為 checkpoint：完成拆解後、完成子任務後、重要工具結果後、進入人工審核前。
 格式：`checkpoint: [task_id] [階段描述]`
 
+## Web 環境特性（Claude Code on the web）
+
+- Filesystem ephemeral：checkpoint 必須 `commit + push`，否則 session 結束丟失
+- MCP 預載：GitHub MCP 工具自動可用，依 PERMISSIONS.yaml 的 `mcp_*` 分類審批
+- Network policy 受環境控管：`web_search` 可能不可用，Task Card 需備援
+- Hook 觸發行為與本地 CLI 可能不同（待 N14 驗證 PoC）
+- 對單一 GitHub repo scope 限制：跨 repo 操作會被拒
+
 ## 驗證失敗處理
 
 - Schema 失敗 → 重試 1 次，仍失敗停下

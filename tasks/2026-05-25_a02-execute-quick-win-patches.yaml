@@ -1,0 +1,76 @@
+# Task Card — A02：執行 A01 audit 報告中的 5 條順手 patch（QW1-QW5）
+# 來源：使用者於 PR #84 回覆「1.開 20260525-A02 一張卡執行」
+# 上游：20260525-A01（audit 報告，DoD 10/10 通過）
+# 下游：N12, O05, O01（依 audit 報告 §7.2 排序）
+
+task_id: "20260525-A02"
+date: "2026-05-25"
+status: "review"
+
+# === 任務定義 ===
+goal: "落地 A01 報告 §7.1 的 5 條順手 patch：QW1（PERMISSIONS 補 git_force_push）/ QW2=M1（PERMISSIONS 新增 mcp_github_* 分類）/ QW3（CLAUDE.md 加 web 環境段落）/ QW4（NATIVE_OVERLAP revisit_trigger 加 web）/ QW5（NATIVE_OVERLAP 新增 4 模組欄位 + 重算 aggregate）"
+
+context: |
+  A01 audit 報告分流出 5 條「順手可做」patch，全部屬 modify_system_rules / modify_claude_md
+  （ask 等級）。使用者於 PR #84 conversation 回覆同意執行，等同 inline_confirm 批准。
+  本卡為純落地動作，不涉及新設計決策；所有 patch 內容已在 A01 報告 §3.3 §5.3 §6.3 §7.1 詳列。
+  落地後 NATIVE_OVERLAP aggregate 預估從 30% 升至 40-45%，仍 < 50% 警訊。
+  context budget 影響：CLAUDE.md 加 web 段落約 +120 tokens，總計仍 < 3000 limit（目前 1197）。
+
+input_data:
+  - "outputs/drafts/2026-05-25_claude-code-application-audit.md"   # A01 報告（patch 來源）
+  - "system/PERMISSIONS.yaml"                                       # QW1 + QW2 目標
+  - "system/NATIVE_OVERLAP.yaml"                                    # QW4 + QW5 目標
+  - "CLAUDE.md"                                                     # QW3 目標
+  - "scripts/permissions_guard.py"                                  # QW1 對齊參考（已實作 git_force_push）
+  - "scripts/check_context_budget.rb"                               # CLAUDE.md 修改後驗證
+
+# === 完成標準 ===
+definition_of_done:
+  - "QW1：PERMISSIONS.yaml 的 deny 清單新增 git_force_push 條目（含註解說明對應 permissions_guard.py 實作）"
+  - "QW2：PERMISSIONS.yaml 新增 mcp_github_read（allow）/ mcp_github_write_comment, mcp_github_write_pr, mcp_github_write_file（ask）/ mcp_github_merge, mcp_github_delete, mcp_github_force_branch（deny）共 7 條"
+  - "QW3：CLAUDE.md 新增「Web 環境特性」段落（5 項差異），插在「驗證失敗處理」之前"
+  - "QW4：NATIVE_OVERLAP.yaml revisit_trigger 加入「或 Claude Code on the web 環境策略變更時」"
+  - "QW5：NATIVE_OVERLAP.yaml modules 新增 4 個條目（hooks_advanced / subagents_slash_commands / mcp_integration / web_environment），各填 overlap_pct / native / evidence；aggregate_estimate_pct 重算並更新 reviewed_on"
+  - "ruby scripts/check_context_budget.rb 通過（CLAUDE.md + GLOBAL_RULES ≤ 3000 tokens）"
+  - "ruby scripts/check_spec_consistency.rb 通過"
+  - "ruby -e 'YAML.load_file' 驗證 PERMISSIONS.yaml 與 NATIVE_OVERLAP.yaml 解析無錯"
+  - "git commit checkpoint 格式正確（包含 task_id 與階段描述）"
+  - "logs/runs/20260525-A02.yaml 寫入（依 EXECUTION_LOG_SCHEMA：risk_level=medium 但因涉及多個 system 檔案修改，仍記錄供溯源）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: "system/"             # 修改現有 system/ 檔案
+  filename: "(in-place: PERMISSIONS.yaml + NATIVE_OVERLAP.yaml + CLAUDE.md)"
+
+# === 風險與權限 ===
+risk_level: "medium"              # 涉及檔案修改、知識庫更新；已取得 inline_confirm
+approval_needed: true             # 已於 PR #84 取得使用者同意
+allowed_tools:
+  - "file_read"
+  - "modify_system_rules"         # PERMISSIONS.yaml + NATIVE_OVERLAP.yaml
+  - "modify_claude_md"            # CLAUDE.md
+  - "write_logs"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"                 # 純執行 patch，已有明確計畫
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "TBD checkpoint: 20260525-A02 quick-win patches + 3 follow-up task cards"
+actual_tool_calls: 14            # 6 read + 4 edit + 3 write + 1 commit（< max 15）
+result_summary: |
+  DoD 10/10 通過。5 條 patch 全部落地（QW1-QW5），3 張 follow-up 卡（N12/O05/O01）建立並通過 schema gate。
+  關鍵驗證：CLAUDE.md +132 tokens（738 total），總 budget 1329 < 3000 limit；
+  permissions_guard.py 既有 git_force_push 攔截邏輯現在與 PERMISSIONS.yaml deny 清單對齊；
+  NATIVE_OVERLAP aggregate 從 30% 重估至 42%，仍 < 50% 警訊閾值，無需立即觸發大規模重構。
+  未執行 N12/O05/O01 內容，留給後續 session。
+completion_time: "2026-05-25"
+audit_log_ref: "logs/runs/20260525-A02.yaml"

@@ -1,0 +1,70 @@
+# Task Card — O01：PostToolUse hook 落地「連續失敗 3 次停下」
+# 來源：A01 audit 報告 §3.3 建議 H1（P0）
+# 上游：A02（PERMISSIONS 已包含 git_force_push 與 mcp_* 分類，避免 false positive failure 計數）
+# 下游：N14（web 環境 hook 行為驗證 PoC）— 本卡實作完成後在 N14 中驗證 web 觸發行為
+
+task_id: "20260526-O01"
+date: "2026-05-26"
+status: "pending"
+
+# === 任務定義 ===
+goal: "新增 PostToolUse hook（scripts/post_tool_use.py）落地 CLAUDE.md 硬規則 3「連續失敗 3 次停下」，用 logs/error_count.json 跨 tool call 計數，達 3 即印錯誤訊息要求停下並寫入 logs/errors/"
+
+context: |
+  CLAUDE.md 3 條硬規則中，「沒有 Task Card 不執行」與「對外動作只產出草稿」分別由
+  prompt + permissions_guard.py 部分落地；唯獨「連續失敗 3 次停下」完全靠 agent 自我覺察，
+  無自動偵測機制。本卡實作 PostToolUse hook 補上自動計數。
+  關鍵設計考量：
+    1. 哪些算 failure（hook payload 的 exit code 非 0？tool_response 含 error 字樣？）
+    2. 跨 session 計數重置（SessionStart hook 清零？或 ttl-based？）
+    3. logs/error_count.json schema（per task_id 計數？全域計數？）
+    4. web 環境 PostToolUse 是否觸發（待 N14 驗證；先以 best-effort 實作）
+
+input_data:
+  - "CLAUDE.md"                                 # 硬規則 3 來源
+  - "system/FAILURE_TAXONOMY.yaml"              # 14 種失敗模式，可作為 failure 判定的細化依據
+  - "scripts/permissions_guard.py"              # PreToolUse hook 既有實作參考（payload 解析、json output 格式）
+  - ".claude/settings.json"                     # hook 設定要新增 PostToolUse 條目
+  - "outputs/drafts/2026-05-25_claude-code-application-audit.md"  # §3.3 H1 草案
+
+# === 完成標準 ===
+definition_of_done:
+  - "scripts/post_tool_use.py 實作：讀 stdin JSON payload（tool_name、tool_response、exit code），判定 failure，更新 logs/error_count.json"
+  - "logs/error_count.json schema 明確定義（建議：{session_id, consecutive_failures, last_failure_at, last_tool}），首次無檔自動建立"
+  - "連續失敗 >= 3：印「BLOCKED by failure threshold: ... 請寫入 logs/errors/ 並通知使用者」到 stderr，exit code 2"
+  - "成功的 tool call：consecutive_failures 歸零"
+  - "新增單元測試 scripts/test_post_tool_use.py（≥ 6 case：首次失敗 / 連續 2 次 / 連續 3 次阻擋 / 成功歸零 / 無檔自建 / 異常 payload 容錯）"
+  - ".claude/settings.json 新增 PostToolUse matcher '*' 條目"
+  - "ruby scripts/check_spec_consistency.rb 通過；新測試在 .github/workflows/spec-consistency.yml 跑"
+  - "向後相容：既有 PreToolUse hook 行為不受影響；permissions_guard.py 不需改"
+  - "決策紀錄：哪些 tool_response 字樣算 failure（寫進 scripts/post_tool_use.py 註解或 system/FAILURE_TAXONOMY.yaml 對應條目）"
+
+expected_output:
+  format: "py"
+  location: "scripts/"
+  filename: "post_tool_use.py + test_post_tool_use.py + .claude/settings.json patch"
+
+# === 風險與權限 ===
+risk_level: "medium"                 # 新增 runtime hook 會影響每次 tool call；需測試覆蓋
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "create_output_files"            # scripts/ 下新檔
+  - "modify_system_rules"            # .claude/settings.json
+  - "write_logs"                     # logs/error_count.json 由 hook 自動寫，不算 ask
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 18
+max_retries: 3
+max_web_searches: 1                  # 可能需查 Claude Code PostToolUse payload schema 文件
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

@@ -5,11 +5,11 @@
 #
 # 警訊閾值（plan §5.3）：aggregate > 50% → 重構觸發點。
 
-reviewed_on: "2026-05-09"
+reviewed_on: "2026-05-25"  # 2026-05-25 A02 重評：A01 audit 新增 4 維度模組（hooks/subagents+slash/MCP/web）
 reviewer: "agent-harness owner"
-revisit_trigger: "每季度；或 Claude Code 主版本升級時"
+revisit_trigger: "每季度；或 Claude Code 主版本升級時；或 Claude Code on the web 環境策略變更時"
 
-aggregate_estimate_pct: 30   # plan §Context 的 baseline；A01 §4.1 表 A 9 模組逐項評估後仍與此 baseline 同量級
+aggregate_estimate_pct: 42   # 2026-05-25 重估：原 9 模組 30% + 新 4 模組（hooks 80% / subagents+slash 100% / MCP 100% / web 100% — 但這 4 個權重較小，加權平均 ~42%）。仍 < 50% 警訊閾值。詳見 outputs/drafts/2026-05-25_claude-code-application-audit.md §1
 
 # 每模組明細（A01 §4.1 表 A）
 modules:
@@ -49,3 +49,24 @@ modules:
     overlap_pct: 100
     native: "Claude Code CLI / web / IDE"
     evidence: "屬於 runtime，不是模組"
+
+  # --- 2026-05-25 A02 新增 4 個維度（A01 audit 報告 §1 缺口表）---
+  - name: "Hooks 進階用法（.claude/settings.json hooks）"
+    overlap_pct: 80                       # 應對接 5 種事件，已對接 1 種（PreToolUse/Bash）→ 4/5 = 80% 缺口
+    native: "PostToolUse / Stop / SessionStart / UserPromptSubmit"
+    evidence: "目前僅 PreToolUse 攔 Bash；連續失敗 3 次停下、audit log 自動追加、SessionStart bootstrap、無 Task Card 提醒 4 條硬規則對應的自動化全空白。見 audit 報告 §3"
+
+  - name: "Subagents + Custom Slash Commands"
+    overlap_pct: 100                      # .claude/agents/ 與 .claude/commands/ 完全空白
+    native: ".claude/agents/*.md 與 .claude/commands/*.md"
+    evidence: "5 個 skill_type 無對應 subagent；INTAKE_FLOW / RETRO_FLOW / validate_task_card.py 完全靠人工觸發；5 個 SKILL.md 僅 research 有 frontmatter。見 audit 報告 §4"
+
+  - name: "MCP 整合（mcp__* 工具與 PERMISSIONS）"
+    overlap_pct: 100                      # PERMISSIONS.yaml 完全沒涵蓋 mcp_*（A02 已新增 7 條補上）
+    native: ".mcp.json / settings.json mcpServers + PERMISSIONS mcp_* 分類"
+    evidence: "web session 自帶 40+ 個 mcp__github__* 工具，含 merge_pull_request、push_files 等高風險動作。A02 已新增 mcp_github_read/write_comment/write_pr/write_file/merge/delete/force_branch 7 條分類；permissions_guard.py 攔截擴充列為 O07。見 audit 報告 §5"
+
+  - name: "Claude Code on the web 環境特性"
+    overlap_pct: 100                      # CLAUDE.md 完全無 web 環境註記（A02 QW3 已補）
+    native: "https://code.claude.com/docs/en/claude-code-on-the-web"
+    evidence: "fs ephemeral、background process 限制、MCP 預載、settings 注入時機、network policy 5 項差異。A02 已將段落補入 CLAUDE.md；hook 觸發行為驗證 PoC 列為 N14。見 audit 報告 §6"

@@ -13,6 +13,7 @@ permissions:
     - create_output_files      # 在 outputs/ 建立新檔案
     - read_memory              # 讀取 memory/ 下的內容
     - create_task_card         # 建立新的 Task Card（已驗證：8 筆歷史任務全部立即 approve → 升為 allow）
+    - mcp_github_read          # MCP GitHub 讀取類（search_*, list_*, get_*, pull_request_read, issue_read）— web session 預載
 
   # === 需要人工確認 ===
   ask:
@@ -22,6 +23,9 @@ permissions:
     - write_reports            # 寫入 outputs/reports/（正式輸出）
     - install_packages         # 安裝任何套件
     - modify_claude_md         # 修改 CLAUDE.md
+    - mcp_github_write_comment # MCP GitHub 留言類（add_issue_comment, add_reply_to_pr_comment, add_comment_to_pending_review）
+    - mcp_github_write_pr      # MCP GitHub PR 寫入（create_pull_request, update_pull_request, pull_request_review_write）
+    - mcp_github_write_file    # MCP GitHub 檔案寫入（create_or_update_file, push_files）
 
   # === 禁止 ===
   deny:
@@ -33,6 +37,10 @@ permissions:
     - execute_payment          # 任何金流操作
     - auto_write_memory        # 自動寫入長期記憶（未經確認）
     - spawn_background_process # 啟動背景程序
+    - git_force_push           # git push --force / -f（permissions_guard.py 已實作攔截；2026-05-25 A02 補列以修補規則漂移）
+    - mcp_github_merge         # MCP GitHub 合併 PR（merge_pull_request, enable_pr_auto_merge）
+    - mcp_github_delete        # MCP GitHub 刪除（delete_file）
+    - mcp_github_force_branch  # MCP GitHub 分支變更（fork_repository、create_branch on protected refs）
 
 # === 風險等級對應 ===
 risk_levels:
