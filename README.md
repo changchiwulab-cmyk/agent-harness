@@ -34,6 +34,13 @@
 └── 16. Audit Log          logs/AUDIT_LOG.md — 稽核紀錄
 ```
 
+### 輔助檔（非編號模組，依附於上述平面）
+
+- `system/INTAKE_FLOW.md` — Fast-path / Intake 流程（依附 #3 Planner/Router）
+- `system/NATIVE_OVERLAP.yaml` — Claude Code 原生功能重疊度量（依附 #10 Agent Context，v3 規劃輸入）
+- `system/RETRO_FLOW.md` — RETRO 流程（已歸檔；近期回顧見 `outputs/reports/retro-*.md`）
+- `system/validate_task_card.py` — Task Card schema 驗證工具（依附 #8 Gate Verifier）
+
 ## 資料夾結構
 
 ```
@@ -49,8 +56,12 @@ agent-harness/
 │   ├── GATE_POLICY.yaml            ← 四層驗證 checklist + rollback（v1.5+v2）
 │   ├── AGENT_CONTEXT.yaml          ← 系統自我認知與邊界（v1.5 新增）
 │   ├── APPROVAL_POLICY.yaml        ← 批准流程規則（v2 新增）
-│   ├── FAILURE_TAXONOMY.yaml       ← 14 種失敗模式獨立檔（v2 新增）
-│   └── EXECUTION_LOG_SCHEMA.yaml   ← 執行紀錄結構定義（v2 新增）
+│   ├── FAILURE_TAXONOMY.yaml       ← 15 種失敗模式獨立檔（v2 新增）
+│   ├── EXECUTION_LOG_SCHEMA.yaml   ← 執行紀錄結構定義（v2 新增）
+│   ├── INTAKE_FLOW.md              ← Fast-path / Intake 釐清流程
+│   ├── NATIVE_OVERLAP.yaml         ← Claude Code 原生功能重疊度（v3 規劃輸入）
+│   ├── RETRO_FLOW.md               ← RETRO 流程（已歸檔）
+│   └── validate_task_card.py       ← Task Card schema 驗證工具
 ├── tasks/
 │   ├── TASK_CARD_TEMPLATE.yaml
 │   ├── DECISION_LOG_TEMPLATE.yaml  ← 決策紀錄模板（v1.5 新增）
