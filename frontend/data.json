@@ -93,6 +93,21 @@
       "started_at": "2026-04-09 00:00",
       "status": "completed",
       "task_id": "20260409-001"
+    },
+    {
+      "ended_at": "2026-05-25 05:15",
+      "gate_results": {
+        "completion_check": "pass",
+        "risk_check": "pass",
+        "rule_check": "pass",
+        "schema_check": "pass"
+      },
+      "path": "logs/runs/20260525-A01.yaml",
+      "run_id": "RUN-20260525-001",
+      "skill_type": "analysis",
+      "started_at": "2026-05-25 04:30",
+      "status": "completed",
+      "task_id": "20260525-A01"
     }
   ],
   "tasks": [
@@ -435,6 +450,16 @@
       "skill_type": "writing",
       "status": "review",
       "task_id": "20260509-N08"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-25",
+      "goal": "盤點 agent-harness 對最新 Claude Code 功能（hooks 進階用法、subagents、custom slash commands、MCP、Claude Code on the web）的對齊缺口，產出可分批執行的建議報告草稿，不直接修改 system/ 或 .claude/",
+      "path": "tasks/2026-05-25_claude-code-application-audit.yaml",
+      "risk_level": "high",
+      "skill_type": "analysis",
+      "status": "review",
+      "task_id": "20260525-A01"
     }
   ]
 }
