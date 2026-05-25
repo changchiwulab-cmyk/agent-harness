@@ -80,7 +80,7 @@ skill_type: "analysis"         # 多選項評估（順手可做 vs 另開卡）+
 # === 執行紀錄（由 agent 填寫）===
 checkpoints:
   - "b594b15 checkpoint: 20260525-A01 task card created (schema gate pass)"
-  - "TBD checkpoint: 20260525-A01 audit report drafted (completion 10/10, risk gate pass)"
+  - "3101554 checkpoint: 20260525-A01 audit report drafted (completion 10/10, risk gate pass)"
 actual_tool_calls: 21          # 14 file_read + 4 file_search + 1 write_drafts + 1 git_commit + 1 validate_task_card（< max_tool_calls 25）
 result_summary: |
   DoD 10/10 通過。4 維度缺口盤點完成：

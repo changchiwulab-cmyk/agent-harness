@@ -31,7 +31,7 @@ execution_log:
   checkpoints:
     - commit: "b594b15"
       stage: "Task Card 建立完成（Schema gate 通過）"
-    - commit: "TBD"             # 將在報告 commit 後填入
+    - commit: "3101554"
       stage: "Audit 報告草稿完成（Completion 10/10、Risk gate pass）"
 
   # --- 成本估算（粗估，無精確 token 計）---
