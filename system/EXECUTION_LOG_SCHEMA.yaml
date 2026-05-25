@@ -10,6 +10,8 @@
 #
 # 理由：近 5 筆任務零失敗零 partial，AUDIT_LOG 已充分；schema 對失敗後 post-mortem
 # 與高風險溯源最有價值，不應對短小任務強加儀式負擔。
+# 註：happy-path 任務的工具呼叫次數、checkpoints、結果摘要等基本欄位皆已
+#     寫入 AUDIT_LOG.md，並非數據空白；本 schema 只在需要 4 層 gate 完整溯源時啟用。
 # 參見 memory/active_projects/agent-harness/decisions/20260424-D006_execution-log-scope.yaml
 #
 # === Schema 定義 ===

@@ -18,10 +18,10 @@
 
 1. 載入 Task Card → 2. 確認 goal + definition_of_done → 3. 載入 context（system/GLOBAL_RULES.md + system/AGENT_CONTEXT.yaml + system/APPROVAL_POLICY.yaml + 對應 skill + project context）→ 4. 執行 → 5. 每關鍵階段 git commit checkpoint → 6. 依 system/GATE_POLICY.yaml 逐層驗證（schema → 規則 → 完成 → 風險，含 rollback 定義）→ 7. 輸出到 outputs/ → 8. 依 system/EXECUTION_LOG_SCHEMA.yaml 寫執行紀錄到 logs/runs/ → 9. 寫 audit log
 
-## Context 硬限制
+## Context 上限（軟性護欄）
 
-- CLAUDE.md + GLOBAL_RULES.md ≤ 3,000 tokens
-- 單一 skill prompt ≤ 1,500 tokens
+- CLAUDE.md + GLOBAL_RULES.md ≤ 3,000 tokens（實測 baseline ~400 tokens；上限給擴展空間）
+- 單一 skill prompt ≤ 1,500 tokens（含 SKILL.md + eval_examples.md；實測 baseline 200-600 tokens）
 - 只載入 Task Card 白名單內的工具
 - 長對話 20 輪後摘要壓縮
 - 大型檔案用路徑引用，不全文貼入
