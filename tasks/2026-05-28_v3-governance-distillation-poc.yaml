@@ -1,0 +1,66 @@
+task_id: "20260528-001"
+date: "2026-05-28"
+status: "pending"
+
+# === 任務定義 ===
+goal: "把不被商品化的治理核心蒸餾成可攜 plugin，並設計『獨立於執行模型』的驗證 PoC，作為 v3 轉向方案"
+
+context: |
+  來源：Opus 4.8 第一性原理自評（outputs/drafts/2026-05-28_self-assessment-opus48.md）。
+  自評結論：本框架綜合 ~6.5/10，「值得續做但要轉向」。
+  核心論點（The Bitter Lesson）：system/NATIVE_OVERLAP.yaml 自評 70-85% 機制與
+  Claude Code 原生功能重疊且上升，護城河（4/10）正在縮水。真正耐用的只有
+  (1) 操作者專屬數據 (2) 治理紀律本身 (3) 對照真值的獨立驗證。
+  AGI 配合性短板：gate/DoD/audit 多由同一模型自評，能力趨近 AGI 時自評式監督
+  越來越不可信。本卡是「方案設計與取捨」，不是事實調查，故 skill_type=analysis。
+  本卡只負責產出轉向方案（決策草稿），不直接動 system/ 或 skills/ 既有檔。
+
+input_data:
+  - "outputs/drafts/2026-05-28_self-assessment-opus48.md"
+  - "system/NATIVE_OVERLAP.yaml"
+  - "system/COST_POLICY.md"
+  - "system/GLOBAL_RULES.md"
+  - "outputs/drafts/agent-governance-bootstrap"
+  - "outputs/drafts/2026-05-09_v3_extraction_plan.md"
+
+# === 完成標準（最重要的欄位）===
+definition_of_done:
+  - "盤點 NATIVE_OVERLAP.yaml 全部模組，逐模組標記『保留 / 委派原生 / 砍除』並附一句理由，產出決策表"
+  - "明列要保留的『不被商品化耐用核心』清單（Task Card 紀律、DoD/audit/decision schema、failure taxonomy、cost calibration、draft-first gate），每項說明為何耐用"
+  - "獨立驗證 PoC 規格：定義至少一種『獨立於執行模型』的驗證手段（不同模型 / 規則式 / 對照真值 grounding），含輸入、判準、預期可捕捉而自評漏掉的錯誤類型"
+  - "說明本方案與既有 outputs/drafts/agent-governance-bootstrap plugin 的整併關係（重用什麼 / 補什麼 / 是否取代 v3_extraction_plan）"
+  - "每個建議標註：價值 / 成本 / 風險 / 可行性，並針對一人公司資源限制做適配判斷"
+  - "列出 rollback 條件：方案若失敗（維護成本未降 / 可審核性退化）如何回退"
+  - "事實 / 合理推論 / 待驗證 / 高風險假設四態明確分開"
+  - "輸出符合 skills/analysis/SKILL.md 格式"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-05-28_v3-governance-distillation-poc.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

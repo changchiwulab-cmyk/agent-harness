@@ -435,6 +435,16 @@
       "skill_type": "writing",
       "status": "review",
       "task_id": "20260509-N08"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-28",
+      "goal": "把不被商品化的治理核心蒸餾成可攜 plugin，並設計『獨立於執行模型』的驗證 PoC，作為 v3 轉向方案",
+      "path": "tasks/2026-05-28_v3-governance-distillation-poc.yaml",
+      "risk_level": "medium",
+      "skill_type": "analysis",
+      "status": "pending",
+      "task_id": "20260528-001"
     }
   ]
 }
