@@ -6,6 +6,7 @@
 
 require 'minitest/autorun'
 require 'tmpdir'
+require 'fileutils'
 require 'yaml'
 require 'date'
 
@@ -122,5 +123,88 @@ class TestLogsSchemaLintConstants < Minitest::Test
     assert_includes ALLOWED_ERROR_TYPE, 'schema_failure'
     assert_includes ALLOWED_ERROR_TYPE, 'tool_failure'
     assert_equal 5, ALLOWED_ERROR_TYPE.length
+  end
+end
+
+# ── 測試 skill / agent frontmatter lint（section 7-8；以 subprocess 在 tmp 跑）──
+class TestFrontmatterLint < Minitest::Test
+  SCRIPT = File.join(__dir__, 'check_spec_consistency.rb')
+  REQUIRED_DIRS = %w[
+    logs/runs logs/approvals logs/errors
+    outputs/drafts outputs/reports memory/active_projects
+  ].freeze
+
+  def run_in(dir)
+    out = `cd #{dir} && ruby #{SCRIPT} 2>&1`
+    [out, $?.exitstatus]
+  end
+
+  def scaffold(root)
+    REQUIRED_DIRS.each { |d| FileUtils.mkdir_p(File.join(root, d)) }
+  end
+
+  def test_skill_missing_frontmatter_fails
+    Dir.mktmpdir do |root|
+      scaffold(root)
+      FileUtils.mkdir_p(File.join(root, 'skills/research'))
+      File.write(File.join(root, 'skills/research/SKILL.md'), "# Research Skill\n")
+      out, code = run_in(root)
+      refute_equal 0, code
+      assert_match(/missing YAML frontmatter/, out)
+    end
+  end
+
+  def test_skill_good_frontmatter_passes
+    Dir.mktmpdir do |root|
+      scaffold(root)
+      FileUtils.mkdir_p(File.join(root, 'skills/research'))
+      File.write(
+        File.join(root, 'skills/research/SKILL.md'),
+        "---\nname: research\ndescription: x\n---\n\n# Research Skill\n"
+      )
+      out, code = run_in(root)
+      assert_equal 0, code, out
+    end
+  end
+
+  def test_skill_name_mismatch_fails
+    Dir.mktmpdir do |root|
+      scaffold(root)
+      FileUtils.mkdir_p(File.join(root, 'skills/ops'))
+      File.write(
+        File.join(root, 'skills/ops/SKILL.md'),
+        "---\nname: research\ndescription: x\n---\n"
+      )
+      out, code = run_in(root)
+      refute_equal 0, code
+      assert_match(/!= directory/, out)
+    end
+  end
+
+  def test_agent_bad_model_fails
+    Dir.mktmpdir do |root|
+      scaffold(root)
+      FileUtils.mkdir_p(File.join(root, '.claude/agents'))
+      File.write(
+        File.join(root, '.claude/agents/x.md'),
+        "---\nname: x\ndescription: y\nmodel: gpt-4\n---\n"
+      )
+      out, code = run_in(root)
+      refute_equal 0, code
+      assert_match(/invalid model/, out)
+    end
+  end
+
+  def test_agent_alias_model_passes
+    Dir.mktmpdir do |root|
+      scaffold(root)
+      FileUtils.mkdir_p(File.join(root, '.claude/agents'))
+      File.write(
+        File.join(root, '.claude/agents/x.md'),
+        "---\nname: x\ndescription: y\nmodel: haiku\n---\n"
+      )
+      out, code = run_in(root)
+      assert_equal 0, code, out
+    end
   end
 end

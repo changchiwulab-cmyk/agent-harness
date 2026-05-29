@@ -18,10 +18,16 @@
     "commands/run-log.md",
     "commands/gate-check.md"
   ],
-  "skills": [],
+  "skills": [
+    "skills/research/SKILL.md",
+    "skills/analysis/SKILL.md",
+    "skills/writing/SKILL.md",
+    "skills/ops/SKILL.md",
+    "skills/review/SKILL.md"
+  ],
   "hooks": {
     "PreToolUse": "hooks/pre_tool_use.py",
-    "PostTaskUse": "hooks/post_task_use.py"
+    "Stop": "hooks/post_task_use.py"
   },
   "schemas": {
     "task_card": "schemas/task_card.schema.yaml",

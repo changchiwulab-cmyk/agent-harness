@@ -1,0 +1,49 @@
+task_id: "20260529-012"
+date: "2026-05-29"
+status: "done"
+
+# === 任務定義 ===
+goal: "對 Agent Harness v2 做完整檢視，疊加 Opus 4.8 原生能力視角，產出檢視＋優化路線圖草稿"
+context: "使用者要求完整檢視專案並套用最新 Opus 4.8 能力優化。本卡負責檢視（review skill）：盤點與 Claude Code 原生能力的重疊、不一致與缺口，產出路線圖；實作由 20260529-013 承接。計畫已人工核可。"
+input_data:
+  - "CLAUDE.md"
+  - "system/NATIVE_OVERLAP.yaml"
+  - "system/COST_POLICY.md"
+  - "outputs/drafts/2026-05-29_harness-self-assessment.md"
+
+# === 完成標準（最重要的欄位）===
+definition_of_done:
+  - "檢視報告存在於 outputs/drafts/2026-05-29_opus48-review-and-roadmap.md"
+  - "報告含『原生能力遷移』評分軸，並對映既有 self-assessment 的 R1–R10"
+  - "明確列出不一致／冗餘／缺口及其修正位置（檔案路徑）"
+  - "提出四個 Opus 4.8 lever 的高槓桿排序與最高槓桿動作"
+  - "全程只產出草稿，不修改 system/、skills/（修改由 013 執行）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-05-29_opus48-review-and-roadmap.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+
+# === 成本控制 ===
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "review"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 12
+result_summary: "完整檢視＋Opus 4.8 優化路線圖草稿產出；列出 10 項不一致/缺口及修正位置與四 lever 排序、最高槓桿動作"
+completion_time: "2026-05-29"
+audit_log_ref: "logs/AUDIT_LOG.md"

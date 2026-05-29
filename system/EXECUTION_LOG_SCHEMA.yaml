@@ -18,7 +18,7 @@
 execution_log:
   run_id: "RUN-YYYYMMDD-###"        # 唯一識別碼
   task_id: ""                         # 對應的 Task Card ID
-  skill_type: ""                      # research / writing / ops / review
+  skill_type: ""                      # research / analysis / writing / ops / review
   started_at: "YYYY-MM-DD HH:MM"
   ended_at: "YYYY-MM-DD HH:MM"
   status: ""                          # completed / failed / partial / cancelled
@@ -45,7 +45,7 @@ execution_log:
     total: 0
     source: ""                        # dashboard_measured（API dashboard 實測）/ rule_estimated（規則估算）/ not_recorded；R6 新增，標示數據可信度
 
-  # --- 審批紀錄 ---
+  # --- 審批紀錄（此 run 的鏡像；全任務核准權威為 logs/approvals/，見 APPROVAL_POLICY.yaml）---
   approvals:
     - action: ""                      # 需要批准的動作
       status: ""                      # approved / rejected / pending

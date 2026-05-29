@@ -1,0 +1,11 @@
+approval_records:
+  - approval_id: "APR-20260529-001"
+    task_id: "20260529-013"
+    date: "2026-05-29"
+    action: "修改 system/、skills/、.claude/（原生 skills 升級、子代理含模型路由、hooks、CLAUDE.md、CI）"
+    approval_method: "human_confirm"
+    risk_level: "medium"
+    status: "approved"
+    approved_by: "human"
+    rationale: "使用者核可『檢視＋高槓桿實作 / 平衡遷移 / 四 lever 全做』之計畫，即為該批 ask 級變更（改 system/、skills/、CLAUDE.md）之批准。"
+    linked_run: ""

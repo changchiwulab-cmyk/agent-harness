@@ -1,5 +1,7 @@
 # 路由規則 ROUTING_RULES
 
+> **原生自動路由為主（2026-05-29 起）**：5 個 skill 已具一致 frontmatter（`skills/*/SKILL.md` 的 `name`/`description`）並在 `.claude/skills/` 註冊，Claude Code 會依 description 自動載入對應 skill；對應的成本路由子代理見 `.claude/agents/`。本表降級為**契約文件與後援**：用於人工判讀、Task Card `skill_type` 填寫，以及下方「複合任務拆分」規則（原生不處理）。
+
 ## Skill 路由判斷
 
 根據任務性質路由到對應 skill：
