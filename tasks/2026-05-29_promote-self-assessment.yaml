@@ -1,0 +1,56 @@
+# Task Card — 晉升自我評估草稿至 outputs/reports/
+# 來源：使用者於本 session 明確要求「把這份草稿晉升到 outputs/reports/」
+# 依 RETRO_FLOW §5 晉升流程；寫 reports/ 屬 ask，使用者請求即為核准
+
+task_id: "20260529-002"
+date: "2026-05-29"
+status: "done"
+
+# === 任務定義 ===
+goal: "將 outputs/drafts/2026-05-29_harness-self-assessment.md 依 RETRO_FLOW §5 晉升為 outputs/reports/harness-self-assessment-v1.md"
+context: |
+  使用者審閱 20260529-001 產出的自我評估草稿後，明確要求晉升為正式報告。
+  依 RETRO_FLOW §5：複製到 reports/、檔頭加晉升標記（晉升日期/審閱者/採納清單）、原 draft 加回指、保留歷史備援。
+  寫 outputs/reports/ 屬 ask 等級（APPROVAL_POLICY），使用者本次請求即為人工核准。
+  本任務不修改任何 system/ 檔；R1–R10 仍為提案。
+input_data:
+  - "outputs/drafts/2026-05-29_harness-self-assessment.md"
+  - "outputs/reports/retro-2026-Q2-01.md"
+  - "system/RETRO_FLOW.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "outputs/reports/harness-self-assessment-v1.md 存在，內容與原草稿一致"
+  - "正式版檔頭加『晉升標記』區塊（原始 draft / 晉升日期 / 晉升任務 / 審閱者 / 採納項目清單）"
+  - "原 draft 檔尾加『已晉升為 reports/...』回指，保留歷史備援"
+  - "未修改任何 system/ 檔；frontend manifest 重新產生且通過 drift --check"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/reports/"
+  filename: "harness-self-assessment-v1.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260529-002 promote self-assessment to reports/"
+actual_tool_calls: 6
+result_summary: "依 RETRO_FLOW §5 晉升完成：outputs/reports/harness-self-assessment-v1.md（檔頭加晉升標記＋採納清單）；原草稿加回指保留。內容與 draft 一致，未修改任何 system/ 檔。"
+completion_time: "2026-05-29"
+audit_log_ref: "logs/AUDIT_LOG.md"

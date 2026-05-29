@@ -1,3 +1,36 @@
+# 自我評估與優化規劃 — 正式報告（harness-self-assessment-v1）
+
+---
+
+## 晉升標記
+
+| 項目 | 內容 |
+|------|------|
+| **原始 draft** | `outputs/drafts/2026-05-29_harness-self-assessment.md` |
+| **晉升日期** | 2026-05-29 |
+| **晉升任務** | Task Card `20260529-002`（tasks/2026-05-29_promote-self-assessment.yaml） |
+| **審閱者** | 人工確認（使用者於本 session 明確要求晉升） |
+| **原始產出日期** | 2026-05-29 |
+| **原始任務** | Task Card `20260529-001`（tasks/2026-05-29_harness-self-assessment.yaml） |
+
+### 採納項目清單
+
+| # | 項目 | 狀態 | 追蹤 |
+|---|------|:----:|------|
+| 1 | 雙軸 1-10 評估（綜合 ≈7/10、成熟度 3）作為正式基線 | ✅ 採納 | 本報告 §二 評分卡 |
+| 2 | 校正 3 項原始盤點誤判，以本報告為準 | ✅ 採納 | 本報告 §一 |
+| 3 | R1–R10 優化 roadmap 列為正式 backlog | ⏳ 待執行 | 各項另立 Task Card；改 `system/` 走 ask |
+| 4 | 單一最高槓桿動作＝R5 故障演練 | ⏳ 建議優先 | 待排程 |
+
+### 未觸發 v3 升級
+本報告為評估性質，未變更任何 `system/` 檔；`NATIVE_OVERLAP` aggregate 維持 30%（< 50% 閾值），不觸發 v3。
+
+---
+
+以下為原始草稿全文保留（除上方「晉升標記」為新增，其餘未變動）。
+
+---
+
 # Agent Harness v2 — 自我評估與優化規劃方案
 
 > **草稿（draft）** ｜ 日期：2026-05-29 ｜ Task Card：`20260529-001` ｜ skill：review
@@ -167,7 +200,3 @@
 - LangGraph、OpenAI Agents SDK、Microsoft Agent Framework、CrewAI、HuggingFace smolagents、Dify
 - 設計模式：Circuit Breaker、Least Privilege / Zero Trust、Human-in-the-Loop Gates（Advisory/Validating/Blocking/Escalating）、Durable Execution / Checkpointing、Token Budget / Context Compaction、Dry-Run / Staging
 - 評估維度與成熟度等級 1–5：取自業界 agent 可靠性/可觀測性/評估框架文獻
-
----
-
-> **已晉升**：本草稿已於 2026-05-29 晉升為正式報告 `outputs/reports/harness-self-assessment-v1.md`（晉升 Task Card `20260529-002`）。原草稿保留作歷史備援。

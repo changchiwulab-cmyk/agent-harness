@@ -445,6 +445,16 @@
       "skill_type": "review",
       "status": "done",
       "task_id": "20260529-001"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-29",
+      "goal": "將 outputs/drafts/2026-05-29_harness-self-assessment.md 依 RETRO_FLOW §5 晉升為 outputs/reports/harness-self-assessment-v1.md",
+      "path": "tasks/2026-05-29_promote-self-assessment.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260529-002"
     }
   ]
 }

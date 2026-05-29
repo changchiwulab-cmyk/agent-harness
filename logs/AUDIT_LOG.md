@@ -33,6 +33,29 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260529-002"
+  date: "2026-05-29"
+  skill_type: "ops"
+  goal: "晉升自我評估草稿至 outputs/reports/（harness-self-assessment-v1.md）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/reports/harness-self-assessment-v1.md"
+  error_summary: ""
+  estimated_tokens: "~8K"
+  notes: "依 RETRO_FLOW §5 晉升：reports/ 加晉升標記區塊（採納清單），原 draft 加回指。內容與 draft 一致，未修改 system/。寫 reports/ 屬 ask，使用者於本 session 明確核准。"
+```
+
+---
+
+```yaml
 - task_id: "20260529-001"
   date: "2026-05-29"
   skill_type: "review"
