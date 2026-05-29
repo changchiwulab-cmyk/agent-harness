@@ -59,6 +59,18 @@ class TestOpenTaskCards(unittest.TestCase):
             self.assertIn("未結 Task Card：無", out)
             self.assertIn("RECOVERY_RUNBOOK", out)
 
+    def test_build_context_caps_long_list(self):
+        with TemporaryDirectory() as d:
+            root = Path(d)
+            tasks = root / "tasks"
+            tasks.mkdir()
+            for i in range(12):
+                _write_card(tasks, f"20260529-4{i:02d}", "review", f"任務{i}")
+            out = ssc.build_context(root, limit=8)
+            self.assertIn("還有 4 張", out)
+            shown = [ln for ln in out.splitlines() if ln.startswith("  - 20260529-4")]
+            self.assertEqual(len(shown), 8)
+
 
 class TestPrecompactPreserve(unittest.TestCase):
     def test_includes_dod_for_open_card(self):
@@ -79,6 +91,16 @@ class TestPrecompactPreserve(unittest.TestCase):
             _write_card(tasks, "20260529-301", "done", "已完成")
             out = pcp.build_state(root)
             self.assertNotIn("20260529-301", out)
+
+    def test_build_state_caps(self):
+        with TemporaryDirectory() as d:
+            root = Path(d)
+            tasks = root / "tasks"
+            tasks.mkdir()
+            for i in range(8):
+                _write_card(tasks, f"20260529-5{i:02d}", "in_progress", f"t{i}")
+            out = pcp.build_state(root, limit=5)
+            self.assertIn("其餘 3 張", out)
 
 
 if __name__ == "__main__":

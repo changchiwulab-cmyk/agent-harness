@@ -45,14 +45,20 @@ def open_task_cards(root: Path) -> list[str]:
     return rows
 
 
-def build_context(root: Path) -> str:
+def build_context(root: Path, limit: int = 8) -> str:
     branch = _git(root, "rev-parse", "--abbrev-ref", "HEAD")
     last = _git(root, "log", "-1", "--pretty=%h %s")
-    cards = open_task_cards(root)
+    cards = sorted(open_task_cards(root), reverse=True)  # 最新 task_id 在前
     lines = ["# Harness session 定向（SessionStart hook）", ""]
     lines.append(f"分支：{branch or '?'}　最後 checkpoint：{last or '(無)'}")
-    lines.append("未結 Task Card：" + ("" if cards else "無"))
-    lines.extend(cards)
+    if cards:
+        shown = cards[:limit]
+        lines.append(f"未結 Task Card（{len(cards)} 張，顯示最新 {len(shown)}）：")
+        lines.extend(shown)
+        if len(cards) > limit:
+            lines.append(f"  …還有 {len(cards) - limit} 張（見 tasks/ 或 frontend）")
+    else:
+        lines.append("未結 Task Card：無")
     lines += ["", "中斷復原見 system/RECOVERY_RUNBOOK.md；沒有 Task Card 不執行任務。"]
     return "\n".join(lines)
 

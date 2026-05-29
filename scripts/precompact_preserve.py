@@ -19,7 +19,19 @@ DEFAULT_ROOT = Path(__file__).resolve().parents[1]
 OPEN_STATUSES = ("in_progress", "checkpoint", "review")
 
 
-def build_state(root: Path) -> str:
+def open_cards(root: Path) -> list[dict]:
+    out = []
+    for p in sorted(Path(root).glob("tasks/20*.yaml")):
+        try:
+            doc = yaml.safe_load(p.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if isinstance(doc, dict) and str(doc.get("status", "")) in OPEN_STATUSES:
+            out.append(doc)
+    return out
+
+
+def build_state(root: Path, limit: int = 5) -> str:
     lines = ["# 壓縮前治理狀態保全（PreCompact hook）", ""]
     try:
         last = subprocess.run(
@@ -30,15 +42,13 @@ def build_state(root: Path) -> str:
             lines.append(f"最後 checkpoint：{last}")
     except Exception:
         pass
-    for p in sorted(Path(root).glob("tasks/20*.yaml")):
-        try:
-            doc = yaml.safe_load(p.read_text(encoding="utf-8"))
-        except Exception:
-            continue
-        if isinstance(doc, dict) and str(doc.get("status", "")) in OPEN_STATUSES:
-            lines.append(f"- {doc.get('task_id', '?')}：{doc.get('goal', '')}")
-            for d in (doc.get("definition_of_done") or [])[:8]:
-                lines.append(f"    DoD: {d}")
+    cards = sorted(open_cards(root), key=lambda d: str(d.get("task_id", "")), reverse=True)
+    for doc in cards[:limit]:
+        lines.append(f"- {doc.get('task_id', '?')}：{doc.get('goal', '')}")
+        for d in (doc.get("definition_of_done") or [])[:6]:
+            lines.append(f"    DoD: {d}")
+    if len(cards) > limit:
+        lines.append(f"（其餘 {len(cards) - limit} 張未列；見 tasks/）")
     return "\n".join(lines)
 
 
