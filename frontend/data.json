@@ -136,23 +136,23 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 30,
-      "medium": 14
+      "low": 31,
+      "medium": 15
     },
     "task_skill": {
       "analysis": 4,
-      "ops": 26,
+      "ops": 27,
       "research": 5,
-      "review": 6,
+      "review": 7,
       "writing": 4
     },
     "task_status": {
-      "done": 22,
+      "done": 24,
       "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 45
+    "task_total": 47
   },
   "tasks": [
     {
@@ -504,6 +504,26 @@
       "skill_type": "review",
       "status": "done",
       "task_id": "20260529-001"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-29",
+      "goal": "對 Agent Harness v2 做完整檢視，疊加 Opus 4.8 原生能力視角，產出檢視＋優化路線圖草稿",
+      "path": "tasks/2026-05-29_opus48-A_review.yaml",
+      "risk_level": "low",
+      "skill_type": "review",
+      "status": "done",
+      "task_id": "20260529-012"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-29",
+      "goal": "套用 Opus 4.8／Claude Code 原生能力優化 harness：原生 Skills、子代理＋模型成本路由、Hooks 自動化、prompt caching＋context，並補品質修正與 CI/測試",
+      "path": "tasks/2026-05-29_opus48-B_uplift.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260529-013"
     },
     {
       "approval_needed": true,
