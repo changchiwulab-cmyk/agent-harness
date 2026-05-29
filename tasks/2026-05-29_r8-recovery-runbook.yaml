@@ -1,0 +1,56 @@
+# Task Card — R8 災難恢復 runbook + checkpoint 還原實測
+# 來源：20260529-001 自我評估 roadmap R8（成熟度 3→4 關鍵：checkpoint 機制有、從未還原實測）
+# 注意：新增 system/RECOVERY_RUNBOOK.md + 改 system/GATE_POLICY.yaml 屬 ask；變更在草稿 PR #88 供 review。
+
+task_id: "20260529-010"
+date: "2026-05-29"
+status: "done"
+
+# === 任務定義 ===
+goal: "建立災難恢復 runbook（context 重置/工作樹破壞時如何用 checkpoint 還原），並實測一次 checkpoint 還原、與 GATE_POLICY rollback 交叉引用"
+context: |
+  自我評估：checkpoint（git commit）機制有，但「從 checkpoint 還原」從未實測，是成熟度 4 災難恢復的核心缺口。
+  本卡新增 system/RECOVERY_RUNBOOK.md（對應 FAILURE_TAXONOMY COORD-01/SPEC-03），實測一次工作樹破壞→還原，
+  並在 GATE_POLICY 加交叉引用。實測為安全演練：破壞已 commit 檔的工作副本後立即 git checkout 還原、sha 驗證。
+input_data:
+  - "system/GATE_POLICY.yaml"
+  - "system/FAILURE_TAXONOMY.yaml"
+  - "CLAUDE.md（Checkpoint 段）"
+
+# === 完成標準 ===
+definition_of_done:
+  - "system/RECOVERY_RUNBOOK.md：恢復資料來源 + 4 個場景程序（工作樹破壞/取舊版/context 重置接續/整批回滾）+ 還原後一致性檢查 + 與 GATE_POLICY rollback 對應表"
+  - "實測一次 checkpoint 還原（場景 A），記錄指令/耗時/sha 驗證於 runbook 附錄"
+  - "system/GATE_POLICY.yaml 加一行交叉引用指向 RECOVERY_RUNBOOK"
+  - "全套 CI-equivalent 綠；工作樹演練後乾淨；system/ 變更僅存於草稿 PR、未 merge"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "system/"
+  filename: "RECOVERY_RUNBOOK.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "create_output_files"
+  - "modify_system_rules"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260529-010 R8 recovery runbook + restore drill"
+actual_tool_calls: 8
+result_summary: "新增 system/RECOVERY_RUNBOOK.md（4 場景 + 資料來源 + 一致性檢查 + GATE_POLICY rollback 對應）。實測場景 A：破壞工作副本→git checkout 還原，~5ms、byte-identical、工作樹還原乾淨（附錄記錄）。GATE_POLICY 加交叉引用。system/ 變更待草稿 PR review。"
+completion_time: "2026-05-29"
+audit_log_ref: "logs/AUDIT_LOG.md"
