@@ -33,6 +33,52 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260529-005"
+  date: "2026-05-29"
+  skill_type: "ops"
+  goal: "R2：擴充 check_spec_consistency.rb，把 logs/runs、logs/approvals、logs/errors 納入 CI schema lint"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "file_write"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "scripts/check_spec_consistency.rb"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "新增 3 段 logs schema lint（runs 必填+status 枚舉 / approvals 必填+method+status 枚舉，跳過 TEMPLATE / errors 抽 yaml 驗 error_type 枚舉）+ 6 個單元測試。本機 CI 抓到並修正 error-log 讀檔的 US-ASCII 編碼 bug（改 UTF-8）。正反向測試皆通過。影響 CI 行為，待草稿 PR #88 review/merge（approval_given 待人工）。"
+```
+
+---
+
+```yaml
+- task_id: "20260529-004"
+  date: "2026-05-29"
+  skill_type: "ops"
+  goal: "R1：定義 approval_record schema、建模板、回填首筆真實批准紀錄"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 5
+    - tool_name: "file_write"
+      call_count: 5
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "logs/approvals/2026-04-09_20260409-001_approval.yaml"
+  error_summary: ""
+  estimated_tokens: "~13K"
+  notes: "在 system/APPROVAL_POLICY.yaml 新增 approval_record schema（與 EXECUTION_LOG_SCHEMA approvals 對齊）+ APPROVAL_LOG_TEMPLATE.yaml + 回填 RUN-20260409-001 的 2 筆批准 + RETRO_FLOW 註記。修改 system/ 屬 ask：變更在草稿 PR #88，未 merge＝『列差異、等待確認』狀態，approval_given 待人工。"
+```
+
+---
+
+```yaml
 - task_id: "20260529-003"
   date: "2026-05-29"
   skill_type: "ops"

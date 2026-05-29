@@ -1,0 +1,16 @@
+# 批准紀錄模板 — 複製到 logs/approvals/YYYY-MM-DD_[task_id]_approval.yaml
+# schema 定義見 system/APPROVAL_POLICY.yaml 的 approval_record 段。
+# 檔名含 TEMPLATE 者不被 scripts/check_spec_consistency.rb 驗證。
+# 純 YAML（非 markdown），便於 CI lint 與 frontend 解析。
+
+approval_records:
+  - approval_id: "APR-YYYYMMDD-NNN"   # 唯一識別碼
+    task_id: ""                        # 對應的 Task Card ID
+    date: "YYYY-MM-DD"                 # 批准日期
+    action: ""                         # 被批准的動作（如：修改 system/、寫正式報告、對外草稿）
+    approval_method: "human_confirm"   # human_confirm | draft_first
+    risk_level: "medium"               # low | medium | high | critical（選填）
+    status: "approved"                 # approved | rejected | superseded
+    approved_by: "human"               # 批准者
+    rationale: ""                      # 批准理由（選填）
+    linked_run: ""                     # 對應 logs/runs/ 的 run_id（選填，可空）

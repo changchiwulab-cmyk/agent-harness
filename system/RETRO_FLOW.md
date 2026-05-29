@@ -20,7 +20,7 @@
 讀取以下內容：
 - `logs/AUDIT_LOG.md`（最近一批紀錄）
 - `logs/errors/`（錯誤紀錄）
-- `logs/approvals/`（核准紀錄）
+- `logs/approvals/`（核准紀錄；schema 見 `system/APPROVAL_POLICY.yaml` 的 `approval_record` 段，紀錄為 `approval_records` list）
 
 ### 2. 分析維度
 

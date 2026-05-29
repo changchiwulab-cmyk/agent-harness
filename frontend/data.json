@@ -472,6 +472,26 @@
       "task_id": "20260529-002"
     },
     {
+      "approval_needed": true,
+      "date": "2026-05-29",
+      "goal": "為批准動作定義 schema 並回填首筆真實紀錄，讓 logs/approvals/ 有可解析格式、RETRO_FLOW §1 的核准資料源不再讀空目錄",
+      "path": "tasks/2026-05-29_r1-approval-record-schema.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260529-004"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-29",
+      "goal": "擴充 scripts/check_spec_consistency.rb，把 logs/runs、logs/approvals、logs/errors 的 schema 納入 CI lint，守住 R1 定義的格式不漂移",
+      "path": "tasks/2026-05-29_r2-logs-schema-lint.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260529-005"
+    },
+    {
       "approval_needed": false,
       "date": "2026-05-29",
       "goal": "執行受控的 schema 失敗演練，首次在真實故障下坐實 logs/errors/ + logs/runs/(status: failed) 紀錄路徑，並固化為可重複的 e2e 回歸測試",
