@@ -494,6 +494,26 @@
     {
       "approval_needed": false,
       "date": "2026-05-29",
+      "goal": "以一次真實的治理數據分析任務，產生 analysis skill 的首個成本實測樣本，並輸出可行動的治理發現",
+      "path": "tasks/2026-05-29_r3-analysis-cost-sample.yaml",
+      "risk_level": "low",
+      "skill_type": "analysis",
+      "status": "done",
+      "task_id": "20260529-006"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-29",
+      "goal": "建立唯讀的決策 revisit 追蹤器，掃描 decision logs、對可量化觸發比對當前值並標記，納入 RETRO 流程",
+      "path": "tasks/2026-05-29_r4-decision-revisit-tracker.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260529-007"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-29",
       "goal": "執行受控的 schema 失敗演練，首次在真實故障下坐實 logs/errors/ + logs/runs/(status: failed) 紀錄路徑，並固化為可重複的 e2e 回歸測試",
       "path": "tasks/2026-05-29_r5-failure-drill.yaml",
       "risk_level": "low",

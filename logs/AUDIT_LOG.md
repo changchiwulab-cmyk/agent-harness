@@ -33,6 +33,52 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260529-007"
+  date: "2026-05-29"
+  skill_type: "ops"
+  goal: "R4：決策 revisit 追蹤器（唯讀掃描 + 量化觸發比對）+ 測試入 CI + RETRO_FLOW 整合"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 5
+    - tool_name: "file_write"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "scripts/check_decision_revisit.rb"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "新增 check_decision_revisit.rb（唯讀；D001 並行任務數/D006 runs 數量化比對 → DUE/OK，其餘 MANUAL；--json）+ 單元測試（接入 CI）。本機跑 7 筆全列、DUE=0。RETRO_FLOW 加『決策回看』列屬 system/ ask、workflow 加測試步驟——皆在草稿 PR #88 待 review。"
+```
+
+---
+
+```yaml
+- task_id: "20260529-006"
+  date: "2026-05-29"
+  skill_type: "analysis"
+  goal: "R3：治理數據分析（產出發現 + 貢獻 analysis 成本校準樣本 #1）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "file_write"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/2026-05-29_governance-data-analysis.md"
+  error_summary: ""
+  estimated_tokens: "~16K"
+  notes: "R3。analysis skill 成本實測樣本 #1（~16K，COST_POLICY 原預估 12K → 初估係數 ~1.33，待累積 ≥3 筆於 RETRO 正式計算）。分析 39 task cards / audit 94.3% / draft:report 8:1 / logs runs2-appr1-err2 / 7 決策 0 revisit。未改 system/。"
+```
+
+---
+
+```yaml
 - task_id: "20260529-005"
   date: "2026-05-29"
   skill_type: "ops"

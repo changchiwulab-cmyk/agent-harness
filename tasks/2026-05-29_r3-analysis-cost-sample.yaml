@@ -1,0 +1,57 @@
+# Task Card — R3 analysis 成本校準補樣本
+# 來源：20260529-001 自我評估 roadmap R3（弱點 #3 重新聚焦：analysis 校準樣本=0）
+# 作法：做一次真實的 analysis 任務（治理數據分析），自然產生 analysis skill 的 token 實測樣本
+
+task_id: "20260529-006"
+date: "2026-05-29"
+status: "done"
+
+# === 任務定義 ===
+goal: "以一次真實的治理數據分析任務，產生 analysis skill 的首個成本實測樣本，並輸出可行動的治理發現"
+context: |
+  COST_POLICY.md 的 analysis 校準係數=0、樣本=0（五個 skill 唯一空白），
+  下次校準明確卡在「需至少 1 筆 analysis 實測」。本卡用一次真實 analysis（分析 audit/task/decision/logs 治理數據）
+  自然產生 token 樣本，並輸出治理發現。COST_POLICY 係數更新需 ≥3 樣本，故留待 RETRO，本卡只貢獻樣本 #1 並記錄於 audit log。
+input_data:
+  - "logs/AUDIT_LOG.md"
+  - "tasks/"
+  - "memory/active_projects/agent-harness/decisions/"
+  - "scripts/governance_metrics.py 輸出"
+
+# === 完成標準 ===
+definition_of_done:
+  - "outputs/drafts/2026-05-29_governance-data-analysis.md：含結論→數據→發現→建議，引用真實數字（task 組成/audit 覆蓋率/draft:report 比/logs 計數/決策狀態）"
+  - "分析點出 analysis 校準現況（樣本不足）並建議 RETRO 重算"
+  - "audit log 記一筆 skill_type=analysis 的紀錄，含 token 實測估計（即 analysis 樣本 #1）"
+  - "不修改 system/（COST_POLICY 係數更新留待 RETRO，需 ≥3 樣本）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-05-29_governance-data-analysis.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260529-006 R3 analysis cost sample (governance data analysis)"
+actual_tool_calls: 7
+result_summary: "產出治理數據分析草稿（39 task cards、audit 覆蓋 94.3%、draft:report≈8:1、logs runs2/appr1/err2、7 決策 0 revisit）。貢獻 analysis 成本樣本 #1（~16K）。建議 RETRO 重算 analysis 校準（現有 3 張 analysis 卡可一併納入）。未改 system/。"
+completion_time: "2026-05-29"
+audit_log_ref: "logs/AUDIT_LOG.md"
