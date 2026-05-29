@@ -28,7 +28,25 @@ class TestGenerator(unittest.TestCase):
 
             payload = gen.build(root)
 
-            self.assertEqual(payload, {"tasks": [], "logs": [], "decisions": []})
+            self.assertEqual(payload, {
+                "tasks": [],
+                "logs": [],
+                "decisions": [],
+                "overview": {
+                    "task_total": 0,
+                    "task_status": {},
+                    "task_skill": {},
+                    "task_risk": {},
+                    "run_total": 0,
+                    "run_status": {},
+                    "gate_results": {
+                        "schema_check": {},
+                        "rule_check": {},
+                        "completion_check": {},
+                        "risk_check": {},
+                    },
+                },
+            })
 
     def test_multi_project_decisions_are_all_collected(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -33,6 +33,29 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260529-011"
+  date: "2026-05-29"
+  skill_type: "ops"
+  goal: "R7（前端）：治理總覽面板（task/run/gate 分佈接進 dashboard）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "file_write"
+      call_count: 5
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "frontend/app.js"
+  error_summary: ""
+  estimated_tokens: "~16K"
+  notes: "R7 延後項補齊。manifest build_overview（由既有 tasks+logs 計算，無額外讀檔）→ data.json 新增 overview 鍵；唯一鎖定結構的 test_empty_repo 同步更新；index.html + app.js renderOverview 以既有 .cards 樣式渲染。frontend 測試 + drift --check 綠。未動 system/。R7 至此（引擎+報告+面板）完整。"
+```
+
+---
+
+```yaml
 - task_id: "20260529-010"
   date: "2026-05-29"
   skill_type: "ops"

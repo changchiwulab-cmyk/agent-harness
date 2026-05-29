@@ -1,0 +1,56 @@
+# Task Card — R7（前端）治理總覽面板
+# 來源：R7 延後項——把觀測指標接進前端看板（自我評估 roadmap R7 的 dashboard 部分）
+# 低風險：純前端 + manifest，未動 system/
+
+task_id: "20260529-011"
+date: "2026-05-29"
+status: "done"
+
+# === 任務定義 ===
+goal: "在前端看板新增『治理總覽』面板，呈現 task 狀態/skill/風險分佈、run 狀態與四層 gate 統計"
+context: |
+  R7 metrics 引擎（20260529-009）已交付，但 dashboard 面板當時延後以免動 data.json schema 風險。
+  本卡用最低風險作法補上：overview 由 manifest 既有蒐集的 tasks+logs 計算（不讀額外檔、root-parameterized），
+  加入 data.json 的新 overview 鍵，並更新唯一鎖定結構的 test_empty_repo。前端以既有 .cards/.card 樣式渲染，零新版面風險。
+input_data:
+  - "scripts/generate_frontend_manifest.py"
+  - "scripts/test_generate_frontend_manifest.py"
+  - "frontend/index.html"
+  - "frontend/app.js"
+
+# === 完成標準 ===
+definition_of_done:
+  - "generate_frontend_manifest.py 新增 build_overview（task 狀態/skill/風險分佈 + run 狀態 + gate tally），build() 輸出 overview 鍵"
+  - "test_generate_frontend_manifest.py 的 test_empty_repo 更新為含 overview（空值）；idempotent/multi-project 測試仍綠"
+  - "frontend/index.html 新增治理總覽 section；app.js renderOverview() 以 .cards/.card 渲染；data.json 重生並通過 drift --check"
+  - "全套 CI-equivalent 綠；未修改 system/"
+
+# === 輸出定義 ===
+expected_output:
+  format: "js"
+  location: "frontend/"
+  filename: "app.js"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260529-011 R7 frontend governance overview panel"
+actual_tool_calls: 9
+result_summary: "前端新增『治理總覽』面板：manifest build_overview（由既有 tasks+logs 計算，root-parameterized）→ data.json overview 鍵；test_empty_repo 同步更新；index.html + app.js renderOverview 以既有 .cards 樣式渲染。frontend manifest 測試與 drift --check 綠。未動 system/。"
+completion_time: "2026-05-29"
+audit_log_ref: "logs/AUDIT_LOG.md"

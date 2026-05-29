@@ -110,6 +110,50 @@
       "task_id": "20260529-003"
     }
   ],
+  "overview": {
+    "gate_results": {
+      "completion_check": {
+        "not_run": 1,
+        "pass": 1
+      },
+      "risk_check": {
+        "not_run": 1,
+        "pass": 1
+      },
+      "rule_check": {
+        "not_run": 1,
+        "pass": 1
+      },
+      "schema_check": {
+        "fail": 1,
+        "pass": 1
+      }
+    },
+    "run_status": {
+      "completed": 1,
+      "failed": 1
+    },
+    "run_total": 2,
+    "task_risk": {
+      "high": 1,
+      "low": 30,
+      "medium": 14
+    },
+    "task_skill": {
+      "analysis": 4,
+      "ops": 26,
+      "research": 5,
+      "review": 6,
+      "writing": 4
+    },
+    "task_status": {
+      "done": 22,
+      "in_progress": 2,
+      "pending": 2,
+      "review": 19
+    },
+    "task_total": 45
+  },
   "tasks": [
     {
       "approval_needed": false,
@@ -530,6 +574,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-008"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-29",
+      "goal": "在前端看板新增『治理總覽』面板，呈現 task 狀態/skill/風險分佈、run 狀態與四層 gate 統計",
+      "path": "tasks/2026-05-29_r7-frontend-overview-panel.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260529-011"
     },
     {
       "approval_needed": false,
