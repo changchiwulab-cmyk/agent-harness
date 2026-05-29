@@ -435,6 +435,16 @@
       "skill_type": "writing",
       "status": "review",
       "task_id": "20260509-N08"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-29",
+      "goal": "對 Agent Harness v2 做雙軸（業界十維最佳實踐 + 自家馬鞍工程六原則）1-10 評分，盤點優缺點，並產出短/中/長期優化 roadmap（R1–R10）",
+      "path": "tasks/2026-05-29_harness-self-assessment.yaml",
+      "risk_level": "low",
+      "skill_type": "review",
+      "status": "done",
+      "task_id": "20260529-001"
     }
   ]
 }

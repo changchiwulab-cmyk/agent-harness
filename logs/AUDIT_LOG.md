@@ -33,6 +33,31 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260529-001"
+  date: "2026-05-29"
+  skill_type: "review"
+  goal: "Agent Harness v2 自我評估（雙軸 1-10）+ R1–R10 優化 roadmap"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 12
+    - tool_name: "web_search"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/2026-05-29_harness-self-assessment.md"
+  error_summary: ""
+  estimated_tokens: "~120K（含 2 探索 + 1 plan 子代理；屬多代理研究型任務，不宜直接併入 review 校準均值）"
+  notes: "綜合 ≈7/10、成熟度 3。雙軸評分（業界十維均 7.2 / 馬鞍工程六原則均 7.0）。校正 3 項原始誤判：approvals 目錄其實存在（僅缺 schema）、CI 其實有跑一致性檢查、analysis eval 其實最長（真缺口是 analysis 成本樣本=0）。單一最高槓桿＝R5 故障演練。未修改任何 system/ 檔。"
+```
+
+---
+
+```yaml
 - task_id: "20260509-M01"
   date: "2026-05-09"
   skill_type: "ops"
