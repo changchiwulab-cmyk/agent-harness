@@ -269,5 +269,72 @@ class TestMainExitCode(unittest.TestCase):
         self.assertEqual(ids, {"M1", "M2", "M3", "M4"})
 
 
+class TestObservability(unittest.TestCase):
+    """R7: workflow / business / failure observability layers."""
+
+    def test_parse_token_estimate(self):
+        self.assertEqual(gm.parse_token_estimate("~16K"), 16000)
+        self.assertEqual(gm.parse_token_estimate("~120K（含 3 子代理）"), 120000)
+        self.assertEqual(gm.parse_token_estimate("1500"), 1500)
+        self.assertIsNone(gm.parse_token_estimate(""))
+        self.assertIsNone(gm.parse_token_estimate(None))
+
+    def test_workflow_tally(self):
+        runs = [
+            {"status": "completed", "gate_results": {"schema_check": "pass", "rule_check": "pass"}, "checkpoints": [1, 2]},
+            {"status": "failed", "gate_results": {"schema_check": "fail", "rule_check": "not_run"}, "checkpoints": [1]},
+        ]
+        wf = gm.observability_workflow(runs)
+        self.assertEqual(wf["runs_total"], 2)
+        self.assertEqual(wf["status_distribution"], {"completed": 1, "failed": 1})
+        self.assertEqual(wf["gate_results"]["schema_check"], {"pass": 1, "fail": 1})
+        self.assertEqual(wf["avg_checkpoints"], 1.5)
+
+    def test_business_per_skill(self):
+        audit = [
+            {"task_id": "a", "skill_type": "ops", "estimated_tokens": "~10K",
+             "tools_called": [{"tool_name": "file_read", "call_count": 3}]},
+            {"task_id": "b", "skill_type": "ops", "estimated_tokens": "~20K",
+             "tools_called": [{"tool_name": "file_read", "call_count": 5}]},
+            {"task_id": "c", "skill_type": "analysis", "estimated_tokens": "~16K"},  # no tools_called -> None
+        ]
+        biz = gm.observability_business(audit)
+        self.assertEqual(biz["ops"]["count"], 2)
+        self.assertEqual(biz["ops"]["avg_tokens"], 15000)
+        self.assertEqual(biz["ops"]["avg_tool_calls"], 4.0)
+        self.assertEqual(biz["analysis"]["count"], 1)
+        self.assertEqual(biz["analysis"]["avg_tokens"], 16000)
+        self.assertIsNone(biz["analysis"]["avg_tool_calls"])
+
+    def test_failures_distribution(self):
+        fa = gm.observability_failures(["tool_failure", "schema_failure", "schema_failure"])
+        self.assertEqual(fa["errors_total"], 3)
+        self.assertEqual(fa["by_type"], {"tool_failure": 1, "schema_failure": 2})
+
+    def test_main_observability_flag_real_repo(self):
+        import io
+        import json as _json
+        from contextlib import redirect_stdout
+
+        out = io.StringIO()
+        with redirect_stdout(out):
+            code = gm.main(["--observability", "--today", "2026-05-29"])
+        self.assertEqual(code, 0)
+        data = _json.loads(out.getvalue())
+        self.assertEqual(set(data.keys()), {"workflow", "business", "failures"})
+
+    def test_existing_json_still_four_metrics(self):
+        """Guard: --json output must remain M1–M4 only (no regression)."""
+        import io
+        import json as _json
+        from contextlib import redirect_stdout
+
+        out = io.StringIO()
+        with redirect_stdout(out):
+            gm.main(["--json", "--today", "2026-05-29"])
+        data = _json.loads(out.getvalue())
+        self.assertEqual({m["id"] for m in data}, {"M1", "M2", "M3", "M4"})
+
+
 if __name__ == "__main__":
     unittest.main()

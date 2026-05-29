@@ -530,6 +530,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-008"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-29",
+      "goal": "擴充 governance_metrics.py，補上工作流層（gate 通過率/checkpoints）、業務層（每 skill 任務數/token/工具呼叫）、失敗分佈三類可觀測性指標，並產出觀測報告",
+      "path": "tasks/2026-05-29_r7-observability-metrics.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260529-009"
     }
   ]
 }

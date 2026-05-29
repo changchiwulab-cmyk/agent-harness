@@ -33,6 +33,29 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260529-009"
+  date: "2026-05-29"
+  skill_type: "ops"
+  goal: "R7：governance_metrics 補工作流/業務/失敗三層可觀測性 + --observability + 報告"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "file_write"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/2026-05-29_observability-metrics.md"
+  error_summary: ""
+  estimated_tokens: "~22K"
+  notes: "R7。governance_metrics.py 補三層可觀測性（工作流 gate 統計/業務每-skill token/失敗分佈）+ --observability flag + 7 新測試（含 --json 仍 M1–M4 回歸守門，27 測試全綠）。觀測立刻抓到 review 均值被 120K 多代理離群值拉高。未改 system/、未動 CI。前端面板刻意延後（避免 data.json schema/CI 風險）。"
+```
+
+---
+
+```yaml
 - task_id: "20260529-008"
   date: "2026-05-29"
   skill_type: "ops"
