@@ -22,7 +22,8 @@ execution_log:
   token_estimate:
     input: 1200
     output: 300
-    total: 1500           # 受控演練，成本極小（來源：估算；R6 將為本欄補正式『來源』欄位）
+    total: 1500
+    source: "rule_estimated"   # R6：受控演練的估算值（非 dashboard 實測）
 
   approvals: []            # 本演練無 ask 等級或對外動作，無需批准
 

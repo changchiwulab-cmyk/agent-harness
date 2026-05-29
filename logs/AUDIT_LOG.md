@@ -33,6 +33,29 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260529-008"
+  date: "2026-05-29"
+  skill_type: "ops"
+  goal: "R6：EXECUTION_LOG_SCHEMA token_estimate 增加 source（可信度）欄位 + 示範回填"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "system/EXECUTION_LOG_SCHEMA.yaml"
+  error_summary: ""
+  estimated_tokens: "~7K"
+  notes: "R6。token_estimate 新增 source 欄（dashboard_measured/rule_estimated/not_recorded）；RUN-20260529-003 示範 source=rule_estimated。修改 system/ 屬 ask，變更在草稿 PR #88 待 review/merge。"
+```
+
+---
+
+```yaml
 - task_id: "20260529-007"
   date: "2026-05-29"
   skill_type: "ops"

@@ -520,6 +520,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-003"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-29",
+      "goal": "為 EXECUTION_LOG_SCHEMA 的 token_estimate 增加 source（資料來源/可信度）欄位，並在現有 run log 示範，讓 run 級成本可信度可被標示與校準引用",
+      "path": "tasks/2026-05-29_r6-execlog-token-source.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260529-008"
     }
   ]
 }
