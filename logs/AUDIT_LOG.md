@@ -33,6 +33,29 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260529-010"
+  date: "2026-05-29"
+  skill_type: "ops"
+  goal: "R8：災難恢復 runbook + checkpoint 還原實測 + GATE_POLICY 交叉引用"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "system/RECOVERY_RUNBOOK.md"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "R8。新增 system/RECOVERY_RUNBOOK.md（4 場景 + 資料來源 + 一致性檢查 + GATE_POLICY rollback 對應）。實測場景 A：破壞工作副本→git checkout 還原 ~5ms、byte-identical、還原後工作樹乾淨。GATE_POLICY 加交叉引用。修改 system/ 屬 ask，變更在草稿 PR #88 待 review/merge。"
+```
+
+---
+
+```yaml
 - task_id: "20260529-009"
   date: "2026-05-29"
   skill_type: "ops"

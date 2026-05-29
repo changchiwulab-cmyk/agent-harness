@@ -540,6 +540,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-009"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-29",
+      "goal": "建立災難恢復 runbook（context 重置/工作樹破壞時如何用 checkpoint 還原），並實測一次 checkpoint 還原、與 GATE_POLICY rollback 交叉引用",
+      "path": "tasks/2026-05-29_r8-recovery-runbook.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260529-010"
     }
   ]
 }
