@@ -49,3 +49,24 @@ escalation:
     action: "追加風險說明到草稿，重新通知使用者"
   - condition: "同一任務產生 3 次以上批准請求"
     action: "暫停任務，建議使用者重新評估任務範圍"
+
+# === 批准紀錄格式（R1: 20260529-004 新增）===
+# 定義批准動作如何被記錄、寫到哪。與 EXECUTION_LOG_SCHEMA.yaml 的內嵌 approvals 欄位同名同義。
+# RETRO_FLOW §1 的「核准紀錄」資料源即指此目錄。模板見 logs/approvals/APPROVAL_LOG_TEMPLATE.yaml。
+approval_record:
+  location: "logs/approvals/"
+  filename_pattern: "YYYY-MM-DD_[task_id]_approval.yaml"   # 純 YAML，便於 CI lint
+  container_key: "approval_records"                         # 檔案頂層為此 list，可批次記錄同一任務的多筆批准
+  required_fields:
+    - approval_id        # APR-YYYYMMDD-NNN
+    - task_id            # 對應 Task Card
+    - date               # YYYY-MM-DD
+    - action             # 被批准的動作
+    - approval_method    # human_confirm | draft_first
+    - status             # approved | rejected | superseded
+    - approved_by        # 批准者（通常 human）
+  optional_fields:
+    - risk_level         # low | medium | high | critical
+    - rationale          # 批准理由
+    - linked_run         # 對應 logs/runs/ 的 run_id（可空）
+  enforced_by: "scripts/check_spec_consistency.rb（R2: 20260529-005 起納入 CI lint）"

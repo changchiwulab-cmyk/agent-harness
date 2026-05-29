@@ -93,8 +93,67 @@
       "started_at": "2026-04-09 00:00",
       "status": "completed",
       "task_id": "20260409-001"
+    },
+    {
+      "ended_at": "2026-05-29 05:35",
+      "gate_results": {
+        "completion_check": "not_run",
+        "risk_check": "not_run",
+        "rule_check": "not_run",
+        "schema_check": "fail"
+      },
+      "path": "logs/runs/RUN-20260529-003.yaml",
+      "run_id": "RUN-20260529-003",
+      "skill_type": "ops",
+      "started_at": "2026-05-29 05:25",
+      "status": "failed",
+      "task_id": "20260529-003"
     }
   ],
+  "overview": {
+    "gate_results": {
+      "completion_check": {
+        "not_run": 1,
+        "pass": 1
+      },
+      "risk_check": {
+        "not_run": 1,
+        "pass": 1
+      },
+      "rule_check": {
+        "not_run": 1,
+        "pass": 1
+      },
+      "schema_check": {
+        "fail": 1,
+        "pass": 1
+      }
+    },
+    "run_status": {
+      "completed": 1,
+      "failed": 1
+    },
+    "run_total": 2,
+    "task_risk": {
+      "high": 1,
+      "low": 30,
+      "medium": 14
+    },
+    "task_skill": {
+      "analysis": 4,
+      "ops": 26,
+      "research": 5,
+      "review": 6,
+      "writing": 4
+    },
+    "task_status": {
+      "done": 22,
+      "in_progress": 2,
+      "pending": 2,
+      "review": 19
+    },
+    "task_total": 45
+  },
   "tasks": [
     {
       "approval_needed": false,
@@ -435,6 +494,116 @@
       "skill_type": "writing",
       "status": "review",
       "task_id": "20260509-N08"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-29",
+      "goal": "對 Agent Harness v2 做雙軸（業界十維最佳實踐 + 自家馬鞍工程六原則）1-10 評分，盤點優缺點，並產出短/中/長期優化 roadmap（R1–R10）",
+      "path": "tasks/2026-05-29_harness-self-assessment.yaml",
+      "risk_level": "low",
+      "skill_type": "review",
+      "status": "done",
+      "task_id": "20260529-001"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-29",
+      "goal": "將 outputs/drafts/2026-05-29_harness-self-assessment.md 依 RETRO_FLOW §5 晉升為 outputs/reports/harness-self-assessment-v1.md",
+      "path": "tasks/2026-05-29_promote-self-assessment.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260529-002"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-29",
+      "goal": "為批准動作定義 schema 並回填首筆真實紀錄，讓 logs/approvals/ 有可解析格式、RETRO_FLOW §1 的核准資料源不再讀空目錄",
+      "path": "tasks/2026-05-29_r1-approval-record-schema.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260529-004"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-29",
+      "goal": "擴充 scripts/check_spec_consistency.rb，把 logs/runs、logs/approvals、logs/errors 的 schema 納入 CI lint，守住 R1 定義的格式不漂移",
+      "path": "tasks/2026-05-29_r2-logs-schema-lint.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260529-005"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-29",
+      "goal": "以一次真實的治理數據分析任務，產生 analysis skill 的首個成本實測樣本，並輸出可行動的治理發現",
+      "path": "tasks/2026-05-29_r3-analysis-cost-sample.yaml",
+      "risk_level": "low",
+      "skill_type": "analysis",
+      "status": "done",
+      "task_id": "20260529-006"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-29",
+      "goal": "建立唯讀的決策 revisit 追蹤器，掃描 decision logs、對可量化觸發比對當前值並標記，納入 RETRO 流程",
+      "path": "tasks/2026-05-29_r4-decision-revisit-tracker.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260529-007"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-29",
+      "goal": "執行受控的 schema 失敗演練，首次在真實故障下坐實 logs/errors/ + logs/runs/(status: failed) 紀錄路徑，並固化為可重複的 e2e 回歸測試",
+      "path": "tasks/2026-05-29_r5-failure-drill.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260529-003"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-29",
+      "goal": "為 EXECUTION_LOG_SCHEMA 的 token_estimate 增加 source（資料來源/可信度）欄位，並在現有 run log 示範，讓 run 級成本可信度可被標示與校準引用",
+      "path": "tasks/2026-05-29_r6-execlog-token-source.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260529-008"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-29",
+      "goal": "在前端看板新增『治理總覽』面板，呈現 task 狀態/skill/風險分佈、run 狀態與四層 gate 統計",
+      "path": "tasks/2026-05-29_r7-frontend-overview-panel.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260529-011"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-29",
+      "goal": "擴充 governance_metrics.py，補上工作流層（gate 通過率/checkpoints）、業務層（每 skill 任務數/token/工具呼叫）、失敗分佈三類可觀測性指標，並產出觀測報告",
+      "path": "tasks/2026-05-29_r7-observability-metrics.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260529-009"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-29",
+      "goal": "建立災難恢復 runbook（context 重置/工作樹破壞時如何用 checkpoint 還原），並實測一次 checkpoint 還原、與 GATE_POLICY rollback 交叉引用",
+      "path": "tasks/2026-05-29_r8-recovery-runbook.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260529-010"
     }
   ]
 }

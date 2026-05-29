@@ -103,11 +103,54 @@ def collect_decisions(root: Path) -> list[dict[str, Any]]:
     return items
 
 
-def build(root: Path) -> dict[str, Any]:
+OVERVIEW_GATES = ("schema_check", "rule_check", "completion_check", "risk_check")
+
+
+def _tally(items: list[dict[str, Any]], key: str) -> dict[str, int]:
+    out: dict[str, int] = {}
+    for it in items:
+        v = it.get(key) or "unknown"
+        out[v] = out.get(v, 0) + 1
+    return out
+
+
+def build_overview(tasks: list[dict[str, Any]], logs: list[dict[str, Any]]) -> dict[str, Any]:
+    """Governance overview for the dashboard panel (R7 frontend).
+
+    Derived purely from already-collected tasks + run logs — no extra file reads,
+    so it stays root-parameterized and cheap. Distributions are deterministic for
+    a given input, keeping `dump()` byte-identical (idempotent).
+    """
+    gate_results: dict[str, dict] = {g: {} for g in OVERVIEW_GATES}
+    run_status: dict[str, int] = {}
+    for log in logs:
+        st = log.get("status") or "unknown"
+        run_status[st] = run_status.get(st, 0) + 1
+        gr = log.get("gate_results") or {}
+        if isinstance(gr, dict):
+            for g in OVERVIEW_GATES:
+                v = gr.get(g)
+                if v is not None:
+                    gate_results[g][v] = gate_results[g].get(v, 0) + 1
     return {
-        "tasks": collect_tasks(root),
-        "logs": collect_logs(root),
+        "task_total": len(tasks),
+        "task_status": _tally(tasks, "status"),
+        "task_skill": _tally(tasks, "skill_type"),
+        "task_risk": _tally(tasks, "risk_level"),
+        "run_total": len(logs),
+        "run_status": run_status,
+        "gate_results": gate_results,
+    }
+
+
+def build(root: Path) -> dict[str, Any]:
+    tasks = collect_tasks(root)
+    logs = collect_logs(root)
+    return {
+        "tasks": tasks,
+        "logs": logs,
         "decisions": collect_decisions(root),
+        "overview": build_overview(tasks, logs),
     }
 
 

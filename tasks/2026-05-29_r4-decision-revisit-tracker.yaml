@@ -1,0 +1,56 @@
+# Task Card — R4 決策 revisit 追蹤機制
+# 來源：20260529-001 自我評估 roadmap R4（弱點 #6：decision 有 revisit_trigger 欄位但無回看機制）
+
+task_id: "20260529-007"
+date: "2026-05-29"
+status: "done"
+
+# === 任務定義 ===
+goal: "建立唯讀的決策 revisit 追蹤器，掃描 decision logs、對可量化觸發比對當前值並標記，納入 RETRO 流程"
+context: |
+  7 筆決策（D001–D007）每筆都有 revisit_trigger，但無任何掃描/提醒 → 觸發達標也沒人回看。
+  本卡新增 scripts/check_decision_revisit.rb（唯讀報告，不改檔）、單元測試（接入 CI）、
+  並在 RETRO_FLOW 分析維度表加「決策回看」一列把它納入既有節奏（不另造流程）。
+input_data:
+  - "memory/active_projects/agent-harness/decisions/"
+  - "tasks/DECISION_LOG_TEMPLATE.yaml"
+  - "system/NATIVE_OVERLAP.yaml"
+  - "system/RETRO_FLOW.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "scripts/check_decision_revisit.rb：掃 decisions、列 decision_id/status/verdict/trigger，對並行任務數/runs 數/重疊% 等量化觸發比對當前值，標 DUE/OK/MANUAL；唯讀，不改檔；支援 --json"
+  - "scripts/test_check_decision_revisit.rb：驗證 exit 0、列出全部 7 筆、量化觸發確有評估、JSON 可解析"
+  - "新測試接入 CI（.github/workflows/spec-consistency.yml）"
+  - "system/RETRO_FLOW.md 分析維度表新增『決策回看』一列"
+  - "本機跑 7 筆決策全列出、DUE=0（現況無觸發達標）；全套 CI-equivalent 綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "rb"
+  location: "scripts/"
+  filename: "check_decision_revisit.rb"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260529-007 R4 decision revisit tracker"
+actual_tool_calls: 7
+result_summary: "新增 check_decision_revisit.rb（唯讀，量化觸發比對 + DUE/OK/MANUAL + --json）+ 單元測試（接入 CI）+ RETRO_FLOW 加決策回看列。本機跑：7 筆全列，D001/D006 量化評為 OK、其餘 MANUAL、DUE=0。RETRO_FLOW 屬 system/ 變更，待草稿 PR review。"
+completion_time: "2026-05-29"
+audit_log_ref: "logs/AUDIT_LOG.md"

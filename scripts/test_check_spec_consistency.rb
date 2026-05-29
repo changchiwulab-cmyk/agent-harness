@@ -93,3 +93,34 @@ class TestTaskIdPattern < Minitest::Test
     refute_match TASK_ID_PATTERN, '20260415-'
   end
 end
+
+# ── 測試 R2 logs schema lint 常數 ─────────────────────────────────────────────
+class TestLogsSchemaLintConstants < Minitest::Test
+  def test_run_status_enum
+    assert_equal %w[completed failed partial cancelled], ALLOWED_RUN_STATUS
+  end
+
+  def test_required_run_fields
+    assert_equal %w[run_id task_id status gate_results], REQUIRED_RUN_FIELDS
+  end
+
+  def test_approval_method_enum
+    assert_equal %w[human_confirm draft_first], ALLOWED_APPROVAL_METHOD
+  end
+
+  def test_approval_status_enum
+    assert_equal %w[approved rejected superseded], ALLOWED_APPROVAL_STATUS
+  end
+
+  def test_required_approval_fields_core
+    %w[approval_id task_id date action approval_method status approved_by].each do |f|
+      assert_includes REQUIRED_APPROVAL_FIELDS, f
+    end
+  end
+
+  def test_error_type_enum_matches_template
+    assert_includes ALLOWED_ERROR_TYPE, 'schema_failure'
+    assert_includes ALLOWED_ERROR_TYPE, 'tool_failure'
+    assert_equal 5, ALLOWED_ERROR_TYPE.length
+  end
+end

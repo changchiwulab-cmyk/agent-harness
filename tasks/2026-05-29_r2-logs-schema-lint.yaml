@@ -1,0 +1,58 @@
+# Task Card — R2 logs schema lint（CI 擴充）
+# 來源：20260529-001 自我評估 roadmap R2（弱點 #5 已解→補檢查面，兼顧 #1/#2）
+# 注意：修改 scripts/（影響 CI 行為），不在 system/；變更置於草稿 PR #88 供 review 後再 merge。
+
+task_id: "20260529-005"
+date: "2026-05-29"
+status: "done"
+
+# === 任務定義 ===
+goal: "擴充 scripts/check_spec_consistency.rb，把 logs/runs、logs/approvals、logs/errors 的 schema 納入 CI lint，守住 R1 定義的格式不漂移"
+context: |
+  自我評估指出：check_spec_consistency.rb 目前只驗 Task Card 欄位與目錄存在，
+  不驗三類 log 紀錄是否合規。R1 定了 approval schema、R5 產了首筆 failed run log 與 error log，
+  本卡把三者納入 lint，並加單元測試。workflow 已呼叫此腳本與其測試，無需改 workflow。
+input_data:
+  - "scripts/check_spec_consistency.rb"
+  - "scripts/test_check_spec_consistency.rb"
+  - "system/APPROVAL_POLICY.yaml"
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+  - "logs/errors/ERROR_LOG_TEMPLATE.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "check_spec_consistency.rb 新增 logs/runs/*.yaml 檢查：必含 run_id/task_id/status/gate_results，status 屬枚舉（completed/failed/partial/cancelled）"
+  - "新增 logs/approvals/*.yaml 檢查（跳過 TEMPLATE）：approval_records list 每筆必含 R1 必填欄位，approval_method/status 屬枚舉"
+  - "新增 logs/errors/*.md 檢查（跳過 TEMPLATE）：抽 yaml 區塊驗 error_type 屬枚舉"
+  - "test_check_spec_consistency.rb 加對應單元測試（驗新枚舉常數）"
+  - "現有所有 logs（2 run / 1 approval / 2 error）通過新 lint；全套 CI-equivalent 綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "rb"
+  location: "scripts/"
+  filename: "check_spec_consistency.rb"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260529-005 R2 logs schema lint + unit tests"
+actual_tool_calls: 8
+result_summary: "check_spec_consistency.rb 新增 3 段 logs schema lint（runs/approvals/errors，含枚舉與必填欄位、跳過 TEMPLATE）+ test_check_spec_consistency.rb 新增枚舉常數測試。現有 logs 全通過。變更影響 CI 行為，待草稿 PR review/merge。"
+completion_time: "2026-05-29"
+audit_log_ref: "logs/AUDIT_LOG.md"

@@ -25,6 +25,14 @@ REQUIRED_OUTPUT_FIELDS = %w[format location filename].freeze
 TASK_ID_PATTERN = /\A\d{8}-[A-Za-z]*\d+\z/
 DATE_PATTERN = /\A\d{4}-\d{2}-\d{2}\z/
 
+# --- logs/ schema lint 常數（R2: 20260529-005）---
+ALLOWED_RUN_STATUS = %w[completed failed partial cancelled].freeze
+REQUIRED_RUN_FIELDS = %w[run_id task_id status gate_results].freeze
+ALLOWED_APPROVAL_METHOD = %w[human_confirm draft_first].freeze
+ALLOWED_APPROVAL_STATUS = %w[approved rejected superseded].freeze
+REQUIRED_APPROVAL_FIELDS = %w[approval_id task_id date action approval_method status approved_by].freeze
+ALLOWED_ERROR_TYPE = %w[tool_failure rule_violation schema_failure timeout unknown].freeze
+
 def parse_iso_date(value)
   return value if value.is_a?(Date)
   return nil unless value.is_a?(String) && value.match?(DATE_PATTERN)
@@ -149,6 +157,82 @@ Dir.glob('tasks/examples/*.yaml').sort.each do |task_file|
   location = task.dig('expected_output', 'location')
   if location.is_a?(String) && !location.empty?
     errors << "#{task_file}: missing expected_output.location directory #{location}" unless Dir.exist?(location)
+  end
+end
+
+# 4) logs/runs/*.yaml — execution log schema（R2: 20260529-005）
+Dir.glob('logs/runs/*.yaml').sort.each do |run_file|
+  doc = YAML.load_file(run_file)
+  unless doc.is_a?(Hash)
+    errors << "#{run_file}: root must be mapping"
+    next
+  end
+  log = doc['execution_log'].is_a?(Hash) ? doc['execution_log'] : doc
+  REQUIRED_RUN_FIELDS.each do |field|
+    value = log[field]
+    empty = value.nil? || (value.is_a?(String) && value.strip.empty?) || (value.respond_to?(:empty?) && value.empty?)
+    errors << "#{run_file}: missing required field #{field}" if empty
+  end
+  if log.key?('status') && !ALLOWED_RUN_STATUS.include?(log['status'])
+    errors << "#{run_file}: invalid run status #{log['status']} (allowed: #{ALLOWED_RUN_STATUS.join('/')})"
+  end
+end
+
+# 5) logs/approvals/*.yaml — approval record schema（R2；跳過 TEMPLATE）
+Dir.glob('logs/approvals/*.yaml').sort.each do |appr_file|
+  next if File.basename(appr_file).include?('TEMPLATE')
+
+  doc = YAML.load_file(appr_file)
+  records = (doc.is_a?(Hash) && doc['approval_records'].is_a?(Array)) ? doc['approval_records'] : nil
+  if records.nil?
+    errors << "#{appr_file}: must contain an 'approval_records' list"
+    next
+  end
+  errors << "#{appr_file}: 'approval_records' must not be empty" if records.empty?
+  records.each_with_index do |rec, i|
+    unless rec.is_a?(Hash)
+      errors << "#{appr_file}: approval_records[#{i}] must be mapping"
+      next
+    end
+    REQUIRED_APPROVAL_FIELDS.each do |field|
+      value = rec[field]
+      empty = value.nil? || (value.is_a?(String) && value.strip.empty?)
+      errors << "#{appr_file}: approval_records[#{i}] missing #{field}" if empty
+    end
+    if rec.key?('approval_method') && !ALLOWED_APPROVAL_METHOD.include?(rec['approval_method'])
+      errors << "#{appr_file}: approval_records[#{i}] invalid approval_method #{rec['approval_method']}"
+    end
+    if rec.key?('status') && !ALLOWED_APPROVAL_STATUS.include?(rec['status'])
+      errors << "#{appr_file}: approval_records[#{i}] invalid status #{rec['status']}"
+    end
+  end
+end
+
+# 6) logs/errors/*.md — error_type 枚舉（R2；抽 yaml 區塊，跳過 TEMPLATE）
+Dir.glob('logs/errors/*.md').sort.each do |err_file|
+  next if File.basename(err_file).include?('TEMPLATE')
+
+  content = File.read(err_file, encoding: 'UTF-8')
+  m = content.match(/```yaml\n(.*?)```/m)
+  unless m
+    errors << "#{err_file}: no ```yaml block found"
+    next
+  end
+  begin
+    block = YAML.load(m[1])
+  rescue StandardError => e
+    errors << "#{err_file}: yaml block parse error: #{e.message}"
+    next
+  end
+  unless block.is_a?(Hash)
+    errors << "#{err_file}: yaml block must be a mapping"
+    next
+  end
+  etype = block['error_type']
+  if etype.nil? || etype.to_s.strip.empty?
+    errors << "#{err_file}: missing error_type"
+  elsif !ALLOWED_ERROR_TYPE.include?(etype)
+    errors << "#{err_file}: invalid error_type #{etype} (allowed: #{ALLOWED_ERROR_TYPE.join('/')})"
   end
 end
 

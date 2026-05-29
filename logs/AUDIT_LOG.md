@@ -33,6 +33,261 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260529-011"
+  date: "2026-05-29"
+  skill_type: "ops"
+  goal: "R7（前端）：治理總覽面板（task/run/gate 分佈接進 dashboard）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "file_write"
+      call_count: 5
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "frontend/app.js"
+  error_summary: ""
+  estimated_tokens: "~16K"
+  notes: "R7 延後項補齊。manifest build_overview（由既有 tasks+logs 計算，無額外讀檔）→ data.json 新增 overview 鍵；唯一鎖定結構的 test_empty_repo 同步更新；index.html + app.js renderOverview 以既有 .cards 樣式渲染。frontend 測試 + drift --check 綠。未動 system/。R7 至此（引擎+報告+面板）完整。"
+```
+
+---
+
+```yaml
+- task_id: "20260529-010"
+  date: "2026-05-29"
+  skill_type: "ops"
+  goal: "R8：災難恢復 runbook + checkpoint 還原實測 + GATE_POLICY 交叉引用"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "system/RECOVERY_RUNBOOK.md"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "R8。新增 system/RECOVERY_RUNBOOK.md（4 場景 + 資料來源 + 一致性檢查 + GATE_POLICY rollback 對應）。實測場景 A：破壞工作副本→git checkout 還原 ~5ms、byte-identical、還原後工作樹乾淨。GATE_POLICY 加交叉引用。修改 system/ 屬 ask，變更在草稿 PR #88 待 review/merge。"
+```
+
+---
+
+```yaml
+- task_id: "20260529-009"
+  date: "2026-05-29"
+  skill_type: "ops"
+  goal: "R7：governance_metrics 補工作流/業務/失敗三層可觀測性 + --observability + 報告"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "file_write"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/2026-05-29_observability-metrics.md"
+  error_summary: ""
+  estimated_tokens: "~22K"
+  notes: "R7。governance_metrics.py 補三層可觀測性（工作流 gate 統計/業務每-skill token/失敗分佈）+ --observability flag + 7 新測試（含 --json 仍 M1–M4 回歸守門，27 測試全綠）。觀測立刻抓到 review 均值被 120K 多代理離群值拉高。未改 system/、未動 CI。前端面板刻意延後（避免 data.json schema/CI 風險）。"
+```
+
+---
+
+```yaml
+- task_id: "20260529-008"
+  date: "2026-05-29"
+  skill_type: "ops"
+  goal: "R6：EXECUTION_LOG_SCHEMA token_estimate 增加 source（可信度）欄位 + 示範回填"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "system/EXECUTION_LOG_SCHEMA.yaml"
+  error_summary: ""
+  estimated_tokens: "~7K"
+  notes: "R6。token_estimate 新增 source 欄（dashboard_measured/rule_estimated/not_recorded）；RUN-20260529-003 示範 source=rule_estimated。修改 system/ 屬 ask，變更在草稿 PR #88 待 review/merge。"
+```
+
+---
+
+```yaml
+- task_id: "20260529-007"
+  date: "2026-05-29"
+  skill_type: "ops"
+  goal: "R4：決策 revisit 追蹤器（唯讀掃描 + 量化觸發比對）+ 測試入 CI + RETRO_FLOW 整合"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 5
+    - tool_name: "file_write"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "scripts/check_decision_revisit.rb"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "新增 check_decision_revisit.rb（唯讀；D001 並行任務數/D006 runs 數量化比對 → DUE/OK，其餘 MANUAL；--json）+ 單元測試（接入 CI）。本機跑 7 筆全列、DUE=0。RETRO_FLOW 加『決策回看』列屬 system/ ask、workflow 加測試步驟——皆在草稿 PR #88 待 review。"
+```
+
+---
+
+```yaml
+- task_id: "20260529-006"
+  date: "2026-05-29"
+  skill_type: "analysis"
+  goal: "R3：治理數據分析（產出發現 + 貢獻 analysis 成本校準樣本 #1）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "file_write"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/2026-05-29_governance-data-analysis.md"
+  error_summary: ""
+  estimated_tokens: "~16K"
+  notes: "R3。analysis skill 成本實測樣本 #1（~16K，COST_POLICY 原預估 12K → 初估係數 ~1.33，待累積 ≥3 筆於 RETRO 正式計算）。分析 39 task cards / audit 94.3% / draft:report 8:1 / logs runs2-appr1-err2 / 7 決策 0 revisit。未改 system/。"
+```
+
+---
+
+```yaml
+- task_id: "20260529-005"
+  date: "2026-05-29"
+  skill_type: "ops"
+  goal: "R2：擴充 check_spec_consistency.rb，把 logs/runs、logs/approvals、logs/errors 納入 CI schema lint"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "file_write"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "scripts/check_spec_consistency.rb"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "新增 3 段 logs schema lint（runs 必填+status 枚舉 / approvals 必填+method+status 枚舉，跳過 TEMPLATE / errors 抽 yaml 驗 error_type 枚舉）+ 6 個單元測試。本機 CI 抓到並修正 error-log 讀檔的 US-ASCII 編碼 bug（改 UTF-8）。正反向測試皆通過。影響 CI 行為，待草稿 PR #88 review/merge（approval_given 待人工）。"
+```
+
+---
+
+```yaml
+- task_id: "20260529-004"
+  date: "2026-05-29"
+  skill_type: "ops"
+  goal: "R1：定義 approval_record schema、建模板、回填首筆真實批准紀錄"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 5
+    - tool_name: "file_write"
+      call_count: 5
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "logs/approvals/2026-04-09_20260409-001_approval.yaml"
+  error_summary: ""
+  estimated_tokens: "~13K"
+  notes: "在 system/APPROVAL_POLICY.yaml 新增 approval_record schema（與 EXECUTION_LOG_SCHEMA approvals 對齊）+ APPROVAL_LOG_TEMPLATE.yaml + 回填 RUN-20260409-001 的 2 筆批准 + RETRO_FLOW 註記。修改 system/ 屬 ask：變更在草稿 PR #88，未 merge＝『列差異、等待確認』狀態，approval_given 待人工。"
+```
+
+---
+
+```yaml
+- task_id: "20260529-003"
+  date: "2026-05-29"
+  skill_type: "ops"
+  goal: "R5 故障演練：實證 logs/errors/ + logs/runs/(status: failed) 失敗紀錄路徑 + e2e 回歸測試"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 5
+    - tool_name: "file_write"
+      call_count: 5
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "logs/runs/RUN-20260529-003.yaml"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "R5（自我評估 roadmap 單一最高槓桿）。演練本身成功（status: done）：以 tests/e2e/fixtures/broken_schema_task.yaml 觸發受控 schema_failure，首次在真實故障下填寫 logs/runs/RUN-20260529-003.yaml（status: failed, schema_check: fail）+ logs/errors/。新增 tests/e2e/test_failure_drill.py 並接入 CI（spec-consistency.yml）。未修改任何 system/ 檔。"
+```
+
+---
+
+```yaml
+- task_id: "20260529-002"
+  date: "2026-05-29"
+  skill_type: "ops"
+  goal: "晉升自我評估草稿至 outputs/reports/（harness-self-assessment-v1.md）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/reports/harness-self-assessment-v1.md"
+  error_summary: ""
+  estimated_tokens: "~8K"
+  notes: "依 RETRO_FLOW §5 晉升：reports/ 加晉升標記區塊（採納清單），原 draft 加回指。內容與 draft 一致，未修改 system/。寫 reports/ 屬 ask，使用者於本 session 明確核准。"
+```
+
+---
+
+```yaml
+- task_id: "20260529-001"
+  date: "2026-05-29"
+  skill_type: "review"
+  goal: "Agent Harness v2 自我評估（雙軸 1-10）+ R1–R10 優化 roadmap"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 12
+    - tool_name: "web_search"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/2026-05-29_harness-self-assessment.md"
+  error_summary: ""
+  estimated_tokens: "~120K（含 2 探索 + 1 plan 子代理；屬多代理研究型任務，不宜直接併入 review 校準均值）"
+  notes: "綜合 ≈7/10、成熟度 3。雙軸評分（業界十維均 7.2 / 馬鞍工程六原則均 7.0）。校正 3 項原始誤判：approvals 目錄其實存在（僅缺 schema）、CI 其實有跑一致性檢查、analysis eval 其實最長（真缺口是 analysis 成本樣本=0）。單一最高槓桿＝R5 故障演練。未修改任何 system/ 檔。"
+```
+
+---
+
+```yaml
 - task_id: "20260509-M01"
   date: "2026-05-09"
   skill_type: "ops"

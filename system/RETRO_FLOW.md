@@ -20,7 +20,7 @@
 讀取以下內容：
 - `logs/AUDIT_LOG.md`（最近一批紀錄）
 - `logs/errors/`（錯誤紀錄）
-- `logs/approvals/`（核准紀錄）
+- `logs/approvals/`（核准紀錄；schema 見 `system/APPROVAL_POLICY.yaml` 的 `approval_record` 段，紀錄為 `approval_records` list）
 
 ### 2. 分析維度
 
@@ -31,6 +31,7 @@
 | 流程 | 哪裡卡住最久？哪個步驟多餘？ | 對應 SKILL.md |
 | 權限 | 哪些 ask 每次都被 approve？ | PERMISSIONS.yaml（畢業候選） |
 | 品質 | definition_of_done 夠具體嗎？ | TASK_CARD_TEMPLATE.yaml |
+| 決策回看 | 有 decision 觸發 revisit 嗎？（跑 `scripts/check_decision_revisit.rb`） | 對應 Decision Log 的 status |
 
 ### 3. 輸出
 

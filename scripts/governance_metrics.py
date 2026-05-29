@@ -270,6 +270,180 @@ def metric_m4(overlap_data: dict) -> MetricResult:
     )
 
 
+# --- Observability metrics (R7: workflow / business / failure layers) ------
+
+
+def parse_token_estimate(value) -> int | None:
+    """Parse audit-log estimated_tokens strings like '~16K', '~120K（含…）', '1500'."""
+    if value is None:
+        return None
+    m = re.search(r"(\d+(?:\.\d+)?)\s*([KkMm])?", str(value))
+    if not m:
+        return None
+    num = float(m.group(1))
+    unit = (m.group(2) or "").upper()
+    if unit == "K":
+        num *= 1_000
+    elif unit == "M":
+        num *= 1_000_000
+    return int(num)
+
+
+def load_run_logs() -> list[dict]:
+    """Return execution_log dicts from logs/runs/*.yaml (handles wrapper or bare)."""
+    runs: list[dict] = []
+    runs_dir = ROOT / "logs" / "runs"
+    if not runs_dir.exists():
+        return runs
+    for p in sorted(runs_dir.glob("*.yaml")):
+        try:
+            doc = yaml.safe_load(p.read_text(encoding="utf-8"))
+        except yaml.YAMLError:
+            continue
+        if not isinstance(doc, dict):
+            continue
+        log = doc.get("execution_log") if isinstance(doc.get("execution_log"), dict) else doc
+        if isinstance(log, dict):
+            runs.append(log)
+    return runs
+
+
+def load_audit_entries() -> list[dict]:
+    """Return full audit entries (skill_type, status, estimated_tokens, tools_called)."""
+    if not AUDIT_LOG.exists():
+        return []
+    text = AUDIT_LOG.read_text(encoding="utf-8")
+    entries: list[dict] = []
+    for block in re.findall(r"```yaml\n(.*?)\n```", text, re.DOTALL):
+        try:
+            data = yaml.safe_load(block)
+        except yaml.YAMLError:
+            continue
+        items = data if isinstance(data, list) else [data] if isinstance(data, dict) else []
+        for e in items:
+            if isinstance(e, dict) and e.get("task_id"):
+                entries.append(e)
+    return entries
+
+
+def load_error_types() -> list[str]:
+    """Return error_type values from logs/errors/*.md (skips TEMPLATE)."""
+    types: list[str] = []
+    errors_dir = ROOT / "logs" / "errors"
+    if not errors_dir.exists():
+        return types
+    for p in sorted(errors_dir.glob("*.md")):
+        if "TEMPLATE" in p.name:
+            continue
+        m = re.search(r"```yaml\n(.*?)\n```", p.read_text(encoding="utf-8"), re.DOTALL)
+        if not m:
+            continue
+        try:
+            data = yaml.safe_load(m.group(1))
+        except yaml.YAMLError:
+            continue
+        if isinstance(data, dict) and data.get("error_type"):
+            types.append(str(data["error_type"]))
+    return types
+
+
+GATE_NAMES = ("schema_check", "rule_check", "completion_check", "risk_check")
+
+
+def observability_workflow(runs: list[dict]) -> dict:
+    """Workflow layer: gate pass/fail tally, status distribution, avg checkpoints."""
+    gate_tally: dict = {g: {} for g in GATE_NAMES}
+    status_dist: dict = {}
+    checkpoint_counts: list[int] = []
+    for r in runs:
+        st = r.get("status", "unknown")
+        status_dist[st] = status_dist.get(st, 0) + 1
+        gr = r.get("gate_results") or {}
+        if isinstance(gr, dict):
+            for g in GATE_NAMES:
+                v = gr.get(g)
+                if v is not None:
+                    gate_tally[g][v] = gate_tally[g].get(v, 0) + 1
+        cps = r.get("checkpoints")
+        if isinstance(cps, list):
+            checkpoint_counts.append(len(cps))
+    avg_cp = round(sum(checkpoint_counts) / len(checkpoint_counts), 2) if checkpoint_counts else 0
+    return {
+        "runs_total": len(runs),
+        "status_distribution": status_dist,
+        "gate_results": gate_tally,
+        "avg_checkpoints": avg_cp,
+    }
+
+
+def observability_business(audit: list[dict]) -> dict:
+    """Business layer: per-skill task count, avg estimated tokens, avg tool calls."""
+    by_skill: dict = {}
+    for e in audit:
+        sk = e.get("skill_type") or "unknown"
+        d = by_skill.setdefault(sk, {"count": 0, "tokens": [], "tool_calls": []})
+        d["count"] += 1
+        tok = parse_token_estimate(e.get("estimated_tokens"))
+        if tok is not None:
+            d["tokens"].append(tok)
+        tc = e.get("tools_called")
+        if isinstance(tc, list):
+            d["tool_calls"].append(sum(int(x.get("call_count", 0)) for x in tc if isinstance(x, dict)))
+    out: dict = {}
+    for sk in sorted(by_skill):
+        d = by_skill[sk]
+        out[sk] = {
+            "count": d["count"],
+            "avg_tokens": int(sum(d["tokens"]) / len(d["tokens"])) if d["tokens"] else None,
+            "avg_tool_calls": round(sum(d["tool_calls"]) / len(d["tool_calls"]), 1) if d["tool_calls"] else None,
+        }
+    return out
+
+
+def observability_failures(error_types: list[str]) -> dict:
+    """Failure layer: error_type distribution from logs/errors/."""
+    dist: dict = {}
+    for et in error_types:
+        dist[et] = dist.get(et, 0) + 1
+    return {"errors_total": len(error_types), "by_type": dist}
+
+
+def collect_observability() -> dict:
+    """Assemble the three observability layers (workflow / business / failures)."""
+    return {
+        "workflow": observability_workflow(load_run_logs()),
+        "business": observability_business(load_audit_entries()),
+        "failures": observability_failures(load_error_types()),
+    }
+
+
+def render_observability_markdown(obs: dict) -> str:
+    """Render the observability section appended after the M1–M4 report."""
+    lines = ["## 可觀測性指標（R7：工作流層 / 業務層 / 失敗分佈）", ""]
+    wf = obs["workflow"]
+    lines.append(f"### 工作流層（{wf['runs_total']} 筆 run log）")
+    lines.append(f"- status 分佈：{wf['status_distribution'] or '(無)'}")
+    lines.append(f"- 平均 checkpoints/run：{wf['avg_checkpoints']}")
+    lines.append("- 四層 gate 結果統計：")
+    for g in GATE_NAMES:
+        tally = wf["gate_results"].get(g) or {}
+        lines.append(f"  - {g}: {tally or '(尚無資料)'}")
+    lines.append("")
+    lines.append("### 業務層（每 skill，來源：AUDIT_LOG）")
+    lines.append("| skill | 任務數 | 平均 token | 平均工具呼叫 |")
+    lines.append("|-------|:-----:|:---------:|:-----------:|")
+    for sk, d in obs["business"].items():
+        at = d["avg_tokens"] if d["avg_tokens"] is not None else "—"
+        ac = d["avg_tool_calls"] if d["avg_tool_calls"] is not None else "—"
+        lines.append(f"| {sk} | {d['count']} | {at} | {ac} |")
+    lines.append("")
+    fa = obs["failures"]
+    lines.append(f"### 失敗分佈（{fa['errors_total']} 筆 error log）")
+    lines.append(f"- error_type：{fa['by_type'] or '(無)'}")
+    lines.append("")
+    return "\n".join(lines) + "\n"
+
+
 # --- Reporters -------------------------------------------------------------
 
 
@@ -340,7 +514,9 @@ def collect_metrics(today: date) -> list[MetricResult]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Collect governance metrics (plan §5.3).")
-    parser.add_argument("--json", action="store_true", help="Output JSON instead of markdown.")
+    parser.add_argument("--json", action="store_true", help="Output M1–M4 JSON instead of markdown.")
+    parser.add_argument("--observability", action="store_true",
+                        help="Output R7 observability metrics (workflow/business/failure) as JSON.")
     parser.add_argument("--today", type=str, help="Override today's date (YYYY-MM-DD), for testing.")
     args = parser.parse_args(argv)
 
@@ -348,14 +524,19 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         metrics = collect_metrics(today)
+        obs = collect_observability()
     except (OSError, yaml.YAMLError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 2
 
+    if args.observability:
+        print(json.dumps(obs, ensure_ascii=False, indent=2))
+        return 0
     if args.json:
         print(render_json(metrics))
     else:
         print(render_markdown(metrics, today))
+        print(render_observability_markdown(obs))
 
     has_issue = any(m.status in {"warn", "alert"} for m in metrics)
     return 1 if has_issue else 0

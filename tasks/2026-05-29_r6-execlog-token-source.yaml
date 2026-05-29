@@ -1,0 +1,54 @@
+# Task Card — R6 execution-log token 量測坐實
+# 來源：20260529-001 自我評估 roadmap R6（弱點 #2/#3：run log token 全 0、缺可信度標示）
+# 注意：修改 system/EXECUTION_LOG_SCHEMA.yaml 屬 ask；變更置於草稿 PR #88 供 review。
+
+task_id: "20260529-008"
+date: "2026-05-29"
+status: "done"
+
+# === 任務定義 ===
+goal: "為 EXECUTION_LOG_SCHEMA 的 token_estimate 增加 source（資料來源/可信度）欄位，並在現有 run log 示範，讓 run 級成本可信度可被標示與校準引用"
+context: |
+  自我評估指出：唯一 happy-path run log 的 token_estimate 三欄全 0；R5 的 run log 雖有估值但無「來源」標示。
+  本卡在 schema 補 source 欄（dashboard_measured / rule_estimated / not_recorded），
+  並回填示範到 RUN-20260529-003。之後符合寫 run log 條件的任務須填非零 token 並標來源；與 R3 的 analysis 校準串接。
+input_data:
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+  - "logs/runs/RUN-20260529-003.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "system/EXECUTION_LOG_SCHEMA.yaml 的 token_estimate 區新增 source 欄（含枚舉註解）"
+  - "logs/runs/RUN-20260529-003.yaml 的 token_estimate 補 source（rule_estimated）作示範"
+  - "全套 CI-equivalent 綠；system/ 變更僅存於草稿 PR、未 merge"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: "system/"
+  filename: "EXECUTION_LOG_SCHEMA.yaml"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "modify_system_rules"
+  - "write_logs"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260529-008 R6 execution-log token source field"
+actual_tool_calls: 5
+result_summary: "EXECUTION_LOG_SCHEMA token_estimate 新增 source 欄（dashboard_measured/rule_estimated/not_recorded）；RUN-20260529-003 示範 source=rule_estimated。system/ 變更待草稿 PR review。"
+completion_time: "2026-05-29"
+audit_log_ref: "logs/AUDIT_LOG.md"

@@ -1,0 +1,26 @@
+# 批准紀錄 — 回填自 logs/runs/RUN-20260409-001（v2 系統全流程驗證）
+# R1（Task Card 20260529-004）首個真實 approval 紀錄樣本。
+# schema 見 system/APPROVAL_POLICY.yaml 的 approval_record 段。
+# 資料來源：logs/runs/20260409-001_system-validation.yaml 的 approvals 區塊。
+
+approval_records:
+  - approval_id: "APR-20260409-001"
+    task_id: "20260409-001"
+    date: "2026-04-09"
+    action: "建立 Task Card 20260409-001（v2 系統全流程驗證）"
+    approval_method: "human_confirm"
+    risk_level: "medium"
+    status: "approved"
+    approved_by: "human"
+    rationale: "v2 升級驗證任務，人工確認 goal + definition_of_done 後執行"
+    linked_run: "RUN-20260409-001"
+  - approval_id: "APR-20260409-002"
+    task_id: "20260409-001"
+    date: "2026-04-09"
+    action: "修改 system/ 下 3 個檔案（v2 新增 GATE/APPROVAL/EXECUTION_LOG 等規則）"
+    approval_method: "human_confirm"
+    risk_level: "high"
+    status: "approved"
+    approved_by: "human"
+    rationale: "system/ 規則變更屬 ask 等級，人工列差異後確認"
+    linked_run: "RUN-20260409-001"

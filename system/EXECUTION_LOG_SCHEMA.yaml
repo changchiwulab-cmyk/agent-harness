@@ -43,6 +43,7 @@ execution_log:
     input: 0
     output: 0
     total: 0
+    source: ""                        # dashboard_measured（API dashboard 實測）/ rule_estimated（規則估算）/ not_recorded；R6 新增，標示數據可信度
 
   # --- 審批紀錄 ---
   approvals:

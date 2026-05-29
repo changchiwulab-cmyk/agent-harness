@@ -1,0 +1,63 @@
+# Task Card — R5 故障演練（單一最高槓桿）
+# 來源：20260529-001 自我評估 roadmap R5；使用者要求起跑
+# 目的：實走一次受控的 schema 失敗，坐實 logs/errors/ + logs/runs/ 失敗紀錄路徑，並固化為 e2e 回歸測試
+# 安全：純內部檔案操作，無對外動作、不改 system/、不碰生產資料；失敗為刻意可控
+
+task_id: "20260529-003"
+date: "2026-05-29"
+status: "done"
+
+# === 任務定義 ===
+goal: "執行受控的 schema 失敗演練，首次在真實故障下坐實 logs/errors/ + logs/runs/(status: failed) 紀錄路徑，並固化為可重複的 e2e 回歸測試"
+context: |
+  自我評估（20260529-001）指出：失敗→恢復閉環從未實證——logs/runs/ 僅 1 筆 completed，
+  EXECUTION_LOG_SCHEMA 從未在真實故障下被填過。R5 是把成熟度從 3 推到 4 的單一最高槓桿。
+  設計約束：故意 schema-invalid 的 task card 不能放進 tasks/（會弄垮 check_spec_consistency 綠燈），
+  故置於 tests/e2e/fixtures/（不被該檢查掃到、但仍是合法 YAML，可通過全庫 YAML parse）。
+  依賴註記：roadmap 中 R5 軟依賴 R1（approval schema）/R2（logs schema lint）；兩者尚未做，
+  故本次紀錄遵循既有 EXECUTION_LOG_SCHEMA 與 ERROR_LOG_TEMPLATE，但暫不被 CI lint 強制（待 R2）。
+input_data:
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+  - "logs/errors/ERROR_LOG_TEMPLATE.md"
+  - "system/validate_task_card.py"
+  - "tests/e2e/test_dummy_task_smoke.py"
+
+# === 完成標準 ===
+definition_of_done:
+  - "tests/e2e/fixtures/broken_schema_task.yaml：刻意 schema-invalid（但 YAML 可解析）的 fixture task card，含『請勿修復』註記"
+  - "logs/errors/2026-05-29_20260529-003_error.md：即時 error log，符合 ERROR_LOG_TEMPLATE，error_type=schema_failure、resolution=stopped"
+  - "logs/runs/RUN-20260529-003.yaml：status=failed 的 execution log，符合 EXECUTION_LOG_SCHEMA，含 error_summary + gate_results(schema_check=fail，其餘 not_run)"
+  - "tests/e2e/test_failure_drill.py：斷言 fixture 無法通過 validate_task_card 的 schema 驗證，且演練紀錄(run/error log)已正確捕捉失敗"
+  - "新測試已接入 CI（.github/workflows/spec-consistency.yml 新增一步驟執行 test_failure_drill.py）"
+  - "全套 CI-equivalent 仍綠（fixture 不被 check_spec_consistency 掃到、可被全庫 YAML parse、frontend manifest 重新產生且通過 drift --check）；未修改任何 system/ 檔"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: "logs/runs/"
+  filename: "RUN-20260529-003.yaml"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "create_output_files"
+  - "write_logs"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260529-003 R5 failure drill (errors/runs paths + e2e regression)"
+actual_tool_calls: 9
+result_summary: "首次坐實失敗路徑：broken fixture 經 validate_task_card 確實觸發 schema_failure→重試 1 次→停；產出即時 error log（logs/errors/）+ status=failed 的 run log（logs/runs/，gate_results.schema_check=fail）；新增 tests/e2e/test_failure_drill.py 並接入 CI。全套 CI 綠，未改 system/。"
+completion_time: "2026-05-29"
+audit_log_ref: "logs/AUDIT_LOG.md"

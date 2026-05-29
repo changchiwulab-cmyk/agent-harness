@@ -1,0 +1,61 @@
+# Task Card — R1 批准紀錄 schema 化 + 首筆回填
+# 來源：20260529-001 自我評估 roadmap R1（弱點 #1：批准資料三個家、無 schema）
+# 注意：本卡修改 system/（APPROVAL_POLICY.yaml、RETRO_FLOW.md）屬 ask 等級——
+#       變更置於草稿 PR #88 供人工 review，未 merge 即「列差異、等待確認」狀態。
+
+task_id: "20260529-004"
+date: "2026-05-29"
+status: "done"
+
+# === 任務定義 ===
+goal: "為批准動作定義 schema 並回填首筆真實紀錄，讓 logs/approvals/ 有可解析格式、RETRO_FLOW §1 的核准資料源不再讀空目錄"
+context: |
+  自我評估指出：APPROVAL_POLICY 只定義「怎麼核准」，沒定義「核准紀錄長怎樣、寫去哪」；
+  logs/approvals/ 零筆、批准資料散在 AUDIT_LOG / EXECUTION_LOG / 空目錄三處。
+  本卡定義 approval_record schema（與 EXECUTION_LOG_SCHEMA 的內嵌 approvals 同名同義）、
+  建模板、回填 RUN-20260409-001 的 2 筆歷史批准作為首個真實樣本。
+input_data:
+  - "system/APPROVAL_POLICY.yaml"
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+  - "logs/runs/20260409-001_system-validation.yaml"
+  - "system/RETRO_FLOW.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "system/APPROVAL_POLICY.yaml 新增 approval_record 段：location / filename_pattern / container_key / required_fields / optional_fields，欄位與 EXECUTION_LOG_SCHEMA approvals 對齊"
+  - "logs/approvals/APPROVAL_LOG_TEMPLATE.yaml：可複製的模板（檔名含 TEMPLATE，不被 lint）"
+  - "logs/approvals/2026-04-09_20260409-001_approval.yaml：回填 RUN-20260409-001 的 2 筆真實批准（approval_records list），各含必填欄位"
+  - "system/RETRO_FLOW.md 的 logs/approvals 引用處註記 schema 位置"
+  - "全套 CI-equivalent 綠；system/ 變更僅存在於草稿 PR、未 merge"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: "logs/approvals/"
+  filename: "2026-04-09_20260409-001_approval.yaml"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "create_output_files"
+  - "write_logs"
+  - "modify_system_rules"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260529-004 R1 approval record schema + backfill"
+actual_tool_calls: 8
+result_summary: "approval_record schema 寫入 APPROVAL_POLICY.yaml；APPROVAL_LOG_TEMPLATE.yaml + 首筆回填樣本（RUN-20260409-001 的 2 筆批准）建立；RETRO_FLOW 註記 schema 位置。system/ 變更待草稿 PR review/merge（approval_given 待人工）。"
+completion_time: "2026-05-29"
+audit_log_ref: "logs/AUDIT_LOG.md"

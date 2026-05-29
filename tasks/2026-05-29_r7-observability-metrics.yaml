@@ -1,0 +1,60 @@
+# Task Card — R7 觀測「工作流層 / 業務層 / 失敗分佈」補強
+# 來源：20260529-001 自我評估 roadmap R7（成熟度 3→4 關鍵：觀測只到工具層）
+# 本批交付指標引擎 + 報告；前端「治理成熟度」面板刻意延後（見 result_summary 理由）
+
+task_id: "20260529-009"
+date: "2026-05-29"
+status: "done"
+
+# === 任務定義 ===
+goal: "擴充 governance_metrics.py，補上工作流層（gate 通過率/checkpoints）、業務層（每 skill 任務數/token/工具呼叫）、失敗分佈三類可觀測性指標，並產出觀測報告"
+context: |
+  自我評估：觀測三層中工具層(AUDIT_LOG)有，但工作流層與業務層缺。governance_metrics.py 是天然落點。
+  約束：該腳本既有測試 test_main_runs_against_real_repo 鎖定 --json 必為 M1–M4 四指標，
+  故新指標以獨立區段（--observability flag + markdown 附加段）實作，不動 M1–M4。
+  前端面板需改 data.json schema（CI drift-check）與其結構鎖定測試，風險高於價值，本批延後，
+  改以 governance_metrics 報告交付觀測數據（前端面板列為乾淨的後續變更）。
+input_data:
+  - "scripts/governance_metrics.py"
+  - "scripts/test_governance_metrics.py"
+  - "logs/runs/"
+  - "logs/AUDIT_LOG.md"
+  - "logs/errors/"
+
+# === 完成標準 ===
+definition_of_done:
+  - "governance_metrics.py 新增 observability：load_run_logs/load_audit_entries/load_error_types + observability_workflow/business/failures + collect_observability + render"
+  - "新增 --observability flag 輸出三層指標 JSON；預設 markdown 末尾附加觀測段；--json 仍只輸出 M1–M4（不回歸）"
+  - "test_governance_metrics.py 新增 TestObservability（parse_token_estimate/workflow/business/failures/flag/回歸守門）全綠"
+  - "outputs/drafts/2026-05-29_observability-metrics.md：以真實 repo 數據呈現三層觀測 + 解讀"
+  - "全套 CI-equivalent 綠；不修改 system/。前端面板延後（理由記於本卡）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-05-29_observability-metrics.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 14
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260529-009 R7 observability metrics engine"
+actual_tool_calls: 9
+result_summary: "governance_metrics.py 補三層可觀測性（工作流/業務/失敗）+ --observability flag + 7 個新測試（含 --json 仍為 M1–M4 的回歸守門）。產出觀測報告草稿。未改 system/、未動 CI。前端『治理成熟度』面板刻意延後：接入需改 data.json schema（受 CI drift-check 與結構鎖定測試保護），風險高於本批價值，留作獨立乾淨變更——觀測數據已可由 governance_metrics --observability 取得。"
+completion_time: "2026-05-29"
+audit_log_ref: "logs/AUDIT_LOG.md"

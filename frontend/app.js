@@ -32,6 +32,7 @@ async function loadData() {
   state.decisions = (payload.decisions || [])
     .map((d) => ({ ...d, _date: decisionDate(d) }))
     .sort((a, b) => a._date.localeCompare(b._date));
+  state.overview = payload.overview || {};
 }
 
 function inDateRange(value, from, to) {
@@ -111,7 +112,33 @@ function renderLogs() {
     .join('') || '<small>找不到 log 資料</small>';
 }
 
+function renderOverview() {
+  const o = state.overview || {};
+  const dist = (obj) => {
+    const entries = Object.entries(obj || {});
+    return entries.length
+      ? entries.map(([k, v]) => `${escapeHtml(k)}: ${escapeHtml(v)}`).join('｜')
+      : '—';
+  };
+  const cards = [
+    ['Task 狀態分佈', dist(o.task_status)],
+    ['Task Skill 分佈', dist(o.task_skill)],
+    ['Task 風險分佈', dist(o.task_risk)],
+    [`Run 狀態（${escapeHtml(o.run_total ?? 0)} 筆）`, dist(o.run_status)],
+  ];
+  const gates = o.gate_results || {};
+  ['schema_check', 'rule_check', 'completion_check', 'risk_check'].forEach((g) => {
+    cards.push([`Gate ${g}`, dist(gates[g])]);
+  });
+  const el = $('overviewPanel');
+  if (!el) return;
+  el.innerHTML = cards
+    .map(([label, val]) => `<article class="card"><div class="label">${escapeHtml(label)}</div><div class="value overview-value">${val}</div></article>`)
+    .join('');
+}
+
 function render(tasks, decisions) {
+  renderOverview();
   renderSummary(tasks, decisions);
   renderTasks(tasks);
   renderTimeline(decisions);

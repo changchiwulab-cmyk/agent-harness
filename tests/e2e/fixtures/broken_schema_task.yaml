@@ -1,0 +1,22 @@
+# ⚠️ INTENTIONALLY BROKEN — R5 failure-drill fixture. DO NOT "fix" this file.
+#
+# Purpose: a Task Card that is valid YAML but deliberately violates the
+# Task Card schema, so system/validate_task_card.py (the GATE_POLICY
+# schema_check) rejects it. Used by tests/e2e/test_failure_drill.py to pin
+# the failure path that 20260529-001 flagged as never-exercised.
+#
+# It lives under tests/e2e/fixtures/ (NOT tasks/) on purpose: check_spec_consistency.rb
+# globs tasks/**/*.yaml, so it never validates this file — keeping CI green —
+# while the repo-wide YAML parse step still loads it (it must stay parseable YAML).
+
+task_id: "BROKEN-001"          # invalid format (expected YYYYMMDD-NNN)
+date: "not-a-date"             # invalid date format
+status: "pending"
+goal: ""                       # VIOLATION: required, must be non-empty
+definition_of_done: []         # VIOLATION: required, must have >= 1 entry
+skill_type: "invalid_skill"    # VIOLATION: not in {research,analysis,writing,ops,review}
+risk_level: "extreme"          # VIOLATION: not in {low,medium,high,critical}
+expected_output:
+  format: ""                   # VIOLATION: must be non-empty
+  location: ""
+  filename: ""                 # VIOLATION: must be non-empty
