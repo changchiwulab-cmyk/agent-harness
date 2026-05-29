@@ -33,6 +33,29 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260529-003"
+  date: "2026-05-29"
+  skill_type: "ops"
+  goal: "R5 故障演練：實證 logs/errors/ + logs/runs/(status: failed) 失敗紀錄路徑 + e2e 回歸測試"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 5
+    - tool_name: "file_write"
+      call_count: 5
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "logs/runs/RUN-20260529-003.yaml"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "R5（自我評估 roadmap 單一最高槓桿）。演練本身成功（status: done）：以 tests/e2e/fixtures/broken_schema_task.yaml 觸發受控 schema_failure，首次在真實故障下填寫 logs/runs/RUN-20260529-003.yaml（status: failed, schema_check: fail）+ logs/errors/。新增 tests/e2e/test_failure_drill.py 並接入 CI（spec-consistency.yml）。未修改任何 system/ 檔。"
+```
+
+---
+
+```yaml
 - task_id: "20260529-002"
   date: "2026-05-29"
   skill_type: "ops"

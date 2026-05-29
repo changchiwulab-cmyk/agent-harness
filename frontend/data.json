@@ -93,6 +93,21 @@
       "started_at": "2026-04-09 00:00",
       "status": "completed",
       "task_id": "20260409-001"
+    },
+    {
+      "ended_at": "2026-05-29 05:35",
+      "gate_results": {
+        "completion_check": "not_run",
+        "risk_check": "not_run",
+        "rule_check": "not_run",
+        "schema_check": "fail"
+      },
+      "path": "logs/runs/RUN-20260529-003.yaml",
+      "run_id": "RUN-20260529-003",
+      "skill_type": "ops",
+      "started_at": "2026-05-29 05:25",
+      "status": "failed",
+      "task_id": "20260529-003"
     }
   ],
   "tasks": [
@@ -455,6 +470,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-002"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-29",
+      "goal": "執行受控的 schema 失敗演練，首次在真實故障下坐實 logs/errors/ + logs/runs/(status: failed) 紀錄路徑，並固化為可重複的 e2e 回歸測試",
+      "path": "tasks/2026-05-29_r5-failure-drill.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260529-003"
     }
   ]
 }

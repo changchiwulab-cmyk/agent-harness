@@ -1,0 +1,37 @@
+# Execution Log — R5 故障演練（受控 schema 失敗，首次真實 status: failed 紀錄）
+# 觸發條件符合 EXECUTION_LOG_SCHEMA 使用範圍：status = failed
+
+execution_log:
+  run_id: "RUN-20260529-003"
+  task_id: "20260529-003"
+  skill_type: "ops"
+  started_at: "2026-05-29 05:25"
+  ended_at: "2026-05-29 05:35"
+  status: "failed"
+
+  tools_used:
+    - tool: file_read
+      call_count: 4
+    - tool: validate_task_card
+      call_count: 2
+
+  checkpoints:
+    - commit: "pending"
+      stage: "建立 broken fixture + 觸發 schema_check 失敗"
+
+  token_estimate:
+    input: 1200
+    output: 300
+    total: 1500           # 受控演練，成本極小（來源：估算；R6 將為本欄補正式『來源』欄位）
+
+  approvals: []            # 本演練無 ask 等級或對外動作，無需批准
+
+  output_path: "logs/runs/RUN-20260529-003.yaml"
+  error_summary: "fixture task card 未通過 schema_check：goal 空、definition_of_done 空、skill_type=invalid_skill、risk_level=extreme、expected_output.format/filename 空。重試 1 次仍失敗 → 停。"
+  gate_results:
+    schema_check: "fail"
+    rule_check: "not_run"        # schema_check 失敗即停，後續 gate 未執行
+    completion_check: "not_run"
+    risk_check: "not_run"
+
+  notes: "R5 故障演練。首次在真實故障下填寫 logs/runs/（status: failed）+ logs/errors/，驗證恢復紀錄路徑可用。對應 error log：logs/errors/2026-05-29_20260529-003_error.md。回歸測試：tests/e2e/test_failure_drill.py。"
