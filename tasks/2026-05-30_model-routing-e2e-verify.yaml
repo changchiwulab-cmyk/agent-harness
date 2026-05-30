@@ -1,0 +1,51 @@
+task_id: "20260530-V01"
+date: "2026-05-30"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "端到端驗證模型路由前後端對齊，並以範例卡走通 manifest→前端"
+context: >
+  在 T1-T4 完成後，逐項跑驗證套件（spec consistency、context budget、frontend manifest 測試與漂移檢查、
+  既有 CI 步驟），並建立一張帶 model_routing 的範例 Task Card 確認新欄位能流到 dashboard。
+  確保整體向後相容、零回歸。
+input_data:
+  - "scripts/check_spec_consistency.rb"
+  - "scripts/generate_frontend_manifest.py"
+  - "scripts/test_generate_frontend_manifest.py"
+
+# === 完成標準 ===
+definition_of_done:
+  - "tasks/examples/ 新增一張帶 model_routing 的範例卡，通過 validate_task_card.py 與 check_spec_consistency.rb"
+  - "scripts/generate_frontend_manifest.py --check 漂移為 0（含範例卡與重生的 data.json）"
+  - "frontend manifest 測試、spec consistency、context budget、permissions guard、audit log、e2e smoke 與 failure-drill 全綠"
+  - "verification 結果記錄到 outputs/drafts/"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-05-30_model-routing-verify.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "review"
+
+# === 執行紀錄 ===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"

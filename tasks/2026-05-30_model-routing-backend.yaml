@@ -1,0 +1,53 @@
+task_id: "20260530-O01"
+date: "2026-05-30"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "建立 system/MODEL_ROUTING.yaml 並對齊 schema：Task Card 與執行紀錄加上 model 欄位"
+context: >
+  正式實裝 COST_POLICY.md 第 41-46 行的「模型路由（v2 準備）」草案。
+  使用者指定：Haiku 4.5 做快速讀取/搜尋、Sonnet 4.6(high) 做測試、Opus 4.8(max) 做統整/策略規劃。
+  同時修正既存 drift（EXECUTION_LOG_SCHEMA 缺 model_used、skill_type 註解漏列 analysis）。
+input_data:
+  - "system/COST_POLICY.md"
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+  - "tasks/TASK_CARD_TEMPLATE.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "system/MODEL_ROUTING.yaml 建立，含 models(fast/test/strategy)、routing(by_phase/by_skill_default)、resolution_order，YAML 可解析"
+  - "三個 tier 對應正確 model id：claude-haiku-4-5-20251001 / claude-sonnet-4-6 / claude-opus-4-8，並記錄 reasoning_effort（null/high/max）"
+  - "system/EXECUTION_LOG_SCHEMA.yaml 新增 model_used 欄位；skill_type 註解補上 analysis"
+  - "tasks/TASK_CARD_TEMPLATE.yaml 新增 optional model_routing 區塊（不列入必填）；skill_type 註解補 analysis"
+  - "system/COST_POLICY.md 第 41-46 行改為指向 MODEL_ROUTING.yaml 的指標，保留原則文字"
+  - "scripts/check_spec_consistency.rb 與全庫 YAML 解析全綠（向後相容，未破壞既有 51 卡）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: "system/"
+  filename: "MODEL_ROUTING.yaml"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄 ===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"

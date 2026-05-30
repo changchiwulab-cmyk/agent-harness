@@ -1,0 +1,52 @@
+task_id: "20260530-O02"
+date: "2026-05-30"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "建立 .claude/agents/ 三個 model-bound 子代理，讓模型路由實際驅動執行"
+context: >
+  使用者要求「同時設定實際子代理綁定」，讓 workflow 真的依模型執行。
+  依 MODEL_ROUTING.yaml 的 agent 欄位建立 fast-reader(Haiku)/tester(Sonnet)/synthesizer(Opus)，
+  並在 CLAUDE.md 執行流程與 ROUTING_RULES.md 串接，使政策層與執行層對齊。
+input_data:
+  - "system/MODEL_ROUTING.yaml"
+  - "system/ROUTING_RULES.md"
+  - "CLAUDE.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - ".claude/agents/fast-reader.md（claude-haiku-4-5-20251001）、tester.md（claude-sonnet-4-6）、synthesizer.md（claude-opus-4-8）建立，frontmatter 合法"
+  - "三個 agent name 與 MODEL_ROUTING.yaml 的 models.*.agent 欄位一致"
+  - "system/ROUTING_RULES.md 末新增「模型路由」小節，phase→model 對照指向 MODEL_ROUTING.yaml"
+  - "CLAUDE.md 執行流程串接模型路由（依 tier 派工子代理）"
+  - "scripts/check_context_budget.rb 通過（CLAUDE.md + GLOBAL_RULES.md 仍 ≤ 3K token）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: ".claude/agents/"
+  filename: "fast-reader.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄 ===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
