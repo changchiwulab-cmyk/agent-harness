@@ -18,13 +18,7 @@
     "commands/run-log.md",
     "commands/gate-check.md"
   ],
-  "skills": [
-    "skills/research/SKILL.md",
-    "skills/analysis/SKILL.md",
-    "skills/writing/SKILL.md",
-    "skills/ops/SKILL.md",
-    "skills/review/SKILL.md"
-  ],
+  "skills": [],
   "hooks": {
     "PreToolUse": "hooks/pre_tool_use.py",
     "Stop": "hooks/post_task_use.py"

@@ -6,6 +6,7 @@
 """
 from __future__ import annotations
 
+import json
 import textwrap
 import unittest
 from pathlib import Path
@@ -13,6 +14,7 @@ from tempfile import TemporaryDirectory
 
 import session_start_context as ssc
 import precompact_preserve as pcp
+import session_stop_checks as ssch
 
 
 def _write_card(tasks_dir: Path, task_id: str, status: str, goal: str) -> None:
@@ -101,6 +103,17 @@ class TestPrecompactPreserve(unittest.TestCase):
                 _write_card(tasks, f"20260529-5{i:02d}", "in_progress", f"t{i}")
             out = pcp.build_state(root, limit=5)
             self.assertIn("其餘 3 張", out)
+
+
+class TestStopHookMessage(unittest.TestCase):
+    def test_empty_when_no_warnings(self):
+        self.assertEqual(ssch.format_message([]), "")
+
+    def test_json_systemmessage_when_drift(self):
+        out = ssch.format_message(["[audit log] 漂移/未通過：DRIFT"])
+        data = json.loads(out)  # 必須是合法 JSON
+        self.assertIn("systemMessage", data)
+        self.assertIn("audit log", data["systemMessage"])
 
 
 if __name__ == "__main__":
