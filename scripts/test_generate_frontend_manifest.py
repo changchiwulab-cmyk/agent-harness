@@ -115,6 +115,31 @@ class TestGenerator(unittest.TestCase):
             self.assertEqual(tiers["20260103-001"], "unknown")   # writing absent from this routing map
             self.assertEqual(payload["overview"]["task_model"], {"strategy": 2, "unknown": 1})
 
+    def test_phase_overrides_resolve_before_skill_default(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            write(
+                root / "system" / "MODEL_ROUTING.yaml",
+                "routing:\n  by_skill_default:\n    research: fast\n",
+            )
+            # multi-tier phase_overrides -> 'mixed', not the research 'fast' default
+            write(
+                root / "tasks" / "20260201_multi.yaml",
+                'task_id: "20260201-001"\ndate: "2026-02-01"\nstatus: "done"\nskill_type: "research"\ngoal: "m"\nrisk_level: "low"\nmodel_routing:\n  tier: ""\n  phase_overrides:\n    explore: fast\n    synthesize: strategy\n',
+            )
+            # single-tier phase_overrides -> that tier
+            write(
+                root / "tasks" / "20260202_single.yaml",
+                'task_id: "20260202-001"\ndate: "2026-02-02"\nstatus: "done"\nskill_type: "research"\ngoal: "s"\nrisk_level: "low"\nmodel_routing:\n  tier: ""\n  phase_overrides:\n    synthesize: strategy\n    plan: strategy\n',
+            )
+
+            payload = gen.build(root)
+            tiers = {t["task_id"]: t["model_tier"] for t in payload["tasks"]}
+
+            self.assertEqual(tiers["20260201-001"], "mixed")     # spans fast + strategy
+            self.assertEqual(tiers["20260202-001"], "strategy")  # all overrides agree
+            self.assertEqual(payload["overview"]["task_model"], {"mixed": 1, "strategy": 1})
+
     def test_run_model_tally_from_logs(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

@@ -76,6 +76,17 @@
       "related_task": "20260509-N06",
       "revisit_trigger": "v0.2.0 plugin 達到 agent-harness 全部 system/ 規格 round-trip 後評估轉 public；或下個 session 試行 bootstrap 後發現非預期問題",
       "status": "active"
+    },
+    {
+      "date": "2026-05-30",
+      "decision": "選 A（釐清為良性 drift）",
+      "decision_id": "20260530-D008",
+      "path": "memory/active_projects/agent-harness/decisions/20260530-D008_audit-log-hand-authored-canonical.yaml",
+      "project": "agent-harness",
+      "reasoning": "生成器的設計初衷是「對抗自評偏誤、產出可機器查核的客觀視圖」，而非取代手寫檔。\n手寫 AUDIT_LOG 與生成器是「兩種互補視圖」，非「來源與副本」：\n前者含自報脈絡（成本、工具、教訓），後者保證客觀欄位可溯源。\n既然 CI 從不對真實檔跑 --check，drift 無實際危害；\n在生成器 docstring 與本 Decision Log 明確標注「手寫為正典、drift 為良性」即完成收斂，\n避免未來再被誤判為待修技術債或被 lossy 覆寫。\n若日後確需單一事實來源，再走 option B（已記錄路徑）。\n",
+      "related_task": "20260530-O04",
+      "revisit_trigger": "若 AUDIT_LOG 自報欄位不再被任何流程（COST_POLICY 校準等）依賴，或團隊決定強制單一事實來源 → 升級為 option B（無損合併 + --check 納入 CI）",
+      "status": "active"
     }
   ],
   "logs": [
@@ -138,29 +149,29 @@
     },
     "run_total": 2,
     "task_model": {
-      "fast": 34,
+      "fast": 35,
       "strategy": 9,
       "test": 7
     },
     "task_risk": {
       "high": 1,
-      "low": 32,
+      "low": 33,
       "medium": 17
     },
     "task_skill": {
       "analysis": 4,
-      "ops": 29,
+      "ops": 30,
       "research": 5,
       "review": 7,
       "writing": 5
     },
     "task_status": {
-      "done": 27,
+      "done": 28,
       "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 50
+    "task_total": 51
   },
   "tasks": [
     {
@@ -657,6 +668,17 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-30",
+      "goal": "釐清 AUDIT_LOG 生成器 drift 為良性：手寫為正典，加註解並以 Decision Log 收斂",
+      "model_tier": "fast",
+      "path": "tasks/2026-05-30_audit-log-converge.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260530-O04"
     },
     {
       "approval_needed": true,

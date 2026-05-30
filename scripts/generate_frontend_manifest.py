@@ -84,12 +84,23 @@ def load_model_routing(root: Path) -> dict[str, Any]:
 def task_model_tier(doc: dict[str, Any], by_skill_default: dict[str, Any]) -> str:
     """Resolve a task's model tier for the dashboard distribution.
 
-    Explicit model_routing.tier wins; otherwise fall back to the skill_type
-    default from MODEL_ROUTING.yaml; otherwise 'unknown'. Deterministic.
+    Precedence mirrors MODEL_ROUTING.yaml resolution_order, collapsed to a single
+    label: explicit model_routing.tier > phase_overrides > skill_type default >
+    'unknown'. A task whose phase_overrides span more than one distinct tier is
+    labelled 'mixed' (it genuinely runs on multiple models), so multi-stage tasks
+    are not silently undercounted as their skill default. Deterministic.
     """
     routing = doc.get("model_routing")
-    if isinstance(routing, dict) and routing.get("tier"):
-        return str(routing["tier"])
+    if isinstance(routing, dict):
+        if routing.get("tier"):
+            return str(routing["tier"])
+        overrides = routing.get("phase_overrides")
+        if isinstance(overrides, dict):
+            tiers = {str(v) for v in overrides.values() if v}
+            if len(tiers) == 1:
+                return next(iter(tiers))
+            if tiers:
+                return "mixed"
     skill = doc.get("skill_type")
     if skill and skill in by_skill_default:
         return str(by_skill_default[skill])
