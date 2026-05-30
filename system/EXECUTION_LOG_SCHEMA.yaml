@@ -18,7 +18,8 @@
 execution_log:
   run_id: "RUN-YYYYMMDD-###"        # 唯一識別碼
   task_id: ""                         # 對應的 Task Card ID
-  skill_type: ""                      # research / writing / ops / review
+  skill_type: ""                      # research / analysis / writing / ops / review
+  model_used: ""                      # 實際使用的模型 id；標準值見 system/MODEL_ROUTING.yaml（claude-haiku-4-5-20251001 / claude-sonnet-4-6 / claude-opus-4-8）
   started_at: "YYYY-MM-DD HH:MM"
   ended_at: "YYYY-MM-DD HH:MM"
   status: ""                          # completed / failed / partial / cancelled
