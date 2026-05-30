@@ -1,0 +1,58 @@
+# Task Card — discover-then-compare workflow Stage 2（分析 / Opus 4.8）
+# 接續 20260530-H01 的掃描結果，做逐維度比對本專案
+# 兩段式 workflow 第 2 卡；第 1 卡為 20260530-H01（research / Haiku）
+
+task_id: "20260530-H02"
+date: "2026-05-30"
+status: "pending"
+
+# === 任務定義 ===
+goal: "用 Opus 4.8 分析 H01 掃描結果並逐維度比對本專案，產出優勢/缺口/可採納建議"
+context: |
+  discover-then-compare workflow 第 2 階段（分析）。用強模型 Opus 4.8 做推理與整合：
+  讀 H01 掃描 + 本 repo 設計面（CLAUDE.md, system/*, skills/*, Task Card 模型, gates,
+  FAILURE_TAXONOMY 等）做結構化比對。本卡模型：claude-opus-4-8。
+input_data:
+  - "outputs/drafts/20260530-H01_harness-landscape-scan.md"
+  - "CLAUDE.md"
+  - "system/"
+  - "skills/"
+  - "tasks/TASK_CARD_TEMPLATE.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "建立比較維度表，至少涵蓋：任務閘控(Task gating)、權限模型、驗證 gates、模型路由、記憶、可觀測性/audit、eval/失敗處理、context 預算、多代理編排"
+  - "每維度標出：公開生態做法 vs 本專案做法 → 優勢 / 缺口 / 可採納(含優先級)"
+  - "至少 5 條具體、可執行的改進建議，對應本 repo 明確的檔案/政策"
+  - "依 analysis skill 格式輸出，結論先行"
+  - "輸出存到 outputs/drafts/"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260530-H02_harness-comparison-analysis.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
