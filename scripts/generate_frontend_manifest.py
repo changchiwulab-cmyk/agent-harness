@@ -37,6 +37,7 @@ LOG_FIELDS = (
     "run_id",
     "task_id",
     "skill_type",
+    "model_used",
     "status",
     "started_at",
     "ended_at",
@@ -68,13 +69,43 @@ def pick(doc: dict[str, Any], fields: Iterable[str]) -> dict[str, Any]:
     return {k: doc.get(k) for k in fields if k in doc}
 
 
+def load_model_routing(root: Path) -> dict[str, Any]:
+    """Load system/MODEL_ROUTING.yaml — single source of truth for model tiers.
+
+    Returns {} when absent so the generator stays root-parameterized and works
+    on minimal test roots that have no routing file.
+    """
+    path = root / "system" / "MODEL_ROUTING.yaml"
+    if not path.is_file():
+        return {}
+    return load_yaml(path)
+
+
+def task_model_tier(doc: dict[str, Any], by_skill_default: dict[str, Any]) -> str:
+    """Resolve a task's model tier for the dashboard distribution.
+
+    Explicit model_routing.tier wins; otherwise fall back to the skill_type
+    default from MODEL_ROUTING.yaml; otherwise 'unknown'. Deterministic.
+    """
+    routing = doc.get("model_routing")
+    if isinstance(routing, dict) and routing.get("tier"):
+        return str(routing["tier"])
+    skill = doc.get("skill_type")
+    if skill and skill in by_skill_default:
+        return str(by_skill_default[skill])
+    return "unknown"
+
+
 def collect_tasks(root: Path) -> list[dict[str, Any]]:
+    by_skill_default = (load_model_routing(root).get("routing") or {}).get("by_skill_default") or {}
     items = []
     for p in sorted(root.glob(TASKS_GLOB)):
         if not p.is_file():
             continue
         doc = load_yaml(p)
-        items.append({"path": rel(p, root), **pick(doc, TASK_FIELDS)})
+        item = {"path": rel(p, root), **pick(doc, TASK_FIELDS)}
+        item["model_tier"] = task_model_tier(doc, by_skill_default)
+        items.append(item)
     return items
 
 
@@ -137,8 +168,10 @@ def build_overview(tasks: list[dict[str, Any]], logs: list[dict[str, Any]]) -> d
         "task_status": _tally(tasks, "status"),
         "task_skill": _tally(tasks, "skill_type"),
         "task_risk": _tally(tasks, "risk_level"),
+        "task_model": _tally(tasks, "model_tier"),
         "run_total": len(logs),
         "run_status": run_status,
+        "run_model": _tally(logs, "model_used"),
         "gate_results": gate_results,
     }
 

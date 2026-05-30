@@ -83,7 +83,7 @@ function renderTasks(tasks) {
       <article class="item">
         <strong>${escapeHtml(t.task_id || '')}</strong><br />
         ${escapeHtml(t.title || '')}<br />
-        <small>${escapeHtml(t.date || 'N/A')} · ${escapeHtml(t.status || 'unknown')} · ${escapeHtml(t.skill_type || 'N/A')}</small>
+        <small>${escapeHtml(t.date || 'N/A')} · ${escapeHtml(t.status || 'unknown')} · ${escapeHtml(t.skill_type || 'N/A')} · ${escapeHtml(t.model_tier || 'N/A')}</small>
       </article>`)
     .join('') || '<small>無符合條件資料</small>';
 }
@@ -124,7 +124,9 @@ function renderOverview() {
     ['Task 狀態分佈', dist(o.task_status)],
     ['Task Skill 分佈', dist(o.task_skill)],
     ['Task 風險分佈', dist(o.task_risk)],
+    ['Task 模型分佈', dist(o.task_model)],
     [`Run 狀態（${escapeHtml(o.run_total ?? 0)} 筆）`, dist(o.run_status)],
+    [`Run 模型（${escapeHtml(o.run_total ?? 0)} 筆）`, dist(o.run_model)],
   ];
   const gates = o.gate_results || {};
   ['schema_check', 'rule_check', 'completion_check', 'risk_check'].forEach((g) => {
