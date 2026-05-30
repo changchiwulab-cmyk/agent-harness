@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
-"""PreCompact hook：壓縮前保全治理狀態（**fail-open**）。
+"""PreCompact hook：壓縮前把治理狀態寫成持久快照（**fail-open**）。
 
-context 壓縮前，把未結 Task Card 的 goal / definition_of_done 與最後 checkpoint
-印到 stdout，讓壓縮後的 context 仍保留關鍵治理狀態，緩解 FAILURE_TAXONOMY
-SPEC-03（對話歷史遺失）。此機制取代手動「20 輪摘要」規則 —— 改由原生
-auto-compaction 觸發、本 hook 負責保全不可遺失的治理錨點。
+背景：依 Claude Code hooks 規範，PreCompact 的 stdout 不會被注入壓縮後的 context
+（只有 SessionStart / UserPromptSubmit 會）。因此「印到 stdout 保全狀態」行不通。
+改採持久化路徑：壓縮前把未結 Task Card 的 goal / definition_of_done 與最後
+checkpoint 寫到 gitignored 的 `logs/.session_state.md`，成為可被 RECOVERY_RUNBOOK
+（scenario C：context 重置後續跑）與人工/agent 讀取的復原產物，緩解 SPEC-03。
+另以 JSON `systemMessage` 提示使用者快照位置。
 """
 from __future__ import annotations
 
 import argparse
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -17,6 +20,7 @@ import yaml
 
 DEFAULT_ROOT = Path(__file__).resolve().parents[1]
 OPEN_STATUSES = ("in_progress", "checkpoint", "review")
+SNAPSHOT_REL = "logs/.session_state.md"
 
 
 def open_cards(root: Path) -> list[dict]:
@@ -52,14 +56,27 @@ def build_state(root: Path, limit: int = 5) -> str:
     return "\n".join(lines)
 
 
+def write_snapshot(root: Path) -> Path | None:
+    """把治理狀態寫到 logs/.session_state.md（持久、gitignored）。回傳路徑或 None。"""
+    snapshot = Path(root) / SNAPSHOT_REL
+    snapshot.parent.mkdir(parents=True, exist_ok=True)
+    snapshot.write_text(build_state(root) + "\n", encoding="utf-8")
+    return snapshot
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=DEFAULT_ROOT)
     args, _ = parser.parse_known_args(argv)
     try:
-        print(build_state(args.root))
+        write_snapshot(args.root)
+        msg = (
+            f"壓縮前已將未結 Task Card 的 goal/DoD 與最後 checkpoint 寫入 {SNAPSHOT_REL}；"
+            "壓縮/重置後可依 system/RECOVERY_RUNBOOK.md 從該快照與 Task Card 續跑。"
+        )
+        print(json.dumps({"systemMessage": msg}, ensure_ascii=False))
     except Exception:
-        pass  # fail-open
+        pass  # fail-open：絕不阻斷壓縮
     return 0
 
 

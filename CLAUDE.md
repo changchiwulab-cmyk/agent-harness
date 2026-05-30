@@ -23,7 +23,7 @@
 - CLAUDE.md + GLOBAL_RULES.md ≤ 3,000 tokens
 - 單一 skill prompt ≤ 1,500 tokens
 - 只載入 Task Card 白名單內的工具
-- 長對話交給原生 auto-compaction；PreCompact hook 保全 Task Card goal/DoD/checkpoint（取代手動「20 輪摘要」）
+- 長對話交給原生 auto-compaction；PreCompact hook 把 Task Card goal/DoD/checkpoint 寫入持久快照 logs/.session_state.md（取代手動「20 輪摘要」，壓縮/重置後可復原）
 - 載入順序對 prompt caching 友善：穩定前綴（CLAUDE.md→GLOBAL_RULES→PERMISSIONS）先，可變後綴（Task Card→skill）後
 - 大型檔案用路徑引用，不全文貼入
 

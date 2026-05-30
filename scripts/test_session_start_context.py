@@ -104,6 +104,17 @@ class TestPrecompactPreserve(unittest.TestCase):
             out = pcp.build_state(root, limit=5)
             self.assertIn("其餘 3 張", out)
 
+    def test_write_snapshot_creates_durable_file(self):
+        with TemporaryDirectory() as d:
+            root = Path(d)
+            tasks = root / "tasks"
+            tasks.mkdir()
+            (root / "logs").mkdir()
+            _write_card(tasks, "20260529-600", "in_progress", "快照測試")
+            path = pcp.write_snapshot(root)
+            self.assertTrue(path.exists())
+            self.assertIn("20260529-600", path.read_text(encoding="utf-8"))
+
 
 class TestStopHookMessage(unittest.TestCase):
     def test_empty_when_no_warnings(self):

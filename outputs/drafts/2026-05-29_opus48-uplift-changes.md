@@ -26,9 +26,10 @@
 - `system/COST_POLICY.md` 模型路由段改標「已落地」＋子代理對照表。
 
 ### B3 Hooks 自動化治理
-- `.claude/settings.json` 擴充：SessionStart（載 recovery context）、Stop（fail-open 漂移檢查）、PreCompact（保全治理狀態）；保留既有 PreToolUse deny-guard。
+- `.claude/settings.json` 擴充：SessionStart（載 recovery context）、Stop（fail-open 漂移檢查，以 systemMessage 呈現）、PreCompact（壓縮前寫持久快照 `logs/.session_state.md`）；保留既有 PreToolUse deny-guard。
 - 新增 `scripts/session_start_context.py`、`scripts/session_stop_checks.py`、`scripts/precompact_preserve.py`（全部 fail-open，永遠 exit 0）＋ `scripts/test_session_start_context.py`。
-- 修正 plugin 草稿：`PostTaskUse`（非真實事件）→ `Stop`；`skills: []` → 補 5 個。
+- 修正 plugin 草稿：`PostTaskUse`（非真實事件）→ `Stop`；`skills` 維持 `[]`，待下一輪打包時連同 skill 檔一起納入。
+- 依 Codex review 修正（docs 確認）：Stop hook 純 stdout 不顯示給使用者 → 改 JSON `systemMessage`；PreCompact stdout 不注入壓縮後 context → 改寫持久快照（對齊 RECOVERY_RUNBOOK）。
 
 ### B4 Prompt caching ＋ context
 - `CLAUDE.md`：手動「20 輪摘要」→ 原生 auto-compaction＋PreCompact hook；新增 cache 友善載入順序。

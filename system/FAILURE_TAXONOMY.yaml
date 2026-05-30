@@ -19,7 +19,7 @@ categories:
     - id: SPEC-03
       name: "對話歷史遺失"
       description: "遺失先前對話中的重要資訊"
-      mitigation: "關鍵決策寫入 checkpoint；交給原生 auto-compaction，PreCompact hook 保全 Task Card goal/DoD/checkpoint"
+      mitigation: "關鍵決策寫入 checkpoint；交給原生 auto-compaction，PreCompact hook 把 Task Card goal/DoD/checkpoint 寫入持久快照 logs/.session_state.md"
 
     - id: SPEC-04
       name: "不知道何時停止"

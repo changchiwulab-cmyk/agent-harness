@@ -8,3 +8,6 @@
 *.credentials
 __pycache__/
 *.pyc
+
+# PreCompact hook 的 session 快照（暫存、不入庫）
+logs/.session_state.md
