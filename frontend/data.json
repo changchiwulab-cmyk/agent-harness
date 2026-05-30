@@ -155,8 +155,8 @@
       "writing": 5
     },
     "task_status": {
-      "done": 22,
-      "in_progress": 7,
+      "done": 27,
+      "in_progress": 2,
       "pending": 2,
       "review": 19
     },
@@ -666,7 +666,7 @@
       "path": "tasks/2026-05-30_model-routing-agents.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "in_progress",
+      "status": "done",
       "task_id": "20260530-O02"
     },
     {
@@ -677,7 +677,7 @@
       "path": "tasks/2026-05-30_model-routing-backend.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "in_progress",
+      "status": "done",
       "task_id": "20260530-O01"
     },
     {
@@ -688,7 +688,7 @@
       "path": "tasks/2026-05-30_model-routing-e2e-verify.yaml",
       "risk_level": "low",
       "skill_type": "review",
-      "status": "in_progress",
+      "status": "done",
       "task_id": "20260530-V01"
     },
     {
@@ -699,7 +699,7 @@
       "path": "tasks/2026-05-30_model-routing-frontend.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "in_progress",
+      "status": "done",
       "task_id": "20260530-O03"
     },
     {
@@ -710,7 +710,7 @@
       "path": "tasks/2026-05-30_model-routing-mapping-doc.yaml",
       "risk_level": "low",
       "skill_type": "writing",
-      "status": "in_progress",
+      "status": "done",
       "task_id": "20260530-W01"
     }
   ]

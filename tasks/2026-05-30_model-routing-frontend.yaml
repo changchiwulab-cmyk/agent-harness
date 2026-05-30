@@ -1,6 +1,6 @@
 task_id: "20260530-O03"
 date: "2026-05-30"
-status: "in_progress"
+status: "done"
 
 # === 任務定義 ===
 goal: "前端對齊：dashboard 新增模型分佈面板，後端 manifest 帶 model 資訊進 data.json"
@@ -45,8 +45,9 @@ max_web_searches: 0
 skill_type: "ops"
 
 # === 執行紀錄 ===
-checkpoints: []
+checkpoints:
+  - "7fc5075: 前端對齊：模型分佈面板"
 actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+result_summary: "manifest 衍生 model_tier（單一真相來源 MODEL_ROUTING.yaml）+ LOG_FIELDS 加 model_used + build_overview 加 task_model/run_model；app.js 治理總覽 2 卡 + 清單顯示 tier；data.json 重生（task_model=fast34/strategy9/test7）；6 測試全綠、--check 漂移 0。"
+completion_time: "2026-05-30"
 audit_log_ref: "logs/AUDIT_LOG.md"

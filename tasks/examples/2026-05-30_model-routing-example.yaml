@@ -1,0 +1,56 @@
+# 範例：示範 model_routing 區塊（同一張卡用 phase_overrides 表達多階段不同模型）
+# 規則見 system/MODEL_ROUTING.yaml。
+
+task_id: "20260530-E01"
+date: "2026-05-30"
+status: "done"
+
+# === 任務定義 ===
+goal: "示範：先用 Haiku 蒐集市場資料，再用 Opus 統整成結論"
+context: "作為 model_routing 的填寫範例：research 蒐集階段走 fast，統整結論階段走 strategy。"
+input_data:
+  - "system/MODEL_ROUTING.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "讀取/搜尋階段由 fast-reader（Haiku 4.5）完成資料蒐集"
+  - "統整階段由 synthesizer（Opus 4.8）產出結論，區分事實/推論/待驗證"
+  - "輸出為結構化草稿"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "model-routing-example-output.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "web_search"
+  - "write_drafts"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 3
+
+# === Skill 路由 ===
+skill_type: "research"
+
+# === 模型路由（同卡多階段：讀取/搜尋→fast，統整→strategy）===
+model_routing:
+  tier: ""                     # 留空 → 由 skill_type(research) 帶出預設 fast
+  phase_overrides:
+    explore: fast
+    retrieve: fast
+    synthesize: strategy       # 統整結論升級到 Opus
+  override: ""
+
+# === 執行紀錄 ===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: "範例卡，示範 model_routing 填法。"
+completion_time: "2026-05-30"
+audit_log_ref: ""

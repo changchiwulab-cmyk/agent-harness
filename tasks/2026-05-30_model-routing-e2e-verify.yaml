@@ -1,6 +1,6 @@
 task_id: "20260530-V01"
 date: "2026-05-30"
-status: "in_progress"
+status: "done"
 
 # === 任務定義 ===
 goal: "端到端驗證模型路由前後端對齊，並以範例卡走通 manifest→前端"
@@ -46,6 +46,6 @@ skill_type: "review"
 # === 執行紀錄 ===
 checkpoints: []
 actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+result_summary: "13 項 CI 全綠（spec consistency / context budget / frontend 測試 / 漂移 / permissions / audit / e2e smoke / failure-drill / decision revisit）；前端服務驗證 index+data 200、模型分佈卡就位；範例卡 E01 通過 validate + check_spec；verify 紀錄寫入 outputs/drafts/。"
+completion_time: "2026-05-30"
 audit_log_ref: "logs/AUDIT_LOG.md"

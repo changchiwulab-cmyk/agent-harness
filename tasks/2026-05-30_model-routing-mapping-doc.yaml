@@ -1,6 +1,6 @@
 task_id: "20260530-W01"
 date: "2026-05-30"
-status: "in_progress"
+status: "done"
 
 # === 任務定義 ===
 goal: "產出『3 分類 × 5 skill × phase』模型路由映射說明草稿"
@@ -44,6 +44,6 @@ skill_type: "writing"
 # === 執行紀錄 ===
 checkpoints: []
 actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+result_summary: "產出 outputs/drafts/2026-05-30_model-routing-mapping.md：tier→模型→reasoning_effort→子代理對照、3 分類×skill×phase 映射、phase_overrides 同卡多階段用法、resolution_order、限制揭露（reasoning_effort 非強制）。草稿待人工晉升 reports/。"
+completion_time: "2026-05-30"
 audit_log_ref: "logs/AUDIT_LOG.md"

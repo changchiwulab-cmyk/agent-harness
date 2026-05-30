@@ -33,6 +33,113 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260530-V01"
+  date: "2026-05-30"
+  skill_type: "review"
+  goal: "端到端驗證模型路由前後端對齊，並以範例卡走通 manifest→前端"
+  status: "done"
+  model_used: "claude-opus-4-8"
+  tools_called:
+    - tool_name: "bash"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 2
+  checkpoints: 0
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/2026-05-30_model-routing-verify.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "13 項 CI 全綠；前端服務 index+data 200、模型分佈卡就位；範例卡 E01 通過驗證。"
+```
+
+```yaml
+- task_id: "20260530-W01"
+  date: "2026-05-30"
+  skill_type: "writing"
+  goal: "產出『3 分類 × 5 skill × phase』模型路由映射說明草稿"
+  status: "done"
+  model_used: "claude-opus-4-8"
+  tools_called:
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 0
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/2026-05-30_model-routing-mapping.md"
+  error_summary: ""
+  estimated_tokens: "~8K"
+  notes: "草稿，待人工確認後晉升 reports/。"
+```
+
+```yaml
+- task_id: "20260530-O03"
+  date: "2026-05-30"
+  skill_type: "ops"
+  goal: "前端對齊：dashboard 新增模型分佈面板，後端 manifest 帶 model 資訊進 data.json"
+  status: "done"
+  model_used: "claude-opus-4-8"
+  tools_called:
+    - tool_name: "file_edit"
+      call_count: 5
+    - tool_name: "bash"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "frontend/data.json"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "model_tier 以 MODEL_ROUTING.yaml 為單一真相來源衍生；task_model=fast34/strategy9/test7；6 測試全綠、--check 漂移 0。"
+```
+
+```yaml
+- task_id: "20260530-O02"
+  date: "2026-05-30"
+  skill_type: "ops"
+  goal: "建立 .claude/agents/ 三個 model-bound 子代理，讓模型路由實際驅動執行"
+  status: "done"
+  model_used: "claude-opus-4-8"
+  tools_called:
+    - tool_name: "file_write"
+      call_count: 3
+    - tool_name: "file_edit"
+      call_count: 2
+    - tool_name: "bash"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: ".claude/agents/"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "fast-reader/tester/synthesizer 綁定 Haiku 4.5/Sonnet 4.6/Opus 4.8；CLAUDE.md + ROUTING_RULES 串接；context budget ~1252/3000。"
+```
+
+```yaml
+- task_id: "20260530-O01"
+  date: "2026-05-30"
+  skill_type: "ops"
+  goal: "建立 system/MODEL_ROUTING.yaml 並對齊 schema：Task Card 與執行紀錄加上 model 欄位"
+  status: "done"
+  model_used: "claude-opus-4-8"
+  tools_called:
+    - tool_name: "file_write"
+      call_count: 1
+    - tool_name: "file_edit"
+      call_count: 3
+    - tool_name: "bash"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "system/MODEL_ROUTING.yaml"
+  error_summary: ""
+  estimated_tokens: "~13K"
+  notes: "正式實裝 COST_POLICY v2 草案；新增 model_used 修正既存 schema drift；optional 欄位向後相容（未動 51 卡）。"
+```
+
+```yaml
 - task_id: "20260529-011"
   date: "2026-05-29"
   skill_type: "ops"
