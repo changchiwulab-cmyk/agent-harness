@@ -33,6 +33,29 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260530-O04"
+  date: "2026-05-30"
+  skill_type: "ops"
+  goal: "釐清 AUDIT_LOG 生成器 drift 為良性：手寫為正典，加註解並以 Decision Log 收斂"
+  status: "done"
+  model_used: "claude-opus-4-8"
+  tools_called:
+    - tool_name: "file_write"
+      call_count: 2
+    - tool_name: "file_edit"
+      call_count: 3
+    - tool_name: "bash"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "memory/active_projects/agent-harness/decisions/20260530-D008_audit-log-hand-authored-canonical.yaml"
+  error_summary: ""
+  estimated_tokens: "~15K"
+  notes: "Decision D008：手寫 AUDIT_LOG 為正典、生成器為輔助視圖、--check drift 良性（CI 不跑）。零行為變更、零資料損失。另修 codex #90 P2：manifest model_tier 先看 phase_overrides 再 skill 預設（多階段標 mixed）。"
+```
+
+```yaml
 - task_id: "20260530-V01"
   date: "2026-05-30"
   skill_type: "review"

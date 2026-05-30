@@ -18,6 +18,16 @@ Behavior:
     - If --check is passed, compares generated body against the existing file's
       auto-section and fails non-zero on drift.
     - Manual notes section (between MANUAL_NOTES markers) is preserved verbatim.
+
+Status (Decision D008, 2026-05-30):
+    The hand-written logs/AUDIT_LOG.md is CANONICAL; this generator is an
+    auxiliary objective-view. It intentionally emits only the 12 machine-derivable
+    fields and DROPS self-reported ones (model_used, tools_called,
+    estimated_tokens, notes) that COST_POLICY calibration relies on. Therefore
+    `--check` reporting drift against the live file is EXPECTED and BENIGN: CI runs
+    only test_generate_audit_log.py (unit tests), never `--check` on the real file.
+    Do not "fix" that drift by overwriting AUDIT_LOG — it would lose the
+    self-reported data. See memory/.../decisions/20260530-D008_*.yaml.
 """
 
 from __future__ import annotations

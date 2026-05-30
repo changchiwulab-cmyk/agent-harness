@@ -1,0 +1,55 @@
+task_id: "20260530-O04"
+date: "2026-05-30"
+status: "done"
+
+# === 任務定義 ===
+goal: "釐清 AUDIT_LOG 生成器 drift 為良性：手寫為正典，加註解並以 Decision Log 收斂"
+context: >
+  generate_audit_log.py --check 對現有手寫 logs/AUDIT_LOG.md 回報 drift。經查：
+  (1) CI 只跑 test_generate_audit_log.py 單元測試，從不對真實檔案跑 --check，故此 drift 永不破壞 CI；
+  (2) 生成器刻意只衍生 12 個客觀欄位，會丟棄 model_used/tools_called/estimated_tokens/notes
+  等自報欄位，而 COST_POLICY 校準需讀取 estimated_tokens。
+  因此手寫檔承載生成器無法產出的價值。使用者選擇「釐清為良性 drift」：保留手寫為正典，
+  以註解 + Decision Log（比照 D006 收斂 execution-log-scope 的先例）正式收斂，零行為變更、零資料損失。
+input_data:
+  - "scripts/generate_audit_log.py"
+  - ".github/workflows/spec-consistency.yml"
+  - "system/COST_POLICY.md"
+  - "memory/active_projects/agent-harness/decisions/20260424-D006_execution-log-scope.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "generate_audit_log.py 檔頭 docstring 加註：手寫 AUDIT_LOG 為正典；生成器為輔助視圖；--check drift 為良性且不在 CI"
+  - "Decision Log D008 建立，記錄選項、決策、revisit_trigger，status active"
+  - "check_decision_revisit.rb 能解析 D008 且全 CI 套件綠"
+  - "不改生成器行為、不遷移 AUDIT_LOG、不動既有自報欄位"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: "memory/active_projects/agent-harness/decisions/"
+  filename: "20260530-D008_audit-log-hand-authored-canonical.yaml"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄 ===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: "2026-05-30"
+audit_log_ref: "logs/AUDIT_LOG.md"
