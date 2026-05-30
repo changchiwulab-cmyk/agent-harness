@@ -68,12 +68,12 @@
     - tool_name: "create_output_files"
       call_count: 1
   checkpoints: 2
-  approval_needed: false
-  approval_given: false
+  approval_needed: true
+  approval_given: true
   output_path: "outputs/drafts/20260530-H01_harness-landscape-scan.md"
   error_summary: ""
   estimated_tokens: "~100K（3 Haiku 子代理 ~99K + 主執行緒彙整）"
-  notes: "discover-then-compare workflow Stage 1。3 個 Haiku 子代理（model: haiku）三 lane web fan-out（~9 搜尋），Opus 彙整 research 格式掃描，4 大類 ~30 條目。首次真實 Haiku→Opus 模型路由案例。量化/未來版本宣稱標 [待驗證]。"
+  notes: "discover-then-compare workflow Stage 1。3 個 Haiku 子代理（model: haiku）三 lane web fan-out（~9 搜尋），Opus 彙整 research 格式掃描，4 大類 ~30 條目。首次真實 Haiku→Opus 模型路由案例。量化/未來版本宣稱標 [待驗證]。web search 9>3 超 COST_POLICY 單卡上限 → 卡片已設 approval_needed:true；本次 fan-out 預算於計畫核准(ExitPlanMode)時批准。"
 ```
 
 ---

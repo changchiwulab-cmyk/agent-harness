@@ -31,7 +31,7 @@ expected_output:
 
 # === 風險與權限 ===
 risk_level: "low"
-approval_needed: false
+approval_needed: true   # web search 上限(9) > COST_POLICY 單卡 3 輪：依「超限行為」，重跑/複製此卡需人工核准 fan-out 預算
 allowed_tools:
   - "file_read"
   - "file_search"
@@ -42,15 +42,15 @@ allowed_tools:
 # === 成本控制 ===
 max_tool_calls: 15
 max_retries: 3
-max_web_searches: 9   # 刻意高於單卡預設 3：多代理 fan-out（~3 Haiku 子代理 × ~3 查詢），fan-out 後 checkpoint
+max_web_searches: 9   # 超過 COST_POLICY 單卡 3 輪上限（多代理 fan-out：~3 Haiku 子代理 × ~3）→ 故 approval_needed: true
 
 # === Skill 路由 ===
 skill_type: "research"
 
 # === 執行紀錄（由 agent 填寫）===
 checkpoints:
-  - "checkpoint: 20260530-H01/H02 建立兩張 Task Card (38b789a)"
-  - "checkpoint: 20260530-H01 fan-out 完成（Haiku 三 lane 發現 → 掃描草稿）(64c5b97)"
+  - "checkpoint: 20260530-H01/H02 建立兩張 Task Card"
+  - "checkpoint: 20260530-H01 fan-out 完成（Haiku 三 lane 發現 → 掃描草稿）"
 actual_tool_calls: 11
 result_summary: "3 個 Haiku 子代理（model: haiku）分三 lane（Anthropic生態/其他框架/最佳實踐+eval）web fan-out 共 ~9 次搜尋，Opus 4.8 彙整為 research 格式掃描，涵蓋 4 大類 ~30 條目；量化/未來版本/付費牆宣稱標 [待驗證]。"
 completion_time: "2026-05-30"

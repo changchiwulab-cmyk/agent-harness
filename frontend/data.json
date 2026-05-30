@@ -616,7 +616,7 @@
       "task_id": "20260530-H02"
     },
     {
-      "approval_needed": false,
+      "approval_needed": true,
       "date": "2026-05-30",
       "goal": "用 Haiku 廣度掃描所有公開的 agent harness / agent 執行框架工程資料，產出結構化清單",
       "path": "tasks/2026-05-30_harness-landscape-scan.yaml",
