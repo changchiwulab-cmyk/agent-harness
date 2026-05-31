@@ -33,6 +33,33 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260531-001"
+  date: "2026-05-31"
+  skill_type: "research"
+  goal: "AI 產業落地物理 AI（Physical AI）進度表：全球趨勢 + 台灣切入點，時間軸×子領域矩陣（深度測試載荷）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 5
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "write_drafts"
+      call_count: 1
+    - tool_name: "create_output_files"
+      call_count: 1
+    - tool_name: "git_commit_checkpoint"
+      call_count: 3
+  checkpoints: 3
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260531-001_physical-ai-rollout-roadmap.md"
+  error_summary: "受控壓測事件：第 5 次 web_search 觸 session rate limit，1 次<3 門檻不硬停，降級用 T03+訓練知識標 [待驗證]"
+  estimated_tokens: "~47K"
+  notes: "深度測試：首次完整 happy-path 高負載實證，補自評弱點。四層 gate 全 pass。詳見 logs/runs/RUN-20260531-001.yaml（含 3 項框架壓測觀察）。與 R5 故障演練互補。"
+```
+
+```yaml
 - task_id: "20260529-011"
   date: "2026-05-29"
   skill_type: "ops"
