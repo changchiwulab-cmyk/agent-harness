@@ -1,0 +1,71 @@
+task_id: "20260531-001"
+date: "2026-05-31"
+status: "pending"            # 完成改 done 時務必同步填 completion_time
+
+# === 任務定義 ===
+goal: "產出『AI 產業落地物理 AI（Physical AI）進度表』：全球趨勢為主軸 + 台灣切入點，採時間軸(2023→2030) × 子領域矩陣，並同步留下完整框架壓測紀錄"
+
+context: |
+  「不同深度 / 高負載」實證系列的延伸：以一份高負載真實研究任務當測試載荷，
+  一次同時 (a) 端到端壓測 Agent Harness v2 每個機制，(b) 產出可交付研究成果。
+  本卡刻意放寬預算（max_tool_calls=12、max_web_searches=5、預估 token ~45K，
+  超出 COST_POLICY 建議 research 上限 32K）作為 cost-quality 邊界實驗 —
+  此放寬為「壓測目的之人工決策」，非校準係數自動上調（research 係數 1.43 < 1.5 門檻）。
+  範圍：全球為主軸，標出台灣半導體 / 機器人供應鏈 / 製造業的切入點與機會。
+  進度表形式：縱軸時間 2023→2030，橫軸子領域（人形機器人 / 自駕 /
+  工業協作機器人 / 具身基礎模型 / 世界模型），交叉標記里程碑與成熟度。
+  注意 1：依 D006（EXECUTION_LOG_SCHEMA.yaml:4-9），預期 checkpoint>=3，
+  須寫 logs/runs/RUN-20260531-001.yaml。
+  注意 2：遠端環境若無對外網路，web_search 取不到時改以訓練知識為主並逐項標
+  [待驗證]，與 skills/research/SKILL.md 一致。輸出僅到 outputs/drafts/，不晉升 reports/。
+
+input_data:
+  - "skills/research/SKILL.md"
+  - "memory/user_prefs.md"
+  - "outputs/drafts/20260502-T03_taiwan-ai-industry-deep-dive.md"  # 台灣切入點可複用的事實基礎
+  - "system/COST_POLICY.md"
+
+# === 完成標準（每條可驗證，對應三個設計選擇）===
+definition_of_done:
+  - "輸出符合 skills/research/SKILL.md 六段式格式：結論 → 已知事實 → 合理推論 → 待驗證 → 高風險假設 → 來源（六段齊全且非空）"
+  - "含時間軸×子領域矩陣表：縱軸至少 2023/2024/2025/2026/2027-2028/2029-2030 六段，橫軸 5 子領域全部出現"
+  - "矩陣每格標記里程碑或成熟度（沿用 SKILL.md:47-52 的 ✅/🔍/❌ 語彙），空格須註明『資料不足/無重大進展』"
+  - "每個子領域至少 3 個全球層級量化或時序主張，附時效；無網路時以訓練知識陳述並標 [待驗證]"
+  - "獨立章節『台灣切入點』：半導體（AI 晶片/先進封裝）、機器人供應鏈（減速機/伺服/感測）、製造業（協作機器人導入）三條，各含機會 + 卡點"
+  - "敏感性/高風險假設章節：3-5 個核心假設，逐項說明假設失效時進度表如何位移"
+  - "事實 / 合理推論 / 待驗證 / 高風險假設四態明確分開"
+  - "篇幅 ~3500-5000 字（含表格）"
+  - "至少 3 次 git checkpoint，且因 checkpoint>=3 須寫 logs/runs/RUN-20260531-001.yaml"
+  - "輸出落在 outputs/drafts/，未晉升至 outputs/reports/"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260531-001_physical-ai-rollout-roadmap.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "web_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制（刻意放寬作壓測）===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 5
+
+# === Skill 路由 ===
+skill_type: "research"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""          # status 改 done 時必填 2026-05-31
+audit_log_ref: "logs/AUDIT_LOG.md"
