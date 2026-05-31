@@ -1,0 +1,15 @@
+# 批准紀錄 — Task Card 20260531-004（套用 F1/F2/F4 至 system/skills）
+# schema 見 system/APPROVAL_POLICY.yaml 的 approval_record 段。
+# 觸發：修改 system/ 規則屬 high risk（explicit_review）；修改 skills/ 屬 ask 級。
+
+approval_records:
+  - approval_id: "APR-20260531-003"
+    task_id: "20260531-004"
+    date: "2026-05-31"
+    action: "套用 F1（PERMISSIONS allow + regenerate_derived_artifacts）/ F2（COST_POLICY max_tool_calls 計數範圍）/ F4（research SKILL DoD 覆蓋度）至 system/ 與 skills/"
+    approval_method: "human_confirm"
+    risk_level: "high"
+    status: "approved"
+    approved_by: "human"
+    rationale: "提案先到 outputs/drafts/2026-05-31_stress-test-fixes-proposal.md，使用者於 session 複選核准 F1+F2+F4 全部三項（explicit_review）。修改 system/ 同前例 APR-20260409-002 之 high risk 等級。"
+    linked_run: "RUN-20260531-002"

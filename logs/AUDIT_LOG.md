@@ -33,6 +33,33 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260531-004"
+  date: "2026-05-31"
+  skill_type: "ops"
+  goal: "套用 F1/F2/F4 壓測修正至 system/ 與 skills/"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "modify_system_rules"
+      call_count: 2
+    - tool_name: "modify_skills"
+      call_count: 1
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "bash"
+      call_count: 2
+    - tool_name: "git_commit_checkpoint"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "system/PERMISSIONS.yaml + system/COST_POLICY.md + skills/research/SKILL.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "high risk（改 system/）。提案→複選核准→套用閉環。批准 APR-20260531-003、執行紀錄 RUN-20260531-002。permissions_guard 為 deny-list，F1 不需改 guard。全 13 步 CI 綠。"
+```
+
+```yaml
 - task_id: "20260531-003"
   date: "2026-05-31"
   skill_type: "analysis"

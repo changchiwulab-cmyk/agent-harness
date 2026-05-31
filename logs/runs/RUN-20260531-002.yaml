@@ -1,0 +1,51 @@
+# Execution Log — 套用 F1/F2/F4 壓測發現修正（修改 system/ → risk>=high 觸發本紀錄）
+
+execution_log:
+  run_id: "RUN-20260531-002"
+  task_id: "20260531-004"
+  skill_type: "ops"
+  started_at: "2026-05-31 02:00"
+  ended_at: "2026-05-31 02:00"
+  status: "completed"
+
+  tools_used:
+    - tool: file_read
+      call_count: 2
+    - tool: modify_system_rules
+      call_count: 2          # PERMISSIONS.yaml（F1）+ COST_POLICY.md（F2）
+    - tool: modify_skills
+      call_count: 1          # skills/research/SKILL.md（F4）
+    - tool: bash
+      call_count: 2          # 全 CI 套件驗證 + manifest 重生
+    - tool: git_commit_checkpoint
+      call_count: 1
+
+  checkpoints:
+    - commit: "pending"      # 套用 commit（見 git log；F1+F2+F4 + run/approval/audit + manifest）
+      stage: "套用 F1/F2/F4 到 system/skills + 紀錄 + manifest 重生"
+
+  token_estimate:
+    input: 8000
+    output: 2000
+    total: 10000
+    source: "rule_estimated"
+
+  approvals:
+    - action: "套用 F1（PERMISSIONS allow 加 regenerate_derived_artifacts）/ F2（COST_POLICY 計數範圍）/ F4（research SKILL DoD 覆蓋度）至 system/ 與 skills/"
+      status: "approved"
+      approved_by: "human"
+      timestamp: "2026-05-31"
+
+  output_path: "system/PERMISSIONS.yaml + system/COST_POLICY.md + skills/research/SKILL.md"
+  error_summary: ""
+  gate_results:
+    schema_check: "pass"     # validate_task_card 20260531-004 exit 0
+    rule_check: "pass"       # 工具全 ⊆ allowed_tools（含 modify_system_rules/modify_skills）；無 deny；ask 級已人工核准
+    completion_check: "pass" # F1/F2/F4 三項皆套用；全 13 步 CI 綠；context budget 內
+    risk_check: "pass"       # high risk：提案先到 drafts/ 經人工 explicit_review 核准後才套用（draft_first 滿足）
+  notes: |
+    深度測試的治理閉環收尾：F1/F2/F4 三項壓測發現經「提案 draft（20260531-003）→ 人工複選核准 →
+    本卡套用」完整流程落地。修改 system/ 屬 high risk（前例 APR-20260409-002），故寫本 run log。
+    F1 待驗證已解：permissions_guard.py 為純 deny-list，不 enforce allow 清單，新增 allow 項不需改 guard/test
+    （test_permissions_guard.py 12 測試全綠佐證）。
+    本卡同時是「高風險路徑」首次以真實 system 變更被走過（先前 APR-20260409-002 為 v2 升級期）。

@@ -1,0 +1,68 @@
+task_id: "20260531-004"
+date: "2026-05-31"
+status: "done"               # 完成改 done 時務必同步填 completion_time
+
+# === 任務定義 ===
+goal: "套用已核准的 F1/F2/F4 提案到 system/PERMISSIONS.yaml、system/COST_POLICY.md、skills/research/SKILL.md"
+
+context: |
+  接續提案卡 20260531-003。使用者於 session 複選核准 F1+F2+F4 全部三項套用。
+  修改 system/ 屬 high risk（前例 APR-20260409-002）→ explicit_review + 須寫 logs/runs/（risk>=high）。
+  提案內容與精確 before→after 見 outputs/drafts/2026-05-31_stress-test-fixes-proposal.md。
+  F1 待驗證已解：scripts/permissions_guard.py 為純 deny-list（不 enforce allow 清單），
+  故新增 allow 項『regenerate_derived_artifacts』不需改 guard 或 test_permissions_guard.py。
+  本卡為新增 tasks/ + 將寫 logs/runs/，會使 manifest 漂移 → 套用後重生 frontend/data.json。
+
+input_data:
+  - "outputs/drafts/2026-05-31_stress-test-fixes-proposal.md"
+  - "system/PERMISSIONS.yaml"
+  - "system/COST_POLICY.md"
+  - "skills/research/SKILL.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "F1：system/PERMISSIONS.yaml 的 allow 清單於 create_task_card 後新增 regenerate_derived_artifacts（含限縮註解）"
+  - "F2：system/COST_POLICY.md『工具呼叫限制』段新增 max_tool_calls 計數範圍註（task-tool vs overhead）"
+  - "F4：skills/research/SKILL.md『品質標準』段新增『完成度以覆蓋度為主、字數為輔』一條"
+  - "skills/research/SKILL.md 改後仍 ≤ 1.5K token（check_context_budget.rb 綠）"
+  - "全 CI 13 步綠：含 ruby/python 測試、permissions_guard test（不受 F1 影響）、e2e、manifest --check"
+  - "寫 logs/runs/RUN-20260531-002.yaml（risk>=high 觸發）+ 批准日誌 APR-20260531-003 + audit log"
+  - "重生 frontend/data.json"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: "system/"
+  filename: "PERMISSIONS.yaml"   # 主要輸出之一（另含 COST_POLICY.md / SKILL.md）
+
+# === 風險與權限 ===
+risk_level: "high"           # 修改 system/ 規則（前例 APR-20260409-002 同級）
+approval_needed: true        # 使用者於 session 複選核准 F1+F2+F4
+allowed_tools:
+  - "file_read"
+  - "modify_system_rules"
+  - "modify_skills"
+  - "write_logs"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "套用 commit — F1+F2+F4 至 system/skills + RUN/approval/audit + manifest 重生"
+actual_tool_calls: 8
+result_summary: |
+  F1/F2/F4 全數套用：PERMISSIONS.yaml 加 regenerate_derived_artifacts（allow）、
+  COST_POLICY.md 加 max_tool_calls 計數範圍註、research/SKILL.md 加覆蓋度判準。
+  全 13 步 CI 綠（含 context budget、permissions_guard、e2e、manifest --check）。
+  F1 待驗證已解：permissions_guard 為 deny-list，不需改 guard/test。
+  high risk → 已寫 RUN-20260531-002、批准 APR-20260531-003。深度測試治理閉環完成。
+completion_time: "2026-05-31"
+audit_log_ref: "logs/AUDIT_LOG.md"

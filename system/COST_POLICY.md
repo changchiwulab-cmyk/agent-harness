@@ -22,6 +22,8 @@ v1 階段採用「粗略護欄 + 事後量測」策略：
 - 單一任務最多 3 輪 web search
 - 連續失敗重試上限 3 次
 
+> **計數範圍（2026-05-31 retro F2 釐清）**：`max_tool_calls` 只計「任務工具」（推進任務本身的 web_search / write / 主要 file_read）。下列 overhead **不計入**：context 載入用的 file_read（讀 SKILL / schema / 既有 outputs 等參考檔）、harness 自身的 gate 驗證（validate_task_card / check_spec_consistency / e2e / manifest --check）、git_commit_checkpoint。理由：避免「讀越多參考、驗越嚴謹」反被誤判超支（見 RUN-20260531-001：計 16 vs 任務工具約 10）。
+
 ### 超限行為
 - 工具呼叫達上限 → checkpoint，通知使用者決定是否繼續
 - 連續失敗達上限 → 停止執行，記錄到 error log

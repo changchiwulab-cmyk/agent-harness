@@ -13,6 +13,7 @@ permissions:
     - create_output_files      # 在 outputs/ 建立新檔案
     - read_memory              # 讀取 memory/ 下的內容
     - create_task_card         # 建立新的 Task Card（已驗證：8 筆歷史任務全部立即 approve → 升為 allow）
+    - regenerate_derived_artifacts  # 重生由 tasks/logs/memory 確定性衍生的檔（限 scripts/ 產生器，如 frontend/data.json）；不含 system/skills/reports（2026-05-31 retro F1）
 
   # === 需要人工確認 ===
   ask:
