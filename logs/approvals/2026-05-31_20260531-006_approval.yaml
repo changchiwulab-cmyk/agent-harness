@@ -1,0 +1,14 @@
+# 批准紀錄 — Task Card 20260531-006（修正 CLAUDE.md create_task_card drift）
+# schema 見 system/APPROVAL_POLICY.yaml 的 approval_record 段。
+
+approval_records:
+  - approval_id: "APR-20260531-006"
+    task_id: "20260531-006"
+    date: "2026-05-31"
+    action: "CLAUDE.md：『建立 Task Card』由 ask 行移至 allow 行（同步 D004 晉升 + PERMISSIONS.yaml）"
+    approval_method: "human_confirm"
+    risk_level: "medium"
+    status: "approved"
+    approved_by: "human"
+    rationale: "修正既有文件 drift；使用者於 session 指定核准。create_task_card 已於 D004（2026-04-15）晉升 allow，PERMISSIONS.yaml 為 allow，CLAUDE.md 摘要同步即可。"
+    linked_run: "RUN-20260531-002"

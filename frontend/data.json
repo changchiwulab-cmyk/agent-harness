@@ -167,22 +167,22 @@
     "task_risk": {
       "high": 2,
       "low": 32,
-      "medium": 16
+      "medium": 17
     },
     "task_skill": {
       "analysis": 5,
-      "ops": 29,
+      "ops": 30,
       "research": 6,
       "review": 6,
       "writing": 4
     },
     "task_status": {
-      "done": 27,
+      "done": 28,
       "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 50
+    "task_total": 51
   },
   "tasks": [
     {
@@ -644,6 +644,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260531-004"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-31",
+      "goal": "修正 CLAUDE.md 既有 drift：『建立 Task Card』由 ask 行移至 allow 行，同步 D004 晉升",
+      "path": "tasks/2026-05-31_fix-claude-md-create-task-card-drift.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260531-006"
     },
     {
       "approval_needed": false,

@@ -33,6 +33,31 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260531-006"
+  date: "2026-05-31"
+  skill_type: "ops"
+  goal: "修正 CLAUDE.md 既有 drift：建立 Task Card 由 ask 移至 allow（同步 D004）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "modify_claude_md"
+      call_count: 1
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "bash"
+      call_count: 2
+    - tool_name: "git_commit_checkpoint"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "CLAUDE.md"
+  error_summary: ""
+  estimated_tokens: "~3K"
+  notes: "修正既有 drift（create_task_card 早於 D004 晉升 allow，CLAUDE.md 摘要未同步）。ask 級 modify_claude_md，使用者核准。批准 APR-20260531-006。CLAUDE.md 摘要現與 PERMISSIONS.yaml 完全一致。"
+```
+
+```yaml
 - task_id: "20260531-005"
   date: "2026-05-31"
   skill_type: "ops"

@@ -1,0 +1,59 @@
+task_id: "20260531-006"
+date: "2026-05-31"
+status: "done"               # 完成改 done 時務必同步填 completion_time
+
+# === 任務定義 ===
+goal: "修正 CLAUDE.md 既有 drift：『建立 Task Card』由 ask 行移至 allow 行，同步 D004 晉升"
+
+context: |
+  20260531-005 編輯 CLAUDE.md 時發現既有 drift：『建立 Task Card』仍列於 ask 摘要，
+  但 create_task_card 早於決策 D004（2026-04-15）晉升為 allow，PERMISSIONS.yaml 亦為 allow。
+  使用者於 session 指定修正。屬 ask 級（modify_claude_md）。
+  本卡為新增 tasks/，會使 manifest 漂移 → 完成後重生 frontend/data.json。
+
+input_data:
+  - "CLAUDE.md"
+  - "system/PERMISSIONS.yaml"
+  - "memory/active_projects/agent-harness/decisions/20260415-D004_create-task-card-promoted-to-allow.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "CLAUDE.md ask 行移除『建立 Task Card』"
+  - "CLAUDE.md allow 行加入『建立 Task Card』"
+  - "CLAUDE.md 權限摘要與 PERMISSIONS.yaml 一致（create_task_card 為 allow）"
+  - "context budget 綠（CLAUDE.md+GLOBAL_RULES ≤ 3K）；全 CI 13 步綠"
+  - "批准日誌 APR-20260531-006 + audit log + manifest 重生"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "./"
+  filename: "CLAUDE.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "modify_claude_md"
+  - "write_logs"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "drift 修正 commit — CLAUDE.md 建立 Task Card 移至 allow + manifest 重生"
+actual_tool_calls: 5
+result_summary: |
+  CLAUDE.md ask 行移除『建立 Task Card』、allow 行加入，與 PERMISSIONS.yaml + D004 一致。
+  既有 drift 清除。context budget 綠、全 CI 13 步綠。批准 APR-20260531-006。
+completion_time: "2026-05-31"
+audit_log_ref: "logs/AUDIT_LOG.md"
