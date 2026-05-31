@@ -33,6 +33,31 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260531-003"
+  date: "2026-05-31"
+  skill_type: "analysis"
+  goal: "F1/F2/F4 壓測發現的 system/skills 修改提案（含 before→after）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "write_drafts"
+      call_count: 1
+    - tool_name: "bash"
+      call_count: 2
+    - tool_name: "git_commit_checkpoint"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/2026-05-31_stress-test-fixes-proposal.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "analysis：產出 F1/F2/F4 修改提案，未動 system/skills（套用為另案 ask 級）。F3 正向不修。"
+```
+
+```yaml
 - task_id: "20260531-002"
   date: "2026-05-31"
   skill_type: "ops"

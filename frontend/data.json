@@ -151,23 +151,23 @@
     "run_total": 3,
     "task_risk": {
       "high": 1,
-      "low": 31,
+      "low": 32,
       "medium": 15
     },
     "task_skill": {
-      "analysis": 4,
+      "analysis": 5,
       "ops": 27,
       "research": 6,
       "review": 6,
       "writing": 4
     },
     "task_status": {
-      "done": 24,
+      "done": 25,
       "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 47
+    "task_total": 48
   },
   "tasks": [
     {
@@ -639,6 +639,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260531-002"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-31",
+      "goal": "針對深度測試 F1/F2/F4 三項壓測發現，產出 system/ 與 skills/ 的精確修改提案（含 before→after），供人工核准後實施",
+      "path": "tasks/2026-05-31_retro-stress-test-fixes.yaml",
+      "risk_level": "low",
+      "skill_type": "analysis",
+      "status": "done",
+      "task_id": "20260531-003"
     }
   ]
 }

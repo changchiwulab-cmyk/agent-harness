@@ -1,0 +1,70 @@
+task_id: "20260531-003"
+date: "2026-05-31"
+status: "done"               # 完成改 done 時務必同步填 completion_time
+
+# === 任務定義 ===
+goal: "針對深度測試 F1/F2/F4 三項壓測發現，產出 system/ 與 skills/ 的精確修改提案（含 before→after），供人工核准後實施"
+
+context: |
+  接續深度測試（Task Card 20260531-001）與其觀察報告 harness-stress-test-20260531-v1。
+  使用者要求處理 F1（權限模型張力）、F2（工具計數未分離 task/overhead）、F4（research DoD 字數判定）。
+  F3 為正向發現（rate-limit 降級路徑），不需修。
+  關鍵約束：F1/F2 改 system/、F4 改 skills/，皆屬 ask 級（PERMISSIONS modify_system_rules / modify_skills）。
+  依 CLAUDE.md「不自動修改系統檔案，一律先到 drafts/」與 RETRO_FLOW，本卡只產出「提案 draft」，
+  不直接編輯任何 system/ 或 skills/ 檔；實際套用為人工核准後的另一張 ask 級 Task Card。
+  反身性：本卡本身會踩到 F1（新增卡致 manifest 漂移、須重生）與 F2（工具計數含 overhead），
+  正好當作提案的活證據。
+
+input_data:
+  - "outputs/reports/harness-stress-test-20260531-v1.md"
+  - "system/PERMISSIONS.yaml"
+  - "system/COST_POLICY.md"
+  - "tasks/TASK_CARD_TEMPLATE.yaml"
+  - "skills/research/SKILL.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "提案 draft 涵蓋 F1/F2/F4 三項，每項含：問題摘要、目標檔案與段落、精確 before→after 片段、理由、風險、是否 ask 級"
+  - "F1：對 PERMISSIONS.yaml（或 GATE_POLICY.yaml）提出『衍生檔（frontend/data.json）重生』之權限地位明文化方案"
+  - "F2：對 COST_POLICY.md『工具呼叫限制』段提出 task-tool vs overhead-tool（context 載入 / 驗證器 / checkpoint）之計數釐清"
+  - "F4：對 skills/research/SKILL.md（或 TASK_CARD_TEMPLATE.yaml）提出研究類 DoD『覆蓋度為主、字數為輔』之調整"
+  - "明確標示：本卡不直接修改任何 system/ 或 skills/ 檔（ask 級，待核准）"
+  - "符合 analysis skill 格式；事實 / 合理推論 / 待驗證 / 高風險假設四態分離"
+  - "輸出在 outputs/drafts/；check_spec_consistency.rb 與 manifest --check 綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-05-31_stress-test-fixes-proposal.md"
+
+# === 風險與權限 ===
+risk_level: "low"            # 純分析 + 草稿提案；套用 system/skills 為另案 ask
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "bash"                   # 重生 manifest + 跑驗證腳本
+
+# === 成本控制 ===
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "提案 commit — F1/F2/F4 修改提案 draft + manifest 重生"
+actual_tool_calls: 7
+result_summary: |
+  產出 outputs/drafts/2026-05-31_stress-test-fixes-proposal.md，涵蓋 F1（PERMISSIONS 加
+  regenerate_derived_artifacts allow）、F2（COST_POLICY 計數範圍釐清）、F4（research SKILL DoD
+  改覆蓋度為主），每項含精確 before→after、理由、風險、ask 級標示。未動 system/skills（待核准）。
+  反身性佐證：本卡同樣踩到 F1（需重生 manifest）與 F2（計數含 overhead）。
+completion_time: "2026-05-31"
+audit_log_ref: "logs/AUDIT_LOG.md"
