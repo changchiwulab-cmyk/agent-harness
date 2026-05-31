@@ -108,51 +108,66 @@
       "started_at": "2026-05-29 05:25",
       "status": "failed",
       "task_id": "20260529-003"
+    },
+    {
+      "ended_at": "2026-05-31 00:00",
+      "gate_results": {
+        "completion_check": "pass",
+        "risk_check": "pass",
+        "rule_check": "pass",
+        "schema_check": "pass"
+      },
+      "path": "logs/runs/RUN-20260531-001.yaml",
+      "run_id": "RUN-20260531-001",
+      "skill_type": "research",
+      "started_at": "2026-05-31 00:00",
+      "status": "completed",
+      "task_id": "20260531-001"
     }
   ],
   "overview": {
     "gate_results": {
       "completion_check": {
         "not_run": 1,
-        "pass": 1
+        "pass": 2
       },
       "risk_check": {
         "not_run": 1,
-        "pass": 1
+        "pass": 2
       },
       "rule_check": {
         "not_run": 1,
-        "pass": 1
+        "pass": 2
       },
       "schema_check": {
         "fail": 1,
-        "pass": 1
+        "pass": 2
       }
     },
     "run_status": {
-      "completed": 1,
+      "completed": 2,
       "failed": 1
     },
-    "run_total": 2,
+    "run_total": 3,
     "task_risk": {
       "high": 1,
-      "low": 30,
+      "low": 31,
       "medium": 14
     },
     "task_skill": {
       "analysis": 4,
       "ops": 26,
-      "research": 5,
+      "research": 6,
       "review": 6,
       "writing": 4
     },
     "task_status": {
-      "done": 22,
+      "done": 23,
       "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 45
+    "task_total": 46
   },
   "tasks": [
     {
@@ -604,6 +619,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-05-31",
+      "goal": "產出『AI 產業落地物理 AI（Physical AI）進度表』：全球趨勢為主軸 + 台灣切入點，採時間軸(2023→2030) × 子領域矩陣，並同步留下完整框架壓測紀錄",
+      "path": "tasks/2026-05-31_physical-ai-rollout-roadmap.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "done",
+      "task_id": "20260531-001"
     }
   ]
 }

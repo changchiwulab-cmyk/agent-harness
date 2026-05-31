@@ -1,0 +1,16 @@
+# 批准紀錄 — Task Card 20260531-001（深度測試）後續 ask 級動作
+# schema 見 system/APPROVAL_POLICY.yaml 的 approval_record 段。
+# 觸發：研究任務完成後，新增 tasks/ + logs/runs/ 造成 frontend manifest 漂移；
+#       重生 frontend/data.json 屬研究白名單外動作，依計畫歸 ask 級，經 human_confirm 核准。
+
+approval_records:
+  - approval_id: "APR-20260531-001"
+    task_id: "20260531-001"
+    date: "2026-05-31"
+    action: "重生 frontend/data.json 以修復 manifest 漂移（CI validate-spec 之 generate_frontend_manifest.py --check）"
+    approval_method: "human_confirm"
+    risk_level: "low"
+    status: "approved"
+    approved_by: "human"
+    rationale: "確定性重生衍生檔、可復原、無資料遺失；但因改動研究任務 allowed_tools 白名單外的 frontend/data.json，依核准計畫歸 ask 級，經 human_confirm 核准後單獨 commit。"
+    linked_run: "RUN-20260531-001"

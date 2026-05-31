@@ -67,7 +67,7 @@ skill_type: "research"
 checkpoints:
   - "9cbe43b — 建立 Task Card + 通過 schema_check，載入 context"
   - "3dc547c — 完成 Physical AI 進度表草稿（全球矩陣 + 台灣切入點 + 敏感性）"
-  - "pending — 完成四層 gate 驗證 + 執行紀錄 + audit log"
+  - "a720202 — 完成四層 gate 驗證 + 執行紀錄 + audit log"
 actual_tool_calls: 16        # web_search 5 + file_read 6 + write_drafts 1 + create_output_files 1 + git_commit 3
 result_summary: |
   四層 gate 全 pass。產出 Physical AI 進度表草稿（時間軸 2023→2030 × 5 子領域矩陣 + 台灣三切入點

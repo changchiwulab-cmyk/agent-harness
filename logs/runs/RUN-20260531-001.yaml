@@ -26,7 +26,7 @@ execution_log:
       stage: "建立 Task Card + 通過 schema_check，載入 context"
     - commit: "3dc547c"
       stage: "完成 Physical AI 進度表草稿（全球矩陣 + 台灣切入點 + 敏感性）"
-    - commit: "pending"
+    - commit: "a720202"
       stage: "完成四層 gate 驗證 + 執行紀錄 + audit log"
 
   token_estimate:
