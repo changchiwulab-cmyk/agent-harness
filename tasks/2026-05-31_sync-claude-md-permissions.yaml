@@ -1,0 +1,61 @@
+task_id: "20260531-005"
+date: "2026-05-31"
+status: "done"               # 完成改 done 時務必同步填 completion_time
+
+# === 任務定義 ===
+goal: "同步 CLAUDE.md 權限 allow 摘要，補列 F1 新增的 regenerate_derived_artifacts（衍生檔重生）"
+
+context: |
+  接續 20260531-004（套用 F1：PERMISSIONS allow 加 regenerate_derived_artifacts）。
+  CLAUDE.md 的一句話權限摘要未列此項。雖 CLAUDE.md 本就寫「細節見 system/PERMISSIONS.yaml」、
+  spec 一致性無強制同步，使用者仍要求補上以保摘要可讀性一致。
+  修改 CLAUDE.md 屬 ask 級（modify_claude_md），使用者於 session 指定即核准。
+  注意：CLAUDE.md + GLOBAL_RULES 有 3K token 硬限制（check_context_budget.rb），補幾字仍遠在限內。
+  本卡為新增 tasks/，會使 manifest 漂移 → 完成後重生 frontend/data.json。
+
+input_data:
+  - "CLAUDE.md"
+  - "system/PERMISSIONS.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "CLAUDE.md 的 allow 摘要列入『重生衍生檔（如 frontend/data.json）』"
+  - "CLAUDE.md + GLOBAL_RULES 仍 ≤ 3K token（check_context_budget.rb 綠）"
+  - "全 CI 13 步綠（含 spec 一致性、context budget、manifest --check、e2e）"
+  - "批准日誌 APR-20260531-005 + audit log + manifest 重生"
+  - "未動 system/PERMISSIONS.yaml 等其他檔（本卡僅改 CLAUDE.md）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "./"
+  filename: "CLAUDE.md"
+
+# === 風險與權限 ===
+risk_level: "medium"         # 改 CLAUDE.md（modify_claude_md，ask 級）；屬文件摘要同步，inline_confirm
+approval_needed: true        # 使用者於 session 指定核准
+allowed_tools:
+  - "file_read"
+  - "modify_claude_md"
+  - "write_logs"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "同步 commit — CLAUDE.md allow 摘要補衍生檔重生 + manifest 重生"
+actual_tool_calls: 5
+result_summary: |
+  CLAUDE.md allow 摘要補列『重生衍生檔（如 frontend/data.json）』，與 F1（PERMISSIONS）一致。
+  context budget 綠（CLAUDE.md+GLOBAL_RULES 仍遠低於 3K）。全 CI 13 步綠。
+  批准 APR-20260531-005。僅改 CLAUDE.md，未動其他檔。
+completion_time: "2026-05-31"
+audit_log_ref: "logs/AUDIT_LOG.md"

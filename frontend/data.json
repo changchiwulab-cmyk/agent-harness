@@ -167,22 +167,22 @@
     "task_risk": {
       "high": 2,
       "low": 32,
-      "medium": 15
+      "medium": 16
     },
     "task_skill": {
       "analysis": 5,
-      "ops": 28,
+      "ops": 29,
       "research": 6,
       "review": 6,
       "writing": 4
     },
     "task_status": {
-      "done": 26,
+      "done": 27,
       "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 49
+    "task_total": 50
   },
   "tasks": [
     {
@@ -674,6 +674,16 @@
       "skill_type": "analysis",
       "status": "done",
       "task_id": "20260531-003"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-31",
+      "goal": "同步 CLAUDE.md 權限 allow 摘要，補列 F1 新增的 regenerate_derived_artifacts（衍生檔重生）",
+      "path": "tasks/2026-05-31_sync-claude-md-permissions.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260531-005"
     }
   ]
 }

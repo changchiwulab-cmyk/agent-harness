@@ -1,0 +1,15 @@
+# 批准紀錄 — Task Card 20260531-005（同步 CLAUDE.md 權限摘要）
+# schema 見 system/APPROVAL_POLICY.yaml 的 approval_record 段。
+# 觸發：修改 CLAUDE.md 屬 ask 級（modify_claude_md）。
+
+approval_records:
+  - approval_id: "APR-20260531-005"
+    task_id: "20260531-005"
+    date: "2026-05-31"
+    action: "CLAUDE.md 權限 allow 摘要補列『重生衍生檔（如 frontend/data.json）』，同步 F1"
+    approval_method: "human_confirm"
+    risk_level: "medium"
+    status: "approved"
+    approved_by: "human"
+    rationale: "使用者於 session 明確指定要補此句。屬文件摘要同步、blast radius 小（不改任何規則邏輯），inline_confirm 即可。"
+    linked_run: "RUN-20260531-002"
