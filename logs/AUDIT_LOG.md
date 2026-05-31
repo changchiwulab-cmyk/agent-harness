@@ -33,6 +33,35 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260531-002"
+  date: "2026-05-31"
+  skill_type: "ops"
+  goal: "晉升 Physical AI 進度表 + harness 深度測試觀察至 outputs/reports/（RETRO_FLOW §5）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "bash"
+      call_count: 3
+    - tool_name: "write_reports"
+      call_count: 2
+    - tool_name: "write_drafts"
+      call_count: 2
+    - tool_name: "write_logs"
+      call_count: 1
+    - tool_name: "git_commit_checkpoint"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/reports/physical-ai-rollout-roadmap-v1.md + outputs/reports/harness-stress-test-20260531-v1.md"
+  error_summary: ""
+  estimated_tokens: "~8K"
+  notes: "ask 級晉升（write_reports），使用者回覆「是」核准；批准紀錄 APR-20260531-002（draft_first）。含 frontend manifest 重生。原 2 draft 加回指。risk=medium、checkpoints<3 → 不另寫 run log。"
+```
+
+```yaml
 - task_id: "20260531-001"
   date: "2026-05-31"
   skill_type: "research"

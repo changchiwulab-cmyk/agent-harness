@@ -1,0 +1,15 @@
+# 批准紀錄 — Task Card 20260531-002（晉升 Physical AI 進度表 + 深度測試觀察至 reports/）
+# schema 見 system/APPROVAL_POLICY.yaml 的 approval_record 段。
+# 觸發：寫 outputs/reports/ 屬 ask 級（write_reports）；APPROVAL_POLICY draft_first 流程。
+
+approval_records:
+  - approval_id: "APR-20260531-002"
+    task_id: "20260531-002"
+    date: "2026-05-31"
+    action: "晉升 outputs/drafts/ 之 Physical AI 進度表與深度測試觀察至 outputs/reports/（建立 2 份正式報告 + 晉升標記，原 draft 加回指）"
+    approval_method: "draft_first"
+    risk_level: "medium"
+    status: "approved"
+    approved_by: "human"
+    rationale: "寫 outputs/reports/ 屬 ask 級；使用者於 session 明確回覆「是」核准晉升。依 RETRO_FLOW §5 draft_first 流程，先有 draft 再晉升。"
+    linked_run: "RUN-20260531-001"

@@ -1,0 +1,70 @@
+task_id: "20260531-002"
+date: "2026-05-31"
+status: "done"               # 完成改 done 時務必同步填 completion_time
+
+# === 任務定義 ===
+goal: "晉升 Physical AI 進度表 + harness 深度測試觀察報告至 outputs/reports/（RETRO_FLOW §5 draft_first 流程）"
+
+context: |
+  接續 Task Card 20260531-001（深度測試）。使用者於 session 明確回覆「是」核准晉升。
+  寫 outputs/reports/ 屬 ask 級（PERMISSIONS write_reports / APPROVAL_POLICY draft_first），
+  依 RETRO_FLOW §5：複製 draft → reports/、加晉升標記、原 draft 加回指、記批准日誌。
+  注意：本卡為新增 tasks/20*.yaml，會造成 frontend manifest 漂移，須於本卡內重生 frontend/data.json
+  （沿用 20260531-001 已建立且經人工核准之重生模式）。
+  cost-quality 資料點（~47K vs 32K）僅累積，本卡不改 COST_POLICY。
+
+input_data:
+  - "outputs/drafts/20260531-001_physical-ai-rollout-roadmap.md"
+  - "outputs/drafts/2026-05-31_harness-stress-test-observations.md"
+  - "system/RETRO_FLOW.md"
+  - "outputs/reports/harness-self-assessment-v1.md"   # 晉升標記格式範本
+
+# === 完成標準 ===
+definition_of_done:
+  - "outputs/reports/physical-ai-rollout-roadmap-v1.md 建立，檔頭含晉升標記區塊（原始 draft / 晉升日期 / 晉升任務 / 審閱者 / 原始任務），其餘為原草稿全文"
+  - "outputs/reports/harness-stress-test-20260531-v1.md 建立，檔頭含晉升標記區塊"
+  - "兩份原 draft 檔尾加『已晉升為 reports/...』回指"
+  - "logs/approvals/ 新增本次晉升之批准紀錄（approval_method: draft_first, status: approved）"
+  - "重生 frontend/data.json，generate_frontend_manifest.py --check 通過"
+  - "check_spec_consistency.rb / validate_task_card.py / e2e（smoke+failure_drill）全綠"
+  - "輸出位置正確：正式報告在 outputs/reports/，未動 system/ 與 skills/"
+
+# === 輸出定義 ===
+expected_output:
+  format: "mixed"
+  location: "outputs/reports/"
+  filename: "physical-ai-rollout-roadmap-v1.md"
+
+# === 風險與權限 ===
+risk_level: "medium"         # 寫 reports/ 屬 ask 級
+approval_needed: true        # 使用者已於 session 回覆「是」核准
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_reports"
+  - "write_drafts"
+  - "create_output_files"
+  - "write_logs"
+  - "git_commit_checkpoint"
+  - "bash"                   # 重生 manifest + 跑驗證腳本
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "晉升 commit — 2 份正式報告 + 原 draft 回指 + 批准日誌 APR-20260531-002 + manifest 重生"
+actual_tool_calls: 9
+result_summary: |
+  晉升完成。建立 outputs/reports/physical-ai-rollout-roadmap-v1.md 與
+  outputs/reports/harness-stress-test-20260531-v1.md（皆含晉升標記），原 2 份 draft 加「已晉升」回指，
+  批准紀錄 APR-20260531-002（draft_first，人工核准），重生 frontend/data.json 修漂移。
+  Gate 全綠：validate_task_card / check_spec_consistency / manifest --check / e2e（7 測試）。
+  risk=medium、checkpoints<3 → 依 EXECUTION_LOG_SCHEMA 不另寫 logs/runs/。
+completion_time: "2026-05-31"
+audit_log_ref: "logs/AUDIT_LOG.md"

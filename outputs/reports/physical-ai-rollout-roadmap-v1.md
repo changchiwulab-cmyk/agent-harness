@@ -1,3 +1,26 @@
+# AI 產業落地物理 AI（Physical AI）進度表 — 正式報告（physical-ai-rollout-roadmap-v1）
+
+---
+
+## 晉升標記
+
+| 項目 | 內容 |
+|------|------|
+| **原始 draft** | `outputs/drafts/20260531-001_physical-ai-rollout-roadmap.md` |
+| **晉升日期** | 2026-05-31 |
+| **晉升任務** | Task Card `20260531-002`（tasks/2026-05-31_promote-physical-ai-roadmap.yaml） |
+| **審閱者** | 人工確認（使用者於本 session 回覆「是」核准晉升） |
+| **原始產出日期** | 2026-05-31 |
+| **原始任務** | Task Card `20260531-001`（tasks/2026-05-31_physical-ai-rollout-roadmap.yaml；深度測試載荷） |
+
+### 晉升性質
+- 本報告為 research 產出（資訊性），未變更任何 `system/` 檔，不觸發 v3。
+- 數據型主張之時效與 `[待驗證]` 標記沿用原草稿；即時數字以原草稿「待驗證」段為準。
+
+---
+
+以下為原始草稿全文保留（除上方「晉升標記」為新增，其餘未變動）。
+
 # AI 產業落地物理 AI（Physical AI）進度表（全球趨勢 + 台灣切入點）
 
 - Task ID：20260531-001
@@ -170,7 +193,3 @@
 ---
 
 **End of 20260531-001**
-
----
-
-> 📌 已晉升為 `outputs/reports/physical-ai-rollout-roadmap-v1.md`（晉升任務 Task Card 20260531-002，2026-05-31，人工核准）。本草稿保留作歷史備援。
