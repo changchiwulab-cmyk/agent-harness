@@ -42,14 +42,18 @@ def load_tool_registry(path)
   reg = YAML.load_file(path)
   tools = (reg.is_a?(Hash) && reg['tools'].is_a?(Hash)) ? reg['tools'] : {}
   alias_map = {}
+  tier_map = {}
   tools.each do |canonical, meta|
     alias_map[canonical] = canonical
+    tier_map[canonical] = meta.is_a?(Hash) ? meta['tier'] : nil
     Array(meta && meta['aliases']).each { |a| alias_map[a] = canonical }
   end
-  alias_map
+  [alias_map, tier_map]
 end
 
-TOOL_ALIAS_MAP = (File.exist?(TOOL_REGISTRY_PATH) ? load_tool_registry(TOOL_REGISTRY_PATH) : {}).freeze
+TOOL_REGISTRY_MAPS = File.exist?(TOOL_REGISTRY_PATH) ? load_tool_registry(TOOL_REGISTRY_PATH) : [{}, {}]
+TOOL_ALIAS_MAP = TOOL_REGISTRY_MAPS[0].freeze
+TOOL_TIER_MAP = TOOL_REGISTRY_MAPS[1].freeze  # canonical => allow|ask|deny
 KNOWN_TOOLS = TOOL_ALIAS_MAP.keys.freeze
 
 def parse_iso_date(value)
@@ -161,12 +165,16 @@ Dir.glob('tasks/**/*.yaml').sort.each do |task_file|
     end
   end
 
-  # allowed_tools 詞彙 lint（A2: 20260606-A01）：每個 entry 須解析於 system/TOOL_REGISTRY.yaml
+  # allowed_tools 詞彙 lint（A2: 20260606-A01）：每個 entry 須解析於 system/TOOL_REGISTRY.yaml，
+  # 且不得為 deny 級（過度代理；對齊 runtime gate_rule —— Codex P2 20260606-B01）。
   if task.key?('allowed_tools') && !task['allowed_tools'].nil?
     if task['allowed_tools'].is_a?(Array)
       task['allowed_tools'].each do |tool|
-        unless KNOWN_TOOLS.include?(tool)
+        canonical = TOOL_ALIAS_MAP[tool]
+        if canonical.nil?
           errors << "#{task_file}: unknown tool '#{tool}' in allowed_tools (not in system/TOOL_REGISTRY.yaml)"
+        elsif TOOL_TIER_MAP[canonical] == 'deny'
+          errors << "#{task_file}: deny-tier tool '#{tool}' must not appear in allowed_tools (excessive agency; PERMISSIONS deny)"
         end
       end
     else

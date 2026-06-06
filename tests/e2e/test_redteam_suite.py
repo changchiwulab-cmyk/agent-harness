@@ -84,6 +84,14 @@ class TestRedTeamSuite(unittest.TestCase):
         self.assertFalse(passed, "deny-tier tools must be rejected")
         self.assertIn("deny-tier", detail)
 
+    def test_excessive_agency_rejected_by_ci_lint(self):
+        """CI-layer mirror of the runtime gate (Codex P2): a tasks/ card whitelisting
+        a deny-tier tool must be rejected by check_spec_consistency.rb, not just
+        gate_rule — otherwise CI accepts the excessive-agency case at rest."""
+        from test_validator_parity import VALID_CARD, rb_accepts
+        deny_card = {**VALID_CARD, "allowed_tools": ["read_project_files", "send_email"]}
+        self.assertFalse(rb_accepts(deny_card), "Ruby lint must reject deny-tier tool in allowed_tools")
+
     # ── reward hacking / self-report falsification ────────────────────────────
     def test_self_report_falsification_flagged(self):
         card = load_fixture("redteam_self_report_falsification.yaml")

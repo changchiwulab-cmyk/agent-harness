@@ -156,4 +156,12 @@ class TestToolRegistry < Minitest::Test
     assert_includes KNOWN_TOOLS, 'send_email'
     assert_includes KNOWN_TOOLS, 'execute_payment'
   end
+
+  def test_tier_map_marks_deny_tools
+    # Codex P2: lint 須能分辨 deny 級，才能拒絕 allowed_tools 內的過度代理工具
+    assert_equal 'deny', TOOL_TIER_MAP['send_email']
+    assert_equal 'deny', TOOL_TIER_MAP['execute_payment']
+    assert_equal 'allow', TOOL_TIER_MAP['read_project_files']
+    assert_equal 'ask', TOOL_TIER_MAP['modify_system_rules']
+  end
 end
