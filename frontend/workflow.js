@@ -160,7 +160,7 @@ function renderApproval(spec) {
         ${list(a.escalation)}
       </div>
     </div>`;
-  return section('approval', '審核與升級', 'APPROVAL_POLICY.yaml + AGENT_CONTEXT.yaml', body);
+  return section('approval', '審核與升級', 'system/APPROVAL_POLICY.yaml + system/AGENT_CONTEXT.yaml', body);
 }
 
 function renderFailure(spec) {

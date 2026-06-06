@@ -42,7 +42,7 @@
       "label": "Fast-path（預設主路 · 直接建卡）",
       "conditions": [
         "goal 可以一句話說清楚",
-        "skill_type 可直接判斷（見 ROUTING_RULES.md）",
+        "skill_type 可直接判斷（見 system/ROUTING_RULES.md）",
         "risk_level 明顯為 low 或 medium"
       ],
       "flow": ["使用者提出需求", "三條件都符合？", "草擬 Task Card", "呈現使用者確認", "進入執行流程"]
@@ -58,10 +58,10 @@
   "execution_flow": [
     { "step": 1, "label": "載入 Task Card", "io": "tasks/*.yaml" },
     { "step": 2, "label": "確認 goal + definition_of_done", "io": "" },
-    { "step": 3, "label": "載入 context", "io": "GLOBAL_RULES.md + AGENT_CONTEXT.yaml + APPROVAL_POLICY.yaml + 對應 skill + project context" },
+    { "step": 3, "label": "載入 context", "io": "system/GLOBAL_RULES.md + system/AGENT_CONTEXT.yaml + system/APPROVAL_POLICY.yaml + 對應 skill + project context" },
     { "step": 4, "label": "執行", "io": "只用 allowed_tools 白名單內的工具" },
     { "step": 5, "label": "git commit checkpoint", "io": "格式：checkpoint: [task_id] [階段描述]" },
-    { "step": 6, "label": "逐層驗證（4 Gate）", "io": "依 GATE_POLICY.yaml：schema → 規則 → 完成 → 風險", "ref": "gates" },
+    { "step": 6, "label": "逐層驗證（4 Gate）", "io": "依 system/GATE_POLICY.yaml：schema → 規則 → 完成 → 風險", "ref": "gates" },
     { "step": 7, "label": "輸出到 outputs/", "io": "outputs/drafts/ 或 reports/" },
     { "step": 8, "label": "寫執行紀錄", "io": "logs/runs/（失敗 / 部分 / 高風險 / ≥3 checkpoint 才寫）" },
     { "step": 9, "label": "寫 audit log", "io": "logs/AUDIT_LOG.md" }
