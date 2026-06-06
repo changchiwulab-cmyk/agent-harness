@@ -6,7 +6,7 @@
 
 task_id: "20260606-B01"
 date: "2026-06-06"
-status: "in_progress"
+status: "review"
 
 # === 任務定義 ===
 goal: "依 2026 最新 agentic 威脅資料，為 Agent Harness 補上 AGI 未來防護子系統：AGI-1 獨立完成驗證器（反『自己改自己考卷』）、AGI-2 資料-vs-指令隔離政策、AGI-3 記憶與稽核完整性/防竄改、AGI-5 對抗紅隊 CI 套件，全部納入 CI"
@@ -62,7 +62,10 @@ max_web_searches: 0
 skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
+checkpoints:
+  - "checkpoint: 20260606-B01 AGI-1 independent completion verifier"
+  - "checkpoint: 20260606-B01 AGI-3 memory & audit integrity"
+  - "checkpoint: 20260606-B01 AGI-2 injection policy + AGI-5 red-team + CI wiring"
+actual_tool_calls: 34
+result_summary: "AGI-1 verify_completion.py（獨立重算 DoD/產物/checkpoint，反自我謊報；48 卡 FAIL=0）；AGI-3 verify_audit_integrity.py + INTEGRITY_MANIFEST（9 記憶檔 sha256 防竄改，記憶投毒 HARD gate；稽核覆蓋/漂移為 SOFT WARN）；AGI-2 GLOBAL_RULES 外部資料隔離政策 + scan_injection_markers.py + FAILURE_TAXONOMY SEC-05/06/07；AGI-5 test_redteam_suite.py 7 測試對照 OWASP ASI01/05/06+reward-hack。全部接入 CI，最終 19/19 綠。狀態 review：待人工核可（draft PR）。"
 audit_log_ref: "logs/AUDIT_LOG.md"

@@ -148,9 +148,9 @@
     },
     "task_status": {
       "done": 22,
-      "in_progress": 5,
+      "in_progress": 2,
       "pending": 2,
-      "review": 19
+      "review": 22
     },
     "task_total": 48
   },
@@ -612,7 +612,7 @@
       "path": "tasks/2026-06-06_a-track-test-and-debug.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "in_progress",
+      "status": "review",
       "task_id": "20260606-A01"
     },
     {
@@ -622,7 +622,7 @@
       "path": "tasks/2026-06-06_agi-readiness-report.yaml",
       "risk_level": "low",
       "skill_type": "review",
-      "status": "in_progress",
+      "status": "review",
       "task_id": "20260606-R01"
     },
     {
@@ -632,7 +632,7 @@
       "path": "tasks/2026-06-06_b-track-agi-hardening.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "in_progress",
+      "status": "review",
       "task_id": "20260606-B01"
     }
   ]

@@ -5,7 +5,7 @@
 
 task_id: "20260606-A01"
 date: "2026-06-06"
-status: "in_progress"
+status: "review"
 
 # === 任務定義 ===
 goal: "對 Agent Harness v2 做深度測試與除錯：實跑全套 CI 建立實證基線，修掉已證實的工具名稱碎片化（file_read 等 5 詞未對齊 PERMISSIONS），新增正典工具登錄表與 CI lint 防漂移，對帳 Python/Ruby 雙驗證器，並修正文件/執行落差"
@@ -63,7 +63,9 @@ max_web_searches: 0
 skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
+checkpoints:
+  - "checkpoint: 20260606-A01 A1 tool registry + A2 allowed_tools lint"
+  - "checkpoint: 20260606-A01 A3 validator parity + A4 doc fixes"
+actual_tool_calls: 28
+result_summary: "實跑全套 13 步 CI 建立綠燈基線；新增 system/TOOL_REGISTRY.yaml（25 工具 canonical+tier+aliases）對齊三處分裂的權限詞彙；check_spec_consistency.rb 加 allowed_tools lint（既有 50+3 卡仍綠）+ 單元測試；test_dummy_task_smoke gate_rule 改為 registry 解析、拒未知與 deny-tier；修根因 TASK_CARD_TEMPLATE；新增 validator parity 測試守住 Ruby-superset 契約；修 task_id 格式文字、DoD 顆粒度、定義『連續失敗 3 次』。狀態 review：待人工核可（draft PR）。"
 audit_log_ref: "logs/AUDIT_LOG.md"

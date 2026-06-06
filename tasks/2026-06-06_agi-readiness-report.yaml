@@ -5,7 +5,7 @@
 
 task_id: "20260606-R01"
 date: "2026-06-06"
-status: "in_progress"
+status: "review"
 
 # === 任務定義 ===
 goal: "產出 AGI-readiness 稽核與強化報告：對照 OWASP Agentic Top 10 2026 / Microsoft 失敗分類 / Anthropic 可擴展監督，總結 Track A 除錯發現與 Track B AGI 強化成果，標註嚴重度、已實作對策、殘餘風險與來源"
@@ -49,7 +49,8 @@ max_web_searches: 0
 skill_type: "review"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
+checkpoints:
+  - "checkpoint: 20260606-R01 AGI-readiness report + finalize cards"
+actual_tool_calls: 6
+result_summary: "產出 outputs/drafts/2026-06-06_agi-readiness-and-hardening-report.md：含摘要、方法論（含被攔下的假陽性）、Track A 發現表（嚴重度+證據+對策）、Track B 五項強化對照 OWASP/Microsoft/Anthropic、19/19 驗證、殘餘風險、6 類來源。依 GLOBAL_RULES 標註 已知事實/合理推論/待驗證/高風險假設。狀態 review：待人工核可後依 RETRO_FLOW §5 晉升 reports/。"
 audit_log_ref: "logs/AUDIT_LOG.md"
