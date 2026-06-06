@@ -1,0 +1,43 @@
+# Tool Registry — 正典工具詞彙（單一真相）
+# 目的：橋接三處分裂的權限表示 —— task-card 的 allowed_tools / audit 的 tools_called /
+#       PERMISSIONS.yaml 的 allow|ask|deny 清單。每個符號工具在此有唯一 canonical 名 + tier + aliases。
+# 強制：scripts/check_spec_consistency.rb 載入本檔建 KNOWN_TOOLS，斷言每張 Task Card 的
+#       allowed_tools 都解析得到（A2 lint，2026-06-06）。
+#
+# tier 語意：對齊 system/PERMISSIONS.yaml（後者仍為權限「能否執行」的權威來源）。
+#   allow = 可直接執行；ask = 需人工確認；deny = 禁止。
+# 注意：write_drafts / create_output_files / modify_system_rules 的實際 tier 也受「寫入路徑」影響
+#   （路徑敏感升級見 system/APPROVAL_POLICY.yaml）。本表給的是該符號的「基準 tier」。
+# aliases：歷史/簡寫名，解析到同一 canonical（不改既有 50 張卡，避免擾動稽核不可變性）。
+
+tools:
+  # === allow 級 ===
+  read_project_files:    { tier: allow, aliases: [file_read, file_edit, read_file] }
+  file_search:           { tier: allow, aliases: [] }
+  web_search:            { tier: allow, aliases: [] }
+  read_memory:           { tier: allow, aliases: [] }
+  write_drafts:          { tier: allow, aliases: [] }
+  create_output_files:   { tier: allow, aliases: [file_write] }
+  write_logs:            { tier: allow, aliases: [] }
+  git_commit_checkpoint: { tier: allow, aliases: [] }
+  create_task_card:      { tier: allow, aliases: [] }
+  run_command:           { tier: allow, aliases: [bash] }   # 讀取/建置/測試用 shell；破壞性 shell 由 permissions_guard.py 於 runtime deny
+  run_tests:             { tier: allow, aliases: [] }
+
+  # === ask 級（需人工確認）===
+  modify_skills:          { tier: ask, aliases: [] }
+  modify_system_rules:    { tier: ask, aliases: [modify_settings_json] }
+  modify_claude_md:       { tier: ask, aliases: [] }
+  write_long_term_memory: { tier: ask, aliases: [] }
+  write_reports:          { tier: ask, aliases: [] }
+  install_packages:       { tier: ask, aliases: [] }
+
+  # === deny 級（禁止；列於此供 gate_rule / 紅隊測試偵測「過度代理」allowed_tools）===
+  shell_delete:            { tier: deny, aliases: [] }
+  send_email:              { tier: deny, aliases: [] }
+  send_message_external:   { tier: deny, aliases: [] }
+  publish_content:         { tier: deny, aliases: [] }
+  modify_production_data:  { tier: deny, aliases: [] }
+  execute_payment:         { tier: deny, aliases: [] }
+  auto_write_memory:       { tier: deny, aliases: [] }
+  spawn_background_process: { tier: deny, aliases: [] }

@@ -1,0 +1,68 @@
+# Task Card — Track B：AGI 未來強化
+# 來源：使用者要求「深度針對 AGI 的未來」強化
+# 核可：使用者於本 session 透過 plan approval 核可整體計畫（AGI 四方向全選）
+# 目的：依 2026 框架（OWASP Agentic Top 10、Microsoft 失敗分類、Anthropic 可擴展監督、METR/Apollo）
+#       補上 harness 缺的 AGI 未來防護：獨立完成驗證、提示注入隔離、記憶/稽核完整性、紅隊測試套件
+
+task_id: "20260606-B01"
+date: "2026-06-06"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "依 2026 最新 agentic 威脅資料，為 Agent Harness 補上 AGI 未來防護子系統：AGI-1 獨立完成驗證器（反『自己改自己考卷』）、AGI-2 資料-vs-指令隔離政策、AGI-3 記憶與稽核完整性/防竄改、AGI-5 對抗紅隊 CI 套件，全部納入 CI"
+context: |
+  現有 FAILURE_TAXONOMY 只有基本 SEC-01..04，未涵蓋 2026 前沿（提示注入、記憶投毒、reward hacking、欺瞞、過度代理、自我謊報）。
+  核心 AGI 風險：executor 自填 gate_results/完成/token/audit，無獨立檢查（METR o3 timer hack、Apollo scheming 都指向不可採信自報）。
+  全 repo grep injection/untrusted/provenance/tamper = 0 命中 → 全為 greenfield。
+  做法：複用既有 generate_audit_log.py 衍生邏輯、test_failure_drill.py fixture 模式、permissions_guard.evaluate；新測試全接入 CI。
+input_data:
+  - "scripts/generate_audit_log.py"
+  - "scripts/permissions_guard.py"
+  - "tests/e2e/test_failure_drill.py"
+  - "system/GLOBAL_RULES.md"
+  - "system/FAILURE_TAXONOMY.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "scripts/verify_completion.py + test：唯讀、與 executor 解耦，重算 DoD/artifact/checkpoint/risk，標記『done 但 DoD 無證據』的 reward-hacking 訊號；--check 在不一致時非零退出"
+  - "scripts/verify_audit_integrity.py + test + memory/INTEGRITY_MANIFEST.yaml：稽核自動段防漂移 + 記憶檔 sha256 防竄改"
+  - "system/GLOBAL_RULES.md：新增『外部資料處理』段（web/file 內容是資料非指令）；改後 check_context_budget 仍 ≤3000"
+  - "system/FAILURE_TAXONOMY.yaml：新增 SEC-05 提示注入、SEC-06 記憶投毒、SEC-07 自我謊報，對齊 OWASP 2026"
+  - "scripts/scan_injection_markers.py：唯讀注入哨兵偵測，供紅隊測試用"
+  - "tests/e2e/test_redteam_suite.py + fixtures/redteam_*.yaml：5 個對抗測試對照 OWASP ASI01/ASI05/ASI06/reward-hacking"
+  - "所有新測試接入 .github/workflows/spec-consistency.yml，全套 CI 仍全綠（exit 0）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "py"
+  location: "scripts/"
+  filename: "verify_completion.py"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "read_project_files"
+  - "file_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "write_logs"
+  - "modify_system_rules"
+  - "write_long_term_memory"
+  - "run_command"
+  - "run_tests"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 80
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+audit_log_ref: "logs/AUDIT_LOG.md"

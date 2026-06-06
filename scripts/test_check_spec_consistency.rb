@@ -124,3 +124,36 @@ class TestLogsSchemaLintConstants < Minitest::Test
     assert_equal 5, ALLOWED_ERROR_TYPE.length
   end
 end
+
+# ── 測試 Tool Registry 詞彙 lint（A2: 20260606-A01）─────────────────────────────
+class TestToolRegistry < Minitest::Test
+  def test_canonical_names_are_known
+    assert_includes KNOWN_TOOLS, 'read_project_files'
+    assert_includes KNOWN_TOOLS, 'write_drafts'
+    assert_includes KNOWN_TOOLS, 'modify_system_rules'
+  end
+
+  def test_aliases_resolve_to_known
+    # 歷史簡寫名必須被接受（避免大改 50 張卡）
+    assert_includes KNOWN_TOOLS, 'file_read'
+    assert_includes KNOWN_TOOLS, 'file_write'
+    assert_includes KNOWN_TOOLS, 'bash'
+    assert_includes KNOWN_TOOLS, 'modify_settings_json'
+  end
+
+  def test_alias_maps_to_correct_canonical
+    assert_equal 'read_project_files', TOOL_ALIAS_MAP['file_read']
+    assert_equal 'modify_system_rules', TOOL_ALIAS_MAP['modify_settings_json']
+  end
+
+  def test_unknown_tool_is_rejected
+    refute_includes KNOWN_TOOLS, 'flux_capacitor'
+    assert_nil TOOL_ALIAS_MAP['flux_capacitor']
+  end
+
+  def test_deny_tier_tools_present_for_redteam_detection
+    # deny 級工具列於 registry，供 gate_rule / 紅隊偵測「過度代理」的 allowed_tools
+    assert_includes KNOWN_TOOLS, 'send_email'
+    assert_includes KNOWN_TOOLS, 'execute_payment'
+  end
+end

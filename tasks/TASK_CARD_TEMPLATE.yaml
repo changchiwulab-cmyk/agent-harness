@@ -25,8 +25,8 @@ expected_output:
 # === 風險與權限 ===
 risk_level: "low"              # low / medium / high / critical
 approval_needed: false         # true = 輸出後需人工確認才算完成
-allowed_tools:                 # 白名單，只列出這個任務需要的工具
-  - "file_read"
+allowed_tools:                 # 白名單，只列出這個任務需要的工具（詞彙見 system/TOOL_REGISTRY.yaml）
+  - "read_project_files"
   - "web_search"
 
 # === 成本控制 ===
@@ -35,7 +35,7 @@ max_retries: 3                 # 連續失敗最多重試次數
 max_web_searches: 3            # web search 上限
 
 # === Skill 路由 ===
-skill_type: ""                 # research / writing / ops / review
+skill_type: ""                 # research / writing / ops / review / analysis
 
 # === 執行紀錄（由 agent 填寫）===
 checkpoints: []                # 每次 checkpoint 的 git commit hash + 描述

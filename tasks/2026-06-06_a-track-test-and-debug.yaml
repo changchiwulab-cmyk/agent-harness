@@ -1,0 +1,69 @@
+# Task Card — Track A：深度測試與除錯
+# 來源：使用者要求「依最新公開 AI 資料對本專案做深度測試與除錯」
+# 核可：使用者於本 session 透過 plan approval 核可整體計畫（含所有 system/、CI 變更）
+# 目的：實跑全套驗證建立基線、修掉已證實的工具名稱碎片化、補防漂移 lint、對帳雙驗證器、修文件落差
+
+task_id: "20260606-A01"
+date: "2026-06-06"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "對 Agent Harness v2 做深度測試與除錯：實跑全套 CI 建立實證基線，修掉已證實的工具名稱碎片化（file_read 等 5 詞未對齊 PERMISSIONS），新增正典工具登錄表與 CI lint 防漂移，對帳 Python/Ruby 雙驗證器，並修正文件/執行落差"
+context: |
+  三個探索 agent + 親自實跑後確認：本 harness 是 ~4,800 行可執行碼 + 12 關 CI 的生產級框架，
+  全套 CI 目前全綠。已證實的真實缺陷只有一個：task-card allowed_tools 的詞彙碎片化——
+  file_read(50)/file_write(8)/bash(7)/run_tests(3)/modify_settings_json(1) 不在 PERMISSIONS.yaml 詞彙內，
+  且無任何 lint 對齊（check_spec_consistency.rb 對 allowed_tools 零檢查）。權限模型散在 3 處。
+  先前某 agent 誤報「analysis 缺於 GATE_POLICY」為 critical bug，經實跑證實為假陽性 → 本任務一切以實跑為準。
+input_data:
+  - "system/PERMISSIONS.yaml"
+  - "scripts/check_spec_consistency.rb"
+  - "scripts/test_check_spec_consistency.rb"
+  - "tests/e2e/test_dummy_task_smoke.py"
+  - "system/validate_task_card.py"
+
+# === 完成標準 ===
+definition_of_done:
+  - "outputs/drafts/2026-06-06_a0-suite-run-and-findings.md：全套 CI 實跑 pass/fail 矩陣 + 工具碎片化計數 + 驗證器 rule-diff + 嚴重度表"
+  - "system/TOOL_REGISTRY.yaml：正典工具詞彙（canonical → tier + aliases），涵蓋全部 50 張卡用到的 token"
+  - "scripts/check_spec_consistency.rb：新增 allowed_tools lint（每個 entry 須解析於 TOOL_REGISTRY），且既有 50 張卡仍全綠"
+  - "scripts/test_check_spec_consistency.rb：新增 KNOWN_TOOLS 斷言（canonical + alias 皆解析、虛構工具被拒）"
+  - "tests/e2e/test_dummy_task_smoke.py：gate_rule 改為對 registry 解析，runtime 契約與 CI lint 一致"
+  - "tasks/TASK_CARD_TEMPLATE.yaml：範例 allowed_tools 改用正典名（修根因）"
+  - "tests/e2e/test_validator_parity.py：斷言 Python/Ruby 驗證器接受-拒絕方向一致，並 pin 住刻意不對稱"
+  - "system/GATE_POLICY.yaml + GLOBAL_RULES.md：修 task_id 格式文字、DoD 顆粒度註記、定義『連續失敗 3 次』"
+  - "全套 CI（含新步驟）仍全綠（exit 0），未破壞任何既有測試"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: "system/"
+  filename: "TOOL_REGISTRY.yaml"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "read_project_files"
+  - "file_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "write_logs"
+  - "modify_system_rules"
+  - "run_command"
+  - "run_tests"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 60
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+audit_log_ref: "logs/AUDIT_LOG.md"

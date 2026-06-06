@@ -1,0 +1,55 @@
+# Task Card — AGI-readiness 稽核與強化報告
+# 來源：使用者要求的綜合交付物
+# 核可：plan approval；報告先進 drafts/，核可後依 RETRO_FLOW §5 晉升 reports/
+# 目的：對照 2026 框架，總結深度測試發現 + AGI 未來防護缺口與已實作強化，附來源引用
+
+task_id: "20260606-R01"
+date: "2026-06-06"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "產出 AGI-readiness 稽核與強化報告：對照 OWASP Agentic Top 10 2026 / Microsoft 失敗分類 / Anthropic 可擴展監督，總結 Track A 除錯發現與 Track B AGI 強化成果，標註嚴重度、已實作對策、殘餘風險與來源"
+context: |
+  本報告是 Track A（除錯）+ Track B（AGI 強化）的綜合交付。對照外部框架說明每項缺口的對應威脅與已實作對策，
+  並誠實標註殘餘風險與未做項（如 runtime 注入阻擋、reviewer-agent 等留作未來）。先進 drafts/，核可後晉升 reports/。
+input_data:
+  - "outputs/drafts/2026-06-06_a0-suite-run-and-findings.md"
+  - "outputs/reports/harness-self-assessment-v1.md"
+  - "system/FAILURE_TAXONOMY.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "outputs/drafts/2026-06-06_agi-readiness-and-hardening-report.md：含執行摘要、Track A 發現表（嚴重度+證據）、Track B 五項強化對照 OWASP/Microsoft/Anthropic、殘餘風險、來源清單"
+  - "報告明確區分：已知事實 / 已實作對策 / 待驗證 / 高風險假設（依 GLOBAL_RULES 輸出規範）"
+  - "報告引用至少 4 個 2026 外部框架來源並標註對應的 ASI/失敗模式編號"
+  - "全套 CI 仍綠後，報告經人工核可可依 RETRO_FLOW 晉升 outputs/reports/"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-06-06_agi-readiness-and-hardening-report.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "read_project_files"
+  - "file_search"
+  - "write_drafts"
+  - "write_reports"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 30
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "review"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+audit_log_ref: "logs/AUDIT_LOG.md"

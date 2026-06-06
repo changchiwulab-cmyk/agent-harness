@@ -33,6 +33,25 @@ ALLOWED_APPROVAL_STATUS = %w[approved rejected superseded].freeze
 REQUIRED_APPROVAL_FIELDS = %w[approval_id task_id date action approval_method status approved_by].freeze
 ALLOWED_ERROR_TYPE = %w[tool_failure rule_violation schema_failure timeout unknown].freeze
 
+# --- Tool Registry 詞彙 lint 常數（A2: 20260606-A01）---
+# 載入 system/TOOL_REGISTRY.yaml，建「name(canonical|alias) => canonical」對照，
+# 供 Task Card 的 allowed_tools 詞彙驗證。路徑以本腳本位置為基準，不依賴 CWD。
+TOOL_REGISTRY_PATH = File.expand_path('../system/TOOL_REGISTRY.yaml', __dir__)
+
+def load_tool_registry(path)
+  reg = YAML.load_file(path)
+  tools = (reg.is_a?(Hash) && reg['tools'].is_a?(Hash)) ? reg['tools'] : {}
+  alias_map = {}
+  tools.each do |canonical, meta|
+    alias_map[canonical] = canonical
+    Array(meta && meta['aliases']).each { |a| alias_map[a] = canonical }
+  end
+  alias_map
+end
+
+TOOL_ALIAS_MAP = (File.exist?(TOOL_REGISTRY_PATH) ? load_tool_registry(TOOL_REGISTRY_PATH) : {}).freeze
+KNOWN_TOOLS = TOOL_ALIAS_MAP.keys.freeze
+
 def parse_iso_date(value)
   return value if value.is_a?(Date)
   return nil unless value.is_a?(String) && value.match?(DATE_PATTERN)
@@ -139,6 +158,19 @@ Dir.glob('tasks/**/*.yaml').sort.each do |task_file|
     REQUIRED_OUTPUT_FIELDS.each do |field|
       value = task['expected_output'][field]
       errors << "#{task_file}: missing expected_output.#{field}" if value.nil? || value.to_s.strip.empty?
+    end
+  end
+
+  # allowed_tools 詞彙 lint（A2: 20260606-A01）：每個 entry 須解析於 system/TOOL_REGISTRY.yaml
+  if task.key?('allowed_tools') && !task['allowed_tools'].nil?
+    if task['allowed_tools'].is_a?(Array)
+      task['allowed_tools'].each do |tool|
+        unless KNOWN_TOOLS.include?(tool)
+          errors << "#{task_file}: unknown tool '#{tool}' in allowed_tools (not in system/TOOL_REGISTRY.yaml)"
+        end
+      end
+    else
+      errors << "#{task_file}: allowed_tools must be a list"
     end
   end
 end

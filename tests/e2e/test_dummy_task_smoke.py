@@ -27,6 +27,25 @@ ROOT = Path(__file__).resolve().parents[2]
 VALIDATE_SCRIPT = ROOT / "system" / "validate_task_card.py"
 PERMISSIONS_PATH = ROOT / "system" / "PERMISSIONS.yaml"
 GATE_POLICY_PATH = ROOT / "system" / "GATE_POLICY.yaml"
+TOOL_REGISTRY_PATH = ROOT / "system" / "TOOL_REGISTRY.yaml"
+
+
+def _load_registry() -> tuple[dict, dict]:
+    """Build {name(canonical|alias) -> canonical} and {canonical -> tier} maps."""
+    reg = yaml.safe_load(TOOL_REGISTRY_PATH.read_text(encoding="utf-8"))
+    tools = (reg or {}).get("tools") or {}
+    alias_map: dict = {}
+    tier_map: dict = {}
+    for canonical, meta in tools.items():
+        meta = meta or {}
+        alias_map[canonical] = canonical
+        tier_map[canonical] = meta.get("tier")
+        for alias in meta.get("aliases") or []:
+            alias_map[alias] = canonical
+    return alias_map, tier_map
+
+
+TOOL_ALIAS_MAP, TOOL_TIER_MAP = _load_registry()
 
 
 DUMMY_TASK = {
@@ -72,18 +91,24 @@ def gate_schema(card: dict, validate_script: Path) -> tuple[bool, str]:
 
 
 def gate_rule(card: dict, permissions: dict) -> tuple[bool, str]:
-    """Gate 2: every allowed_tool is whitelisted; no overlap with deny list."""
+    """Gate 2: every allowed_tool resolves in TOOL_REGISTRY.yaml and is not deny-tier.
+
+    Updated 2026-06-06 (A2): previously unknown tools were silently accepted as
+    "physical primitives". That hole let a card declare an arbitrary capability
+    with no policy anchor. Now every tool must resolve to a canonical registry
+    entry (aliases like ``file_read`` -> ``read_project_files`` are fine), and a
+    deny-tier tool in allowed_tools is a hard fail — this is the runtime mirror
+    of the CI lint in check_spec_consistency.rb and doubles as the OWASP ASI05
+    "excessive agency" detector.
+    """
     deny = set(permissions["permissions"]["deny"])
-    allow_or_ask = set(permissions["permissions"]["allow"]) | set(permissions["permissions"]["ask"])
     bad = []
     for tool in card.get("allowed_tools") or []:
-        if tool in deny:
-            bad.append(f"{tool} is in deny list")
-        elif tool not in allow_or_ask:
-            # Unknown tools that aren't on any list are accepted — Bash, file_read
-            # etc. are physical primitives, not policy entries. Only deny breach is
-            # a hard fail.
-            pass
+        canonical = TOOL_ALIAS_MAP.get(tool)
+        if canonical is None:
+            bad.append(f"{tool} is not a known tool (TOOL_REGISTRY.yaml)")
+        elif TOOL_TIER_MAP.get(canonical) == "deny" or canonical in deny:
+            bad.append(f"{canonical} is a deny-tier tool")
     return not bad, "; ".join(bad) or "ok"
 
 
@@ -171,6 +196,26 @@ class TestDummyTaskSmoke(unittest.TestCase):
         passed, output = gate_schema(bad, VALIDATE_SCRIPT)
         self.assertFalse(passed)
         self.assertIn("definition_of_done", output)
+
+    def test_rule_gate_accepts_alias_tool(self):
+        """file_read is an alias of read_project_files — must still pass."""
+        card = {**DUMMY_TASK, "allowed_tools": ["file_read", "write_drafts"]}
+        passed, detail = gate_rule(card, self.permissions)
+        self.assertTrue(passed, detail)
+
+    def test_rule_gate_rejects_unknown_tool(self):
+        """A2: unknown tools no longer silently accepted (runtime mirrors CI lint)."""
+        card = {**DUMMY_TASK, "allowed_tools": ["flux_capacitor"]}
+        passed, detail = gate_rule(card, self.permissions)
+        self.assertFalse(passed)
+        self.assertIn("not a known tool", detail)
+
+    def test_rule_gate_rejects_deny_tier_tool(self):
+        """OWASP ASI05 excessive agency: a deny-tier tool in allowed_tools fails."""
+        card = {**DUMMY_TASK, "allowed_tools": ["send_email"]}
+        passed, detail = gate_rule(card, self.permissions)
+        self.assertFalse(passed)
+        self.assertIn("deny-tier", detail)
 
 
 if __name__ == "__main__":

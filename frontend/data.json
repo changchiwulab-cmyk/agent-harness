@@ -136,23 +136,23 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 30,
-      "medium": 14
+      "low": 31,
+      "medium": 16
     },
     "task_skill": {
       "analysis": 4,
-      "ops": 26,
+      "ops": 28,
       "research": 5,
-      "review": 6,
+      "review": 7,
       "writing": 4
     },
     "task_status": {
       "done": 22,
-      "in_progress": 2,
+      "in_progress": 5,
       "pending": 2,
       "review": 19
     },
-    "task_total": 45
+    "task_total": 48
   },
   "tasks": [
     {
@@ -604,6 +604,36 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-06",
+      "goal": "對 Agent Harness v2 做深度測試與除錯：實跑全套 CI 建立實證基線，修掉已證實的工具名稱碎片化（file_read 等 5 詞未對齊 PERMISSIONS），新增正典工具登錄表與 CI lint 防漂移，對帳 Python/Ruby 雙驗證器，並修正文件/執行落差",
+      "path": "tasks/2026-06-06_a-track-test-and-debug.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "in_progress",
+      "task_id": "20260606-A01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-06",
+      "goal": "產出 AGI-readiness 稽核與強化報告：對照 OWASP Agentic Top 10 2026 / Microsoft 失敗分類 / Anthropic 可擴展監督，總結 Track A 除錯發現與 Track B AGI 強化成果，標註嚴重度、已實作對策、殘餘風險與來源",
+      "path": "tasks/2026-06-06_agi-readiness-report.yaml",
+      "risk_level": "low",
+      "skill_type": "review",
+      "status": "in_progress",
+      "task_id": "20260606-R01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-06",
+      "goal": "依 2026 最新 agentic 威脅資料，為 Agent Harness 補上 AGI 未來防護子系統：AGI-1 獨立完成驗證器（反『自己改自己考卷』）、AGI-2 資料-vs-指令隔離政策、AGI-3 記憶與稽核完整性/防竄改、AGI-5 對抗紅隊 CI 套件，全部納入 CI",
+      "path": "tasks/2026-06-06_b-track-agi-hardening.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "in_progress",
+      "task_id": "20260606-B01"
     }
   ]
 }
