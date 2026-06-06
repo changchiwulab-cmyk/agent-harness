@@ -87,3 +87,8 @@ jobs:
 
       - name: Red-team regression suite (OWASP Agentic Top 10 2026)
         run: python3 tests/e2e/test_redteam_suite.py
+
+      - name: Self-evolution loop (tests + advisory dry-run)
+        run: |
+          python3 scripts/test_evolution_loop.py
+          python3 scripts/evolution_loop.py --check

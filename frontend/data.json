@@ -137,11 +137,11 @@
     "task_risk": {
       "high": 1,
       "low": 31,
-      "medium": 16
+      "medium": 17
     },
     "task_skill": {
       "analysis": 4,
-      "ops": 28,
+      "ops": 29,
       "research": 5,
       "review": 7,
       "writing": 4
@@ -150,9 +150,9 @@
       "done": 22,
       "in_progress": 2,
       "pending": 2,
-      "review": 22
+      "review": 23
     },
-    "task_total": 48
+    "task_total": 49
   },
   "tasks": [
     {
@@ -634,6 +634,16 @@
       "skill_type": "ops",
       "status": "review",
       "task_id": "20260606-B01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-06",
+      "goal": "建立提案制（人工把關）的自我進化迴圈：自動觀測四面向（成本/失敗/Gate/決策）→ 產出進化提案草稿到 outputs/drafts/，所有 system/skills 變更仍需人工核可；復用既有驗證器與觀測工具，納入 CI 乾跑",
+      "path": "tasks/2026-06-06_evolution-loop.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260606-E01"
     }
   ]
 }

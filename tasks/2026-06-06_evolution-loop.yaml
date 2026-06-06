@@ -1,0 +1,68 @@
+# Task Card — 自我進化迴圈（提案制 / 人工把關）
+# 來源：使用者要求「workflow 做自我進化的迴圈」
+# 核可：使用者於本 session 選定「提案制（人工把關）」+ 四面向全觀測
+# 目的：把 RETRO_FLOW 的手動回顧升級為可重複的閉環引擎，自動觀測+產出進化提案，永遠停在人工閘門
+
+task_id: "20260606-E01"
+date: "2026-06-06"
+status: "review"
+
+# === 任務定義 ===
+goal: "建立提案制（人工把關）的自我進化迴圈：自動觀測四面向（成本/失敗/Gate/決策）→ 產出進化提案草稿到 outputs/drafts/，所有 system/skills 變更仍需人工核可；復用既有驗證器與觀測工具，納入 CI 乾跑"
+context: |
+  harness 已有 RETRO_FLOW（手動回顧）、governance_metrics、check_decision_revisit、
+  以及本批新增的 verify_completion / verify_audit_integrity。本任務把這些串成一個閉環引擎：
+  observe → analyze → propose →（人工閘門）→ apply → re-observe。
+  安全立場：唯讀觀測，只寫 outputs/drafts/；絕不自動改 system/skills/memory（CLAUDE.md 硬規則、
+  可控 > 能力；亦是 AGI 監督安全設計——餵入的是獨立驗證器而非執行者自報）。
+input_data:
+  - "system/RETRO_FLOW.md"
+  - "scripts/verify_completion.py"
+  - "scripts/verify_audit_integrity.py"
+  - "scripts/check_decision_revisit.rb"
+  - "system/NATIVE_OVERLAP.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "scripts/evolution_loop.py：唯讀觀測四面向 + build_proposals（純函式）+ 產出 outputs/drafts/evolution-<date>.md；--check 乾跑不寫檔且 exit 0"
+  - "scripts/test_evolution_loop.py：覆蓋四面向觸發 + healthy 無提案 + propose-only invariant（全需人工）+ live-repo 不崩"
+  - "system/EVOLUTION_LOOP.md：記錄五步閉環、四面向閾值、為何提案制、與 RETRO_FLOW 關係"
+  - "system/RETRO_FLOW.md：交叉引用 evolution_loop 為自動化前端"
+  - ".github/workflows/spec-consistency.yml：新增 evolution loop 測試 + advisory 乾跑步驟"
+  - "迴圈永不自動改 system/skills/memory；只寫 outputs/drafts/（程式碼層強制）"
+  - "全套 CI 仍全綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "py"
+  location: "scripts/"
+  filename: "evolution_loop.py"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "read_project_files"
+  - "file_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "write_logs"
+  - "modify_system_rules"
+  - "run_command"
+  - "run_tests"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 40
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260606-E01 self-evolution loop (propose-only, human-gated)"
+actual_tool_calls: 14
+result_summary: "提案制自我進化迴圈：evolution_loop.py 觀測四面向（成本/失敗/Gate/決策，復用 verify_completion/verify_audit_integrity/logs/NATIVE_OVERLAP/check_decision_revisit）→ 產出 outputs/drafts/evolution-<date>.md，永遠停在人工閘門、絕不自動改 system/。12 單元測試 + CI advisory 乾跑。EVOLUTION_LOOP.md 文件化五步閉環。狀態 review：待人工核可。"
+audit_log_ref: "logs/AUDIT_LOG.md"
