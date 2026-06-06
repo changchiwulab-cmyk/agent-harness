@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any, Callable
@@ -55,6 +56,24 @@ def artifact_path(task: dict[str, Any]) -> str:
     return f"{loc}/{fn}" if loc and fn else ""
 
 
+def is_shallow_repo(root: Path) -> bool:
+    """True if `root` is a shallow git clone (history truncated).
+
+    On a shallow clone, `git log --grep="checkpoint: ..."` cannot see older
+    checkpoint commits, so "artifact missing + no checkpoints" is *unverifiable*
+    rather than a falsification. A reward-hacking detector must not itself emit
+    false positives when it can't see the evidence. Non-git dirs → False.
+    """
+    try:
+        out = subprocess.run(
+            ["git", "rev-parse", "--is-shallow-repository"],
+            cwd=root, check=True, capture_output=True, text=True,
+        )
+        return out.stdout.strip() == "true"
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return False
+
+
 def is_checkable_path(path: str) -> bool:
     """A single, concrete, on-disk path we can assert existence of.
 
@@ -74,6 +93,7 @@ def evaluate_task(
     task: dict[str, Any],
     root: Path,
     checkpoint_finder: Callable[[str, Path], list] = find_checkpoints,
+    shallow: bool = False,
 ) -> dict[str, Any]:
     """Pure verdict function — returns {task_id, level, reason}. Unit-testable."""
     task_id = str(task.get("task_id", ""))
@@ -104,12 +124,17 @@ def evaluate_task(
         return {"task_id": task_id, "level": WARN,
                 "reason": f"declared artifact missing ({path}) but {len(checkpoints)} checkpoint(s) exist — likely moved/cleaned"}
 
+    if shallow:
+        return {"task_id": task_id, "level": WARN,
+                "reason": f"declared artifact missing ({path}); shallow clone — checkpoint history unavailable, unverifiable"}
+
     return {"task_id": task_id, "level": FAIL,
             "reason": f"status={status} but declared artifact missing ({path}) and NO checkpoint evidence "
                       f"— possible self-report falsification"}
 
 
 def evaluate_all(root: Path) -> list[dict[str, Any]]:
+    shallow = is_shallow_repo(root)
     results = []
     for p in sorted(root.glob(TASKS_GLOB)):
         if not p.is_file() or "TEMPLATE" in p.name:
@@ -117,7 +142,7 @@ def evaluate_all(root: Path) -> list[dict[str, Any]]:
         doc = load_yaml(p)
         if not doc.get("task_id"):
             continue
-        results.append(evaluate_task(doc, root))
+        results.append(evaluate_task(doc, root, shallow=shallow))
     return results
 
 

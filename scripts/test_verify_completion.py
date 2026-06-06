@@ -53,6 +53,14 @@ class TestEvaluateTask(unittest.TestCase):
             r = vc.evaluate_task(BASE, Path(tmp), checkpoint_finder=HAS_CP)
             self.assertEqual(r["level"], vc.WARN)
 
+    def test_missing_artifact_shallow_clone_is_warn_not_fail(self):
+        # On a shallow clone, checkpoint history is invisible -> unverifiable,
+        # must NOT be reported as falsification (avoids CI false positives).
+        with tempfile.TemporaryDirectory() as tmp:
+            r = vc.evaluate_task(BASE, Path(tmp), checkpoint_finder=NO_CP, shallow=True)
+            self.assertEqual(r["level"], vc.WARN)
+            self.assertIn("shallow", r["reason"])
+
     def test_multitarget_location_is_warn(self):
         card = {**BASE, "expected_output": {"format": "md", "location": "system/, tasks/", "filename": "見 DoD"}}
         r = vc.evaluate_task(card, ROOT, checkpoint_finder=NO_CP)
