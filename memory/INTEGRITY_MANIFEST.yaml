@@ -1,0 +1,14 @@
+# Memory Integrity Manifest — 長期記憶防竄改（AGI-3, OWASP ASI06）
+# 由 scripts/verify_audit_integrity.py --update 產生（僅在人工核可記憶寫入後執行）。
+# --check 重算 sha256 比對，偵測未經核可的竄改/投毒/刪除。
+
+files:
+  memory/active_projects/agent-harness/context.md: c4b517f6ccad9a91824a2e0db3feb0b14d27bf474e07a238b8c74b54c6f30429
+  memory/active_projects/agent-harness/decisions/20260403-D001_task-card-over-database.yaml: 685fa96c0f7897199ecabe95dbf1082526d309ec1b19c898ff46ca6603c67d71
+  memory/active_projects/agent-harness/decisions/20260403-D002_coarse-guardrails-v1.yaml: 41884d866097bb36bd898140549e4a4658b1470b9d950e64e8e9bad874fc0128
+  memory/active_projects/agent-harness/decisions/20260415-D003_v3-upgrade-hold.yaml: 805b862614b72e0fc615ae3a506146e36caefc106b9a04c40f369966313a43bc
+  memory/active_projects/agent-harness/decisions/20260415-D004_create-task-card-promoted-to-allow.yaml: a192a6d285b40ae2dbf293523cb32e9a8b28cd3fcfdf44643e73848fddf42edf
+  memory/active_projects/agent-harness/decisions/20260415-D005_intake-fast-path.yaml: 7ac5a490a560c90e471591075deae2899d5fd332f963fbc1fbbdadd677fbecf6
+  memory/active_projects/agent-harness/decisions/20260424-D006_execution-log-scope.yaml: bcd5f32cc4f9b8565b01c5f5f3b98bb7c6f9775bfc5e1d706ae3a4665a5d7254
+  memory/active_projects/agent-harness/decisions/20260509-D007_v3-plugin-bootstrap-decisions.yaml: 561e7abe6d484f896c84bcfbadbc551f6a2c9dbfc62b38c670a1c07969cf6ea2
+  memory/active_projects/agent-harness/plans/ai-bubbly-mountain.md: 591692ce04e4a5e347864f7b17a69db6352bcb275672ee2a9fd479d7fdff011c
