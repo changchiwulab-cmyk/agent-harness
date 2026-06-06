@@ -176,6 +176,8 @@ python system/validate_task_card.py tasks/your-task.yaml
 - Logs 儀表板
 - Decision Timeline（可點擊展開）
 
+另提供 **工作流程視覺化頁** `frontend/workflow.html`（與看板以頁首 nav 互通）：把散落在 `CLAUDE.md` + `system/*` 的工作流程（三條硬規則、Intake 分流、9 步執行流程、四層 Gate、權限三級、審核/升級、失敗處理）畫成一張可一眼掃完的圖。設計上「人看圖、agent 讀結構」——整張圖由頁內 `<script id="workflow-spec">` 的 JSON 渲染，該 JSON 即此頁的**單一真實來源**（逐字對齊 `CLAUDE.md` + `system/`，修改工作流程時請同步更新；此頁為靜態內容，不經 `data.json` 產生）。
+
 資料來源唯一化於 `frontend/data.json`，由 `scripts/generate_frontend_manifest.py` 在產生階段以 PyYAML 解析下列來源後序列化：
 - `tasks/20*.yaml`
 - `logs/runs/*.yaml`
@@ -221,7 +223,7 @@ scripts/run_frontend.sh --help
 scripts/run_frontend.sh --version
 ```
 
-開啟：`http://localhost:8000/frontend/index.html`（或對應自訂 port）
+開啟：`http://localhost:8000/frontend/index.html`（或對應自訂 port）；工作流程頁為 `http://localhost:8000/frontend/workflow.html`
 
 ### 漂移檢查
 

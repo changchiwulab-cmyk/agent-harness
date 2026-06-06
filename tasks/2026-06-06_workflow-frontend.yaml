@@ -1,0 +1,56 @@
+task_id: "20260606-001"
+date: "2026-06-06"
+status: "in_progress"          # pending → in_progress → checkpoint → review → done / failed
+
+# === 任務定義 ===
+goal: "為 Agent Harness 工作流程做一個人與 agent 都能看懂的前端視覺化頁面"
+context: "工作流程散落在 CLAUDE.md + system/* 共十多個檔案，跨檔難讀。需一張色彩分區、可一眼掃完的流程圖；同頁內嵌 JSON 作為單一真實來源，agent 可直接讀結構。接到既有 frontend/ 看板，互補而非取代資料看板。"
+input_data:
+  - "CLAUDE.md"
+  - "system/GATE_POLICY.yaml"
+  - "system/PERMISSIONS.yaml"
+  - "system/APPROVAL_POLICY.yaml"
+  - "system/AGENT_CONTEXT.yaml"
+  - "system/INTAKE_FLOW.md"
+  - "frontend/index.html"
+  - "frontend/app.js"
+  - "frontend/styles.css"
+
+# === 完成標準（最重要的欄位）===
+definition_of_done:
+  - "新增 frontend/workflow.html，含內嵌 #workflow-spec JSON（單一真實來源）"
+  - "新增 frontend/workflow.js，從內嵌 JSON 渲染：硬規則 / Intake / 9 步流程 / 4 Gate / 權限三級 / risk levels / 審核升級 / 失敗處理 八區段"
+  - "frontend/styles.css 擴充 workflow 樣式，沿用既有 :root 變數與 card/panel 慣例與 900px 斷點"
+  - "index.html 與 workflow.html 以 nav 雙向互通"
+  - "README 前端章節補充 workflow.html 說明（JSON 為單一真實來源、需與 CLAUDE.md + system/ 同步）"
+  - "本地 run_frontend.sh 開啟 workflow.html，八區段皆正常渲染、瀏覽器 console 無錯、#workflow-spec JSON 可被解析"
+
+# === 輸出定義 ===
+expected_output:
+  format: "html"
+  location: "frontend/"
+  filename: "workflow.html"
+
+# === 風險與權限 ===
+risk_level: "low"              # 純新增靜態前端、無對外動作、不碰正式資料
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "file_search"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 30
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"

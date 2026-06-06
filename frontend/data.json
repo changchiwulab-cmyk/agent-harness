@@ -136,23 +136,23 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 30,
+      "low": 31,
       "medium": 14
     },
     "task_skill": {
       "analysis": 4,
-      "ops": 26,
+      "ops": 27,
       "research": 5,
       "review": 6,
       "writing": 4
     },
     "task_status": {
       "done": 22,
-      "in_progress": 2,
+      "in_progress": 3,
       "pending": 2,
       "review": 19
     },
-    "task_total": 45
+    "task_total": 46
   },
   "tasks": [
     {
@@ -604,6 +604,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-06",
+      "goal": "為 Agent Harness 工作流程做一個人與 agent 都能看懂的前端視覺化頁面",
+      "path": "tasks/2026-06-06_workflow-frontend.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "in_progress",
+      "task_id": "20260606-001"
     }
   ]
 }

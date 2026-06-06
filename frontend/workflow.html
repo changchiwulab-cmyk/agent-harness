@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agent Harness 工作流程</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header>
+      <nav class="nav">
+        <a href="./index.html">動態看板</a>
+        <a href="./workflow.html" class="active" aria-current="page">工作流程</a>
+      </nav>
+      <h1 id="wfTitle">Agent Harness 工作流程</h1>
+      <p id="wfSubtitle"></p>
+      <p class="wf-source"><small id="wfSource"></small></p>
+    </header>
+
+    <!-- 視覺圖由 workflow.js 從下方 #workflow-spec JSON 渲染至此 -->
+    <main id="workflow"></main>
+
+    <!--
+      單一真實來源（Single Source of Truth）
+      人看到的視覺圖與此 JSON 同源；agent 可直接讀取此區塊取得結構化工作流程。
+      內容逐字對齊 CLAUDE.md + system/*；修改工作流程時請同步更新此區塊。
+    -->
+    <script type="application/json" id="workflow-spec">
+{
+  "title": "一人公司 Agent Harness v2 — 工作流程",
+  "subtitle": "人看圖、agent 讀結構。本頁的視覺圖完全由頁尾的 #workflow-spec JSON 渲染，兩者永不脫鉤。",
+  "source": "逐字對齊 CLAUDE.md + system/*（修改工作流程時請同步更新此區塊）",
+  "principle": "可控 > 能力。穩定完成 > 展現最強。",
+  "hard_rules": [
+    { "id": 1, "rule": "沒有 Task Card，不執行任何任務", "detail": "需求必須先轉成 tasks/*.yaml，確認 goal + definition_of_done 後才執行。" },
+    { "id": 2, "rule": "對外動作只產出草稿", "detail": "Email、發文、資料更新一律先到 outputs/drafts/，等人工確認。" },
+    { "id": 3, "rule": "連續失敗 3 次就停下來", "detail": "寫入 logs/errors/ 並通知使用者，不要自己硬修。" }
+  ],
+  "intake": {
+    "note": "硬規則：沒有 Task Card 不執行。需求明確時 fast-path 為預設主路，模糊時退回 intake 釐清。",
+    "fast_path": {
+      "label": "Fast-path（預設主路 · 直接建卡）",
+      "conditions": [
+        "goal 可以一句話說清楚",
+        "skill_type 可直接判斷（見 ROUTING_RULES.md）",
+        "risk_level 明顯為 low 或 medium"
+      ],
+      "flow": ["使用者提出需求", "三條件都符合？", "草擬 Task Card", "呈現使用者確認", "進入執行流程"]
+    },
+    "intake_mode": {
+      "label": "Intake 模式（fallback · 需求不明時）",
+      "trigger": "fast-path 三條件任一不符即啟動",
+      "allowed": ["向使用者提問釐清", "讀取 project 檔案", "讀取 memory/", "查看既有 Task Card"],
+      "not_allowed": ["web search", "產出任何檔案", "工具呼叫", "修改任何內容"],
+      "flow": ["判斷需求是否清晰", "不清晰 → 提問釐清（最多 3 輪）", "判斷是否需拆分", "草擬 Task Card", "確認後進入執行流程"]
+    }
+  },
+  "execution_flow": [
+    { "step": 1, "label": "載入 Task Card", "io": "tasks/*.yaml" },
+    { "step": 2, "label": "確認 goal + definition_of_done", "io": "" },
+    { "step": 3, "label": "載入 context", "io": "GLOBAL_RULES.md + AGENT_CONTEXT.yaml + APPROVAL_POLICY.yaml + 對應 skill + project context" },
+    { "step": 4, "label": "執行", "io": "只用 allowed_tools 白名單內的工具" },
+    { "step": 5, "label": "git commit checkpoint", "io": "格式：checkpoint: [task_id] [階段描述]" },
+    { "step": 6, "label": "逐層驗證（4 Gate）", "io": "依 GATE_POLICY.yaml：schema → 規則 → 完成 → 風險", "ref": "gates" },
+    { "step": 7, "label": "輸出到 outputs/", "io": "outputs/drafts/ 或 reports/" },
+    { "step": 8, "label": "寫執行紀錄", "io": "logs/runs/（失敗 / 部分 / 高風險 / ≥3 checkpoint 才寫）" },
+    { "step": 9, "label": "寫 audit log", "io": "logs/AUDIT_LOG.md" }
+  ],
+  "gates": [
+    { "layer": 1, "name": "schema_check", "label": "Schema 驗證", "description": "Task Card 欄位完整性與格式正確性", "on_fail": "重試 1 次修正格式，仍失敗 → 停下，寫入 logs/errors/", "rollback": "不產出任何檔案；Task Card 標記 status: blocked" },
+    { "layer": 2, "name": "rule_check", "label": "規則驗證", "description": "執行過程是否違反 GLOBAL_RULES 或 PERMISSIONS", "on_fail": "立即停止 + 寫入 logs/errors/ + 通知使用者", "rollback": "撤銷本次所有未 checkpoint 的變更（git checkout）；已 checkpoint 的保留供檢視" },
+    { "layer": 3, "name": "completion_check", "label": "完成驗證", "description": "definition_of_done 逐條比對", "on_fail": "列出缺漏清單，詢問使用者是否補充或接受現狀", "rollback": "產出標記為 partial，存入 outputs/drafts/ 而非 reports/" },
+    { "layer": 4, "name": "risk_check", "label": "風險驗證", "description": "風險等級與實際動作是否一致", "on_fail": "輸出移至 outputs/drafts/，等待人工審閱後才可發布", "rollback": "所有產出鎖定在 drafts/；Audit Log 標記 risk_escalated: true" }
+  ],
+  "permissions": {
+    "allow": ["read_project_files", "web_search", "file_search", "write_drafts", "write_logs", "git_commit_checkpoint", "create_output_files", "read_memory", "create_task_card"],
+    "ask": ["modify_skills", "modify_system_rules", "write_long_term_memory", "write_reports", "install_packages", "modify_claude_md"],
+    "deny": ["shell_delete", "send_email", "send_message_external", "publish_content", "modify_production_data", "execute_payment", "auto_write_memory", "spawn_background_process"]
+  },
+  "risk_levels": [
+    { "level": "low", "auto_execute": true, "approval": "—（不需）", "desc": "純讀取、分析、草稿產出" },
+    { "level": "medium", "auto_execute": false, "approval": "inline_confirm（對話中確認即可）", "desc": "涉及檔案修改、知識庫更新" },
+    { "level": "high", "auto_execute": false, "approval": "explicit_review（需審閱草稿後確認）", "desc": "涉及外部動作、正式輸出、資料變更" },
+    { "level": "critical", "auto_execute": false, "approval": "deny_by_default（預設拒絕，需額外授權）", "desc": "涉及金流、刪除、對外發送" }
+  ],
+  "approval": {
+    "triggers": [
+      "risk_level >= high → 輸出到 outputs/drafts/，human_confirm",
+      "對外動作（email / 發文 / API call）→ draft_first，不直接執行",
+      "修改 system/ 任何檔案 → 列出變更差異，human_confirm",
+      "修改 skills/ 任何檔案 → 列出變更差異，human_confirm",
+      "寫入 memory/ 長期記憶 → 列出擬寫入內容，human_confirm",
+      "建立高風險 Task Card → 展示 goal + definition_of_done，human_confirm",
+      "寫入正式報告 outputs/reports/ → 先存 drafts/，確認後移至 reports/（draft_first）"
+    ],
+    "escalation": [
+      "批准等待中發現新風險 → 追加風險說明到草稿，重新通知使用者",
+      "同一任務產生 3 次以上批准請求 → 暫停任務，建議重新評估範圍",
+      "連續失敗 3 次 / risk >= high / 範圍超出 Task Card / 需求模糊 → 升級給人工"
+    ]
+  },
+  "validation_failure_handling": [
+    { "gate": "Schema 失敗", "action": "重試 1 次，仍失敗停下" },
+    { "gate": "規則失敗", "action": "立即停止 + error log" },
+    { "gate": "完成驗證失敗", "action": "列缺漏，詢問是否補充" },
+    { "gate": "風險驗證（risk ≥ high）", "action": "輸出到 drafts/，等人工" }
+  ]
+}
+    </script>
+    <script src="./workflow.js" type="module"></script>
+  </body>
+</html>
