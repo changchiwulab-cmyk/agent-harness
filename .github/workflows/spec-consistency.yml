@@ -65,3 +65,20 @@ jobs:
 
       - name: Decision revisit tracker tests
         run: ruby scripts/test_check_decision_revisit.rb
+
+      # --- A3 / Track B (AGI hardening) gates: 20260606 ---
+      - name: Validator parity (Python runtime vs Ruby CI superset)
+        run: python3 tests/e2e/test_validator_parity.py
+
+      - name: Independent completion verifier (AGI-1)
+        run: |
+          python3 scripts/test_verify_completion.py
+          python3 scripts/verify_completion.py --check
+
+      - name: Memory & audit integrity (AGI-3)
+        run: |
+          python3 scripts/test_verify_audit_integrity.py
+          python3 scripts/verify_audit_integrity.py --check
+
+      - name: Red-team regression suite (OWASP Agentic Top 10 2026)
+        run: python3 tests/e2e/test_redteam_suite.py
