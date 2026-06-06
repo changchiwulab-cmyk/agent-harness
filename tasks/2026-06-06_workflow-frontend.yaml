@@ -1,6 +1,6 @@
 task_id: "20260606-001"
 date: "2026-06-06"
-status: "in_progress"          # pending → in_progress → checkpoint → review → done / failed
+status: "done"                 # pending → in_progress → checkpoint → review → done / failed
 
 # === 任務定義 ===
 goal: "為 Agent Harness 工作流程做一個人與 agent 都能看懂的前端視覺化頁面"
@@ -49,8 +49,10 @@ max_web_searches: 0
 skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - commit: "93463a7"
+    stage: "完成 workflow 前端視覺化頁與整合、本地驗證通過"
+actual_tool_calls: 18
+result_summary: "新增 frontend/workflow.html（內嵌 #workflow-spec JSON 為單一真實來源）、workflow.js（渲染 8 區段）、styles.css workflow 樣式；index.html ↔ workflow.html nav 互通；README 補說明；data.json 重生通過 drift check。驗證：JSON 合法、JS 語法通過、DOM stub 實跑渲染無例外、HTTP 服務 8/8 smoke test 通過。DoD 6/6 全數通過。"
+completion_time: "2026-06-06"
 audit_log_ref: "logs/AUDIT_LOG.md"

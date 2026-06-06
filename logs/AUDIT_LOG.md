@@ -33,6 +33,29 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260606-001"
+  date: "2026-06-06"
+  skill_type: "ops"
+  goal: "為 Agent Harness 工作流程做一個人與 agent 都能看懂的前端視覺化頁面"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 11
+    - tool_name: "file_write"
+      call_count: 6
+    - tool_name: "file_search"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "frontend/workflow.html"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "新增 workflow 前端視覺化頁：內嵌 #workflow-spec JSON 為人/agent 共用的單一真實來源，由 workflow.js 渲染 8 區段（三條硬規則 / Intake / 9 步 / 4 Gate / 權限三級 / 風險等級 / 審核升級 / 失敗處理）；與既有看板 nav 互通；風險 low、無對外動作。驗證：JSON 合法 + JS 語法通過 + DOM stub 實跑渲染無例外 + HTTP smoke test 8/8。DoD 6/6 通過。"
+```
+
+```yaml
 - task_id: "20260529-011"
   date: "2026-05-29"
   skill_type: "ops"
