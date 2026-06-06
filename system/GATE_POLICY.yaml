@@ -8,7 +8,7 @@ gates:
   schema_check:
     description: "Task Card 欄位完整性與格式正確性"
     checks:
-      - task_id 非空且格式為 YYYYMMDD-###
+      - task_id 非空且格式為 YYYYMMDD-NNN 或 YYYYMMDD-XNNN（字母前綴選用，對齊 check_spec_consistency.rb 與 TASK_CARD_TEMPLATE）
       - goal 非空
       - definition_of_done 至少 1 條
       - skill_type 為有效值（research / writing / ops / review / analysis）
@@ -36,6 +36,10 @@ gates:
       - 逐條列出 definition_of_done
       - 每條標記 pass 或 fail
       - fail 的條目說明缺什麼
+      # 顆粒度規範（20260606-A01）：每條 DoD 須為「單一、可獨立檢查」的斷言
+      # —— 對應一個可被看到的產物或事實，避免「完成報告」這種無法逐條驗證的籠統條目。
+      # 這同時讓 scripts/verify_completion.py 能獨立重算（反「自己改自己考卷」）。
+      - 每條 DoD 為單一可獨立驗證的斷言（對應具體產物/事實）
     on_fail: "列出缺漏清單，詢問使用者是否補充或接受現狀"
     rollback: "產出標記為 partial，存入 outputs/drafts/ 而非 reports/"
 

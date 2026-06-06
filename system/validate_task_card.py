@@ -2,6 +2,13 @@
 """
 Task Card Schema Validator
 用法：python system/validate_task_card.py tasks/your-task.yaml
+
+角色（20260606-A01）：本檔是 GATE_POLICY schema_check 的「runtime gate」（被
+tests/e2e/ 以 subprocess 呼叫）。CI 端的 scripts/check_spec_consistency.rb 是其
+「嚴格超集」——額外驗 task_id regex、date 格式、expected_output.location、status
+必填、以及 logs/approvals/errors schema。刻意的不對稱方向只有一個：Ruby 比 Python 嚴。
+Python 不得比 Ruby 嚴（否則在途卡會過 CI 卻於 runtime 被拒）；此契約由
+tests/e2e/test_validator_parity.py 守住。
 """
 
 import sys

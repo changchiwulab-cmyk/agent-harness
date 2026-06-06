@@ -80,7 +80,7 @@ categories:
     - id: SEC-03
       name: "成本失控"
       description: "遞迴迴圈燒 token、無限重試"
-      mitigation: "工具呼叫 5 次 checkpoint；連續失敗 3 次停止"
+      mitigation: "工具呼叫 5 次 checkpoint；連續失敗 3 次停止（定義見 GLOBAL_RULES 任務規則：同卡同 session、gate 失敗或工具錯誤、成功歸零）"
 
     - id: SEC-04
       name: "幻覺驅動行動"
