@@ -234,3 +234,15 @@ python3 scripts/generate_frontend_manifest.py
 ```
 
 並把更新後的 `frontend/data.json` 一起 commit。CI 會驗證二者一致。
+
+### 前端回歸測試
+
+- `tests/e2e/test_frontend_workflow_smoke.py`：無瀏覽器的合約測試，已納入 CI（`Spec Consistency`）。驗 `workflow.html` 內嵌 `#workflow-spec` 的 JSON 合法、區段／步數正確、權限與 risk levels 與 `system/PERMISSIONS.yaml` 同步、gate 名稱對齊 `system/GATE_POLICY.yaml`，並確認所有 `system/…` 路徑真的存在（即先前 Codex review 抓到的那類漂移）。
+- `tests/e2e/test_frontend_workflow_browser.py`：選用的 Playwright 真實瀏覽器測試（**不列入必過 CI**）。實際開 headless Chromium 跑 `workflow.js`、檢查 0 console／JS error、各區段齊全，並一併回歸測試既有看板 `index.html`。本地執行：
+
+```bash
+pip install playwright && playwright install chromium
+python3 tests/e2e/test_frontend_workflow_browser.py
+```
+
+設 `WORKFLOW_SHOT_DIR=docs/screenshots` 可順便更新 `docs/screenshots/` 的截圖；未安裝 Playwright 時此測試會自動 skip，不會讓 CI 失敗。預覽截圖見 `docs/screenshots/`。

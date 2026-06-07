@@ -63,5 +63,8 @@ jobs:
       - name: E2E failure-drill regression
         run: python3 tests/e2e/test_failure_drill.py
 
+      - name: E2E frontend workflow smoke test
+        run: python3 tests/e2e/test_frontend_workflow_smoke.py
+
       - name: Decision revisit tracker tests
         run: ruby scripts/test_check_decision_revisit.rb
