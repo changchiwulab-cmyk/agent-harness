@@ -1,0 +1,68 @@
+# Task Card — 前端作業完整度檢視（review）
+# 來源：使用者要求「依 workflow 檢視前端作業完整度」+ 補齊低風險缺口
+# 範圍：現況健康度 + roadmap 缺口盤點；產出評估報告草稿 + 低風險文件同步
+
+task_id: "20260609-R01"
+date: "2026-06-09"
+status: "done"
+
+# === 任務定義 ===
+goal: "檢視 frontend/ 治理看板的完整度：現況健康度 + 已交付卡片 DoD 逐條核對 + roadmap 缺口盤點，並補齊低風險文件同步"
+context: |
+  frontend/ 看板已交付 Phase 0 baseline（20260427-F01）與 R7 治理總覽面板（20260529-011）。
+  使用者要依 harness workflow 檢視其完整度（現況 + roadmap 缺口），並把低風險缺口一併補齊。
+  較大項目（Phase 1/2/3 新面板、open PR 收斂、F01 卡片 status 翻轉）只列建議，不在本卡執行。
+input_data:
+  - "frontend/index.html"
+  - "frontend/app.js"
+  - "frontend/styles.css"
+  - "frontend/data.json"
+  - "scripts/generate_frontend_manifest.py"
+  - "scripts/test_generate_frontend_manifest.py"
+  - ".github/workflows/spec-consistency.yml"
+  - "tasks/2026-04-27_frontend-platform-phase0.yaml"
+  - "tasks/2026-05-29_r7-frontend-overview-panel.yaml"
+  - "README.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "現況健康度逐項實測有紀錄：drift --check、generator 4 tests、5 個 panel 存在、CI 步驟存在"
+  - "已交付卡片 DoD 逐條 pass/fail 附 file:line 證據：20260427-F01（11 條）+ 20260529-011（4 條）"
+  - "roadmap 缺口表：Phase 0–3 + R7 + 在途 open PR（#77/#80/#94/#90/#81）對照，標已完成/在途/未開工"
+  - "評估報告產出 outputs/drafts/2026-06-09_frontend-completeness-review.md（依 review skill 格式）"
+  - "低風險缺口補齊：README 前端段 + index.html 副標與實況一致；data.json 重生且 drift --check 綠"
+  - "logs/AUDIT_LOG.md 新增 1 筆；spec-consistency 與 context-budget CI-equivalent 全綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-06-09_frontend-completeness-review.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "review"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260609-R01 frontend completeness review + low-risk doc sync"
+actual_tool_calls: 14
+result_summary: "有條件通過。已交付前端健康度全綠（drift OK、4 tests、5 panel、CI 護欄齊）；F01 DoD 11/11、R7 4/4（F01 第6條機制改 --check 達標）。roadmap 完整度約 40%（Phase 0+R7 落地，Phase 1 在途 #77/#80，Phase 2/3 未開工）。修正唯一文件漂移：README/index.html 補列治理總覽面板，data.json 重生 drift 綠。報告：outputs/drafts/2026-06-09_frontend-completeness-review.md。"
+completion_time: "2026-06-09"
+audit_log_ref: "logs/AUDIT_LOG.md"

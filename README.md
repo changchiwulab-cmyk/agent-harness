@@ -172,9 +172,11 @@ python system/validate_task_card.py tasks/your-task.yaml
 ## 前端動態介面（本地觀看）
 
 已提供最小版前端看板於 `frontend/`，包含：
+- Summary 概況卡（Tasks / Done / Failed / Logs / Decisions 計數）
+- 治理總覽面板（task 狀態/skill/風險分佈、run 狀態、四層 gate 統計）
 - Task 清單瀏覽
-- Logs 儀表板
 - Decision Timeline（可點擊展開）
+- Logs 儀表板
 
 資料來源唯一化於 `frontend/data.json`，由 `scripts/generate_frontend_manifest.py` 在產生階段以 PyYAML 解析下列來源後序列化：
 - `tasks/20*.yaml`
