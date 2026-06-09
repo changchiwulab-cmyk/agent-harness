@@ -54,6 +54,15 @@ jobs:
       - name: Permissions guard tests
         run: python3 scripts/test_permissions_guard.py
 
+      - name: Task card guard tests
+        run: python3 scripts/test_task_card_guard.py
+
+      - name: Failure counter tests
+        run: python3 scripts/test_failure_counter.py
+
+      - name: Gate check tests
+        run: python3 scripts/test_gate_check.py
+
       - name: Audit log generator tests
         run: python3 scripts/test_generate_audit_log.py
 

@@ -58,3 +58,17 @@ risk_levels:
     auto_execute: false
     approval_needed: true
     approval_type: "deny_by_default"  # 預設拒絕，需額外授權
+
+# === Deterministic 強制點（PreToolUse hooks；20260609-001 新增）===
+# 多數 allow/ask/deny 仍靠 prompt 自我約束；下列由 .claude/settings.json 註冊的 hook 抬到 runtime 硬制：
+enforcement:
+  - guard: "scripts/permissions_guard.py"
+    matcher: "Bash"
+    enforces: "deny 清單的 shell 簽章（rm -rf / sendmail / 外部 webhook / 金流 API / git force-push）"
+  - guard: "scripts/task_card_guard.py"
+    matcher: "Write|Edit|MultiEdit|NotebookEdit"
+    enforces: "硬規則 1 — 寫入 outputs/reports/ 的新正式產出，必須有 Task Card 在 expected_output.filename 宣告；否則 block"
+  - guard: "scripts/failure_counter.py --hook"
+    matcher: "Bash + Write|Edit"
+    enforces: "硬規則 3 — 同一 task_id 連續失敗達 3 次後，後續工具呼叫一律 block，直到人工 --reset"
+# 殘餘 prompt-only（誠實標註）：硬規則 1 的「drafts/ 探索」與 ask 等級的人工確認仍依賴 Claude 遵循 CLAUDE.md。
