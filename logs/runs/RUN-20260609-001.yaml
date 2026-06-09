@@ -1,0 +1,58 @@
+# Execution Log — Fable 5 harness engineering 完整度比對
+# 觸發條件符合 EXECUTION_LOG_SCHEMA 使用範圍：checkpoints >= 3（多階段任務）
+
+execution_log:
+  run_id: "RUN-20260609-001"
+  task_id: "20260609-001"
+  skill_type: "research"
+  started_at: "2026-06-09 00:00"
+  ended_at: "2026-06-09 01:00"
+  status: "completed"
+
+  tools_used:
+    - tool: file_read
+      call_count: 10
+    - tool: web_search
+      call_count: 4
+    - tool: web_fetch
+      call_count: 5
+    - tool: explore_subagent
+      call_count: 1
+    - tool: file_write
+      call_count: 4
+    - tool: validate_task_card
+      call_count: 1
+
+  checkpoints:
+    - commit: "d4fba11"
+      stage: "Task Card 建立並通過 schema 驗證"
+    - commit: "6efdc79"
+      stage: "差距分析報告完成（13 維度 rubric，輸出至 outputs/drafts/）"
+    - commit: "pending"
+      stage: "run log + audit log 寫入"
+
+  token_estimate:
+    input: 90000
+    output: 12000
+    total: 102000
+    source: "rule_estimated"   # 含 Explore 子代理盤點（~73K）；非 dashboard 實測
+
+  approvals:
+    - action: "建立 Task Card + 執行比對工作流（plan mode 全案核准）"
+      status: "approved"
+      approved_by: "human"
+      timestamp: "2026-06-09"
+
+  output_path: "outputs/drafts/2026-06-09_harness-completeness-vs-fable5.md"
+  error_summary: ""
+  gate_results:
+    schema_check: "pass"       # validate_task_card.py + check_spec_consistency.rb 通過
+    rule_check: "pass"         # 工具皆在 allowed_tools 白名單；無 deny 動作；ask（Task Card 建立、報告產出）已於 plan 核准
+    completion_check: "pass"   # DoD 6/6：rubric 13 維度、逐項評級+證據路徑、優先級建議、research 格式、輸出 drafts/、雙 log
+    risk_check: "pass"         # low risk；報告留在 drafts/ 等人工 promote，無對外動作
+
+  notes: >
+    比對基準雙軌：(A) Anthropic engineering blog 兩篇 + anthropics/cwc-long-running-agents
+    官方參考實作；(B) Claude Code 原生機制。blog 原文與 HN 均 403，以 cwc repo（完整取得）
+    + 搜尋摘要 + InfoQ 交叉重建，已在報告「待驗證」段標註。結論：完整度約 75-80%
+    （✅7 / 🟡4 / ❌2），治理/稽核/成本超過官方基準，缺口集中在 long-running 自治執行面。

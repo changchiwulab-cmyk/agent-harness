@@ -3,7 +3,7 @@
 
 task_id: "20260609-001"
 date: "2026-06-09"
-status: "in_progress"
+status: "review"   # 報告已產出至 drafts/，待人工審閱後 promote
 
 # === 任務定義 ===
 goal: "以 Fable 5 時代的 Anthropic harness engineering（官方教材 + Claude Code 本身架構）為基準，評估 agent-harness 專案完整度並產出差距分析報告"
@@ -57,8 +57,15 @@ max_web_searches: 10
 skill_type: "research"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
-audit_log_ref: ""
+checkpoints:
+  - "d4fba11 Task Card 建立並通過 schema 驗證"
+  - "6efdc79 差距分析報告完成（13 維度 rubric，draft）"
+  - "(pending) run log + audit log 寫入"
+actual_tool_calls: 25
+result_summary: >
+  13 維度 rubric 評估完成：✅7 / 🟡4 / ❌2 ≈ 75-80% 完整度。治理/權限/稽核/成本
+  超過官方基準；缺口集中 long-running 自治執行面（builder/grader 分離、
+  evidence-gated done、跨 session handoff、kill-switch/steer、sub-agent 架構）。
+  P1 建議：evaluator subagent + evidence-gated completion hook。
+completion_time: "2026-06-09"
+audit_log_ref: "logs/AUDIT_LOG.md#20260609-001 + logs/runs/RUN-20260609-001.yaml"

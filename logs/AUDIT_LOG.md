@@ -33,6 +33,35 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260609-001"
+  date: "2026-06-09"
+  skill_type: "research"
+  goal: "以 Fable 5 時代 Anthropic harness engineering 為基準，評估本專案完整度並產出差距分析報告"
+  status: "done"
+  model_used: "claude (undisclosed)"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 10
+    - tool_name: "web_search"
+      call_count: 4
+    - tool_name: "web_fetch"
+      call_count: 5
+    - tool_name: "explore_subagent"
+      call_count: 1
+    - tool_name: "file_write"
+      call_count: 4
+  checkpoints: 3
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/2026-06-09_harness-completeness-vs-fable5.md"
+  error_summary: ""
+  estimated_tokens: "~102K"
+  notes: "雙軌基準：Anthropic blog 兩篇 + cwc-long-running-agents 官方實作 + Claude Code 原生機制。13 維度 rubric：✅7 / 🟡4 / ❌2 ≈ 75-80% 完整度。治理/稽核/成本超過官方基準（NATIVE_OVERLAP 為 meta 原則制度化亮點）；缺口集中 long-running 自治面（evaluator 分離、evidence-gated done、handoff、kill-switch/steer、subagent）。P1 建議：evaluator subagent + evidence-gated completion。詳見 RUN-20260609-001。報告留 drafts/ 待 promote。"
+```
+
+---
+
+```yaml
 - task_id: "20260529-011"
   date: "2026-05-29"
   skill_type: "ops"
