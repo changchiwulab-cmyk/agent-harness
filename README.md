@@ -46,11 +46,16 @@ agent-harness/
 │   ├── PERMISSIONS.yaml       ← 權限策略（allow/ask/deny + 四級風險）
 │   ├── COST_POLICY.md         ← 成本控制 + 升級觸發條件
 │   ├── ROUTING_RULES.md       ← Skill 路由規則
+│   ├── INTAKE_FLOW.md         ← 需求 → Task Card 的收斂流程
+│   ├── RETRO_FLOW.md          ← 任務後回顧流程
+│   ├── RECOVERY_RUNBOOK.md    ← 災難恢復 / rollback 操作程序（R8 新增）
 │   ├── GATE_POLICY.yaml            ← 四層驗證 checklist + rollback（v1.5+v2）
 │   ├── AGENT_CONTEXT.yaml          ← 系統自我認知與邊界（v1.5 新增）
 │   ├── APPROVAL_POLICY.yaml        ← 批准流程規則（v2 新增）
 │   ├── FAILURE_TAXONOMY.yaml       ← 14 種失敗模式獨立檔（v2 新增）
-│   └── EXECUTION_LOG_SCHEMA.yaml   ← 執行紀錄結構定義（v2 新增）
+│   ├── EXECUTION_LOG_SCHEMA.yaml   ← 執行紀錄結構定義（v2 新增）
+│   ├── NATIVE_OVERLAP.yaml         ← Claude Code 原生功能重疊度（M4 指標來源）
+│   └── validate_task_card.py       ← Task Card schema 驗證器（gate L1）
 ├── tasks/
 │   ├── TASK_CARD_TEMPLATE.yaml
 │   ├── DECISION_LOG_TEMPLATE.yaml  ← 決策紀錄模板（v1.5 新增）
@@ -130,21 +135,16 @@ python system/validate_task_card.py tasks/your-task.yaml
 
 安全議題回報流程見 [SECURITY.md](SECURITY.md)。
 
-## 導入計畫
+## 目前運行節奏（導入期已完成）
 
-### 第 1 週：跑通骨架
-- 用 `research` 和 `review` 跑 1 條完整任務流
-- 確認 Task Card → 執行 → Checkpoint → 驗證 → 輸出 的流程順暢
+骨架導入（research/review/writing/ops 全流程、audit log 累積、working memory、approval/cost/failure 治理）
+已完成，框架進入穩定運行 + 增量強化階段。常態節奏：
 
-### 第 2 週：補執行閉環
-- 啟用 `writing` 和 `ops`
-- 開始累積 audit log 數據
-- 補充 working memory
-
-### 第 3 週：補治理
-- 根據前兩週數據調整 COST_POLICY 的任務級預算
-- 完善 approval policy
-- 建立 failure taxonomy 的實際案例
+- **每任務**：建 Task Card（goal + DoD）→ 執行 → git checkpoint → 四層 gate 驗證 → 輸出 → audit log
+- **每月**：跑 `python3 scripts/governance_metrics.py` 檢視 M1–M4（Task Card 量、drafts:reports 比、
+  audit 覆蓋率、原生功能重疊度），任一指標進 warn/alert 即評估調整
+- **每季 / Claude Code 主版本升級**：重評 `system/NATIVE_OVERLAP.yaml`（重疊度 > 50% 即觸發重構）
+- **強化系列**：以 R1–R8 模式增量補強（每項一張 Task Card + 對應 CI 測試）
 
 ## 現階段不做清單
 
@@ -165,9 +165,10 @@ python system/validate_task_card.py tasks/your-task.yaml
 |------|------|-------------|
 | **v1** | 單核心代理 + Task Card + Checkpoint + Verifier + Audit | — |
 | **v1.5** | + Gate Policy + Operating Context + Decision Log + Eval Examples + Weekly Review | 馬鞍工程原則導入：驗證集中化、系統自知、決策可追溯 |
-| **v2（現在）** | + Approval Policy + Failure Taxonomy + Execution Log Schema + Rollback Path + Ops Eval | 馬鞍工程落地：批准流程獨立化、失敗模式可引用、執行紀錄結構化 |
-| **v3** | 拆分 bounded specialists（research/sales/content） | 單一代理的 context 經常超限；任務類型間的規則衝突頻繁 |
-| **v4** | Graph orchestration + 進階 checkpoint persistence | 任務間依賴複雜度超過線性拔分能處理的範圍 |
+| **v2** | + Approval Policy + Failure Taxonomy + Execution Log Schema + Rollback Path + Ops Eval | 馬鞍工程落地：批准流程獨立化、失敗模式可引用、執行紀錄結構化 |
+| **v2.x（現在）** | + R1–R8 強化（approval schema / logs lint / decision-revisit / token source / observability metrics / recovery runbook）+ deterministic guards（task_card_guard / failure_counter）+ gate L1–L4 自動化（gate_check） | 把宣稱的治理變成可被腳本與 CI 驗證的治理 |
+| **v3（已選方向）** | 砍冗餘 + 深化治理層：把 Audit / Decision Log / DoD / Failure Taxonomy 抽成獨立 `agent-governance` plugin（Route 2），並把治理思想方法論化（Route 3） | 與 Claude Code 原生功能重疊度上升；治理價值在思想而非框架本身（見 plan §5） |
+| **v4** | Graph orchestration + 進階 checkpoint persistence | 任務間依賴複雜度超過線性拆分能處理的範圍 |
 
 ## 前端動態介面（本地觀看）
 
