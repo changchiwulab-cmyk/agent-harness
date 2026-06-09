@@ -47,6 +47,7 @@ allowed_tools:
   - "file_write_drafts"
   - "file_write_logs"
   - "git_checkpoint"
+  - "explore_subagent"   # repo 盤點用唯讀子代理；於 plan mode intake 階段使用並隨整體計畫獲人工核准
 
 # === 成本控制 ===
 max_tool_calls: 40

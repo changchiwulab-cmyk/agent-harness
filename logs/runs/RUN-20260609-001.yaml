@@ -52,6 +52,9 @@ execution_log:
     risk_check: "pass"         # low risk；報告留在 drafts/ 等人工 promote，無對外動作
 
   notes: >
+    explore_subagent（唯讀 repo 盤點）使用於 plan mode intake 階段（Task Card 建立前），
+    與整體執行計畫一併獲人工核准；Task Card allowed_tools 已補列該工具以使白名單與
+    實際核准範圍一致（PR #97 Codex review P2 修正）。
     比對基準雙軌：(A) Anthropic engineering blog 兩篇 + anthropics/cwc-long-running-agents
     官方參考實作；(B) Claude Code 原生機制。blog 原文與 HN 均 403，以 cwc repo（完整取得）
     + 搜尋摘要 + InfoQ 交叉重建，已在報告「待驗證」段標註。結論：完整度約 75-80%
