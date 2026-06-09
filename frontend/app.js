@@ -1,4 +1,4 @@
-const state = { tasks: [], logs: [], decisions: [] };
+const state = { tasks: [], logs: [], decisions: [], overview: {}, budget: {} };
 
 const $ = (id) => document.getElementById(id);
 
@@ -33,6 +33,7 @@ async function loadData() {
     .map((d) => ({ ...d, _date: decisionDate(d) }))
     .sort((a, b) => a._date.localeCompare(b._date));
   state.overview = payload.overview || {};
+  state.budget = payload.budget || {};
 }
 
 function inDateRange(value, from, to) {
@@ -137,11 +138,108 @@ function renderOverview() {
     .join('');
 }
 
+function renderBudget() {
+  const el = $('budgetPanel');
+  if (!el) return;
+  const b = state.budget || {};
+  const ctx = b.context || {};
+  const over = (used, max) => max && used > max;
+  const fmt = (used, max) => `${escapeHtml(used)} / ${escapeHtml(max)} tokens${over(used, max) ? ' ⚠' : ''}`;
+  const cards = [['CLAUDE.md + GLOBAL_RULES（合計）', fmt(ctx.total ?? 0, ctx.budget ?? 0)]];
+  (ctx.files || []).forEach((f) => cards.push([f.path, `${escapeHtml(f.tokens)} tokens`]));
+  const sk = b.skills || {};
+  const skBudget = sk.budget ?? 0;
+  (sk.items || []).forEach((s) => cards.push([s.path, fmt(s.tokens, skBudget)]));
+  el.innerHTML = (cards.length ? cards : [['Context Budget', '—']])
+    .map(([label, val]) => `<article class="card"><div class="label">${escapeHtml(label)}</div><div class="value overview-value">${val}</div></article>`)
+    .join('');
+}
+
+function renderDecisionGraph(decisions) {
+  const el = $('decisionGraph');
+  if (!el) return;
+
+  const taskIds = new Set(state.tasks.map((t) => t.task_id));
+  const taskTitle = (id) => {
+    const t = state.tasks.find((x) => x.task_id === id);
+    return t ? (t.title || t.task_id) : id;
+  };
+  const trunc = (s, n) => {
+    const str = String(s || '');
+    return str.length > n ? `${str.slice(0, n - 1)}…` : str;
+  };
+
+  const dNodes = decisions.slice().sort((a, b) => (a._date || '').localeCompare(b._date || ''));
+  if (!dNodes.length) {
+    el.innerHTML = '<small>無符合條件資料</small>';
+    return;
+  }
+
+  const tNodes = [];
+  const tIndex = new Map();
+  dNodes.forEach((d) => {
+    const rt = d.related_task;
+    if (rt && !tIndex.has(rt)) {
+      tIndex.set(rt, tNodes.length);
+      tNodes.push(rt);
+    }
+  });
+
+  const rowH = 46;
+  const nodeW = 220;
+  const nodeH = 32;
+  const leftX = 8;
+  const rightX = leftX + nodeW + 120;
+  const width = rightX + nodeW + 8;
+  const rows = Math.max(dNodes.length, tNodes.length, 1);
+  const height = rows * rowH + 12;
+  const top = (i) => 12 + i * rowH;
+  const mid = (i) => top(i) + nodeH / 2;
+
+  const edges = dNodes.map((d, di) => {
+    const rt = d.related_task;
+    if (!rt) return '';
+    const ti = tIndex.get(rt);
+    const external = !taskIds.has(rt);
+    const stroke = external ? '#d1d5db' : '#2563eb';
+    const dash = external ? ' stroke-dasharray="4 3"' : '';
+    return `<line x1="${leftX + nodeW}" y1="${mid(di)}" x2="${rightX}" y2="${mid(ti)}" stroke="${stroke}" stroke-width="1.5"${dash} />`;
+  }).join('');
+
+  const node = (x, i, label, sub, fill, strokec, title) =>
+    `<g><title>${escapeHtml(title)}</title>` +
+    `<rect x="${x}" y="${top(i)}" width="${nodeW}" height="${nodeH}" rx="6" fill="${fill}" stroke="${strokec}" />` +
+    `<text x="${x + 8}" y="${top(i) + 13}" font-size="11" font-weight="600" fill="#1f2937">${escapeHtml(label)}</text>` +
+    `<text x="${x + 8}" y="${top(i) + 26}" font-size="10" fill="#6b7280">${escapeHtml(sub)}</text></g>`;
+
+  const dRects = dNodes.map((d, i) =>
+    node(leftX, i, trunc(d.decision_id, 22), trunc(d.decision || d._date || '', 30),
+      '#eef2ff', '#c7d2fe', `${d.decision_id || ''}｜${d.decision || ''}`)).join('');
+
+  const tRects = tNodes.map((id, i) => {
+    const external = !taskIds.has(id);
+    return node(rightX, i, trunc(id, 22), external ? '（外部 / 已封存）' : trunc(taskTitle(id), 30),
+      external ? '#f9fafb' : '#ecfdf5', external ? '#e5e7eb' : '#a7f3d0',
+      external ? `${id}（不在目前任務集）` : `${id}｜${taskTitle(id)}`);
+  }).join('');
+
+  const orphan = dNodes.filter((d) => !d.related_task).length;
+  const ext = dNodes.filter((d) => d.related_task && !taskIds.has(d.related_task)).length;
+  const legend = `決策 ${dNodes.length}｜關聯任務 ${tNodes.length}｜外部引用 ${ext}｜無關聯 ${orphan}`;
+
+  el.innerHTML =
+    `<div style="overflow-x:auto"><svg viewBox="0 0 ${width} ${height}" width="100%" height="${height}" role="img" aria-label="Decision graph">` +
+    edges + dRects + tRects + '</svg></div>' +
+    `<small>${escapeHtml(legend)}　（實線=任務存在；虛線=外部/已封存）</small>`;
+}
+
 function render(tasks, decisions) {
   renderOverview();
+  renderBudget();
   renderSummary(tasks, decisions);
   renderTasks(tasks);
   renderTimeline(decisions);
+  renderDecisionGraph(decisions);
   renderLogs();
 }
 

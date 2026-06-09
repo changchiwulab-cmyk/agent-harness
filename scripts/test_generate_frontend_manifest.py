@@ -46,6 +46,10 @@ class TestGenerator(unittest.TestCase):
                         "risk_check": {},
                     },
                 },
+                "budget": {
+                    "context": {"budget": 3000, "total": 0, "files": []},
+                    "skills": {"budget": 1500, "items": []},
+                },
             })
 
     def test_multi_project_decisions_are_all_collected(self):
@@ -84,6 +88,44 @@ class TestGenerator(unittest.TestCase):
 
             self.assertEqual(first, second)
             json.loads(first)
+
+
+class TestBudget(unittest.TestCase):
+    def test_estimate_tokens_matches_ruby_formula(self):
+        # ASCII / 4 + non-ASCII × 1, then ceil (same as check_context_budget.rb)
+        self.assertEqual(gen.estimate_tokens("abcd" * 10), 10)  # 40 ascii -> 10
+        self.assertEqual(gen.estimate_tokens("中文字"), 3)        # 3 non-ascii -> 3
+        self.assertEqual(gen.estimate_tokens("ab中"), 2)          # ceil(0.5 + 1) -> 2
+        self.assertEqual(gen.estimate_tokens(""), 0)
+
+    def test_build_budget_collects_context_and_skills(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            write(root / "CLAUDE.md", "abcd" * 10)                 # 10 tokens
+            write(root / "system" / "GLOBAL_RULES.md", "中文字")    # 3 tokens
+            write(root / "skills" / "ops" / "SKILL.md", "ab中")     # 2 tokens
+
+            budget = gen.build_budget(root)
+
+            self.assertEqual(budget["context"], {
+                "budget": 3000,
+                "total": 13,
+                "files": [
+                    {"path": "CLAUDE.md", "tokens": 10},
+                    {"path": "system/GLOBAL_RULES.md", "tokens": 3},
+                ],
+            })
+            self.assertEqual(budget["skills"], {
+                "budget": 1500,
+                "items": [{"path": "skills/ops/SKILL.md", "tokens": 2}],
+            })
+
+    def test_build_budget_skips_missing_files(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            budget = gen.build_budget(Path(tmp))
+            self.assertEqual(budget["context"]["files"], [])
+            self.assertEqual(budget["context"]["total"], 0)
+            self.assertEqual(budget["skills"]["items"], [])
 
 
 class TestDriftCheck(unittest.TestCase):

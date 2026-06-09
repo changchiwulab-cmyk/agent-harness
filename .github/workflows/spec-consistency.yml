@@ -51,6 +51,9 @@ jobs:
       - name: Frontend manifest drift check
         run: python3 scripts/generate_frontend_manifest.py --check
 
+      - name: Frontend render smoke test
+        run: node frontend/test_app_render.mjs
+
       - name: Permissions guard tests
         run: python3 scripts/test_permissions_guard.py
 

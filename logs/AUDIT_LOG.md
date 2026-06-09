@@ -33,6 +33,29 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260609-F03"
+  date: "2026-06-09"
+  skill_type: "ops"
+  goal: "完成前端 roadmap 未開工項：Phase 2 Context Budget 儀表板 + Phase 3 Decision Graph"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 5
+    - tool_name: "file_write"
+      call_count: 7
+    - tool_name: "bash"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "frontend/app.js; frontend/index.html; frontend/data.json; scripts/generate_frontend_manifest.py; scripts/test_generate_frontend_manifest.py; frontend/test_app_render.mjs; .github/workflows/spec-consistency.yml"
+  error_summary: ""
+  estimated_tokens: "~30K"
+  notes: "延續 R7 模式。Phase 2：build_budget（token 估算與 check_context_budget.rb 一致）→ data.json budget 鍵 + renderBudget；+3 budget 單元測試（共 7 綠）。Phase 3：renderDecisionGraph（vanilla SVG 二部圖，matched/external/orphan）純前端。新增 test_app_render.mjs 渲染冒煙測試並進 CI。全套 CI-equivalent 綠、node --check 通過、未動 system/。Phase 1（F02）在途 #77/#80 未重做避免衝突。"
+```
+
+```yaml
 - task_id: "20260609-R01"
   date: "2026-06-09"
   skill_type: "review"

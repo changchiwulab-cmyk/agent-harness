@@ -1,4 +1,45 @@
 {
+  "budget": {
+    "context": {
+      "budget": 3000,
+      "files": [
+        {
+          "path": "CLAUDE.md",
+          "tokens": 606
+        },
+        {
+          "path": "system/GLOBAL_RULES.md",
+          "tokens": 591
+        }
+      ],
+      "total": 1197
+    },
+    "skills": {
+      "budget": 1500,
+      "items": [
+        {
+          "path": "skills/analysis/SKILL.md",
+          "tokens": 539
+        },
+        {
+          "path": "skills/ops/SKILL.md",
+          "tokens": 396
+        },
+        {
+          "path": "skills/research/SKILL.md",
+          "tokens": 559
+        },
+        {
+          "path": "skills/review/SKILL.md",
+          "tokens": 511
+        },
+        {
+          "path": "skills/writing/SKILL.md",
+          "tokens": 356
+        }
+      ]
+    }
+  },
   "decisions": [
     {
       "date": "2026-04-03",
@@ -136,23 +177,23 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 31,
+      "low": 32,
       "medium": 14
     },
     "task_skill": {
       "analysis": 4,
-      "ops": 26,
+      "ops": 27,
       "research": 5,
       "review": 7,
       "writing": 4
     },
     "task_status": {
-      "done": 23,
+      "done": 24,
       "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 46
+    "task_total": 47
   },
   "tasks": [
     {
@@ -614,6 +655,16 @@
       "skill_type": "review",
       "status": "done",
       "task_id": "20260609-R01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-09",
+      "goal": "為前端看板補上 roadmap 未開工的兩個面板：Phase 2 Context Budget 儀表板 + Phase 3 Decision Graph（決策關聯圖）",
+      "path": "tasks/2026-06-09_frontend-roadmap-complete.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260609-F03"
     }
   ]
 }

@@ -1,0 +1,63 @@
+# Task Card — 完成前端 roadmap 未開工項（Phase 2 + Phase 3）
+# 來源：使用者「workflow 未完工的部分幫我完成，需驗證、測試完成」
+# 對照 20260609-R01 review：未開工 = Phase 2 Context Budget 儀表板 + Phase 3 Decision Graph
+# Phase 1（F02 Gate/Approval/Failure 視覺化）已在途 #77/#80，本卡不重做以免衝突
+
+task_id: "20260609-F03"
+date: "2026-06-09"
+status: "done"
+
+# === 任務定義 ===
+goal: "為前端看板補上 roadmap 未開工的兩個面板：Phase 2 Context Budget 儀表板 + Phase 3 Decision Graph（決策關聯圖）"
+context: |
+  延續 R7（20260529-011）建立的低風險模式：build_* 於 generator 計算 → data.json 新鍵 → app.js render* 以既有樣式渲染。
+  Phase 2：context budget 由 generator 以「與 check_context_budget.rb 完全一致的 token 估算法」計算 CLAUDE.md+GLOBAL_RULES（≤3000）與各 skill SKILL.md（≤1500）。
+  Phase 3：decisions 已含 related_task（data.json 既有），純前端以 vanilla SVG 渲染 decision↔task 二部圖，處理 matched/external/orphan 三種情形。
+input_data:
+  - "scripts/generate_frontend_manifest.py"
+  - "scripts/test_generate_frontend_manifest.py"
+  - "scripts/check_context_budget.rb"
+  - "frontend/index.html"
+  - "frontend/app.js"
+  - "frontend/data.json"
+
+# === 完成標準 ===
+definition_of_done:
+  - "generator 新增 build_budget（token 估算法與 check_context_budget.rb 一致：ASCII/4 + 非ASCII×1, ceil），build() 輸出 budget 鍵（context + skills）"
+  - "test_generate_frontend_manifest.py：test_empty_repo 含 budget 空值；新增 budget 計算測試；idempotent/multi-project 仍綠"
+  - "index.html 新增 Context Budget section 與 Decision Graph section"
+  - "app.js renderBudget()（.cards 樣式）+ renderDecisionGraph()（vanilla SVG，matched/external/orphan 皆處理）；尊重既有 keyword/date 篩選"
+  - "data.json 重生且 drift --check 綠；node --check frontend/app.js 通過"
+  - "全套 CI-equivalent 綠（spec-consistency / context-budget / generator tests / YAML parse）；未修改 system/"
+
+# === 輸出定義 ===
+expected_output:
+  format: "mixed"
+  location: "frontend/"
+  filename: "app.js"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 30
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260609-F03 frontend roadmap Phase 2 budget + Phase 3 decision graph"
+actual_tool_calls: 16
+result_summary: "完成 roadmap 未開工兩面板。Phase 2：generator build_budget（token 估算與 check_context_budget.rb 一致，實測 context 1197/3000、各 skill <1500）→ data.json budget 鍵；新增 3 個 budget 單元測試（共 7 綠）；app.js renderBudget + index.html section。Phase 3：app.js renderDecisionGraph（vanilla SVG 二部圖，matched/external/orphan 皆處理）+ index.html section，純前端用既有 related_task。新增 frontend/test_app_render.mjs 渲染冒煙測試並進 CI。drift/spec/budget/generator/render 全綠；node --check 通過；未動 system/。Phase 1（F02）在途 #77/#80 未重做。"
+completion_time: "2026-06-09"
+audit_log_ref: "logs/AUDIT_LOG.md"

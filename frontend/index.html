@@ -9,7 +9,7 @@
   <body>
     <header>
       <h1>Agent Harness 動態看板</h1>
-      <p>清單瀏覽 / 治理總覽 / Logs 儀表板 / Decision Timeline</p>
+      <p>清單瀏覽 / 治理總覽 / Context Budget / Logs 儀表板 / Decision Timeline · Graph</p>
     </header>
 
     <section class="filters">
@@ -26,6 +26,11 @@
       <div id="overviewPanel" class="cards"></div>
     </section>
 
+    <section>
+      <h2>Context Budget（context 預算）</h2>
+      <div id="budgetPanel" class="cards"></div>
+    </section>
+
     <main class="grid">
       <section>
         <h2>Task 清單</h2>
@@ -37,6 +42,11 @@
         <div id="timeline" class="panel"></div>
       </section>
     </main>
+
+    <section>
+      <h2>Decision Graph（決策關聯圖）</h2>
+      <div id="decisionGraph" class="panel"></div>
+    </section>
 
     <section>
       <h2>Logs 儀表板</h2>
