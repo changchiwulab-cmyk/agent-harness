@@ -1,0 +1,65 @@
+# Task Card：harness 缺口補強計畫（接力自 20260609-001 差距分析報告）
+# 由 Claude Code 依使用者請求建立（使用者明確要求產出補強計畫）
+
+task_id: "20260609-002"
+date: "2026-06-09"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "依 20260609-001 差距分析報告的缺口，產出含優先級、實作設計、成本與風險評估的補強計畫"
+context: >
+  20260609-001 報告以 Fable 5 時代 Anthropic harness engineering 為基準，
+  評出完整度約 75-80%，缺口集中在 long-running 自治執行面：builder/grader
+  分離、evidence-gated 完成驗證、跨 session handoff、執行中操作者控制、
+  sub-agent 架構、skills 原生註冊，以及 NATIVE_OVERLAP 基準過期（Fable 5
+  發布前評估）。本任務將缺口轉為可執行的補強 roadmap：每項做六維評估
+  （價值/成本/風險/可行性/執行難度/回報）+ 一人公司適配度判斷，含「不做」
+  選項、實作設計（檔案層級）、依賴關係、階段排序與後續 Task Card 草稿。
+  依 ROUTING_RULES 路由為 analysis（該怎麼選），與 research（事實是什麼）
+  以 20260609-001 報告為接力點。
+input_data:
+  - "outputs/drafts/2026-06-09_harness-completeness-vs-fable5.md"
+  - "system/GATE_POLICY.yaml + APPROVAL_POLICY.yaml + NATIVE_OVERLAP.yaml"
+  - ".claude/settings.json + scripts/permissions_guard.py（hook 擴充模式）"
+  - "https://github.com/anthropics/cwc-long-running-agents（參考實作）"
+
+# === 完成標準 ===
+definition_of_done:
+  - "每個缺口項目有六維評估表 + 一人公司適配度，且包含「不做」選項的評估"
+  - "每個項目有檔案層級的實作設計（要建/改哪些檔、機制如何運作、如何整合 GATE/APPROVAL/LOG schema）"
+  - "每個項目有測試/CI/演練需求、工時估算、風險與 rollback 定義"
+  - "有明確的階段排序與依賴關係，並說明排序理由"
+  - "附後續執行用的 Task Card 草稿（嵌入計畫文件，不直接建檔，待人工核准後再實例化）"
+  - "計畫輸出到 outputs/drafts/，遵守 analysis skill 輸出格式"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-06-09_harness-gap-remediation-plan.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: true          # 計畫本身是決策文件；執行各補強項目前需人工核准
+allowed_tools:
+  - "file_read"
+  - "web_fetch"
+  - "file_write_drafts"
+  - "file_write_logs"
+  - "git_checkpoint"
+  - "plan_subagent"            # 架構設計壓力測試用子代理（設計，不改檔）
+
+# === 成本控制 ===
+max_tool_calls: 30
+max_retries: 3
+max_web_searches: 3
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
