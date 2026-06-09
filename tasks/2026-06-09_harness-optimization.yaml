@@ -1,6 +1,6 @@
 task_id: "20260609-001"
 date: "2026-06-09"
-status: "in_progress"            # pending → in_progress → checkpoint → review → done / failed
+status: "done"                   # pending → in_progress → checkpoint → review → done / failed
 
 # === 任務定義 ===
 goal: "校正狀態漂移、硬化三條硬規則、自動化 GATE_POLICY 剩餘三層，把宣稱的治理變成可被腳本與 CI 驗證的治理"
@@ -50,8 +50,21 @@ max_web_searches: 0
 skill_type: "ops"                # 框架自身的工程實作與治理硬化
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
+checkpoints:
+  - commit: "97c48da"
+    stage: "建立 Task Card（goal + DoD）"
+  - commit: "e2d8586"
+    stage: "WS1 校正狀態漂移（context.md + README）"
+  - commit: "5a5cbe7"
+    stage: "WS3 gate_check.py 自動化四層 gate + 測試"
+  - commit: "4ff03a6"
+    stage: "WS2 task_card_guard + failure_counter 硬化三條規則 + 收口"
 actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
-audit_log_ref: ""
+result_summary: |
+  三條工作線全數完成。WS1：context.md/README 同步至 2026-06-09 + self-assessment addendum。
+  WS2：task_card_guard.py（reports/ 守門）+ failure_counter.py（失敗 halt）兩支 deterministic
+  guard 註冊進 settings.json，PERMISSIONS/GATE_POLICY 補述強制點。WS3：gate_check.py 自動化
+  GATE 四層。三支新元件共 32 單元測試並納入 CI。新增 decision log D008。
+  v3 治理插件抽出不在本次範圍（D007）。
+completion_time: "2026-06-09"
+audit_log_ref: "logs/AUDIT_LOG.md#20260609-001"

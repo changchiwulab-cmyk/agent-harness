@@ -76,6 +76,17 @@
       "related_task": "20260509-N06",
       "revisit_trigger": "v0.2.0 plugin 達到 agent-harness 全部 system/ 規格 round-trip 後評估轉 public；或下個 session 試行 bootstrap 後發現非預期問題",
       "status": "active"
+    },
+    {
+      "date": "2026-06-09",
+      "decision": "- 硬規則 1：task_card_guard.py 僅硬制 outputs/reports/ 新正式產出需有對應 Task Card；drafts 自由。\n- 硬規則 3：failure_counter.py（計數器 + --hook halt + --reset），達 3 次後 block 後續工具。\n- 兩支 guard 經 .claude/settings.json 註冊為 PreToolUse（Bash + Write|Edit）。\n- GATE 自動化：gate_check.py 做四層 post-execution validator；以單元測試納入 CI（非 --all 阻斷）。\n- PERMISSIONS.yaml / GATE_POLICY.yaml 補述 deterministic 強制點；self-assessment 加日期化 addendum。\n- 狀態漂移：context.md + README 同步至 2026-06-09。\n",
+      "decision_id": "20260609-D008",
+      "path": "memory/active_projects/agent-harness/decisions/20260609-D008_harden-rules-and-automate-gates.yaml",
+      "project": "agent-harness",
+      "reasoning": "直接命中專案自評最大結構缺陷（§3.1 強制力不對稱、§3.6 gate 未自動化），且全部落在現有\nhook/script 模式內，不引入新架構。守門範圍刻意收窄到「正式產出」與「失敗 halt」，避免治理\n框架的經典陷阱（為 1% 高風險替 99% 低風險上鎖，反被繞過）。誠實標註殘餘 prompt-only 邊界，\n與「用 LLM 約束 LLM 有結構性天花板」的自評一致。\n",
+      "related_task": "20260609-001",
+      "revisit_trigger": "若 task_card_guard 對 reports/ 產生誤擋（false positive）或 failure_counter 的 halt 影響正常流程；或 v3 治理插件抽出時，這些 guard 應一併下放到 agent-governance plugin",
+      "status": "active"
     }
   ],
   "logs": [
@@ -137,22 +148,22 @@
     "task_risk": {
       "high": 1,
       "low": 30,
-      "medium": 14
+      "medium": 15
     },
     "task_skill": {
       "analysis": 4,
-      "ops": 26,
+      "ops": 27,
       "research": 5,
       "review": 6,
       "writing": 4
     },
     "task_status": {
-      "done": 22,
+      "done": 23,
       "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 45
+    "task_total": 46
   },
   "tasks": [
     {
@@ -604,6 +615,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-09",
+      "goal": "校正狀態漂移、硬化三條硬規則、自動化 GATE_POLICY 剩餘三層，把宣稱的治理變成可被腳本與 CI 驗證的治理",
+      "path": "tasks/2026-06-09_harness-optimization.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260609-001"
     }
   ]
 }

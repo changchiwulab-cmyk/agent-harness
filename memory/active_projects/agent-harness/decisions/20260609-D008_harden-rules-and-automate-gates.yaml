@@ -1,0 +1,50 @@
+decision_id: "20260609-D008"
+date: "2026-06-09"
+project: "agent-harness"
+
+# --- 決策內容 ---
+context: |
+  專案完整度檢視（task 20260609-001）結論：harness 已成熟（45 卡、完整 CI、governance
+  metrics、R1–R8 已落地），真正缺口為 (1) 文件/狀態漂移、(2) 三條硬規則仍 prompt-only
+  （plan §3.1）、(3) GATE_POLICY 四層僅 schema 自動化（§3.6）。使用者經 ExitPlanMode 核准
+  三條工作線：校正漂移、硬化硬規則、自動化剩餘 gate 層。v3 治理插件抽出不在本次範圍（見 D007）。
+
+options_considered:
+  - option: "硬規則 1（無卡不執行）守門範圍：守所有 outputs/ 寫入"
+    pros: "覆蓋面最廣"
+    cons: "drafts 探索高頻，全守會逼使用者繞過框架（plan §3.3 陷阱）"
+  - option: "硬規則 1 守門範圍：僅守 outputs/reports/ 新正式產出（採用）"
+    pros: "命中真正高風險點（正式/對外產出）；drafts 探索保持無摩擦"
+    cons: "drafts 階段仍 prompt-only —— 已誠實標註"
+  - option: "失敗計數器 halt：改寫 permissions_guard.py 內嵌"
+    pros: "單一 hook"
+    cons: "動到既有受測程式碼，風險高"
+  - option: "失敗計數器 halt：獨立 failure_counter.py --hook（採用）"
+    pros: "不動 permissions_guard；Bash + Write|Edit 共用；含 --reset 逃生口"
+    cons: "settings.json 多註冊一支 hook"
+  - option: "gate_check 納入 CI 的方式：--all 掃所有 done/failed 卡片"
+    pros: "覆蓋全歷史"
+    cons: "舊卡片 run log 與 allowed_tools 漂移會讓 CI 變脆（實測 R5 卡片即 rule_check fail）"
+  - option: "gate_check 納入 CI 的方式：單元測試 + fixture（採用）"
+    pros: "穩定、可回歸；gate_check 作為手動診斷工具（比照 governance_metrics 不入 CI 阻斷）"
+    cons: "不對歷史卡片做阻斷式驗證"
+
+decision: |
+  - 硬規則 1：task_card_guard.py 僅硬制 outputs/reports/ 新正式產出需有對應 Task Card；drafts 自由。
+  - 硬規則 3：failure_counter.py（計數器 + --hook halt + --reset），達 3 次後 block 後續工具。
+  - 兩支 guard 經 .claude/settings.json 註冊為 PreToolUse（Bash + Write|Edit）。
+  - GATE 自動化：gate_check.py 做四層 post-execution validator；以單元測試納入 CI（非 --all 阻斷）。
+  - PERMISSIONS.yaml / GATE_POLICY.yaml 補述 deterministic 強制點；self-assessment 加日期化 addendum。
+  - 狀態漂移：context.md + README 同步至 2026-06-09。
+
+reasoning: |
+  直接命中專案自評最大結構缺陷（§3.1 強制力不對稱、§3.6 gate 未自動化），且全部落在現有
+  hook/script 模式內，不引入新架構。守門範圍刻意收窄到「正式產出」與「失敗 halt」，避免治理
+  框架的經典陷阱（為 1% 高風險替 99% 低風險上鎖，反被繞過）。誠實標註殘餘 prompt-only 邊界，
+  與「用 LLM 約束 LLM 有結構性天花板」的自評一致。
+
+# --- 追蹤 ---
+risk: "medium — 改 system/scripts/settings 屬 ask 等級，經 ExitPlanMode 核准。緩解：三支新元件各有單元測試 + 全部既有 CI 對等檢查通過；guard 預設 allow（deny-list 而非 sandbox），降低誤擋。"
+revisit_trigger: "若 task_card_guard 對 reports/ 產生誤擋（false positive）或 failure_counter 的 halt 影響正常流程；或 v3 治理插件抽出時，這些 guard 應一併下放到 agent-governance plugin"
+related_task: "20260609-001"
+status: "active"
