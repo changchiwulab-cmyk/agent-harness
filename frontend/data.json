@@ -177,23 +177,23 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 32,
+      "low": 34,
       "medium": 14
     },
     "task_skill": {
       "analysis": 4,
-      "ops": 27,
+      "ops": 28,
       "research": 5,
-      "review": 7,
+      "review": 8,
       "writing": 4
     },
     "task_status": {
-      "done": 24,
+      "done": 26,
       "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 47
+    "task_total": 49
   },
   "tasks": [
     {
@@ -659,12 +659,32 @@
     {
       "approval_needed": false,
       "date": "2026-06-09",
+      "goal": "為前端（generator + app.js 渲染）補上深度/邊界測試：欄位白名單、log 解包、overview tally、decisions、XSS 跳脫、空資料 fallback、超預算告警、決策圖三態、篩選與重設",
+      "path": "tasks/2026-06-09_frontend-deep-testing.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260609-F04"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-09",
       "goal": "為前端看板補上 roadmap 未開工的兩個面板：Phase 2 Context Budget 儀表板 + Phase 3 Decision Graph（決策關聯圖）",
       "path": "tasks/2026-06-09_frontend-roadmap-complete.yaml",
       "risk_level": "low",
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260609-F03"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-09",
+      "goal": "對專案做一次完整健康檢查：全套 test/check 腳本 + e2e + 驗證所有 Task Card + 結構一致性，彙整成專案健康報告",
+      "path": "tasks/2026-06-09_project-full-check.yaml",
+      "risk_level": "low",
+      "skill_type": "review",
+      "status": "done",
+      "task_id": "20260609-R02"
     }
   ]
 }

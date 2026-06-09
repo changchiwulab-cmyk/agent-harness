@@ -1,0 +1,62 @@
+# Task Card — 專案完整檢查
+# 來源：使用者「workflow 完整檢查專案」之完整檢查部分
+# 跑全套 CI-equivalent + 驗證所有 Task Card + 結構一致性，產出專案健康報告
+
+task_id: "20260609-R02"
+date: "2026-06-09"
+status: "done"
+
+# === 任務定義 ===
+goal: "對專案做一次完整健康檢查：全套 test/check 腳本 + e2e + 驗證所有 Task Card + 結構一致性，彙整成專案健康報告"
+context: |
+  在前端深度測試（20260609-F04）完成後，跑一次全專案檢查，確認整體仍綠且無結構漂移。
+  涵蓋 ruby/python/node 全部 test_*/check_* 腳本、兩支 e2e、全部 Task Card schema 驗證、
+  以及 CLAUDE.md 宣告之 system/ 檔案存在性等結構檢查。輸出報告供人工查閱。
+input_data:
+  - ".github/workflows/spec-consistency.yml"
+  - "scripts/"
+  - "tests/e2e/"
+  - "tasks/"
+  - "CLAUDE.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "執行全套 CI-equivalent（spec-consistency / context-budget / decision-revisit / generator / frontend drift / permissions-guard / audit-log / governance-metrics / 2×e2e / node render+--check）並記錄逐項 pass/fail"
+  - "驗證 tasks/ 下所有 Task Card schema（排除 TEMPLATE），記錄 valid/invalid 數"
+  - "結構一致性檢查：CLAUDE.md 宣告之 system/ 檔案與必要目錄存在"
+  - "彙整為專案健康報告 outputs/drafts/2026-06-09_project-full-check.md（含逐項結果與任何發現）"
+  - "報告結論明確（健康/需修），任何 fail 列出位置與建議"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-06-09_project-full-check.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "review"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260609-R02 project full check report"
+actual_tool_calls: 6
+result_summary: "專案完整檢查：通過（健康）。17/17 自動化檢查綠（spec/context-budget/decision-revisit/generator(13)/frontend drift/permissions/audit-log/governance-metrics/2×e2e/node --check+深度渲染6情境）；53 張 Task Card schema 全效；CLAUDE.md 宣告 6 system 檔 + 必要目錄齊。發現 CI 未含 governance_metrics 測試 → 已補進 spec-consistency.yml。報告：outputs/drafts/2026-06-09_project-full-check.md。"
+completion_time: "2026-06-09"
+audit_log_ref: "logs/AUDIT_LOG.md"

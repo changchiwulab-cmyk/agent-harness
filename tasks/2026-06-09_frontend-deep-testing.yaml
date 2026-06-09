@@ -1,0 +1,59 @@
+# Task Card — 前端深度測試
+# 來源：使用者「workflow 完整檢查專案，並進行前端深度測試」之深度測試部分
+# 在現有 generator 單元測試 + render 冒煙測試之上，補齊 generator 與 UI 渲染的深度/邊界覆蓋
+
+task_id: "20260609-F04"
+date: "2026-06-09"
+status: "done"
+
+# === 任務定義 ===
+goal: "為前端（generator + app.js 渲染）補上深度/邊界測試：欄位白名單、log 解包、overview tally、decisions、XSS 跳脫、空資料 fallback、超預算告警、決策圖三態、篩選與重設"
+context: |
+  現況：scripts/test_generate_frontend_manifest.py（7）+ frontend/test_app_render.mjs（7-panel 冒煙）。
+  深度測試補強：(1) generator 各 collector/overview/budget 的邊界與契約；(2) app.js 渲染的安全（escapeHtml）、
+  空資料、超預算、Decision Graph matched/external/orphan 三態、keyword/date 篩選與 reset。
+  皆為無依賴（unittest / node vm + stub DOM），可進既有 CI。
+input_data:
+  - "scripts/generate_frontend_manifest.py"
+  - "scripts/test_generate_frontend_manifest.py"
+  - "frontend/app.js"
+  - "frontend/test_app_render.mjs"
+
+# === 完成標準 ===
+definition_of_done:
+  - "test_generate_frontend_manifest.py 新增深度案例：collect_tasks 欄位白名單、collect_logs 解包 execution_log/flat、collect_decisions project+欄位、load_yaml 非 mapping、build_overview 分佈與 gate tally、drift 偵測 changed"
+  - "frontend/test_app_render.mjs 擴為多情境：契約(7 panel)、XSS 跳脫、空資料 fallback、超預算 ⚠、Decision Graph 三態+legend、keyword/date 篩選+reset"
+  - "全部測試綠：python generator 測試 + node 深度測試；node --check frontend/app.js 通過"
+  - "data.json 重生且 drift --check 綠；未修改 system/；未改動 app.js 行為（純測試新增）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "mixed"
+  location: "frontend/"
+  filename: "test_app_render.mjs"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 25
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260609-F04 frontend deep tests (generator + render scenarios)"
+actual_tool_calls: 10
+result_summary: "前端深度測試完成。generator（Python）擴至 13 tests：collect_tasks 欄位白名單、collect_logs execution_log 解包/flat、collect_decisions project 萃取、load_yaml 非 mapping、build_overview 分佈與 gate tally、budget 估算/缺檔、drift missing/changed、idempotent。app.js（Node）擴為 6 情境：7-panel 契約、XSS 跳脫、空資料 fallback、超預算 ⚠、Decision Graph matched/external/orphan 三態+legend+邊數、keyword/date 篩選+reset。全綠；node --check 通過；未改 app.js 行為、未動 system/。"
+completion_time: "2026-06-09"
+audit_log_ref: "logs/AUDIT_LOG.md"

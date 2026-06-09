@@ -90,6 +90,91 @@ class TestGenerator(unittest.TestCase):
             json.loads(first)
 
 
+class TestCollectors(unittest.TestCase):
+    def test_collect_tasks_whitelists_fields(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            write(
+                root / "tasks" / "20260101_a.yaml",
+                'task_id: "20260101-001"\ndate: "2026-01-01"\nstatus: "done"\n'
+                'skill_type: "ops"\nrisk_level: "low"\napproval_needed: false\n'
+                'goal: "g"\nsecret: "should-not-leak"\nnotes: "drop me"\n',
+            )
+            tasks = gen.collect_tasks(root)
+            self.assertEqual(len(tasks), 1)
+            t = tasks[0]
+            self.assertEqual(t["path"], "tasks/20260101_a.yaml")
+            self.assertNotIn("secret", t)
+            self.assertNotIn("notes", t)
+            self.assertEqual(
+                set(t) - {"path"},
+                {"task_id", "date", "status", "skill_type", "risk_level", "approval_needed", "goal"},
+            )
+
+    def test_collect_logs_unwraps_execution_log_and_flat(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "logs" / "runs").mkdir(parents=True)
+            write(
+                root / "logs" / "runs" / "20260101-001_wrapped.yaml",
+                'execution_log:\n  run_id: "RUN-1"\n  task_id: "20260101-001"\n  status: "completed"\n'
+                "  gate_results: {schema_check: pass, rule_check: pass}\n",
+            )
+            write(
+                root / "logs" / "runs" / "20260102-002_flat.yaml",
+                'run_id: "RUN-2"\ntask_id: "20260102-002"\nstatus: "failed"\n',
+            )
+            logs = gen.collect_logs(root)
+            self.assertEqual(logs[0]["run_id"], "RUN-1")
+            self.assertEqual(logs[0]["gate_results"], {"schema_check": "pass", "rule_check": "pass"})
+            self.assertEqual(logs[1]["run_id"], "RUN-2")
+            self.assertEqual(logs[1]["status"], "failed")
+
+    def test_collect_decisions_extracts_project_and_whitelists(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            write(
+                root / "memory" / "active_projects" / "proj-x" / "decisions" / "20260101-D001_d.yaml",
+                'decision_id: "20260101-D001"\ndate: "2026-01-01"\ndecision: "do x"\n'
+                'status: "active"\nrelated_task: "20260101-001"\nextra: "drop"\n',
+            )
+            decs = gen.collect_decisions(root)
+            self.assertEqual(len(decs), 1)
+            d = decs[0]
+            self.assertEqual(d["project"], "proj-x")
+            self.assertEqual(d["related_task"], "20260101-001")
+            self.assertNotIn("extra", d)
+
+    def test_load_yaml_non_mapping_returns_empty(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / "x.yaml"
+            p.write_text("- a\n- b\n- c\n", encoding="utf-8")
+            self.assertEqual(gen.load_yaml(p), {})
+
+    def test_build_overview_distributions_and_gate_tally(self):
+        tasks = [
+            {"status": "done", "skill_type": "ops", "risk_level": "low"},
+            {"status": "done", "skill_type": "review", "risk_level": "medium"},
+            {"status": "failed"},  # missing skill/risk -> unknown
+        ]
+        logs = [
+            {"status": "completed", "gate_results": {
+                "schema_check": "pass", "rule_check": "pass",
+                "completion_check": "pass", "risk_check": "pass"}},
+            {"status": "failed", "gate_results": {"schema_check": "fail"}},
+            {"status": "completed"},  # no gate_results
+        ]
+        ov = gen.build_overview(tasks, logs)
+        self.assertEqual(ov["task_total"], 3)
+        self.assertEqual(ov["task_status"], {"done": 2, "failed": 1})
+        self.assertEqual(ov["task_skill"], {"ops": 1, "review": 1, "unknown": 1})
+        self.assertEqual(ov["task_risk"], {"low": 1, "medium": 1, "unknown": 1})
+        self.assertEqual(ov["run_total"], 3)
+        self.assertEqual(ov["run_status"], {"completed": 2, "failed": 1})
+        self.assertEqual(ov["gate_results"]["schema_check"], {"pass": 1, "fail": 1})
+        self.assertEqual(ov["gate_results"]["risk_check"], {"pass": 1})
+
+
 class TestBudget(unittest.TestCase):
     def test_estimate_tokens_matches_ruby_formula(self):
         # ASCII / 4 + non-ASCII × 1, then ceil (same as check_context_budget.rb)
@@ -143,6 +228,27 @@ class TestDriftCheck(unittest.TestCase):
                 gen.ROOT = root
                 gen.OUTPUT = root / "frontend" / "data.json"
                 self.assertEqual(gen.main(["--check"]), 1)
+                gen.OUTPUT.write_text(gen.dump(gen.build(root)), encoding="utf-8")
+                self.assertEqual(gen.main(["--check"]), 0)
+            finally:
+                gen.ROOT = original_root
+                gen.OUTPUT = original_output
+
+    def test_check_mode_detects_changed_output(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "tasks").mkdir()
+            (root / "logs" / "runs").mkdir(parents=True)
+            (root / "memory" / "active_projects").mkdir(parents=True)
+            (root / "frontend").mkdir()
+
+            original_root = gen.ROOT
+            original_output = gen.OUTPUT
+            try:
+                gen.ROOT = root
+                gen.OUTPUT = root / "frontend" / "data.json"
+                gen.OUTPUT.write_text("stale-content\n", encoding="utf-8")
+                self.assertEqual(gen.main(["--check"]), 1)  # present but drifted
                 gen.OUTPUT.write_text(gen.dump(gen.build(root)), encoding="utf-8")
                 self.assertEqual(gen.main(["--check"]), 0)
             finally:

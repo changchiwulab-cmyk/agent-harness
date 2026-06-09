@@ -33,6 +33,50 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260609-R02"
+  date: "2026-06-09"
+  skill_type: "review"
+  goal: "專案完整檢查：全套 CI-equivalent + 全部 Task Card 驗證 + 結構一致性，彙整健康報告"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "bash"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/2026-06-09_project-full-check.md"
+  error_summary: ""
+  estimated_tokens: "~16K"
+  notes: "通過（健康）。17/17 自動化檢查綠、53 Task Card 全效、system 檔+目錄齊、frontend 無 drift。發現 CI 未含 governance_metrics 測試 → 已補進 spec-consistency.yml。"
+```
+
+```yaml
+- task_id: "20260609-F04"
+  date: "2026-06-09"
+  skill_type: "ops"
+  goal: "前端深度測試：generator 邊界/契約 + app.js 渲染安全/空資料/超預算/決策圖三態/篩選"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 3
+    - tool_name: "bash"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "scripts/test_generate_frontend_manifest.py; frontend/test_app_render.mjs"
+  error_summary: ""
+  estimated_tokens: "~26K"
+  notes: "generator 擴至 13 tests（collectors/overview/budget/drift missing+changed）；app.js 擴為 6 情境（契約/XSS/空資料/超預算/Decision Graph 三態/篩選+reset）。全綠、node --check 通過、未改 app.js 行為、未動 system/。"
+```
+
+```yaml
 - task_id: "20260609-F03"
   date: "2026-06-09"
   skill_type: "ops"
