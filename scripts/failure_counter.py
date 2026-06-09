@@ -7,16 +7,19 @@ request. This script gives the harness an actual counter plus a PreToolUse hook
 that halts further tool calls once the threshold is reached.
 
 It is honestly best-effort: the agent must call ``--record <task_id>`` when a
-step fails (that recording is still prompt-driven). But once 3 failures are on
-record, the ``--hook`` mode deterministically blocks subsequent Bash/Write/Edit
-calls until a human runs ``--reset`` — turning a soft request into a hard stop.
+step fails and ``--success <task_id>`` when one succeeds (that signalling is
+still prompt-driven). The count is *consecutive*: a success clears it, so two
+failures followed by a success then a later failure leaves the count at 1 — only
+3 failures in a row trip the hook. Once tripped, the ``--hook`` mode
+deterministically blocks subsequent Bash/Write/Edit calls until ``--reset``.
 
 State lives in ``logs/.failure_state.json`` (gitignored).
 
 CLI:
-    failure_counter.py --record <task_id>     # +1, prints count; exit 3 if tripped
-    failure_counter.py --check  <task_id>      # prints count;     exit 3 if tripped
-    failure_counter.py --reset  <task_id>      # clear that task's count
+    failure_counter.py --record  <task_id>     # +1, prints count; exit 3 if tripped
+    failure_counter.py --success <task_id>     # a step succeeded -> clear count (keeps it consecutive)
+    failure_counter.py --check   <task_id>     # prints count;     exit 3 if tripped
+    failure_counter.py --reset   <task_id>     # clear that task's count (human un-halt)
     failure_counter.py --status                # show all counts
     failure_counter.py --hook                  # PreToolUse mode (stdin JSON -> decision)
 """
@@ -131,6 +134,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="consecutive-failure counter + halt hook")
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--record", metavar="TASK_ID")
+    group.add_argument("--success", metavar="TASK_ID")
     group.add_argument("--check", metavar="TASK_ID")
     group.add_argument("--reset", metavar="TASK_ID")
     group.add_argument("--status", action="store_true")
@@ -147,6 +151,10 @@ def main(argv: list[str] | None = None) -> int:
         if n >= thr:
             print("⛔ 已達門檻 — 依硬規則 3 停下，請人工介入後 --reset。")
             return 3
+        return 0
+    if args.success:
+        reset(args.success)
+        print(f"{args.success}: step succeeded — consecutive failure count cleared")
         return 0
     if args.check:
         n = check(args.check)

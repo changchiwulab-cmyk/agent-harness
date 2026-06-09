@@ -36,8 +36,14 @@ REPORTS_DIR = (ROOT / "outputs" / "reports").resolve()
 WRITE_TOOLS = {"Write", "Edit", "MultiEdit", "NotebookEdit"}
 
 
-def card_output_filenames(root: Path) -> set[str]:
-    """All filenames any Task Card declares as its expected_output."""
+def report_output_filenames(root: Path) -> set[str]:
+    """Filenames a Task Card declares as a *formal report* output.
+
+    Only cards whose ``expected_output.location`` is under ``outputs/reports/``
+    count. A card that declares a draft output (``outputs/drafts/foo.md``) must
+    NOT authorize creating a same-named formal report (``outputs/reports/foo.md``)
+    — formal outputs need their own backing Task Card.
+    """
     names: set[str] = set()
     tasks_dir = root / "tasks"
     if not tasks_dir.exists():
@@ -52,8 +58,9 @@ def card_output_filenames(root: Path) -> set[str]:
         if not isinstance(card, dict):
             continue
         out = card.get("expected_output") or {}
+        location = (out.get("location") or "").strip().rstrip("/")
         fn = (out.get("filename") or "").strip()
-        if fn:
+        if fn and location.endswith("outputs/reports"):
             names.add(fn)
     return names
 
@@ -76,12 +83,12 @@ def evaluate(file_path: str, root: Path = ROOT) -> tuple[str, str | None]:
     if target.exists():
         return "allow", None   # amend an already-promoted report
 
-    if target.name in card_output_filenames(root):
+    if target.name in report_output_filenames(root):
         return "allow", None
 
     return (
         "block",
-        f"no Task Card declares '{target.name}' as expected_output — "
+        f"no Task Card declares '{target.name}' as a formal report output (outputs/reports/) — "
         f"正式產出需有對應 Task Card（硬規則 1）。請先建 tasks/ 卡片或改寫到 outputs/drafts/。",
     )
 

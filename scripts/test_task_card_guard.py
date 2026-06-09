@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import task_card_guard as guard
 
 
-def make_root(card_filename: str | None = None) -> Path:
+def make_root(card_filename: str | None = None, card_location: str = "outputs/reports/") -> Path:
     """Temp root with outputs/reports + optionally a Task Card declaring a filename."""
     root = Path(tempfile.mkdtemp())
     (root / "outputs" / "reports").mkdir(parents=True)
@@ -26,7 +26,7 @@ def make_root(card_filename: str | None = None) -> Path:
     if card_filename:
         card = {
             "task_id": "20260609-X01",
-            "expected_output": {"format": "md", "location": "outputs/reports/", "filename": card_filename},
+            "expected_output": {"format": "md", "location": card_location, "filename": card_filename},
         }
         (root / "tasks" / "card.yaml").write_text(
             yaml.safe_dump(card, allow_unicode=True), encoding="utf-8"
@@ -62,6 +62,14 @@ class TestEvaluate(unittest.TestCase):
         root = make_root(card_filename="backed.md")
         decision, _ = guard.evaluate(str(root / "outputs/reports/backed.md"), root)
         self.assertEqual(decision, "allow")
+
+    def test_draft_located_card_does_not_authorize_report(self):
+        # A card declaring outputs/drafts/foo.md must NOT authorize a new
+        # outputs/reports/foo.md (codex P2: location, not just basename).
+        root = make_root(card_filename="foo.md", card_location="outputs/drafts/")
+        decision, reason = guard.evaluate(str(root / "outputs/reports/foo.md"), root)
+        self.assertEqual(decision, "block")
+        self.assertIn("Task Card", reason)
 
     def test_existing_report_edit_allowed(self):
         root = make_root()

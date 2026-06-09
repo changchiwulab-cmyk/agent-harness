@@ -41,6 +41,15 @@ class TestCounter(unittest.TestCase):
         self.assertEqual(fc.check("T1", self.root), 0)
         self.assertEqual(fc.tripped(self.root), [])
 
+    def test_success_clears_so_count_is_consecutive(self):
+        # codex P2: a success between failures must reset the count, so this is
+        # *consecutive* failures, not cumulative.
+        fc.record("T1", self.root)
+        fc.record("T1", self.root)
+        fc.reset("T1", self.root)          # success path (--success delegates to reset)
+        self.assertEqual(fc.record("T1", self.root), 1)
+        self.assertEqual(fc.tripped(self.root), [])
+
     def test_state_file_is_gitignored_location(self):
         fc.record("T1", self.root)
         self.assertTrue((self.root / "logs" / ".failure_state.json").exists())
@@ -96,6 +105,15 @@ class TestCLI(unittest.TestCase):
         self.assertIn("1/3", out)
         code, _ = self._run(["--reset", "T1"])
         self.assertEqual(code, 0)
+
+    def test_success_cli_clears_count(self):
+        self._run(["--record", "T1"])
+        self._run(["--record", "T1"])
+        code, out = self._run(["--success", "T1"])
+        self.assertEqual(code, 0)
+        self.assertIn("cleared", out)
+        code, out = self._run(["--check", "T1"])
+        self.assertIn("0/3", out)
 
     def test_record_to_threshold_exit_3(self):
         self._run(["--record", "T1"])
