@@ -1,0 +1,57 @@
+task_id: "20260609-001"
+date: "2026-06-09"
+status: "in_progress"            # pending → in_progress → checkpoint → review → done / failed
+
+# === 任務定義 ===
+goal: "校正狀態漂移、硬化三條硬規則、自動化 GATE_POLICY 剩餘三層，把宣稱的治理變成可被腳本與 CI 驗證的治理"
+context: |
+  專案檢視結論：harness 已相當成熟（45 張 Task Card、完整 CI、governance metrics、R1–R8 已落地），
+  真正缺口為 (1) 文件/狀態漂移、(2) 三條硬規則仍 prompt-only（self-assessment §3.1）、
+  (3) GATE_POLICY 四層僅 schema 層自動化（§3.6）。使用者經 ExitPlanMode 核准本優化計畫，
+  v3 治理插件抽出不在本次範圍（D007 已延至專屬 session）。
+input_data:
+  - "memory/active_projects/agent-harness/plans/ai-bubbly-mountain.md"
+  - "system/GATE_POLICY.yaml"
+  - "system/NATIVE_OVERLAP.yaml"
+  - "scripts/permissions_guard.py"
+
+# === 完成標準（最重要的欄位）===
+definition_of_done:
+  - "memory/active_projects/agent-harness/context.md 更新為 2026-06-09 現況（45 卡、R1–R8、Route 2+3、metrics/frontend/CI）"
+  - "README.md 版本表與導入計畫去除過時內容並補列 R1–R8 後新增 system 檔"
+  - "scripts/gate_check.py 可對 task_id 輸出 GATE_POLICY 四層 gate_results 並回傳 exit 0/1"
+  - "scripts/task_card_guard.py 在無對應 Task Card 時 block 寫入 outputs/reports/ 的新檔（PreToolUse Write|Edit）"
+  - "scripts/failure_counter.py 提供 --record/--check/--reset，連續失敗 ≥3 時可被 hook 攔截"
+  - ".claude/settings.json 註冊新 Write|Edit guard；PERMISSIONS.yaml 與 GATE_POLICY.yaml 補述 deterministic 強制點"
+  - "三支新元件各有 test_*.py 單元測試且全綠；CI workflow 納入新測試"
+  - "self-assessment §3.1 強制力表回寫；新增 decision log 20260609-D008"
+  - "全部既有 CI 對等檢查在本地通過（check_spec_consistency.rb / YAML parse / frontend --check）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-06-09_optimization-summary.md"
+
+# === 風險與權限 ===
+risk_level: "medium"             # 改 system/scripts/settings，屬 ask 等級；經 ExitPlanMode 核准
+approval_needed: false           # 計畫已核准；產出為程式碼 + 文件同步，非對外動作
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "git"
+
+# === 成本控制 ===
+max_tool_calls: 60               # 多檔案實作 + 測試 + CI 驗證
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"                # 框架自身的工程實作與治理硬化
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
