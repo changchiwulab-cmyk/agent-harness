@@ -151,11 +151,11 @@
     "run_total": 3,
     "task_risk": {
       "high": 1,
-      "low": 31,
+      "low": 32,
       "medium": 14
     },
     "task_skill": {
-      "analysis": 4,
+      "analysis": 5,
       "ops": 26,
       "research": 6,
       "review": 6,
@@ -163,11 +163,11 @@
     },
     "task_status": {
       "done": 22,
-      "in_progress": 2,
+      "in_progress": 3,
       "pending": 2,
       "review": 20
     },
-    "task_total": 46
+    "task_total": 47
   },
   "tasks": [
     {
@@ -629,6 +629,16 @@
       "skill_type": "research",
       "status": "review",
       "task_id": "20260609-001"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-09",
+      "goal": "依 20260609-001 差距分析報告的缺口，產出含優先級、實作設計、成本與風險評估的補強計畫",
+      "path": "tasks/2026-06-09_harness-gap-remediation-plan.yaml",
+      "risk_level": "low",
+      "skill_type": "analysis",
+      "status": "in_progress",
+      "task_id": "20260609-002"
     }
   ]
 }
