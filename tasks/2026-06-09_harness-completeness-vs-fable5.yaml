@@ -1,0 +1,64 @@
+# Task Card：以 Fable 5 時代 Anthropic harness engineering 為基準的完整度比對
+# 由 Claude Code 依使用者請求建立（已於 plan mode 取得人工核准）
+
+task_id: "20260609-001"
+date: "2026-06-09"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "以 Fable 5 時代的 Anthropic harness engineering（官方教材 + Claude Code 本身架構）為基準，評估 agent-harness 專案完整度並產出差距分析報告"
+context: >
+  使用者想知道自建的一人公司 Agent Harness v2 相對於 Anthropic 官方 harness
+  engineering 實務的完整度。基準採雙軌：(a) Anthropic engineering blog 兩篇
+  （Effective harnesses for long-running agents、Harness design for long-running
+  application development）+ 官方參考實作 anthropics/cwc-long-running-agents；
+  (b) Claude Code 本身的 harness 架構（permission modes、hooks、skills、
+  subagents、plan mode、compaction、checkpoint 等）。交付物為差距分析報告，
+  不修改任何程式碼或設定。
+input_data:
+  - "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents"
+  - "https://www.anthropic.com/engineering/harness-design-long-running-apps"
+  - "https://github.com/anthropics/cwc-long-running-agents"
+  - "https://code.claude.com/docs"
+  - "本 repo 全部 system/、skills/、scripts/、logs/、tasks/ 盤點結果"
+
+# === 完成標準 ===
+definition_of_done:
+  - "建立合併 rubric（約 12 個維度），同時涵蓋官方教材原則與 Claude Code 原生機制"
+  - "每個維度給出評級（已具備 / 部分具備 / 缺失）並附 repo 內證據路徑"
+  - "缺口附建議優先級，可作為後續 Task Card 的素材"
+  - "報告遵守 research skill 輸出格式（結論 → 已知事實 → 合理推論 → 待驗證 → 高風險假設 → 來源）"
+  - "報告輸出到 outputs/drafts/，不自行 promote 到 outputs/reports/"
+  - "run log 寫入 logs/runs/、audit log 寫入 logs/AUDIT_LOG.md"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-06-09_harness-completeness-vs-fable5.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: true          # 報告屬正式評估文件，留在 drafts/ 等人工確認後 promote
+allowed_tools:
+  - "file_read"
+  - "web_search"
+  - "web_fetch"
+  - "file_write_drafts"
+  - "file_write_logs"
+  - "git_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 40
+max_retries: 3
+max_web_searches: 10
+
+# === Skill 路由 ===
+skill_type: "research"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
