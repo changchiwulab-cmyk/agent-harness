@@ -33,6 +33,31 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260609-002"
+  date: "2026-06-09"
+  skill_type: "analysis"
+  goal: "依 20260609-001 差距分析報告的缺口，產出含優先級、實作設計、成本與風險評估的補強計畫"
+  status: "done"
+  model_used: "claude (undisclosed)"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "plan_subagent"
+      call_count: 1
+    - tool_name: "file_write"
+      call_count: 4
+  checkpoints: 3
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/2026-06-09_harness-gap-remediation-plan.md"
+  error_summary: ""
+  estimated_tokens: "~93K"
+  notes: "建議選項 B 階段式補強：R1 基準重評 → (R6 skills 註冊 + R2 evaluator subagent) → R3 evidence-gated completion → (R4 handoff + R5 操作者控制)，16–22h。每項六維評估含不做選項、檔案層級實作設計、測試/CI/演練、rollback。附 6 張 Task Card 草稿（嵌入文件待核准實例化）。兩個簡化選項待人工裁決：R3 v1 不做 read receipts、R5 steer 延後。analysis 首筆實測樣本（~93K vs 預算 20K 上限——超標主因 Plan 子代理 61K，下次 retro 校準時須區分子代理成本）。詳見 RUN-20260609-002。"
+```
+
+---
+
+```yaml
 - task_id: "20260609-001"
   date: "2026-06-09"
   skill_type: "research"

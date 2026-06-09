@@ -3,7 +3,7 @@
 
 task_id: "20260609-002"
 date: "2026-06-09"
-status: "in_progress"
+status: "review"   # 計畫已產出至 drafts/，待人工審閱與兩項簡化選項裁決
 
 # === 任務定義 ===
 goal: "依 20260609-001 差距分析報告的缺口，產出含優先級、實作設計、成本與風險評估的補強計畫"
@@ -58,8 +58,14 @@ max_web_searches: 3
 skill_type: "analysis"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
-audit_log_ref: ""
+checkpoints:
+  - "db2026a Task Card 建立並通過 schema 驗證"
+  - "09a1a1e 補強計畫完成（6 項目六維評估 + 階段排序 + Task Card 草稿）"
+  - "(pending) run log + audit log + manifest 同步"
+actual_tool_calls: 12
+result_summary: >
+  建議選項 B 階段式補強：R1 → (R6+R2) → R3 → (R4+R5)，16–22h（含兩個待裁決
+  簡化選項）。每項六維評估 + 不做選項 + 檔案層級實作設計 + rollback；附 6 張
+  Task Card 草稿。補強完成後 rubric 預估自 75-80% 升至 ~95%。
+completion_time: "2026-06-09"
+audit_log_ref: "logs/AUDIT_LOG.md#20260609-002 + logs/runs/RUN-20260609-002.yaml"
