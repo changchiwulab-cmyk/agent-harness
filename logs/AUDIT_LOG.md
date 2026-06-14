@@ -33,6 +33,31 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260614-R09"
+  date: "2026-06-14"
+  skill_type: "ops"
+  goal: "R9：governance_metrics.py M4 加季度 revisit 逾期偵測 + 與 R4 決策回看合流 + >50%/逾期觸發 R10 建議；test 掛進 CI"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 9
+    - tool_name: "file_write"
+      call_count: 8
+    - tool_name: "bash"
+      call_count: 12
+  checkpoints: 3
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/2026-06-14_r9-quarterly-revisit.md"
+  error_summary: ""
+  estimated_tokens: "~90K（含探索盤點 + 實作測試）"
+  notes: "M4 加 today 參數＋雙軸（數值/新鮮度）取較嚴重者，QUARTER_DAYS=90；details 增 days_since_review/revisit_overdue/recommended_action。collect_decision_revisit() subprocess 合流 R4 tracker（best-effort，不影響 exit code 與 --json 四指標）。test_governance_metrics 37 案例並掛進 spec-consistency CI（原為孤兒測試）。RETRO_FLOW 加季度重評維度（ask，經計畫核准）。本季 30%/36 天未逾期 → 不觸發 R10。"
+```
+
+---
+
+```yaml
 - task_id: "20260529-011"
   date: "2026-05-29"
   skill_type: "ops"

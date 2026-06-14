@@ -21,6 +21,7 @@
 - `logs/AUDIT_LOG.md`（最近一批紀錄）
 - `logs/errors/`（錯誤紀錄）
 - `logs/approvals/`（核准紀錄；schema 見 `system/APPROVAL_POLICY.yaml` 的 `approval_record` 段，紀錄為 `approval_records` list）
+- 跑 `python3 scripts/governance_metrics.py`（季度治理視圖：原生重疊新鮮度 + 決策回看，R9 合流）
 
 ### 2. 分析維度
 
@@ -32,6 +33,7 @@
 | 權限 | 哪些 ask 每次都被 approve？ | PERMISSIONS.yaml（畢業候選） |
 | 品質 | definition_of_done 夠具體嗎？ | TASK_CARD_TEMPLATE.yaml |
 | 決策回看 | 有 decision 觸發 revisit 嗎？（跑 `scripts/check_decision_revisit.rb`） | 對應 Decision Log 的 status |
+| 原生重疊季度重評 | aggregate 是否逾期一季或破 40–50% 門檻？（跑 `scripts/governance_metrics.py` M4） | system/NATIVE_OVERLAP.yaml；逾期或 >50% 觸發 R10 v3 評估 |
 
 ### 3. 輸出
 

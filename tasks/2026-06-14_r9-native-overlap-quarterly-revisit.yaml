@@ -4,7 +4,7 @@
 
 task_id: "20260614-R09"
 date: "2026-06-14"
-status: "in_progress"
+status: "done"
 
 # === 任務定義 ===
 goal: "擴充 governance_metrics.py M4：偵測 NATIVE_OVERLAP.yaml 季度 revisit 是否逾期、>50% 明確觸發 R10 v3 評估建議，並與 R4 決策回看合流為單一季度治理視圖；把 test_governance_metrics 掛進 CI"
@@ -60,8 +60,11 @@ max_web_searches: 0
 skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
-audit_log_ref: ""
+checkpoints:
+  - "checkpoint: 20260614-R09 open task card"
+  - "checkpoint: 20260614-R09 M4 quarterly-revisit staleness + R4 merge + CI test wiring"
+  - "checkpoint: 20260614-R09 RETRO_FLOW dimension + draft + audit"
+actual_tool_calls: 14
+result_summary: "M4 加季度逾期偵測（QUARTER_DAYS=90，雙軸取較嚴重者）+ recommended_action 指向 R10；collect_decision_revisit() 以 subprocess 合流 R4 tracker（best-effort，不影響 exit code 與 --json 四指標）；新增 render_quarterly_revisit_markdown 單一季度視圖。test_governance_metrics 擴充至 37 案例並掛進 CI（原為孤兒測試）。RETRO_FLOW 加季度重評維度（ask，經計畫核准）。本季實況 30%/36 天未逾期 → 不觸發 R10。全套 CI-equivalent 綠、frontend manifest 無漂移。"
+completion_time: "2026-06-14"
+audit_log_ref: "logs/AUDIT_LOG.md"
