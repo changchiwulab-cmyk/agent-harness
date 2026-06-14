@@ -5,11 +5,18 @@
 #
 # 警訊閾值（plan §5.3）：aggregate > 50% → 重構觸發點。
 
-reviewed_on: "2026-05-09"
+reviewed_on: "2026-06-14"
 reviewer: "agent-harness owner"
-revisit_trigger: "每季度；或 Claude Code 主版本升級時"
+revisit_trigger: "每季度；或 Claude Code 主版本升級時；或前沿模型世代更替時"
 
-aggregate_estimate_pct: 30   # plan §Context 的 baseline；A01 §4.1 表 A 9 模組逐項評估後仍與此 baseline 同量級
+# 基準世代（2026-06-14 重估）：Fable 5（前沿推理）+ Claude Code 原生
+# （子代理並行、Plan mode、Hooks allow/ask/deny、自動壓縮、TodoWrite、Memory）。
+# 較 2026-05-09（30%）上修：前沿模型已自解多數規格類失敗（見 FAILURE_TAXONOMY 重估註記），
+# 且原生 Skills/子代理/permissions 已更成熟 → 重疊度進入 warn 帶（40-50%）。
+# 框架仍不可替代之處：checkpoint 紀律、gate 程式化、audit/成本校準資料、有界編排治理。
+model_baseline: "Fable 5 / Opus 4.8 / Sonnet 4.6 / Haiku 4.5"
+
+aggregate_estimate_pct: 40   # 2026-06-14 以 Fable 5 重估；> 50 → 重構觸發；40-50 → warn（gap 分析 A5 已標記）
 
 # 每模組明細（A01 §4.1 表 A）
 modules:
@@ -18,9 +25,9 @@ modules:
     native: "Claude Code Skills（/skill、自動載入）"
     evidence: "本 session Skill tool + skills 列表自動列出；N3 PoC 已建立 .claude/skills/research symlink"
   - name: "Planner/Router (ROUTING_RULES.md)"
-    overlap_pct: 70
-    native: "Skill 自動路由 + 子代理"
-    evidence: "原生會根據 skill description 觸發；表格式手動路由屬冗餘"
+    overlap_pct: 75
+    native: "Skill 自動路由 + 子代理並行（Agent tool）+ Plan mode"
+    evidence: "原生依 skill description 觸發；Fable 5 + 子代理可做並行 fan-out，凸顯本框架明文禁 agent-to-agent 的能力落差（gap A1）"
   - name: "Tool Executor (allowed_tools)"
     overlap_pct: 80
     native: ".claude/settings.json permissions + PreToolUse"
@@ -49,3 +56,8 @@ modules:
     overlap_pct: 100
     native: "Claude Code CLI / web / IDE"
     evidence: "屬於 runtime，不是模組"
+
+# 2026-06-14 重估註記（gap 分析 A5）：
+# FAILURE_TAXONOMY 的「規格類」失敗（角色漂移/步驟重複/不知何時停 ≈ 42%）多已被
+# 前沿模型 + 原生 plan/todo 自解；本框架的強制資源應自規格類移向模型無法自解的維度
+# （安全/成本/幻覺驅動行動）。taxonomy 權重重估與「依模型能力切換」彈性待後續 Task Card 處理。

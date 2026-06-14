@@ -136,11 +136,11 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 30,
+      "low": 31,
       "medium": 14
     },
     "task_skill": {
-      "analysis": 4,
+      "analysis": 5,
       "ops": 26,
       "research": 5,
       "review": 6,
@@ -148,11 +148,11 @@
     },
     "task_status": {
       "done": 22,
-      "in_progress": 2,
+      "in_progress": 3,
       "pending": 2,
       "review": 19
     },
-    "task_total": 45
+    "task_total": 46
   },
   "tasks": [
     {
@@ -604,6 +604,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-14",
+      "goal": "以 Fable 5 + Claude Code 原生能力為基準，盤點本框架的弱點並提出強化路線",
+      "path": "tasks/2026-06-14_fable5-gap-analysis.yaml",
+      "risk_level": "low",
+      "skill_type": "analysis",
+      "status": "in_progress",
+      "task_id": "20260614-001"
     }
   ]
 }
