@@ -1,0 +1,67 @@
+# Task Card — R9 NATIVE_OVERLAP 季度 revisit 自動化
+# 來源：20260529-001 自我評估 roadmap R9（季度級；相依 R4+R7，兩者已完成）
+# 目標：把「原生重疊季度重評」從紙上欄位變成自動偵測 + 與 R4 決策回看合流的單一季度視圖
+
+task_id: "20260614-R09"
+date: "2026-06-14"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "擴充 governance_metrics.py M4：偵測 NATIVE_OVERLAP.yaml 季度 revisit 是否逾期、>50% 明確觸發 R10 v3 評估建議，並與 R4 決策回看合流為單一季度治理視圖；把 test_governance_metrics 掛進 CI"
+context: |
+  roadmap R9：「把逐模組重評納入季度 RETRO；governance_metrics.py 加：讀 aggregate_estimate_pct、
+  >40% 預警、>50% 觸發 v3 評估建議；與 R4 合流」。逐檔核對後缺口：
+  (1) metric_m4 已有 pct 閾值，但不看 reviewed_on 是否逾一季 → 季度逾期偵測完全缺；
+  (2) check_decision_revisit.rb(R4) 與 governance_metrics.py 各跑各的，未合流；
+  (3) M4 alert 未指向 R10 v3-readiness-assessment；
+  (4) RETRO_FLOW.md 分析維度缺「原生重疊季度重評」列；
+  (5) 附帶：test_governance_metrics.py 有測試但未掛進 CI（獨漏這一支）。
+  約束：--json 必須維持 M1–M4 四指標（test_existing_json_still_four_metrics 護欄）；
+  R4 合流以 subprocess 呼叫既有 Ruby tracker，不在 Python 重寫，且 best-effort 不脆裂。
+input_data:
+  - "scripts/governance_metrics.py"
+  - "scripts/test_governance_metrics.py"
+  - "scripts/check_decision_revisit.rb"
+  - "system/NATIVE_OVERLAP.yaml"
+  - "system/RETRO_FLOW.md"
+  - ".github/workflows/spec-consistency.yml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "metric_m4 加 today 參數：解析 reviewed_on、計 days_since_review、QUARTER_DAYS=90；逾期升級 status；details 增 reviewed_on/days_since_review/revisit_overdue/recommended_action"
+  - ">50% 或逾期時 recommended_action 明確指向 R10 v3-readiness-assessment"
+  - "新增 collect_decision_revisit()：subprocess 跑 check_decision_revisit.rb --json、解析 summary；失敗回 available=False 不影響 exit code"
+  - "markdown 報告新增『季度治理重評（R9）』節併列 M4 + 決策回看；--json 仍只 M1–M4（不回歸）"
+  - "test_governance_metrics.py：更新既有 M4 測試傳 today + 新增逾期/建議/合流測試；全綠"
+  - ".github/workflows/spec-consistency.yml 加 governance_metrics 測試步驟"
+  - "system/RETRO_FLOW.md 加『原生重疊季度重評』分析維度（ask，列 diff 後寫）"
+  - "全套 CI-equivalent 綠；frontend manifest --check 不漂移"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-06-14_r9-quarterly-revisit.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
