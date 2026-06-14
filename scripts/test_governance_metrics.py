@@ -3,10 +3,13 @@
 
 from __future__ import annotations
 
+import json
+import subprocess
 import sys
 import unittest
 from datetime import date
 from pathlib import Path
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import governance_metrics as gm
@@ -171,22 +174,113 @@ class TestMetricM3(unittest.TestCase):
 
 
 class TestMetricM4(unittest.TestCase):
-    def test_ok_at_30_pct(self):
-        result = gm.metric_m4({"aggregate_estimate_pct": 30, "reviewed_on": "2026-05-09"})
-        self.assertEqual(result.status, "ok")
+    # 6 days after reviewed_on 2026-05-09 → fresh, so the value axis governs.
+    FRESH = date(2026, 5, 15)
 
-    def test_warn_at_45_pct(self):
-        result = gm.metric_m4({"aggregate_estimate_pct": 45, "reviewed_on": "2026-05-09"})
+    def test_ok_at_30_pct_fresh(self):
+        result = gm.metric_m4({"aggregate_estimate_pct": 30, "reviewed_on": "2026-05-09"}, self.FRESH)
+        self.assertEqual(result.status, "ok")
+        self.assertEqual(result.details["days_since_review"], 6)
+        self.assertFalse(result.details["revisit_overdue"])
+        self.assertIsNone(result.details["recommended_action"])
+
+    def test_warn_at_45_pct_fresh(self):
+        result = gm.metric_m4({"aggregate_estimate_pct": 45, "reviewed_on": "2026-05-09"}, self.FRESH)
         self.assertEqual(result.status, "warn")
 
     def test_alert_above_50_pct(self):
-        result = gm.metric_m4({"aggregate_estimate_pct": 60, "reviewed_on": "2026-05-09"})
+        result = gm.metric_m4({"aggregate_estimate_pct": 60, "reviewed_on": "2026-05-09"}, self.FRESH)
         self.assertEqual(result.status, "alert")
+        self.assertIn("v3-readiness", result.details["recommended_action"])
 
     def test_alert_when_input_missing(self):
-        result = gm.metric_m4({})
+        result = gm.metric_m4({}, self.FRESH)
         self.assertEqual(result.status, "alert")
         self.assertIn("error", result.details)
+
+    # --- R9: 季度 revisit 逾期偵測 (freshness axis) ---
+
+    def test_ok_when_reviewed_today(self):
+        result = gm.metric_m4({"aggregate_estimate_pct": 30, "reviewed_on": "2026-06-14"}, date(2026, 6, 14))
+        self.assertEqual(result.status, "ok")
+        self.assertEqual(result.details["days_since_review"], 0)
+
+    def test_warn_when_review_due_soon(self):
+        # 30% (value ok) but 80 days since review → freshness warn, not yet overdue.
+        result = gm.metric_m4({"aggregate_estimate_pct": 30, "reviewed_on": "2026-05-09"}, date(2026, 7, 28))
+        self.assertEqual(result.details["days_since_review"], 80)
+        self.assertEqual(result.status, "warn")
+        self.assertFalse(result.details["revisit_overdue"])
+
+    def test_alert_when_review_overdue(self):
+        # 30% (value ok) but > 90 days since review → freshness alert + R10 pointer.
+        result = gm.metric_m4({"aggregate_estimate_pct": 30, "reviewed_on": "2026-05-09"}, date(2026, 9, 1))
+        self.assertGreater(result.details["days_since_review"], 90)
+        self.assertEqual(result.status, "alert")
+        self.assertTrue(result.details["revisit_overdue"])
+        self.assertIn("v3-readiness", result.details["recommended_action"])
+
+    def test_unparseable_reviewed_on_no_freshness_escalation(self):
+        # reviewed_on unparseable → days_since None, no freshness alert; value axis governs.
+        result = gm.metric_m4({"aggregate_estimate_pct": 30, "reviewed_on": "(unknown)"}, self.FRESH)
+        self.assertIsNone(result.details["days_since_review"])
+        self.assertEqual(result.status, "ok")
+
+
+class TestDecisionRevisitMerge(unittest.TestCase):
+    """R9: collect_decision_revisit merges the R4 tracker (best-effort, no crash)."""
+
+    def test_parses_due_decisions(self):
+        fake = json.dumps({
+            "summary": "DUE=1 OK=5 MANUAL=1",
+            "metrics": {"overlap_pct": 30},
+            "decisions": [
+                {"decision_id": "D001", "verdict": "DUE", "detail": "進行中任務 3 / 門檻 2"},
+                {"decision_id": "D006", "verdict": "OK", "detail": "logs/runs 現有 2 / 門檻 5"},
+            ],
+        })
+        completed = subprocess.CompletedProcess(args=[], returncode=0, stdout=fake, stderr="")
+        with mock.patch("governance_metrics.subprocess.run", return_value=completed):
+            out = gm.collect_decision_revisit()
+        self.assertTrue(out["available"])
+        self.assertEqual(out["summary"], "DUE=1 OK=5 MANUAL=1")
+        self.assertEqual([d["decision_id"] for d in out["due"]], ["D001"])
+
+    def test_degrades_when_ruby_missing(self):
+        with mock.patch("governance_metrics.subprocess.run", side_effect=FileNotFoundError("ruby")):
+            out = gm.collect_decision_revisit()
+        self.assertFalse(out["available"])
+        self.assertIn("reason", out)
+
+    def test_degrades_on_nonzero_exit(self):
+        completed = subprocess.CompletedProcess(args=[], returncode=1, stdout="", stderr="boom")
+        with mock.patch("governance_metrics.subprocess.run", return_value=completed):
+            out = gm.collect_decision_revisit()
+        self.assertFalse(out["available"])
+
+    def test_degrades_on_bad_json(self):
+        completed = subprocess.CompletedProcess(args=[], returncode=0, stdout="not json", stderr="")
+        with mock.patch("governance_metrics.subprocess.run", return_value=completed):
+            out = gm.collect_decision_revisit()
+        self.assertFalse(out["available"])
+
+    def test_render_quarterly_handles_unavailable(self):
+        m4 = gm.metric_m4({"aggregate_estimate_pct": 30, "reviewed_on": "2026-05-09"}, date(2026, 5, 15))
+        md = gm.render_quarterly_revisit_markdown(m4, {"available": False, "reason": "no ruby"})
+        self.assertIn("季度治理重評", md)
+        self.assertIn("無法取得", md)
+
+    def test_render_quarterly_shows_overdue_and_due(self):
+        m4 = gm.metric_m4({"aggregate_estimate_pct": 60, "reviewed_on": "2026-01-01"}, date(2026, 6, 14))
+        revisit = {
+            "available": True,
+            "summary": "DUE=1 OK=5 MANUAL=1",
+            "due": [{"decision_id": "D003", "detail": "原生重疊 60% / 門檻 50%"}],
+        }
+        md = gm.render_quarterly_revisit_markdown(m4, revisit)
+        self.assertIn("v3-readiness", md)
+        self.assertIn("DUE D003", md)
+        self.assertIn("逾期", md)
 
 
 class TestLoadAuditTaskIds(unittest.TestCase):

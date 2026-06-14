@@ -137,22 +137,22 @@
     "task_risk": {
       "high": 1,
       "low": 30,
-      "medium": 14
+      "medium": 15
     },
     "task_skill": {
       "analysis": 4,
-      "ops": 26,
+      "ops": 27,
       "research": 5,
       "review": 6,
       "writing": 4
     },
     "task_status": {
       "done": 22,
-      "in_progress": 2,
+      "in_progress": 3,
       "pending": 2,
       "review": 19
     },
-    "task_total": 45
+    "task_total": 46
   },
   "tasks": [
     {
@@ -604,6 +604,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-14",
+      "goal": "擴充 governance_metrics.py M4：偵測 NATIVE_OVERLAP.yaml 季度 revisit 是否逾期、>50% 明確觸發 R10 v3 評估建議，並與 R4 決策回看合流為單一季度治理視圖；把 test_governance_metrics 掛進 CI",
+      "path": "tasks/2026-06-14_r9-native-overlap-quarterly-revisit.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "in_progress",
+      "task_id": "20260614-R09"
     }
   ]
 }

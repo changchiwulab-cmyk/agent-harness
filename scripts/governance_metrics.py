@@ -20,6 +20,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import subprocess
 import sys
 from dataclasses import dataclass, asdict
 from datetime import date
@@ -33,6 +34,18 @@ AUDIT_LOG = ROOT / "logs" / "AUDIT_LOG.md"
 DRAFTS_DIR = ROOT / "outputs" / "drafts"
 REPORTS_DIR = ROOT / "outputs" / "reports"
 NATIVE_OVERLAP = ROOT / "system" / "NATIVE_OVERLAP.yaml"
+DECISION_REVISIT_SCRIPT = ROOT / "scripts" / "check_decision_revisit.rb"
+
+# 季度 revisit 門檻（roadmap R9）：reviewed_on 距今超過 QUARTER_DAYS → 逾期。
+QUARTER_DAYS = 90
+WARN_BAND_DAYS = 75  # 接近到期預警下界
+
+_STATUS_RANK = {"ok": 0, "warn": 1, "alert": 2}
+
+
+def _worst(*statuses: str) -> str:
+    """Return the most severe status among the inputs (ok < warn < alert)."""
+    return max(statuses, key=lambda s: _STATUS_RANK.get(s, 0))
 
 # Status values that should have a corresponding audit entry.
 COMPLETED_STATUSES = {"review", "done", "failed", "partial"}
@@ -241,8 +254,24 @@ def metric_m3(cards: list[dict], audit_ids: set[str]) -> MetricResult:
     )
 
 
-def metric_m4(overlap_data: dict) -> MetricResult:
-    """M4 — Claude Code 原生功能重疊度 (manual input)."""
+def _days_since(reviewed_on, today: date) -> int | None:
+    """Days between an ISO `reviewed_on` string and `today`; None if unparseable."""
+    try:
+        reviewed = date.fromisoformat(str(reviewed_on))
+    except (ValueError, TypeError):
+        return None
+    return (today - reviewed).days
+
+
+def metric_m4(overlap_data: dict, today: date) -> MetricResult:
+    """M4 — 原生功能重疊度（人工 input）＋ 季度 revisit 逾期偵測（R9）.
+
+    狀態取兩條軸的較嚴重者：
+      - 數值軸：pct > 50 → alert；40-50 → warn（既有）。
+      - 新鮮度軸：reviewed_on 距 today > QUARTER_DAYS → 逾期 alert
+        （逾一季的 30% 不可信，視同需重評）；WARN_BAND_DAYS-QUARTER_DAYS 天 → 接近到期 warn。
+    pct > 50 或逾期時，recommended_action 指向 R10 v3-readiness-assessment。
+    """
     pct = overlap_data.get("aggregate_estimate_pct")
     reviewed_on = overlap_data.get("reviewed_on", "(unknown)")
     if pct is None:
@@ -250,23 +279,46 @@ def metric_m4(overlap_data: dict) -> MetricResult:
             id="M4",
             name="Claude Code 原生功能重疊度",
             current="(NATIVE_OVERLAP.yaml not found or aggregate_estimate_pct missing)",
-            threshold="> 50% → alert；40-50% → warn",
+            threshold="> 50% → alert；40-50% → warn；reviewed_on 逾 90 天 → 季度重評逾期",
             status="alert",
             details={"error": "missing input"},
         )
-    if pct > 50:
-        status = "alert"
-    elif pct >= 40:
-        status = "warn"
+
+    days_since = _days_since(reviewed_on, today)
+    revisit_overdue = days_since is not None and days_since > QUARTER_DAYS
+    revisit_due_soon = days_since is not None and WARN_BAND_DAYS < days_since <= QUARTER_DAYS
+
+    value_status = "alert" if pct > 50 else "warn" if pct >= 40 else "ok"
+    freshness_status = "alert" if revisit_overdue else "warn" if revisit_due_soon else "ok"
+    status = _worst(value_status, freshness_status)
+
+    recommended_action = None
+    if pct > 50 or revisit_overdue:
+        recommended_action = "開 R10：產 outputs/drafts/v3-readiness-assessment.md（v3 遷移就緒度評估）"
+
+    if revisit_overdue:
+        freshness_note = f"季度重評逾期 {days_since - QUARTER_DAYS} 天"
+    elif revisit_due_soon:
+        freshness_note = f"{QUARTER_DAYS - days_since} 天後到期"
+    elif days_since is not None:
+        freshness_note = f"{days_since} 天前重評"
     else:
-        status = "ok"
+        freshness_note = "reviewed_on 無法解析"
+
     return MetricResult(
         id="M4",
-        name="Claude Code 原生功能重疊度（人工評估）",
-        current=f"{pct}% (reviewed {reviewed_on})",
-        threshold="> 50% → alert；40-50% → warn",
+        name="Claude Code 原生功能重疊度（人工評估）＋季度 revisit",
+        current=f"{pct}%（reviewed {reviewed_on}；{freshness_note}）",
+        threshold="> 50% → alert；40-50% → warn；reviewed_on 逾 90 天 → 季度重評逾期",
         status=status,
-        details={"aggregate_pct": pct, "reviewed_on": reviewed_on, "modules": overlap_data.get("modules", [])},
+        details={
+            "aggregate_pct": pct,
+            "reviewed_on": reviewed_on,
+            "days_since_review": days_since,
+            "revisit_overdue": revisit_overdue,
+            "recommended_action": recommended_action,
+            "modules": overlap_data.get("modules", []),
+        },
     )
 
 
@@ -444,6 +496,70 @@ def render_observability_markdown(obs: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
+# --- Quarterly revisit (R9: NATIVE_OVERLAP freshness + R4 decision revisit) -
+
+
+def collect_decision_revisit() -> dict:
+    """Run the R4 decision-revisit tracker and return its summary (best-effort).
+
+    Merges R4 into the quarterly governance view (R9). Any failure — ruby
+    missing, non-zero exit, parse error, timeout — degrades to
+    {"available": False, "reason": ...} without affecting governance_metrics'
+    own exit code or the M1–M4 output.
+    """
+    try:
+        proc = subprocess.run(
+            ["ruby", str(DECISION_REVISIT_SCRIPT), "--json"],
+            capture_output=True, text=True, timeout=30,
+        )
+    except (OSError, subprocess.SubprocessError) as exc:
+        return {"available": False, "reason": str(exc)}
+    if proc.returncode != 0:
+        return {"available": False, "reason": f"exit {proc.returncode}"}
+    try:
+        data = json.loads(proc.stdout)
+    except ValueError as exc:
+        return {"available": False, "reason": f"parse error: {exc}"}
+    decisions = data.get("decisions", []) if isinstance(data, dict) else []
+    due = [d for d in decisions if isinstance(d, dict) and d.get("verdict") == "DUE"]
+    return {
+        "available": True,
+        "summary": data.get("summary", ""),
+        "due": [{"decision_id": d.get("decision_id"), "detail": d.get("detail")} for d in due],
+        "metrics": data.get("metrics", {}),
+    }
+
+
+def render_quarterly_revisit_markdown(m4: MetricResult, revisit: dict) -> str:
+    """R9 single quarterly view: native-overlap freshness + R4 decision revisit."""
+    lines = ["## 季度治理重評（R9：原生重疊 + 決策回看）", ""]
+    d = m4.details
+    lines.append(f"- 原生重疊：{m4.current} → {STATUS_BADGE.get(m4.status, m4.status)}")
+    if d.get("revisit_overdue"):
+        lines.append(
+            f"  - 🚨 季度 revisit 逾期（reviewed_on={d.get('reviewed_on')}，"
+            f"已 {d.get('days_since_review')} 天）→ 請更新 system/NATIVE_OVERLAP.yaml"
+        )
+    if d.get("recommended_action"):
+        lines.append(f"  - 建議動作：{d['recommended_action']}")
+    lines.append("")
+    if revisit.get("available"):
+        lines.append(f"- 決策回看（R4 check_decision_revisit）：{revisit.get('summary', '')}")
+        due = revisit.get("due", [])
+        if due:
+            for item in due:
+                lines.append(f"  - DUE {item['decision_id']}：{item['detail']}")
+        else:
+            lines.append("  - 無 DUE 決策")
+    else:
+        lines.append(
+            f"- 決策回看：(無法取得：{revisit.get('reason', 'ruby 不可用')}) "
+            "— 可手動跑 `ruby scripts/check_decision_revisit.rb`"
+        )
+    lines.append("")
+    return "\n".join(lines) + "\n"
+
+
 # --- Reporters -------------------------------------------------------------
 
 
@@ -508,7 +624,7 @@ def collect_metrics(today: date) -> list[MetricResult]:
         metric_m1(cards, today),
         metric_m2(drafts, reports),
         metric_m3(cards, audit_ids),
-        metric_m4(overlap),
+        metric_m4(overlap, today),
     ]
 
 
@@ -537,6 +653,9 @@ def main(argv: list[str] | None = None) -> int:
     else:
         print(render_markdown(metrics, today))
         print(render_observability_markdown(obs))
+        m4 = next((m for m in metrics if m.id == "M4"), None)
+        if m4 is not None:
+            print(render_quarterly_revisit_markdown(m4, collect_decision_revisit()))
 
     has_issue = any(m.status in {"warn", "alert"} for m in metrics)
     return 1 if has_issue else 0
