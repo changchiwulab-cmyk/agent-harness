@@ -35,7 +35,10 @@ max_retries: 3                 # 連續失敗最多重試次數
 max_web_searches: 3            # web search 上限
 
 # === Skill 路由 ===
-skill_type: ""                 # research / writing / ops / review
+skill_type: ""                 # research / analysis / writing / ops / review
+model: ""                      # 選填，模型路由（見 system/MODEL_ROUTING.md）。留空 = 用 session 預設
+                               # haiku（分類/抽取/格式檢查/路由）/ sonnet（一般執行）
+                               # opus（規劃/推理/編排）/ fable（最高難度推理）
 
 # === 執行紀錄（由 agent 填寫）===
 checkpoints: []                # 每次 checkpoint 的 git commit hash + 描述

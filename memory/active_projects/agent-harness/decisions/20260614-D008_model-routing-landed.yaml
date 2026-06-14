@@ -1,0 +1,35 @@
+decision_id: "20260614-D008"
+date: "2026-06-14"
+project: "agent-harness"
+
+# --- 決策內容 ---
+context: |
+  以 Fable 5 + Claude Code 原生能力為基準的 gap 盤點（20260614-001）指出
+  COST_POLICY 的「模型路由（v2 準備）」一直未落地（gap A3）：Task Card 無 model
+  欄位、永遠用單一模型，無法把低推理工作分流到 Haiku 以降本。
+
+options_considered:
+  - option: "維持單一模型（不做路由）"
+    pros: "最簡；無新欄位"
+    cons: "持續錯失降本機會；gap A3 未解"
+  - option: "Task Card 加選填 model 欄位 + 路由表（採用）"
+    pros: "向後相容（留空＝用 session 預設）；可逐卡覆寫；低風險"
+    cons: "需維護路由表與值域校驗"
+  - option: "自動依 skill_type 強制路由（不可覆寫）"
+    pros: "全自動"
+    cons: "高風險任務可能被自動降模型，品質受損；彈性不足"
+
+decision: |
+  Task Card 新增「選填」model 欄位；提供 system/MODEL_ROUTING.md 路由表與
+  依 skill_type 的預設；validate_task_card.py 於 model 有值時校驗值域
+  （haiku/sonnet/opus/fable 及完整 id）。留空＝用 session 預設，不強制。
+  高風險任務品質優先、不因省成本降模型。
+reasoning: |
+  選「選填欄位」而非「強制路由」，是為了保留 ROUTING_RULES 的人為可控性與
+  high-risk 品質優先原則，同時向後相容既有 46 張 Task Card（皆無 model 欄位仍合法）。
+
+# --- 追蹤 ---
+risk: "low — 純新增選填欄位 + 文件 + 校驗；不影響既有卡片合法性。"
+revisit_trigger: "累積足夠分流任務後，於 RETRO 校核各模型實際成本/品質；或前沿模型世代更替時更新路由表"
+related_task: "20260614-001"
+status: "active"

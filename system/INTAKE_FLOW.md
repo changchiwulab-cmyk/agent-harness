@@ -8,6 +8,19 @@
 
 ---
 
+## 建卡前：查既往決策（gap A4）
+
+草擬 Task Card 前，先掃描 `memory/decision_index.json`（由 `scripts/build_memory_index.py`
+產生）確認此議題是否已有決策，避免與既有決策衝突或重複勞動：
+
+- 命中 `status: active` 的相關決策 → 沿用，不重啟討論
+- 命中 `status: superseded` → 參考其被取代的理由
+- 決策可能需重看時，交叉對照 `scripts/check_decision_revisit.rb`
+
+此步驟為唯讀、低成本，fast-path 與 intake 模式皆適用。
+
+---
+
 ## 預設主路：Fast-path（直接建 Task Card）
 
 當使用者的需求同時滿足以下三條，直接進入「草擬 Task Card → 使用者確認 → 執行」：

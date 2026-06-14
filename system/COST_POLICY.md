@@ -38,12 +38,16 @@ v1 階段採用「粗略護欄 + 事後量測」策略：
 | CLAUDE.md + GLOBAL_RULES | 控制在 3K 以內 | 硬限制 |
 | 單一 skill prompt | 控制在 1.5K 以內 | 硬限制 |
 
-## 模型路由規則（v2 準備）
+## 模型路由規則（已落地：見 system/MODEL_ROUTING.md）
 
-v1 先用單一模型（Claude）。未來如需降本：
-- 分類、抽取、格式檢查 → 便宜模型（Haiku 等級）
-- 規劃、推理、整合分析 → 強模型（Sonnet/Opus 等級）
-- 路由判斷本身 → 便宜模型
+由 Task Card 的選填欄位 `model` 控制（gap A3）。原則：
+- 分類、抽取、格式檢查、路由 → `haiku`（Haiku 4.5）
+- 一般執行 → `sonnet`（Sonnet 4.6）
+- 規劃、推理、整合分析、編排 → `opus`（Opus 4.8）
+- 最高難度推理 → `fable`（Fable 5）
+
+完整路由表、依 skill_type 的預設、與允許值見 `system/MODEL_ROUTING.md`；
+`system/validate_task_card.py` 會在 `model` 有值時校驗值域。高風險任務品質優先、不因省成本降模型。
 
 ## 事後量測流程（每週）
 

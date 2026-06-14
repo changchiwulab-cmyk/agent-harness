@@ -11,6 +11,11 @@ REQUIRED_FIELDS = ["task_id", "date", "goal", "definition_of_done", "skill_type"
 VALID_SKILLS = {"research", "analysis", "writing", "ops", "review"}
 VALID_RISK = {"low", "medium", "high", "critical"}
 VALID_STATUS = {"pending", "in_progress", "checkpoint", "review", "done", "failed"}
+# 模型路由（選填）：別名與完整 id 皆可，見 system/MODEL_ROUTING.md
+VALID_MODELS = {
+    "haiku", "sonnet", "opus", "fable",
+    "claude-haiku-4-5", "claude-sonnet-4-6", "claude-opus-4-8", "claude-fable-5",
+}
 
 
 def validate(path: str) -> list[str]:
@@ -49,6 +54,11 @@ def validate(path: str) -> list[str]:
     status = card.get("status", "")
     if status and status not in VALID_STATUS:
         errors.append(f"status 無效：'{status}'，允許值：{VALID_STATUS}")
+
+    # model 值域（選填）
+    model = card.get("model", "")
+    if model and model not in VALID_MODELS:
+        errors.append(f"model 無效：'{model}'，允許值：{VALID_MODELS}")
 
     # expected_output 結構
     output = card.get("expected_output", {})

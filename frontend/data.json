@@ -76,6 +76,17 @@
       "related_task": "20260509-N06",
       "revisit_trigger": "v0.2.0 plugin 達到 agent-harness 全部 system/ 規格 round-trip 後評估轉 public；或下個 session 試行 bootstrap 後發現非預期問題",
       "status": "active"
+    },
+    {
+      "date": "2026-06-14",
+      "decision": "Task Card 新增「選填」model 欄位；提供 system/MODEL_ROUTING.md 路由表與\n依 skill_type 的預設；validate_task_card.py 於 model 有值時校驗值域\n（haiku/sonnet/opus/fable 及完整 id）。留空＝用 session 預設，不強制。\n高風險任務品質優先、不因省成本降模型。\n",
+      "decision_id": "20260614-D008",
+      "path": "memory/active_projects/agent-harness/decisions/20260614-D008_model-routing-landed.yaml",
+      "project": "agent-harness",
+      "reasoning": "選「選填欄位」而非「強制路由」，是為了保留 ROUTING_RULES 的人為可控性與\nhigh-risk 品質優先原則，同時向後相容既有 46 張 Task Card（皆無 model 欄位仍合法）。\n",
+      "related_task": "20260614-001",
+      "revisit_trigger": "累積足夠分流任務後，於 RETRO 校核各模型實際成本/品質；或前沿模型世代更替時更新路由表",
+      "status": "active"
     }
   ],
   "logs": [

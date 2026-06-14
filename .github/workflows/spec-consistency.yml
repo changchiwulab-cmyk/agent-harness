@@ -66,6 +66,15 @@ jobs:
       - name: Governance metrics report (non-blocking)
         run: python3 scripts/governance_metrics.py || true
 
+      - name: Task card validator tests
+        run: python3 scripts/test_validate_task_card.py
+
+      - name: Memory index tests
+        run: python3 scripts/test_build_memory_index.py
+
+      - name: Memory index drift check
+        run: python3 scripts/build_memory_index.py --check
+
       - name: Audit log generator tests
         run: python3 scripts/test_generate_audit_log.py
 

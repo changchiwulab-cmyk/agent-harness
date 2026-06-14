@@ -1,0 +1,93 @@
+{
+  "count": 8,
+  "decisions": [
+    {
+      "date": "2026-04-03",
+      "decision": "Task Card YAML + git checkpoint",
+      "decision_id": "20260403-D001",
+      "path": "memory/active_projects/agent-harness/decisions/20260403-D001_task-card-over-database.yaml",
+      "project": "agent-harness",
+      "related_task": "",
+      "revisit_trigger": "單一 session 需要管理 20+ 個並行任務，且跨 session 查詢需求頻繁",
+      "scope": "active",
+      "status": "active"
+    },
+    {
+      "date": "2026-04-03",
+      "decision": "粗略護欄 + 事後量測",
+      "decision_id": "20260403-D002",
+      "path": "memory/active_projects/agent-harness/decisions/20260403-D002_coarse-guardrails-v1.yaml",
+      "project": "agent-harness",
+      "related_task": "",
+      "revisit_trigger": "單任務成本持續超過建議上限 2 週以上",
+      "scope": "active",
+      "status": "active"
+    },
+    {
+      "date": "2026-04-15",
+      "decision": "維持 v2，下次 retro（累積 5 筆後）再評估",
+      "decision_id": "20260415-D003",
+      "path": "memory/active_projects/agent-harness/decisions/20260415-D003_v3-upgrade-hold.yaml",
+      "project": "agent-harness",
+      "related_task": "20260409-001",
+      "revisit_trigger": "任一 v3 觸發條件持續 2 週以上；或單 session context 超限頻率 > 30%",
+      "scope": "active",
+      "status": "active"
+    },
+    {
+      "date": "2026-04-15",
+      "decision": "升為 allow（PERMISSIONS.yaml 中移入 allow 區塊）",
+      "decision_id": "20260415-D004",
+      "path": "memory/active_projects/agent-harness/decisions/20260415-D004_create-task-card-promoted-to-allow.yaml",
+      "project": "agent-harness",
+      "related_task": "20260415-A01",
+      "revisit_trigger": "出現因 auto-approve Task Card 導致的未預期高風險執行",
+      "scope": "active",
+      "status": "active"
+    },
+    {
+      "date": "2026-04-15",
+      "decision": "加入快速路徑判斷（fast-path），保留完整流程作為備援",
+      "decision_id": "20260415-D005",
+      "path": "memory/active_projects/agent-harness/decisions/20260415-D005_intake-fast-path.yaml",
+      "project": "agent-harness",
+      "related_task": "20260415-create-task-card-permission-analysis",
+      "revisit_trigger": "下次 retro 時 INTAKE 完整流程觸發率 ≥ 20% 時重新評估（代表模糊需求開始出現）；\n或連續 20 筆任務仍 0% 觸發，考慮進一步精簡。\n",
+      "scope": "active",
+      "status": "active"
+    },
+    {
+      "date": "2026-04-24",
+      "decision": "選 C（Narrow Scope）",
+      "decision_id": "20260424-D006",
+      "path": "memory/active_projects/agent-harness/decisions/20260424-D006_execution-log-scope.yaml",
+      "project": "agent-harness",
+      "related_task": "20260424-O03",
+      "revisit_trigger": "未來出現 2 筆 failed/partial 任務都未寫 runs/ → 升級為 enforce；或累積 10 筆 runs/ 後檢視實際價值",
+      "scope": "active",
+      "status": "active"
+    },
+    {
+      "date": "2026-05-09",
+      "decision": "- Repo 命名：agent-governance\n- License：Apache-2.0\n- Visibility：Private（v0.1.0 內部驗證後再轉 public）\n- Layout：獨立 repo\n- Bootstrap 走法：本 session 在 outputs/drafts/agent-governance-bootstrap/ 下完整準備檔案樹（plugin.json + 5 commands + 4 schemas + 2 hooks + 2 validators + LICENSE + README + CHANGELOG + CI workflow）；下個 session 由使用者執行：(1) 在 GitHub 新建 private repo agent-governance；(2) git init 並把 outputs/drafts/agent-governance-bootstrap/* 全數搬入；(3) push v0.1.0 tag。\n",
+      "decision_id": "20260509-D007",
+      "path": "memory/active_projects/agent-harness/decisions/20260509-D007_v3-plugin-bootstrap-decisions.yaml",
+      "project": "agent-harness",
+      "related_task": "20260509-N06",
+      "revisit_trigger": "v0.2.0 plugin 達到 agent-harness 全部 system/ 規格 round-trip 後評估轉 public；或下個 session 試行 bootstrap 後發現非預期問題",
+      "scope": "active",
+      "status": "active"
+    },
+    {
+      "date": "2026-06-14",
+      "decision": "Task Card 新增「選填」model 欄位；提供 system/MODEL_ROUTING.md 路由表與\n依 skill_type 的預設；validate_task_card.py 於 model 有值時校驗值域\n（haiku/sonnet/opus/fable 及完整 id）。留空＝用 session 預設，不強制。\n高風險任務品質優先、不因省成本降模型。\n",
+      "decision_id": "20260614-D008",
+      "path": "memory/active_projects/agent-harness/decisions/20260614-D008_model-routing-landed.yaml",
+      "project": "agent-harness",
+      "related_task": "20260614-001",
+      "revisit_trigger": "累積足夠分流任務後，於 RETRO 校核各模型實際成本/品質；或前沿模型世代更替時更新路由表",
+      "scope": "active",
+      "status": "active"
+    }
+  ]
+}
