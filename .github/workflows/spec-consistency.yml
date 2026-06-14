@@ -75,6 +75,12 @@ jobs:
       - name: Memory index drift check
         run: python3 scripts/build_memory_index.py --check
 
+      - name: Structural eval tests
+        run: python3 scripts/test_run_evals.py
+
+      - name: Structural eval gate (skill golden examples)
+        run: python3 scripts/run_evals.py
+
       - name: Audit log generator tests
         run: python3 scripts/test_generate_audit_log.py
 
