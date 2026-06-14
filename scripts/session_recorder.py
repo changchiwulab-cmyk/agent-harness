@@ -48,12 +48,17 @@ def outcome_of(tool_response) -> str:
 def build_record(payload: dict) -> dict:
     tool_name = payload.get("tool_name") or payload.get("name") or "unknown"
     tool_input = payload.get("tool_input") or payload.get("input") or {}
+    # PostToolUse fires after success; PostToolUseFailure fires after a failed call.
+    # The recorder is registered for both so failures aren't dropped from the metric.
+    event = payload.get("hook_event_name") or payload.get("hook_event") or "PostToolUse"
+    outcome = "error" if event == "PostToolUseFailure" else outcome_of(payload.get("tool_response"))
     return {
         "ts": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "session_id": payload.get("session_id") or "unknown",
+        "event": event,
         "tool": tool_name,
         "target": target_of(tool_name, tool_input),
-        "outcome": outcome_of(payload.get("tool_response")),
+        "outcome": outcome,
     }
 
 

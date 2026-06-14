@@ -35,6 +35,10 @@ GATE_ORDER = ("schema_check", "rule_check", "completion_check", "risk_check")
 HIGH_RISK = {"high", "critical"}
 
 
+class GateLoadError(Exception):
+    """Task card could not be read/parsed — distinct from a gate failure (exit 2, not 1)."""
+
+
 def gate_schema(card_path: Path) -> tuple[str, str]:
     """Gate 1 — Task Card field/format validity (reuses validate_task_card.validate)."""
     errors = validate_task_card.validate(str(card_path))
@@ -99,9 +103,9 @@ def run_gates(card_path: Path, output: Path | None) -> dict[str, tuple[str, str]
     try:
         card = yaml.safe_load(card_path.read_text(encoding="utf-8")) or {}
     except (OSError, yaml.YAMLError) as exc:
-        raise SystemExit(f"ERROR: cannot load {card_path}: {exc}")
+        raise GateLoadError(f"cannot load {card_path}: {exc}")
     if not isinstance(card, dict):
-        raise SystemExit(f"ERROR: {card_path} root is not a mapping")
+        raise GateLoadError(f"{card_path} root is not a mapping")
     return {
         "schema_check": gate_schema(card_path),
         "rule_check": gate_rule(card),
@@ -123,7 +127,11 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     output = Path(args.output) if args.output else None
 
-    results = run_gates(card_path, output)
+    try:
+        results = run_gates(card_path, output)
+    except GateLoadError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 2
     failed = [g for g in GATE_ORDER if results[g][0] == "fail"]
 
     if args.json:

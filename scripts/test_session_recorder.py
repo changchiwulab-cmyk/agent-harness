@@ -47,6 +47,23 @@ class TestPureHelpers(unittest.TestCase):
         self.assertEqual(r["session_id"], "s1")
         self.assertIn("ts", r)
 
+    def test_failure_event_records_error_outcome(self):
+        r = rec.build_record({
+            "session_id": "s1",
+            "hook_event_name": "PostToolUseFailure",
+            "tool_name": "Bash",
+            "tool_input": {"command": "false"},
+            "tool_response": {},
+        })
+        self.assertEqual(r["event"], "PostToolUseFailure")
+        self.assertEqual(r["outcome"], "error")
+
+    def test_default_event_is_posttooluse(self):
+        r = rec.build_record({"tool_name": "Read", "tool_input": {"file_path": "x"},
+                              "tool_response": {"success": True}})
+        self.assertEqual(r["event"], "PostToolUse")
+        self.assertEqual(r["outcome"], "ok")
+
     def test_session_file_sanitises_id(self):
         p = rec.session_file("../../etc/passwd")
         self.assertTrue(p.name.startswith("session-"))

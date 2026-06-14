@@ -92,11 +92,29 @@ class TestGates(unittest.TestCase):
     def test_main_exit_codes(self):
         good = write_card(GOOD_CARD)
         try:
-            self.assertEqual(run_gates.main([str(good)]), 0)
-            self.assertEqual(run_gates.main([str(BROKEN_FIXTURE)]), 1)
-            self.assertEqual(run_gates.main(["/nonexistent/card.yaml"]), 2)
+            self.assertEqual(run_gates.main([str(good)]), 0)   # all pass
+            self.assertEqual(run_gates.main([str(BROKEN_FIXTURE)]), 1)  # gate failure
+            self.assertEqual(run_gates.main(["/nonexistent/card.yaml"]), 2)  # missing file
         finally:
             good.unlink(missing_ok=True)
+
+    def test_load_error_exits_2_not_1(self):
+        # Malformed YAML and a non-mapping root are load errors (exit 2), distinct
+        # from a gate failure (exit 1) — so CI/Stop hooks can tell them apart.
+        bad_yaml = tempfile.NamedTemporaryFile("w", suffix=".yaml", delete=False)
+        bad_yaml.write("key: [unclosed\n")
+        bad_yaml.close()
+        non_mapping = tempfile.NamedTemporaryFile("w", suffix=".yaml", delete=False)
+        non_mapping.write("- just\n- a\n- list\n")
+        non_mapping.close()
+        try:
+            self.assertEqual(run_gates.main([bad_yaml.name]), 2)
+            self.assertEqual(run_gates.main([non_mapping.name]), 2)
+            with self.assertRaises(run_gates.GateLoadError):
+                run_gates.run_gates(Path(non_mapping.name), None)
+        finally:
+            Path(bad_yaml.name).unlink(missing_ok=True)
+            Path(non_mapping.name).unlink(missing_ok=True)
 
 
 if __name__ == "__main__":
