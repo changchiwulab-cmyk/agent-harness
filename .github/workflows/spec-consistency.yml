@@ -54,6 +54,18 @@ jobs:
       - name: Permissions guard tests
         run: python3 scripts/test_permissions_guard.py
 
+      - name: Gate runner tests
+        run: python3 scripts/test_run_gates.py
+
+      - name: Session recorder tests
+        run: python3 scripts/test_session_recorder.py
+
+      - name: Governance metrics tests
+        run: python3 scripts/test_governance_metrics.py
+
+      - name: Governance metrics report (non-blocking)
+        run: python3 scripts/governance_metrics.py || true
+
       - name: Audit log generator tests
         run: python3 scripts/test_generate_audit_log.py
 

@@ -1,6 +1,11 @@
 # Gate Policy — 四層驗證 Checklist
 # 每次任務完成後，依此順序逐層執行。任一層失敗則依 on_fail 處理。
 # 各層 rollback 的「操作程序」（用什麼指令還原）見 system/RECOVERY_RUNBOOK.md（R8 交叉引用）。
+#
+# 程式化（gap B4）：本檔的四層 gate 已由 scripts/run_gates.py 落地為可執行檢查，
+# 可於 CI 與 Stop hook 強制執行：
+#   python3 scripts/run_gates.py <task_card.yaml> [--output <produced_file>]
+# schema_check 重用 system/validate_task_card.py；其餘三層見 run_gates.py 對應函式。
 
 gates:
 

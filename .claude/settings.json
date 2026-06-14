@@ -3,11 +3,22 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Bash",
+        "matcher": "Bash|Write|Edit|MultiEdit|NotebookEdit",
         "hooks": [
           {
             "type": "command",
             "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/permissions_guard.py\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash|Write|Edit|MultiEdit|NotebookEdit|Read|Grep|Glob|WebSearch|WebFetch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/session_recorder.py\""
           }
         ]
       }

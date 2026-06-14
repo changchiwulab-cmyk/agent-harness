@@ -8,3 +8,6 @@
 *.credentials
 __pycache__/
 *.pyc
+
+# 執行期 session 記錄（PostToolUse hook 產生，非提交物）
+logs/runs/session-*.jsonl

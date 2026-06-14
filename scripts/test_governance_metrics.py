@@ -12,6 +12,28 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import governance_metrics as gm
 
 
+class TestObservabilitySession(unittest.TestCase):
+    def test_empty_records(self):
+        out = gm.observability_session([])
+        self.assertEqual(out["calls_total"], 0)
+        self.assertEqual(out["by_tool"], {})
+        self.assertEqual(out["errors"], 0)
+        self.assertEqual(out["sessions"], 0)
+
+    def test_tallies_tools_errors_sessions(self):
+        records = [
+            {"tool": "Bash", "outcome": "ok", "session_id": "a"},
+            {"tool": "Bash", "outcome": "error", "session_id": "a"},
+            {"tool": "Write", "outcome": "ok", "session_id": "b"},
+        ]
+        out = gm.observability_session(records)
+        self.assertEqual(out["calls_total"], 3)
+        self.assertEqual(out["by_tool"]["Bash"], 2)
+        self.assertEqual(out["by_tool"]["Write"], 1)
+        self.assertEqual(out["errors"], 1)
+        self.assertEqual(out["sessions"], 2)
+
+
 class TestMetricM1(unittest.TestCase):
     def test_ok_when_each_recent_month_at_least_3(self):
         cards = (
@@ -321,7 +343,7 @@ class TestObservability(unittest.TestCase):
             code = gm.main(["--observability", "--today", "2026-05-29"])
         self.assertEqual(code, 0)
         data = _json.loads(out.getvalue())
-        self.assertEqual(set(data.keys()), {"workflow", "business", "failures"})
+        self.assertEqual(set(data.keys()), {"workflow", "business", "failures", "session"})
 
     def test_existing_json_still_four_metrics(self):
         """Guard: --json output must remain M1–M4 only (no regression)."""

@@ -408,12 +408,56 @@ def observability_failures(error_types: list[str]) -> dict:
     return {"errors_total": len(error_types), "by_type": dist}
 
 
+def load_session_records() -> list[dict]:
+    """Return tool-call records from logs/runs/session-*.jsonl (PostToolUse hook output).
+
+    These are runtime-captured actuals (gitignored), so they're usually absent in
+    CI — the loader and consumer both tolerate an empty result.
+    """
+    records: list[dict] = []
+    runs_dir = ROOT / "logs" / "runs"
+    if not runs_dir.exists():
+        return records
+    for p in sorted(runs_dir.glob("session-*.jsonl")):
+        for line in p.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rec = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if isinstance(rec, dict):
+                records.append(rec)
+    return records
+
+
+def observability_session(records: list[dict]) -> dict:
+    """Session layer: real tool-call counts + error/block tallies from PostToolUse capture."""
+    by_tool: dict = {}
+    errors = 0
+    sessions: set = set()
+    for r in records:
+        by_tool[r.get("tool", "unknown")] = by_tool.get(r.get("tool", "unknown"), 0) + 1
+        if r.get("outcome") == "error":
+            errors += 1
+        if r.get("session_id"):
+            sessions.add(r.get("session_id"))
+    return {
+        "calls_total": len(records),
+        "sessions": len(sessions),
+        "by_tool": dict(sorted(by_tool.items(), key=lambda kv: (-kv[1], kv[0]))),
+        "errors": errors,
+    }
+
+
 def collect_observability() -> dict:
-    """Assemble the three observability layers (workflow / business / failures)."""
+    """Assemble the observability layers (workflow / business / failures / session)."""
     return {
         "workflow": observability_workflow(load_run_logs()),
         "business": observability_business(load_audit_entries()),
         "failures": observability_failures(load_error_types()),
+        "session": observability_session(load_session_records()),
     }
 
 
@@ -440,6 +484,11 @@ def render_observability_markdown(obs: dict) -> str:
     fa = obs["failures"]
     lines.append(f"### 失敗分佈（{fa['errors_total']} 筆 error log）")
     lines.append(f"- error_type：{fa['by_type'] or '(無)'}")
+    lines.append("")
+    se = obs.get("session", {})
+    lines.append(f"### Session 層（PostToolUse 自動採集，{se.get('calls_total', 0)} 筆工具呼叫 / {se.get('sessions', 0)} session）")
+    lines.append(f"- 各工具呼叫數：{se.get('by_tool') or '(尚無資料；session-*.jsonl 為執行期產生，CI 通常無)'}")
+    lines.append(f"- 錯誤次數：{se.get('errors', 0)}")
     lines.append("")
     return "\n".join(lines) + "\n"
 
