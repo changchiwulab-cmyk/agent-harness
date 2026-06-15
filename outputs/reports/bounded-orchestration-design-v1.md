@@ -1,9 +1,21 @@
-# 設計草案：有界編排（Bounded Orchestration）
+# 設計：有界編排（Bounded Orchestration）（正式版）
 
-- 對應 gap：A1（無多代理/編排）
-- 狀態：**設計草案，僅供討論**。不在本 PR 變更任何規則。
-- 重要：實作前必須先以新決策**正式反轉** D003（v3-hold）與 `ROUTING_RULES.md` 明文
-  「不做開放式 agent-to-agent」。本草案不執行該反轉。
+---
+
+## 晉升標記
+
+| 項目 | 內容 |
+|------|------|
+| **原始 draft** | `outputs/drafts/2026-06-14_bounded-orchestration-design.md` |
+| **晉升日期** | 2026-06-15 |
+| **晉升任務** | Task Card `20260615-001`（tasks/2026-06-15_promote-fable5-reports.yaml） |
+| **審閱者** | 人工確認（使用者明示晉升） |
+| **原始產出日期** | 2026-06-14（gap 報告 A1 後續） |
+| **狀態** | 設計定案，**尚未實作**。實作前須先寫決策 D009 正式反轉 D003 與 ROUTING_RULES。 |
+
+### 晉升理由
+此為 A1（多代理/編排）落差的正式設計依據。內容已定案可作為未來實作 PR 的規格；
+晉升不代表開始實作——反轉 D003（v3-hold）與「不做 agent-to-agent」明文規則屬架構級決策，須另經人工核可。
 
 ---
 
@@ -74,7 +86,3 @@ fan_in:
 ## 建議下一步
 1. 由使用者裁示是否進入實作。
 2. 若實作：先寫 D009，再做 §「需要的變更」1–5，分獨立 PR。
-
----
-
-> **已晉升為 `outputs/reports/bounded-orchestration-design-v1.md`**（2026-06-15，Task Card `20260615-001`）。本 draft 保留作歷史備援。

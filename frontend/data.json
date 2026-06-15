@@ -148,22 +148,22 @@
     "task_risk": {
       "high": 1,
       "low": 31,
-      "medium": 14
+      "medium": 15
     },
     "task_skill": {
       "analysis": 5,
-      "ops": 26,
+      "ops": 27,
       "research": 5,
       "review": 6,
       "writing": 4
     },
     "task_status": {
-      "done": 22,
+      "done": 23,
       "in_progress": 3,
       "pending": 2,
       "review": 19
     },
-    "task_total": 46
+    "task_total": 47
   },
   "tasks": [
     {
@@ -625,6 +625,16 @@
       "skill_type": "analysis",
       "status": "in_progress",
       "task_id": "20260614-001"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-15",
+      "goal": "把 Fable5 gap 報告與有界編排設計草案晉升為正式 reports/",
+      "path": "tasks/2026-06-15_promote-fable5-reports.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260615-001"
     }
   ]
 }
