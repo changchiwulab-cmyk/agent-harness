@@ -50,5 +50,60 @@ class TestModelValidation(unittest.TestCase):
         self.assertTrue(any("model 無效" in e for e in errors), errors)
 
 
+R = "tasks/examples/2026-04-03_market-research-example.yaml"
+W = "tasks/examples/2026-04-04_writing-proposal-example.yaml"
+
+
+def orch(subtasks, **extra):
+    return {"skill_type": "orchestration", "subtasks": subtasks, **extra}
+
+
+class TestOrchestrationValidation(unittest.TestCase):
+    def test_valid_dag_passes(self):
+        card = orch([
+            {"id": "research", "card": R, "depends_on": []},
+            {"id": "writing", "card": W, "depends_on": ["research"]},
+        ])
+        self.assertEqual(v.validate_orchestration(card), [])
+
+    def test_cycle_rejected(self):
+        card = orch([
+            {"id": "a", "card": R, "depends_on": ["b"]},
+            {"id": "b", "card": W, "depends_on": ["a"]},
+        ])
+        errs = v.validate_orchestration(card)
+        self.assertTrue(any("環" in e for e in errs), errs)
+
+    def test_dangling_depends_on_rejected(self):
+        card = orch([{"id": "writing", "card": W, "depends_on": ["ghost"]}])
+        errs = v.validate_orchestration(card)
+        self.assertTrue(any("依賴不存在" in e for e in errs), errs)
+
+    def test_missing_subtask_card_rejected(self):
+        card = orch([{"id": "x", "card": "tasks/does-not-exist.yaml", "depends_on": []}])
+        errs = v.validate_orchestration(card)
+        self.assertTrue(any("不存在" in e for e in errs), errs)
+
+    def test_empty_subtasks_rejected(self):
+        errs = v.validate_orchestration(orch([]))
+        self.assertTrue(any("非空" in e for e in errs), errs)
+
+    def test_non_orchestration_card_unaffected(self):
+        # malformed subtasks on a non-orchestration card → skipped entirely
+        self.assertEqual(v.validate_orchestration({"skill_type": "ops", "subtasks": "junk"}), [])
+
+    def test_duplicate_id_rejected(self):
+        card = orch([
+            {"id": "dup", "card": R, "depends_on": []},
+            {"id": "dup", "card": W, "depends_on": []},
+        ])
+        errs = v.validate_orchestration(card)
+        self.assertTrue(any("重複" in e for e in errs), errs)
+
+    def test_real_example_card_validates_clean(self):
+        path = str(v.ROOT / "tasks" / "examples" / "2026-06-15_orchestration-example.yaml")
+        self.assertEqual(v.validate(path), [])
+
+
 if __name__ == "__main__":
     unittest.main()

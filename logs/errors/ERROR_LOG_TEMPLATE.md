@@ -12,7 +12,7 @@ error_id: ""                    # 格式：ERR-YYYYMMDD-001
 task_id: ""                     # 對應的 Task Card ID
 date: ""                        # 發生日期
 time: ""                        # 發生時間（約略即可）
-skill_type: ""                  # research / writing / ops / review
+skill_type: ""                  # research / analysis / writing / ops / review / orchestration
 
 # === 錯誤描述 ===
 error_type: ""                  # tool_failure / rule_violation / schema_failure / timeout / unknown

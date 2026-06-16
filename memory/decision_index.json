@@ -1,5 +1,5 @@
 {
-  "count": 8,
+  "count": 9,
   "decisions": [
     {
       "date": "2026-04-03",
@@ -86,6 +86,17 @@
       "project": "agent-harness",
       "related_task": "20260614-001",
       "revisit_trigger": "累積足夠分流任務後，於 RETRO 校核各模型實際成本/品質；或前沿模型世代更替時更新路由表",
+      "scope": "active",
+      "status": "active"
+    },
+    {
+      "date": "2026-06-15",
+      "decision": "局部放行「任務範圍的有界編排」：Task Card 新增 skill_type=orchestration 父卡，帶 subtasks（DAG 依賴）；每個子任務仍是獨立 Task Card，各自走 schema/rule/completion/risk 四層 gate 與 checkpoint。 編排層只負責依賴排程與 fan-in 彙整，不做開放式 agent-to-agent 自由對話、不繞過既有治理。 執行由 Claude Code 原生 Agent tool 在 runtime 進行；本框架只提供 schema/驗證/文件鷹架。\n",
+      "decision_id": "20260615-D009",
+      "path": "memory/active_projects/agent-harness/decisions/20260615-D009_bounded-orchestration-approval.yaml",
+      "project": "agent-harness",
+      "related_task": "20260614-001",
+      "revisit_trigger": "有界編排實際使用一輪後，於下次 RETRO 評估排程成功率與成本效益",
       "scope": "active",
       "status": "active"
     }

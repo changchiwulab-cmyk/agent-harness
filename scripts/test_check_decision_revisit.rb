@@ -23,7 +23,7 @@ class TestDecisionRevisit < Minitest::Test
   def test_lists_all_decisions
     %w[
       20260403-D001 20260403-D002 20260415-D003 20260415-D004
-      20260415-D005 20260424-D006 20260509-D007 20260614-D008
+      20260415-D005 20260424-D006 20260509-D007 20260614-D008 20260615-D009
     ].each { |id| assert_includes @out, id, "missing decision #{id}" }
   end
 
@@ -40,7 +40,7 @@ class TestDecisionRevisit < Minitest::Test
   def test_json_is_parseable_with_all_decisions
     data = JSON.parse(@json_raw)
     assert data['decisions'].is_a?(Array)
-    assert_equal 8, data['decisions'].length
+    assert_equal 9, data['decisions'].length
     assert data.key?('metrics')
   end
 end

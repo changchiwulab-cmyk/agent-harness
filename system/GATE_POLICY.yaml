@@ -16,7 +16,7 @@ gates:
       - task_id 非空且格式為 YYYYMMDD-###
       - goal 非空
       - definition_of_done 至少 1 條
-      - skill_type 為有效值（research / writing / ops / review / analysis）
+      - skill_type 為有效值（research / writing / ops / review / analysis / orchestration）
       - risk_level 為有效值（low / medium / high / critical）
       - allowed_tools 非空
     on_fail: "重試 1 次修正格式，仍失敗 → 停下，寫入 logs/errors/"

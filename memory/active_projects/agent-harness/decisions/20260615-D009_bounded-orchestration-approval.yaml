@@ -1,0 +1,39 @@
+decision_id: "20260615-D009"
+date: "2026-06-15"
+project: "agent-harness"
+
+context: >
+  gap 盤點（outputs/reports/fable5-baseline-gap-analysis-v1.md）將「無多代理/編排」列為最大能力
+  落差（A1）。設計定案於 outputs/reports/bounded-orchestration-design-v1.md。實作前須先處理與
+  D003（v3-upgrade-hold）的關係：D003 當初是針對「常駐 bounded specialist 代理（research/sales/
+  content 各自獨立代理）」而 hold，而本案是「任務範圍內的臨時子代理編排」——相關但不同。
+
+options_considered:
+  - option: "維持 D003，不放行任何編排"
+    pros: "最保守；無新複雜度"
+    cons: "無法並行執行獨立子任務；Fable 5 + 原生子代理能力閒置；A1 落差未解"
+  - option: "完整反轉 D003，宣告進入 v3"
+    pros: "一次到位"
+    cons: "連帶解除常駐 specialist 代理等其餘 v3 hold，無實際需求，違反『不做沒有需求的架構升級』"
+  - option: "局部 carve-out（採用）"
+    pros: "只放行任務範圍的有界編排；子任務仍各自走四層 gate；D003 其餘 hold 維持"
+    cons: "需更新 ROUTING_RULES 與 Task Card schema"
+
+decision: >
+  局部放行「任務範圍的有界編排」：Task Card 新增 skill_type=orchestration 父卡，帶 subtasks（DAG
+  依賴）；每個子任務仍是獨立 Task Card，各自走 schema/rule/completion/risk 四層 gate 與 checkpoint。
+  編排層只負責依賴排程與 fan-in 彙整，不做開放式 agent-to-agent 自由對話、不繞過既有治理。
+  執行由 Claude Code 原生 Agent tool 在 runtime 進行；本框架只提供 schema/驗證/文件鷹架。
+reasoning: >
+  D003 當初 hold 的顧慮（context 超限、規則衝突、成本超標）在 Fable 5 + 原生子代理下已大幅化解：
+  子代理 context 隔離省 ~67%、無規則衝突、成本可控。有界編排比 v2 單代理強、比無界 agent-to-agent
+  安全。本決策為 gap A1 的首要對策，且以「放行能力、不強制使用」方式導入，風險可控。
+
+# --- 追蹤 ---
+risk: >
+  medium — 增加 schema 與 gate 驗證複雜度。緩解：DAG 驗證集中於 validate_task_card.py 並由 run_gates
+  與 CI 強制；範例父卡作回歸測試。本決策不解除 D003 對常駐 specialist 代理與其餘 v3 升級的 hold。
+revisit_trigger: "有界編排實際使用一輪後，於下次 RETRO 評估排程成功率與成本效益"
+related_task: "20260614-001"
+supersedes_in_part: "20260415-D003"
+status: "active"

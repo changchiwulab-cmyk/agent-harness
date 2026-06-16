@@ -26,4 +26,5 @@ reasoning: >
 risk: "若業務急速擴張，v2 的單代理架構可能成為瓶頸"
 revisit_trigger: "任一 v3 觸發條件持續 2 週以上；或單 session context 超限頻率 > 30%"
 related_task: "20260409-001"
+partial_carveout_by: "20260615-D009"  # 任務範圍有界編排已局部放行；常駐 specialist 與其餘 v3 仍 hold
 status: "active"

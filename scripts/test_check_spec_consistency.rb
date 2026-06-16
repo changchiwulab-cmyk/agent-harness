@@ -48,9 +48,10 @@ class TestConstants < Minitest::Test
     assert_includes ALLOWED_SKILL, 'analysis'
   end
 
-  def test_allowed_skill_has_five_types
-    assert_equal 5, ALLOWED_SKILL.length
-    assert_equal %w[research writing ops review analysis], ALLOWED_SKILL
+  def test_allowed_skill_types
+    assert_equal 6, ALLOWED_SKILL.length
+    assert_equal %w[research writing ops review analysis orchestration], ALLOWED_SKILL
+    assert_includes ALLOWED_SKILL, 'orchestration'
   end
 
   def test_task_id_pattern_accepts_numeric

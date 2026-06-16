@@ -35,10 +35,17 @@ max_retries: 3                 # 連續失敗最多重試次數
 max_web_searches: 3            # web search 上限
 
 # === Skill 路由 ===
-skill_type: ""                 # research / analysis / writing / ops / review
+skill_type: ""                 # research / analysis / writing / ops / review / orchestration
 model: ""                      # 選填，模型路由（見 system/MODEL_ROUTING.md）。留空 = 用 session 預設
                                # haiku（分類/抽取/格式檢查/路由）/ sonnet（一般執行）
                                # opus（規劃/推理/編排）/ fable（最高難度推理）
+
+# === 編排（僅 skill_type=orchestration 時填）===
+# 見 system/ROUTING_RULES.md 與 outputs/reports/bounded-orchestration-design-v1.md
+subtasks: []                   # 選填；每項 {id, card: 子任務 Task Card 路徑, depends_on: [上游 id...]}
+                               # 例：- {id: "s1", card: "tasks/..._research.yaml", depends_on: []}
+                               #     - {id: "s2", card: "tasks/..._writing.yaml", depends_on: ["s1"]}
+fan_in: {}                     # 選填；{into: "outputs/drafts/..._final.md"} 彙整點
 
 # === 執行紀錄（由 agent 填寫）===
 checkpoints: []                # 每次 checkpoint 的 git commit hash + 描述

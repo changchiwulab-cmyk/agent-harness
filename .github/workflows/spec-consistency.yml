@@ -81,6 +81,9 @@ jobs:
       - name: Structural eval gate (skill golden examples)
         run: python3 scripts/run_evals.py
 
+      - name: Orchestration example gate (DAG via run_gates)
+        run: python3 scripts/run_gates.py tasks/examples/2026-06-15_orchestration-example.yaml
+
       - name: Audit log generator tests
         run: python3 scripts/test_generate_audit_log.py
 

@@ -23,6 +23,7 @@
 | writing | sonnet |
 | ops | haiku |
 | review | sonnet |
+| orchestration | opus |
 
 ## 使用方式
 

@@ -1,0 +1,59 @@
+# 範例 Task Card — 有界編排（orchestration）父卡
+# 示範 research → writing 的 DAG 編排；子任務重用本目錄既有範例卡。
+# 見 system/ROUTING_RULES.md 與 outputs/reports/bounded-orchestration-design-v1.md
+
+task_id: "20260615-O01"
+date: "2026-06-15"
+status: "pending"
+
+# === 任務定義 ===
+goal: "編排：先研究越南 AI 工具市場，再據此撰寫進入策略提案，最後彙整"
+context: "示範有界編排父卡如何用 subtasks DAG 串接 research 與 writing 子任務"
+input_data: []
+
+# === 完成標準 ===
+definition_of_done:
+  - "research 與 writing 兩個子任務皆完成且各自通過四層 gate"
+  - "fan-in 彙整報告包含結論、子任務結果（含 output 路徑）、交叉檢查"
+  - "彙整結論可追溯到各子任務 output"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "vietnam-strategy-final.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "read_project_files"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 12             # 父卡護欄：涵蓋各子任務加總
+max_retries: 3
+max_web_searches: 3
+
+# === Skill 路由 ===
+skill_type: "orchestration"
+model: "opus"
+
+# === 編排 ===
+subtasks:
+  - id: "research"
+    card: "tasks/examples/2026-04-03_market-research-example.yaml"
+    depends_on: []
+  - id: "writing"
+    card: "tasks/examples/2026-04-04_writing-proposal-example.yaml"
+    depends_on: ["research"]
+fan_in:
+  into: "outputs/drafts/vietnam-strategy-final.md"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
