@@ -33,6 +33,29 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260620-002"
+  date: "2026-06-20"
+  skill_type: "ops"
+  goal: "將 v2.1 論文對照基準文件由 drafts/ 晉升至 outputs/reports/"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/reports/ai-harness-research-benchmark-v1.md"
+  error_summary: ""
+  estimated_tokens: "~8K"
+  notes: "依 RETRO_FLOW §5 晉升：reports/ 加晉升標記區塊與採納清單（含 PR #101 三條審查意見已採納），原 draft 加回指、保留歷史備援。內容與 draft 一致，未修改 system/。寫 reports/ 屬 ask，使用者明確核准。"
+```
+
+---
+
+```yaml
 - task_id: "20260620-001"
   date: "2026-06-20"
   skill_type: "analysis"

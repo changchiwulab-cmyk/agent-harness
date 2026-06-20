@@ -1,5 +1,36 @@
-> **草稿（draft）** ｜ Task Card：20260620-001 ｜ skill：analysis（含 research 對照）
-> 對外/正式化前須人工確認。本文為 v2.1 升級的研究佐證基準。
+# Agent Harness 對照 2026 AI 研究 — 差距基準與優化依據（正式報告 v1）
+
+---
+
+## 晉升標記
+
+| 項目 | 內容 |
+|------|------|
+| **原始 draft** | `outputs/drafts/2026-06-20_ai-harness-research-benchmark.md` |
+| **晉升日期** | 2026-06-20 |
+| **晉升任務** | Task Card `20260620-002`（tasks/2026-06-20_promote-benchmark-to-reports.yaml） |
+| **審閱者** | 人工確認（使用者於本 session 明確要求晉升） |
+| **原始產出日期** | 2026-06-20 |
+| **原始任務** | Task Card `20260620-001`（tasks/2026-06-20_research-aligned-harness-upgrade.yaml） |
+
+### 採納項目清單
+
+| # | 項目 | 狀態 | 追蹤 |
+|---|------|:----:|------|
+| 1 | 七層 ETCLOVG 對照作為 harness 成熟度正式基線（O/G 覆蓋最強） | ✅ 採納 | 本報告 §已知事實 |
+| 2 | 4 個研究缺口 → v2.1 加法式升級已實作 | ✅ 採納 | PR #101（branch claude/zen-curie-dr32pd） |
+| 3 | 程序性記憶 lessons 維持 human-confirmed，僅由 RETRO 晉升 | ✅ 採納 | `memory/lessons/`、`system/RETRO_FLOW.md` §4 |
+| 4 | PR #101 三條審查意見全採納（分類學/未核准 lessons/web 計數） | ✅ 採納 | commit `aa177d9`，三 thread 已 resolve |
+| 5 | `[待驗證]` 項（70% 門檻最適值、Scenario C 接續實證、lessons 退役機制） | ⏳ 待驗證 | 下次 RETRO / 多階段任務中途實測 |
+
+### 未觸發 v3 升級
+本報告與 v2.1 為加法式升級，未拆分 bounded specialists；`NATIVE_OVERLAP` 維持 < 50% 閾值，不觸發 v3。
+
+---
+
+以下為原始草稿全文保留（除上方「晉升標記」為新增，其餘未變動）。
+
+---
 
 # Agent Harness v2 對照 2026 公開 AI 研究 — 差距基準與優化依據
 
@@ -97,7 +128,3 @@ human-confirmed memory、單代理）的前提下補上，構成 v2.1。
 6. AI Agent Context Compression: Strategies for Long-Running Sessions（~70% 預算門檻、agent-controlled）—
    https://zylos.ai/research/2026-02-28-ai-agent-context-compression-strategies/
 7. 致命三要素 / OWASP LLM06:2025 Excessive Agency（見來源 2 Permissions 章節彙整）
-
----
-
-> **已晉升**：本草稿已於 2026-06-20 晉升為正式報告 `outputs/reports/ai-harness-research-benchmark-v1.md`（晉升 Task Card `20260620-002`）。原草稿保留作歷史備援。

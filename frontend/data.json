@@ -151,23 +151,23 @@
     "run_total": 3,
     "task_risk": {
       "high": 1,
-      "low": 30,
+      "low": 31,
       "medium": 15
     },
     "task_skill": {
       "analysis": 5,
-      "ops": 26,
+      "ops": 27,
       "research": 5,
       "review": 6,
       "writing": 4
     },
     "task_status": {
-      "done": 22,
+      "done": 23,
       "in_progress": 2,
       "pending": 2,
       "review": 20
     },
-    "task_total": 46
+    "task_total": 47
   },
   "tasks": [
     {
@@ -619,6 +619,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-20",
+      "goal": "將 v2.1 論文對照基準文件由 drafts/ 晉升至 outputs/reports/（依 RETRO_FLOW §5）",
+      "path": "tasks/2026-06-20_promote-benchmark-to-reports.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260620-002"
     },
     {
       "approval_needed": true,

@@ -1,0 +1,48 @@
+task_id: "20260620-002"
+date: "2026-06-20"
+status: "done"
+
+# === 任務定義 ===
+goal: "將 v2.1 論文對照基準文件由 drafts/ 晉升至 outputs/reports/（依 RETRO_FLOW §5）"
+
+context: |
+  20260620-001 產出的論文對照基準文件經人工審閱（含採納 PR #101 三條審查意見後），
+  使用者明確要求晉升為正式報告。寫 reports/ 屬 ask 權限，已由使用者直接核准。
+
+input_data:
+  - "outputs/drafts/2026-06-20_ai-harness-research-benchmark.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "基準文件晉升至 outputs/reports/，檔頭加晉升標記區塊（晉升日期/審閱者/原始任務/採納清單）"
+  - "原 draft 檔尾加『已晉升為 reports/...』回指，保留歷史備援"
+  - "logs/AUDIT_LOG.md 補一筆；frontend/data.json 重生無漂移；CI 全綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/reports/"
+  filename: "ai-harness-research-benchmark-v1.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 5
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 3
+result_summary: "依 RETRO_FLOW §5 晉升：reports/ 加晉升標記區塊與採納清單，原 draft 加回指。內容與 draft 一致（含已採納 PR #101 三條審查意見），未修改 system/。寫 reports/ 屬 ask，使用者明確核准。"
+completion_time: "2026-06-20"
+audit_log_ref: "logs/AUDIT_LOG.md"
