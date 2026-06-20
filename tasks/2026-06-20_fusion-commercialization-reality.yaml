@@ -1,0 +1,56 @@
+task_id: "20260620-X04"
+date: "2026-06-20"
+status: "pending"
+
+# === 任務定義 ===
+goal: "2026 年核融合商業化進展：私營 fusion 公司里程碑與時程現實檢驗"
+
+context: |
+  屬「workflow 跨領域測試」批次第 4 張（科學/能源領域，Standard）。
+  與 X01/X02/X03 構成跨領域 + 分層深度的 workflow 壓測；本張為 standard 深度，
+  用來與 quick scan 做 cost-quality 對照，並測 workflow 在「高度技術、易過度樂觀」題型的事實/假設分離能力。
+  範圍：CFS、Helion、TAE、Commonwealth 等私營 fusion 公司近期里程碑，以及「商業化時程」承諾的可信度檢驗。
+
+input_data: []
+
+# === 完成標準 ===
+definition_of_done:
+  - "涵蓋至少 3 家私營 fusion 公司，各 1 個近期里程碑 + 對外宣稱的商業化/併網時程"
+  - "明確區分「已達成的物理/工程里程碑」與「尚屬承諾的時程」"
+  - "點出至少 2 個跨公司的共通技術或時程風險"
+  - "至少 3 個來源，含時效標註（YYYY-MM 或 YYYY-Qx），交叉比對不靠單一來源"
+  - "事實 / 推論 / 待驗證 / 高風險假設四態分開；過度樂觀宣稱歸到高風險假設"
+  - "輸出符合 skills/research/SKILL.md 格式（結論 / 已知事實 / 合理推論 / 待驗證 / 高風險假設 / 來源）"
+  - "預算限制：~1200-1600 字（Standard）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260620-X04_fusion-commercialization-reality.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "web_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 5
+max_retries: 3
+max_web_searches: 3
+
+# === Skill 路由 ===
+skill_type: "research"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

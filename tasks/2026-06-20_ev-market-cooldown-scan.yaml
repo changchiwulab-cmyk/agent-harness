@@ -1,0 +1,56 @@
+task_id: "20260620-X02"
+date: "2026-06-20"
+status: "pending"
+
+# === 任務定義 ===
+goal: "2026 年全球電動車（EV）市場降溫與 hybrid 回潮趨勢快掃"
+
+context: |
+  屬「workflow 跨領域測試」批次第 2 張（市場/消費領域，Quick Scan）。
+  與 X01/X03/X04 構成跨領域 + 分層深度的 workflow 壓測。
+  選此題是為了測 workflow 在「與使用者本業無關、純市場數據」題型上的表現
+  （避免每題都落在 AI/科技舒適區）。
+  範圍：全球主要市場（中國 / 歐洲 / 美國）EV 成長放緩與 hybrid（HEV/PHEV）需求變化。
+
+input_data: []
+
+# === 完成標準 ===
+definition_of_done:
+  - "涵蓋至少 3 個區域市場（建議：中國 / 歐洲 / 美國）各 1 句現況結論"
+  - "點出 EV 降溫 vs hybrid 回潮的至少 2 個結構性驅動因素"
+  - "至少 2 個來源，含時效標註（YYYY-MM 或 YYYY-Qx）"
+  - "事實 / 推論 / 待驗證 / 高風險假設四態分開，資料不足明確標 [待驗證] 不硬湊"
+  - "輸出符合 skills/research/SKILL.md 格式（結論 / 已知事實 / 合理推論 / 待驗證 / 高風險假設 / 來源）"
+  - "預算限制：~600-1000 字（Quick Scan）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260620-X02_ev-market-cooldown-scan.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "web_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 3
+max_retries: 3
+max_web_searches: 1
+
+# === Skill 路由 ===
+skill_type: "research"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

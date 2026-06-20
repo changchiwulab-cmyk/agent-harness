@@ -1,0 +1,58 @@
+task_id: "20260620-X01"
+date: "2026-06-20"
+status: "pending"
+
+# === 任務定義 ===
+goal: "2026 年 AI agent 編排框架版圖快掃：盤點主流框架定位與一人公司選型取捨"
+
+context: |
+  屬「workflow 跨領域測試」批次第 1 張（科技領域，Quick Scan）。
+  本批共 4 張（X01 科技 / X02 市場 / X03 政策 / X04 科學），目的在端到端壓測 harness
+  research workflow 在不同領域 + 不同深度（2 quick + 2 standard）的穩定性與 cost-quality 對照。
+  使用者背景：20+ 年管理顧問、一人公司、Claude 生態深度整合 → 框架選型重點放在「單人可維運」。
+  範圍：LangGraph / CrewAI / AutoGen / Claude Agent SDK / OpenAI Agents SDK 等主流玩家定位。
+
+input_data:
+  - "memory/user_prefs.md"
+  - "memory/active_projects/agent-harness/context.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "涵蓋至少 4 個主流 agent 編排框架，各 1 句定位 + 1 個適用場景 + 1 個取捨/限制"
+  - "給出 1 段「一人公司選型」的合理推論（單人可維運角度）"
+  - "至少 2 個來源，含時效標註（YYYY-MM 或 YYYY-Qx）"
+  - "事實 / 推論 / 待驗證 / 高風險假設四態分開，資料不足明確標 [待驗證] 不硬湊"
+  - "輸出符合 skills/research/SKILL.md 格式（結論 / 已知事實 / 合理推論 / 待驗證 / 高風險假設 / 來源）"
+  - "預算限制：~600-1000 字（Quick Scan）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260620-X01_ai-agent-frameworks-scan.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "web_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 3
+max_retries: 3
+max_web_searches: 1
+
+# === Skill 路由 ===
+skill_type: "research"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
