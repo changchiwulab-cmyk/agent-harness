@@ -136,12 +136,12 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 31,
+      "low": 35,
       "medium": 14
     },
     "task_skill": {
       "analysis": 4,
-      "ops": 26,
+      "ops": 30,
       "research": 5,
       "review": 7,
       "writing": 4
@@ -150,9 +150,9 @@
       "done": 22,
       "in_progress": 2,
       "pending": 2,
-      "review": 20
+      "review": 24
     },
-    "task_total": 46
+    "task_total": 50
   },
   "tasks": [
     {
@@ -614,6 +614,46 @@
       "skill_type": "review",
       "status": "review",
       "task_id": "20260620-001"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-20",
+      "goal": "把 COST_POLICY 的『v2 model routing 準備』落地為具體最新模型路由表 + prompt caching 策略，並在 EXECUTION_LOG_SCHEMA 加 cache 觀測欄",
+      "path": "tasks/20260620-002_l1-model-routing-caching.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260620-002"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-20",
+      "goal": "把 JIT context 載入 / compaction 存活 / memory-as-component 寫成明文原則段，並在 GLOBAL_RULES 加一行指標（不破 3K 預算）",
+      "path": "tasks/20260620-003_l2-context-engineering.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260620-003"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-20",
+      "goal": "為 analysis/ops/writing/review 四個 skill 補原生 Agent Skills frontmatter 並接進 .claude/skills/，更新 NATIVE_OVERLAP 證據",
+      "path": "tasks/20260620-004_l3-native-skills.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260620-004"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-20",
+      "goal": "governance_metrics 加 model 分佈觀測（支援 L1 路由），並新增 skill eval 結構檢查接進 CI（每 skill 含 good+bad 案例）",
+      "path": "tasks/20260620-005_l4-evals-observability.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260620-005"
     }
   ]
 }

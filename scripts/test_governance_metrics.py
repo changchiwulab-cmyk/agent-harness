@@ -311,6 +311,19 @@ class TestObservability(unittest.TestCase):
         self.assertEqual(fa["errors_total"], 3)
         self.assertEqual(fa["by_type"], {"tool_failure": 1, "schema_failure": 2})
 
+    def test_models_distribution(self):
+        audit = [
+            {"task_id": "a", "model_used": "claude-opus-4-8"},
+            {"task_id": "b", "model_used": "claude-opus-4-8"},
+            {"task_id": "c", "model_used": "claude-haiku-4-5"},
+            {"task_id": "d"},  # missing -> unspecified
+        ]
+        md = gm.observability_models(audit)
+        self.assertEqual(md["entries_total"], 4)
+        self.assertEqual(md["by_model"]["claude-opus-4-8"], 2)
+        self.assertEqual(md["by_model"]["claude-haiku-4-5"], 1)
+        self.assertEqual(md["by_model"]["unspecified"], 1)
+
     def test_main_observability_flag_real_repo(self):
         import io
         import json as _json
@@ -321,7 +334,7 @@ class TestObservability(unittest.TestCase):
             code = gm.main(["--observability", "--today", "2026-05-29"])
         self.assertEqual(code, 0)
         data = _json.loads(out.getvalue())
-        self.assertEqual(set(data.keys()), {"workflow", "business", "failures"})
+        self.assertEqual(set(data.keys()), {"workflow", "business", "failures", "models"})
 
     def test_existing_json_still_four_metrics(self):
         """Guard: --json output must remain M1–M4 only (no regression)."""

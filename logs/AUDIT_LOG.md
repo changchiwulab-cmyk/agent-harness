@@ -33,6 +33,113 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260620-005"
+  date: "2026-06-20"
+  skill_type: "ops"
+  goal: "L4：governance_metrics 加 model 分佈觀測 + skill eval 結構檢查接進 CI"
+  status: "review"
+  model_used: "claude-opus-4-8"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "scripts/check_skill_evals.py"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "governance_metrics 新增 observability_models（model_used 分佈，佐證 L1 路由）+ 測試；新增 check_skill_evals.py（每 skill 含 good+bad）+ test 接進 CI。--json 仍 M1–M4、--observability 加 models 鍵。LLM-judge eval 留 L5。"
+```
+
+```yaml
+- task_id: "20260620-004"
+  date: "2026-06-20"
+  skill_type: "ops"
+  goal: "L3：4 skill 補原生 Agent Skills frontmatter + 接 .claude/skills/"
+  status: "review"
+  model_used: "claude-opus-4-8"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "file_write"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "skills/analysis/SKILL.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "analysis/ops/writing/review 補 name/description frontmatter（對齊 research）+ .claude/skills symlink，5/5 已註冊；NATIVE_OVERLAP Skill 證據更新。全面轉換留 L6。"
+```
+
+```yaml
+- task_id: "20260620-003"
+  date: "2026-06-20"
+  skill_type: "ops"
+  goal: "L2：context engineering 原則形式化 + GLOBAL_RULES 指標"
+  status: "review"
+  model_used: "claude-opus-4-8"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "system/COST_POLICY.md"
+  error_summary: ""
+  estimated_tokens: "~9K"
+  notes: "COST_POLICY 新增 Context Engineering 原則段（JIT 載入/壓縮存活/memory-as-component/隔離）；GLOBAL_RULES 加一行指標，CLAUDE.md+GLOBAL_RULES 合計 ~1238 tokens（≤3K）。"
+```
+
+```yaml
+- task_id: "20260620-002"
+  date: "2026-06-20"
+  skill_type: "ops"
+  goal: "L1：最新模型路由表 + prompt caching 策略 + EXECUTION_LOG cache 欄"
+  status: "review"
+  model_used: "claude-opus-4-8"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "system/COST_POLICY.md"
+  error_summary: ""
+  estimated_tokens: "~11K"
+  notes: "COST_POLICY 落地具體模型路由（Opus 4.8/Sonnet 4.6/Haiku 4.5/Fable 5 + 價格）+ prompt caching 策略（凍結前綴/TTL/最小前綴/驗證）；EXECUTION_LOG_SCHEMA 加 cache_read/cache_creation/cache_hit。模型事實經 claude-api skill 校準。"
+```
+
+```yaml
+- task_id: "20260620-001"
+  date: "2026-06-20"
+  skill_type: "review"
+  goal: "Agent Harness 完整重評分 v2（三軸）+ 最新 AI 技術對標 + L1–L7 roadmap"
+  status: "review"
+  model_used: "claude-opus-4-8"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 3
+    - tool_name: "file_read"
+      call_count: 10
+    - tool_name: "file_write"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/2026-06-20_harness-assessment-v2.md"
+  error_summary: ""
+  estimated_tokens: "~30K"
+  notes: "3 探索 agent + web research + claude-api 校準。重評 ≈7.6/10（v1 7.0），成熟度逼近 4；R1–R8 已關閉，新增 C 軸（2026 最新技術 5.9/10）。產出 L1–L7 roadmap，L1–L4 本 session 實作。未改 system/（quick-win 走各自 Task Card）。"
+```
+
+```yaml
 - task_id: "20260529-011"
   date: "2026-05-29"
   skill_type: "ops"

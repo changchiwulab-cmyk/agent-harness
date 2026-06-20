@@ -408,12 +408,28 @@ def observability_failures(error_types: list[str]) -> dict:
     return {"errors_total": len(error_types), "by_type": dist}
 
 
+def observability_models(audit: list[dict]) -> dict:
+    """Model layer (L4): model_used distribution from AUDIT_LOG.
+
+    Supports L1 model-routing observability — lets a retro see whether cheap
+    models (Haiku) actually carry the deterministic/cheap work vs. strong models
+    (Opus/Fable) the reasoning, per COST_POLICY.md 模型路由規則.
+    """
+    dist: dict = {}
+    for e in audit:
+        model = e.get("model_used") or "unspecified"
+        dist[str(model)] = dist.get(str(model), 0) + 1
+    return {"by_model": dist, "entries_total": sum(dist.values())}
+
+
 def collect_observability() -> dict:
-    """Assemble the three observability layers (workflow / business / failures)."""
+    """Assemble observability layers (workflow / business / failures / models)."""
+    audit = load_audit_entries()
     return {
         "workflow": observability_workflow(load_run_logs()),
-        "business": observability_business(load_audit_entries()),
+        "business": observability_business(audit),
         "failures": observability_failures(load_error_types()),
+        "models": observability_models(audit),
     }
 
 
@@ -440,6 +456,10 @@ def render_observability_markdown(obs: dict) -> str:
     fa = obs["failures"]
     lines.append(f"### 失敗分佈（{fa['errors_total']} 筆 error log）")
     lines.append(f"- error_type：{fa['by_type'] or '(無)'}")
+    lines.append("")
+    md = obs.get("models", {})
+    lines.append(f"### 模型分佈（L4：{md.get('entries_total', 0)} 筆 audit，佐證 L1 路由）")
+    lines.append(f"- model_used：{md.get('by_model') or '(無)'}")
     lines.append("")
     return "\n".join(lines) + "\n"
 

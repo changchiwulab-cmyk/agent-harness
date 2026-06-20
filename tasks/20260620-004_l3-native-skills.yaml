@@ -1,0 +1,53 @@
+# Task Card — L3：原生 Agent Skills frontmatter + 降重疊
+# 來源：20260620-001 評估 roadmap L3（C 軸原生 Skills 5/10；Skill 重疊 85%）
+
+task_id: "20260620-004"
+date: "2026-06-20"
+status: "review"
+
+# === 任務定義 ===
+goal: "為 analysis/ops/writing/review 四個 skill 補原生 Agent Skills frontmatter 並接進 .claude/skills/，更新 NATIVE_OVERLAP 證據"
+context: |
+  research skill 已具 name/description frontmatter 並 symlink 到 .claude/skills/research；
+  其餘 4 個未轉、未註冊。本卡只做相容層（補 frontmatter + symlink），不大改結構（全面轉換留 L6）。
+input_data:
+  - "skills/{analysis,ops,writing,review}/SKILL.md"
+  - ".claude/skills/"
+  - "system/NATIVE_OVERLAP.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "analysis/ops/writing/review 四個 SKILL.md 開頭加 name/description frontmatter（格式對齊 research）"
+  - ".claude/skills/ 下四個 skill 各建 symlink 指向 ../../skills/<name>"
+  - "NATIVE_OVERLAP.yaml Skill Executor evidence 更新（5/5 已註冊）"
+  - "全套 CI-equivalent 綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "skills/"
+  filename: "SKILL.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "edit_skill_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260620-004 L3 native skills frontmatter + registration"
+actual_tool_calls: 0
+result_summary: "4 skill 補原生 frontmatter + .claude/skills symlink；NATIVE_OVERLAP 更新為 5/5 註冊。"
+completion_time: "2026-06-20"
+audit_log_ref: "logs/AUDIT_LOG.md"

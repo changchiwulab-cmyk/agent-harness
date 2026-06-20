@@ -1,0 +1,57 @@
+# Task Card — L4：evals + 可觀測性
+# 來源：20260620-001 評估 roadmap L4（C 軸 evals-in-CI 5、觀測支援 L1 路由）
+
+task_id: "20260620-005"
+date: "2026-06-20"
+status: "review"
+
+# === 任務定義 ===
+goal: "governance_metrics 加 model 分佈觀測（支援 L1 路由），並新增 skill eval 結構檢查接進 CI（每 skill 含 good+bad 案例）"
+context: |
+  C 軸：evals-in-CI 僅 5（eval_examples 存在但未自動驗證）。
+  本卡：(a) governance_metrics --observability 加 models 層（model_used 分佈，佐證 L1 路由是否落地）；
+  (b) 新增 scripts/check_skill_evals.py 結構檢查 + test，接進 CI workflow。
+  完整 LLM-judge eval harness 留 L5。既有回歸守門（--json 仍 M1–M4）不可破。
+input_data:
+  - "scripts/governance_metrics.py / scripts/test_governance_metrics.py"
+  - "skills/*/eval_examples.md"
+  - ".github/workflows/spec-consistency.yml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "governance_metrics.py 新增 observability_models + collect_observability 加 models 層 + render 顯示"
+  - "test_governance_metrics.py 新增 model 分佈測試；既有 --json=M1–M4 與 --observability 回歸守門更新且全綠"
+  - "新增 scripts/check_skill_evals.py（驗每個 skills/*/eval_examples.md 含『好的輸出範例』與『壞的輸出範例』）+ test_check_skill_evals.py"
+  - ".github/workflows/spec-consistency.yml 接入 skill evals 檢查"
+  - "全套 CI-equivalent 綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "py"
+  location: "scripts/"
+  filename: "check_skill_evals.py"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "edit_scripts"
+  - "edit_ci"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 14
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260620-005 L4 evals + model observability"
+actual_tool_calls: 0
+result_summary: "governance_metrics 加 models 觀測層 + 測試；新增 check_skill_evals.py 結構檢查 + test 接進 CI。LLM-judge eval 留 L5。"
+completion_time: "2026-06-20"
+audit_log_ref: "logs/AUDIT_LOG.md"

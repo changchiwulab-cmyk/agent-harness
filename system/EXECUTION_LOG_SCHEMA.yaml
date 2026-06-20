@@ -44,6 +44,10 @@ execution_log:
     output: 0
     total: 0
     source: ""                        # dashboard_measured（API dashboard 實測）/ rule_estimated（規則估算）/ not_recorded；R6 新增，標示數據可信度
+    # --- 快取觀測（L1 新增；見 COST_POLICY.md Prompt Caching 策略）---
+    cache_read: 0                     # 自快取讀入的 token（~0.1× 成本）
+    cache_creation: 0                 # 寫入快取的 token（1.25×/2× 成本）
+    cache_hit: ""                     # true / false / not_applicable；快取是否命中（重複前綴卻為 0 表示有隱性失效源）
 
   # --- 審批紀錄 ---
   approvals:

@@ -1,3 +1,8 @@
+---
+name: writing
+description: 一人公司的撰寫產出 skill — 提案撰寫、報告產出、文件包裝、內容規劃、SOP 撰寫、對外文案。觸發場景：使用者要撰寫/草稿/提案/報告/文案，或 Task Card 的 skill_type 為 writing。原則：結論先行、段落短而密、台灣商業用語、區分事實與推論、數據有來源。
+---
+
 # Writing Skill
 
 ## 用途

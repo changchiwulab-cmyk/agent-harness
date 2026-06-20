@@ -1,0 +1,54 @@
+# Task Card — L1：最新模型路由 + prompt caching 落地
+# 來源：20260620-001 評估 roadmap L1（C 軸最高槓桿：成本/快取 v1 完全未碰）
+
+task_id: "20260620-002"
+date: "2026-06-20"
+status: "review"
+
+# === 任務定義 ===
+goal: "把 COST_POLICY 的『v2 model routing 準備』落地為具體最新模型路由表 + prompt caching 策略，並在 EXECUTION_LOG_SCHEMA 加 cache 觀測欄"
+context: |
+  C 軸最低兩項：最新模型路由(3)、prompt caching(2)。模型/快取事實經 claude-api skill 校準：
+  Opus 4.8 $5/$25、Sonnet 4.6 $3/$15、Haiku 4.5 $1/$5、Fable 5 $10/$50；
+  快取讀 ~0.1×、寫 1.25×(5m)/2×(1h)，最小可快取前綴 Opus 4.8=4096 / Sonnet 4.6・Fable 5=2048 tokens。
+  改 system/ 屬 ask：本卡列出 diff，CI 綠後 checkpoint。
+input_data:
+  - "system/COST_POLICY.md"
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "COST_POLICY.md：『模型路由規則』改為具體最新模型路由表（含 model id 與 in/out 價）"
+  - "COST_POLICY.md：新增『Prompt Caching 策略』段（穩定前綴快取、動態內容置後、TTL、最小前綴、驗證）"
+  - "EXECUTION_LOG_SCHEMA.yaml：token_estimate 旁加 cache 觀測欄（cache_read / cache_creation / cache_hit）"
+  - "全套 CI-equivalent 綠（YAML 解析、spec 一致性、frontend drift）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "system/"
+  filename: "COST_POLICY.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "edit_system_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260620-002 L1 model routing + prompt caching"
+actual_tool_calls: 0
+result_summary: "COST_POLICY 落地最新模型路由表 + prompt caching 策略；EXECUTION_LOG_SCHEMA 加 cache 觀測欄。模型/快取事實經 claude-api skill 校準。"
+completion_time: "2026-06-20"
+audit_log_ref: "logs/AUDIT_LOG.md"

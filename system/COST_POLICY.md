@@ -38,12 +38,43 @@ v1 階段採用「粗略護欄 + 事後量測」策略：
 | CLAUDE.md + GLOBAL_RULES | 控制在 3K 以內 | 硬限制 |
 | 單一 skill prompt | 控制在 1.5K 以內 | 硬限制 |
 
-## 模型路由規則（v2 準備）
+## 模型路由規則（2026-06 落地，最新模型）
 
-v1 先用單一模型（Claude）。未來如需降本：
-- 分類、抽取、格式檢查 → 便宜模型（Haiku 等級）
-- 規劃、推理、整合分析 → 強模型（Sonnet/Opus 等級）
-- 路由判斷本身 → 便宜模型
+依任務階段把工作分派到對應等級的模型，用便宜模型做確定性／重複工，用強模型做規劃／推理。模型事實經 `claude-api` skill 校準（價格＝input/output，每 1M tokens）：
+
+| 用途 | 模型 | model id | 價格 |
+|------|------|----------|------|
+| 規劃、analysis、review 推理、整合判斷 | Claude Opus 4.8 | `claude-opus-4-8` | $5 / $25 |
+| 預設執行、writing、一般 ops、高量產 | Claude Sonnet 4.6 | `claude-sonnet-4-6` | $3 / $15 |
+| 分類、抽取、格式/schema 檢查、lint、路由判斷 | Claude Haiku 4.5 | `claude-haiku-4-5` | $1 / $5 |
+| 最難的長程 agentic／一次到位的複雜實作 | Claude Fable 5 | `claude-fable-5` | $10 / $50 |
+
+規則：
+- 確定性、可機械驗證的步驟（schema 檢查、lint、分類）一律下放 Haiku 4.5，不佔強模型額度。
+- 規劃/推理/最終整合用 Opus 4.8（預設）；只有當任務複雜度超出 Opus 且值得時才升 Fable 5。
+- 路由判斷本身屬 Haiku 等級，不應消耗重 token（見 `ROUTING_RULES.md` 複雜度原則）。
+- 切換模型會使 prompt cache 失效（快取是 model-scoped）；同一會話內盡量固定主模型，子任務再隔離。
+
+## Prompt Caching 策略（2026-06 新增）
+
+快取是 2026 最大成本槓桿：cache 讀 ~0.1× input 價、寫 1.25×（5 分鐘 TTL）/ 2×（1 小時 TTL），穩定前綴可省 ~90%。快取是**前綴比對**——前綴任一 byte 改變即讓其後全部失效。
+
+落地原則（本 harness 的穩定前綴＝CLAUDE.md + GLOBAL_RULES + AGENT_CONTEXT + 載入的 skill）：
+- **穩定內容置前、動態內容置後**：boot prompt 與載入的 skill 放最前；Task Card 具體內容、時間戳、每輪查詢放最後一個 cache 斷點之後。
+- **凍結前綴**：不要把「今天日期 / session id」插進 system 段（會每次失效）；動態 context 改放後段訊息。
+- **斷點放在穩定／易變邊界**：`cache_control: {type: "ephemeral"}`（5 分鐘）為預設；跨較長間隔的批次用 `ttl: "1h"`。單一請求最多 4 個斷點。
+- **最小可快取前綴（model-scoped）**：Opus 4.8 / Haiku 4.5 = 4096 tokens；Sonnet 4.6 / Fable 5 = 2048 tokens。前綴過短會靜默不快取。
+- **驗證**：看回應 `usage.cache_read_input_tokens`；若重複同前綴請求仍為 0，代表有隱性失效源（system 內的時間戳/UUID、未排序 JSON、變動的工具集）。
+- **損益平衡**：5 分鐘 TTL 兩次請求即回本；1 小時 TTL 需三次以上。
+
+## Context Engineering 原則（2026-06 新增）
+
+對標 2026 context-engineering 最佳實踐，把既有慣例形式化：
+
+- **Just-in-time（JIT）載入**：不預先把所有資料塞進 context；維持輕量識別子（檔案路徑、查詢、URL），用工具在執行時動態載入。大型檔案一律路徑引用（呼應「節省 token」段）。
+- **關鍵規則須存活壓縮**：壓縮/摘要會丟棄細節，因此硬規則必須留在 boot prompt（CLAUDE.md / GLOBAL_RULES），不可只存在於易被壓掉的對話歷史。長對話 20 輪後的摘要壓縮只壓「過程」，不壓「規則」。
+- **memory 為獨立架構元件**：`memory/` 是與 context window 分離的持久層，非「更長的 prompt」；只有經人工確認才寫入（見 GLOBAL_RULES 記憶規則）。跨 session 狀態走 memory，session 內狀態走 context。
+- **隔離優於塞滿**：子任務以子代理隔離 context（省 ~67%），中間結果不回主 context；與 prompt caching「凍結前綴」配合。
 
 ## 事後量測流程（每週）
 
