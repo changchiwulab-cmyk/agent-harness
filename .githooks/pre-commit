@@ -15,5 +15,29 @@
 set -euo pipefail
 
 ROOT_DIR="$(git rev-parse --show-toplevel)"
-bash "$ROOT_DIR/scripts/sync_derived.sh"
-git add "$ROOT_DIR/frontend/data.json" "$ROOT_DIR/logs/AUDIT_LOG.md"
+cd "$ROOT_DIR"
+
+# The generators read the working tree. If any derived-artifact SOURCE input has
+# unstaged or untracked changes, regenerating now would stage artifacts that
+# reflect content not in this commit (the partial-staging trap). Abort and let
+# the developer stage or stash first, so committed artifacts always match the
+# committed sources. CI remains the authoritative reconcile.
+SRC_PATHSPECS=(
+  ':(glob)tasks/20*.yaml'
+  ':(glob)logs/runs/*.yaml'
+  ':(glob)memory/active_projects/*/decisions/*.yaml'
+)
+unstaged="$(git diff --name-only -- "${SRC_PATHSPECS[@]}")"
+untracked="$(git ls-files --others --exclude-standard -- "${SRC_PATHSPECS[@]}")"
+if [ -n "${unstaged}${untracked}" ]; then
+  {
+    echo "pre-commit: derived-artifact sources have unstaged/untracked changes:"
+    printf '  %s\n' ${unstaged} ${untracked}
+    echo "Stage them (git add) or stash before committing so frontend/data.json"
+    echo "and logs/AUDIT_LOG.md match the commit."
+  } >&2
+  exit 1
+fi
+
+bash scripts/sync_derived.sh
+git add frontend/data.json logs/AUDIT_LOG.md

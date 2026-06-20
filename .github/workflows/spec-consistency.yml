@@ -17,12 +17,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          # Full history: generate_audit_log.py derives checkpoints from
-          # `git log --grep`. On a same-repo PR check out the head branch so the
-          # auto-align step can push back; otherwise use the default ref.
+          # Full history so generate_audit_log.py can resolve `checkpoint:`
+          # commits via `git log --grep`. Default ref keeps pull_request runs on
+          # the merge ref (post-merge validation); the auto-align step checks out
+          # the head branch only for the push-back.
           fetch-depth: 0
           persist-credentials: true
-          ref: ${{ (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) && github.head_ref || github.ref }}
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@0cb964fd540e0a24c900370abf38a33466142735 # v1.305.0
@@ -79,6 +79,16 @@ jobs:
       - name: Auto-align derived artifacts (same-repo)
         if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
         run: |
+          # Validation above runs on the default ref (the merge ref for PRs).
+          # For the push-back we need the real head branch tip, not the merge
+          # commit, so check it out here only.
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            TARGET="${{ github.head_ref }}"
+            git fetch --no-tags origin "+refs/heads/${TARGET}:refs/remotes/origin/${TARGET}"
+            git checkout -B "${TARGET}" "refs/remotes/origin/${TARGET}"
+          else
+            TARGET="${{ github.ref_name }}"
+          fi
           bash scripts/sync_derived.sh
           if git diff --quiet -- frontend/data.json logs/AUDIT_LOG.md; then
             echo "Derived artifacts already in sync."
@@ -86,9 +96,12 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add frontend/data.json logs/AUDIT_LOG.md
-            git commit -m "chore: auto-align derived artifacts (data.json, AUDIT_LOG) [skip ci]"
-            git push origin HEAD:${{ github.head_ref || github.ref_name }}
-            echo "Pushed auto-align commit."
+            # No [skip ci]: the pushed commit must get its own green check, or
+            # branch protection would block on a pending required check. The
+            # deterministic generators make the re-run a no-op, so it converges.
+            git commit -m "chore: auto-align derived artifacts (data.json, AUDIT_LOG)"
+            git push origin "HEAD:${TARGET}"
+            echo "Pushed auto-align commit to ${TARGET}."
           fi
 
       - name: Verify alignment (same-repo)
