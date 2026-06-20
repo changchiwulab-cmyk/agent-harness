@@ -61,5 +61,21 @@ execution_log:
     completion_check: ""              # pass / fail
     risk_check: ""                    # pass / fail
 
+  # --- 驗證閉環帳本（選用；向後相容）---
+  # 由 scripts/verification_loop.py 產出。定義見 system/VERIFICATION_LOOP.yaml。
+  # 僅當任務經歷多輪「驗證→修正→再驗證」時填寫；單輪 happy-path 可省略，沿用上方 gate_results。
+  verification_loop:
+    outcome: ""                       # pass / hard_stop / escalated / exhausted
+    iterations:
+      - iteration: 0                  # 輪次（從 1 起）
+        gate_results:
+          schema_check: ""            # pass / fail / not_run
+          rule_check: ""              # pass / fail / not_run
+          completion_check: ""        # pass / fail / not_run
+          risk_check: ""              # pass / fail / not_run
+        first_fail: ""                # 首個失敗的 gate（全 pass 則留空）
+        disposition: ""               # retry_fixable / hard_stop / human_gated / escalate
+        action: ""                    # 本輪採取的修正/處置
+
   # --- 備註 ---
   notes: ""
