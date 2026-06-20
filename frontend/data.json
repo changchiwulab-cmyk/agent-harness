@@ -108,39 +108,54 @@
       "started_at": "2026-05-29 05:25",
       "status": "failed",
       "task_id": "20260529-003"
+    },
+    {
+      "ended_at": "2026-06-20 00:00",
+      "gate_results": {
+        "completion_check": "pass",
+        "risk_check": "pass",
+        "rule_check": "pass",
+        "schema_check": "pass"
+      },
+      "path": "logs/runs/RUN-20260620-001.yaml",
+      "run_id": "RUN-20260620-001",
+      "skill_type": "analysis",
+      "started_at": "2026-06-20 00:00",
+      "status": "completed",
+      "task_id": "20260620-001"
     }
   ],
   "overview": {
     "gate_results": {
       "completion_check": {
         "not_run": 1,
-        "pass": 1
+        "pass": 2
       },
       "risk_check": {
         "not_run": 1,
-        "pass": 1
+        "pass": 2
       },
       "rule_check": {
         "not_run": 1,
-        "pass": 1
+        "pass": 2
       },
       "schema_check": {
         "fail": 1,
-        "pass": 1
+        "pass": 2
       }
     },
     "run_status": {
-      "completed": 1,
+      "completed": 2,
       "failed": 1
     },
-    "run_total": 2,
+    "run_total": 3,
     "task_risk": {
       "high": 1,
       "low": 30,
-      "medium": 14
+      "medium": 15
     },
     "task_skill": {
-      "analysis": 4,
+      "analysis": 5,
       "ops": 26,
       "research": 5,
       "review": 6,
@@ -150,9 +165,9 @@
       "done": 22,
       "in_progress": 2,
       "pending": 2,
-      "review": 19
+      "review": 20
     },
-    "task_total": 45
+    "task_total": 46
   },
   "tasks": [
     {
@@ -604,6 +619,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-20",
+      "goal": "對照 2026 公開 AI agent 研究，將 harness 由 v2 升級為 v2.1：補上 4 個研究已領先的缺口",
+      "path": "tasks/2026-06-20_research-aligned-harness-upgrade.yaml",
+      "risk_level": "medium",
+      "skill_type": "analysis",
+      "status": "review",
+      "task_id": "20260620-001"
     }
   ]
 }

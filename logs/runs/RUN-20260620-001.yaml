@@ -1,0 +1,64 @@
+execution_log:
+  run_id: "RUN-20260620-001"
+  task_id: "20260620-001"
+  skill_type: "analysis"
+  started_at: "2026-06-20 00:00"
+  ended_at: "2026-06-20 00:00"
+  status: "completed"
+
+  # --- 執行細節 ---
+  tools_used:
+    - tool: web_search
+      call_count: 6
+    - tool: file_read
+      call_count: 14
+    - tool: file_write
+      call_count: 9
+
+  checkpoints:
+    - commit: "9bb3cd0"
+      stage: "開卡 + 論文對照基準文件"
+    - commit: "82df274"
+      stage: "改進1+2 程序性記憶迴圈 + 記憶四類型學"
+    - commit: "a00273d"
+      stage: "改進3 預算門檻壓縮 + 接續日誌"
+    - commit: "a013c47"
+      stage: "改進4 致命三要素安全閘"
+
+  # --- 成本估算 ---
+  token_estimate:
+    input: 0
+    output: 0
+    total: 60000
+    source: "rule_estimated"
+
+  # --- 審批紀錄 ---
+  approvals:
+    - action: "修改 system/ 與 skills/（v2.1 四項改進）"
+      status: "approved"
+      approved_by: "human"
+      timestamp: "2026-06-20"
+
+  # --- 結果 ---
+  output_path: "outputs/drafts/2026-06-20_ai-harness-research-benchmark.md"
+  error_summary: ""
+  gate_results:
+    schema_check: "pass"
+    rule_check: "pass"
+    completion_check: "pass"
+    risk_check: "pass"
+
+  # --- 接續日誌 / handoff（R9 新增；本卡為首次實際填用）---
+  resume_state:
+    last_completed_dod: "7/7：基準文件 + 4 項改進 + README/AUDIT/data.json + CI 全綠皆完成"
+    next_step: "人工審閱 drafts → 決定是否將 system/skills 變更併入主線、並把基準文件晉升 outputs/reports/"
+    pending_approvals:
+      - "system/ 與 skills/ 變更（已於 plan 核准，PR 待 merge）"
+      - "memory/lessons 條目晉升（下次 RETRO）"
+    key_files:
+      - "outputs/drafts/2026-06-20_ai-harness-research-benchmark.md"
+      - "memory/lessons/_GLOBAL.md"
+      - "system/GATE_POLICY.yaml"
+
+  # --- 備註 ---
+  notes: "v2.1 升級執行紀錄。依 D006（checkpoints>=3）補寫；同時作為新 resume_state 欄位的首個實填樣本，供 RECOVERY 場景 C 接續實證。"

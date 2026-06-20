@@ -34,6 +34,10 @@
 └── 16. Audit Log          logs/AUDIT_LOG.md — 稽核紀錄
 ```
 
+> **v2.1 記憶分型**：記憶對齊認知四類型 working / episodic / semantic / **procedural**。
+> 程序記憶落於 `memory/lessons/`——由 RETRO 把重複失敗精煉成可載入指引（Reflexion/ACON 路線），
+> 任務啟動時自動載入。詳見 `memory/README.md`。
+
 ## 資料夾結構
 
 ```
@@ -165,7 +169,8 @@ python system/validate_task_card.py tasks/your-task.yaml
 |------|------|-------------|
 | **v1** | 單核心代理 + Task Card + Checkpoint + Verifier + Audit | — |
 | **v1.5** | + Gate Policy + Operating Context + Decision Log + Eval Examples + Weekly Review | 馬鞍工程原則導入：驗證集中化、系統自知、決策可追溯 |
-| **v2（現在）** | + Approval Policy + Failure Taxonomy + Execution Log Schema + Rollback Path + Ops Eval | 馬鞍工程落地：批准流程獨立化、失敗模式可引用、執行紀錄結構化 |
+| **v2** | + Approval Policy + Failure Taxonomy + Execution Log Schema + Rollback Path + Ops Eval | 馬鞍工程落地：批准流程獨立化、失敗模式可引用、執行紀錄結構化 |
+| **v2.1（現在）** | + 程序性記憶/失敗驅動學習迴圈（memory/lessons）+ 記憶四類型學 + ~70% 預算門檻壓縮與 resume_state 接續日誌 + 致命三要素安全閘（SEC-05） | 對照 2026《Agent Harness Engineering》六要素模型與記憶綜述，補上研究已領先的缺口（加法、不重寫） |
 | **v3** | 拆分 bounded specialists（research/sales/content） | 單一代理的 context 經常超限；任務類型間的規則衝突頻繁 |
 | **v4** | Graph orchestration + 進階 checkpoint persistence | 任務間依賴複雜度超過線性拔分能處理的範圍 |
 

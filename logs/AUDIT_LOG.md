@@ -33,6 +33,31 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260620-001"
+  date: "2026-06-20"
+  skill_type: "analysis"
+  goal: "對照 2026 公開 AI agent 研究，將 harness 由 v2 升級 v2.1（補 4 缺口）"
+  status: "review"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 6
+    - tool_name: "file_read"
+      call_count: 14
+    - tool_name: "file_write"
+      call_count: 9
+  checkpoints: 5
+  approval_needed: true
+  approval_given: false
+  output_path: "outputs/drafts/2026-06-20_ai-harness-research-benchmark.md; memory/lessons/; system/ 多檔; CLAUDE.md; README.md; logs/runs/RUN-20260620-001.yaml"
+  error_summary: ""
+  estimated_tokens: "~60K（含 2 探索子代理 + web 研究；多代理任務，不宜直接併入 analysis 校準均值）"
+  notes: "對照 2026《Agent Harness Engineering》六要素模型 H=(E,T,C,S,L,V)，harness 已 1:1 對應；故加法式補 4 缺口：(1) 程序性記憶/失敗驅動學習迴圈（memory/lessons + RETRO 接線，Reflexion/ACON）(2) 記憶四類型學 (3) ~70% 預算門檻壓縮 + resume_state 接續日誌（補 RECOVERY 場景 C）(4) 致命三要素安全閘 SEC-05（OWASP LLM06:2025）。修改 system/ 與 skills/ 屬 ask，使用者於 plan 階段核准；對外/正式產出仍走 drafts。本卡 checkpoints≥3 依 D006 補寫 logs/runs/，並首次實際填用新的 resume_state 欄位。CI（validate/spec-consistency/context-budget）綠。"
+```
+
+---
+
+```yaml
 - task_id: "20260529-011"
   date: "2026-05-29"
   skill_type: "ops"
