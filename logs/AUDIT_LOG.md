@@ -33,6 +33,100 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260620-X04"
+  date: "2026-06-20"
+  skill_type: "research"
+  goal: "核融合商業化進展：私營公司里程碑與時程現實檢驗（workflow 跨領域測試・科學/standard）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260620-X04_fusion-commercialization-reality.md"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "X 批次第 4 張。明確分離『已達成里程碑』與『承諾時程』，過度樂觀宣稱歸高風險假設。2/3 web search。四層 gate 全 pass。"
+```
+
+---
+
+```yaml
+- task_id: "20260620-X03"
+  date: "2026-06-20"
+  skill_type: "research"
+  goal: "歐盟 AI Act 對非歐盟中小企業/一人公司合規衝擊（workflow 跨領域測試・政策/standard）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260620-X03_eu-ai-act-sme-impact.md"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "X 批次第 3 張。2025-2028 分階段時程（含 Digital Omnibus 延期）+ 3 風險點 + 因應推論。5 來源交叉。2/3 web search。四層 gate 全 pass。"
+```
+
+---
+
+```yaml
+- task_id: "20260620-X02"
+  date: "2026-06-20"
+  skill_type: "research"
+  goal: "全球 EV 市場降溫與 hybrid 回潮快掃（workflow 跨領域測試・市場/quick）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 1
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260620-X02_ev-market-cooldown-scan.md"
+  error_summary: ""
+  estimated_tokens: "~8K"
+  notes: "X 批次第 2 張。3 區域 + 2 結構性驅動。年比數字來源口徑不一致已標 [待驗證]。1/1 web search。四層 gate 全 pass。"
+```
+
+---
+
+```yaml
+- task_id: "20260620-X01"
+  date: "2026-06-20"
+  skill_type: "research"
+  goal: "2026 AI agent 編排框架版圖快掃（workflow 跨領域測試・科技/quick）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 1
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260620-X01_ai-agent-frameworks-scan.md"
+  error_summary: ""
+  estimated_tokens: "~9K"
+  notes: "X 批次第 1 張（4 次 workflow 跨領域測試起點）。5 框架定位 + 一人公司選型推論。Claude Agent SDK benchmark 標 [待驗證]。1/1 web search。四層 gate 全 pass。"
+```
+
+---
+
+```yaml
 - task_id: "20260529-011"
   date: "2026-05-29"
   skill_type: "ops"
