@@ -136,23 +136,23 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 30,
+      "low": 34,
       "medium": 14
     },
     "task_skill": {
       "analysis": 4,
       "ops": 26,
-      "research": 5,
+      "research": 9,
       "review": 6,
       "writing": 4
     },
     "task_status": {
-      "done": 22,
+      "done": 26,
       "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 45
+    "task_total": 49
   },
   "tasks": [
     {
@@ -604,6 +604,46 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-20",
+      "goal": "2026 年 AI agent 編排框架版圖快掃：盤點主流框架定位與一人公司選型取捨",
+      "path": "tasks/2026-06-20_ai-agent-frameworks-scan.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "done",
+      "task_id": "20260620-X01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-20",
+      "goal": "歐盟 AI Act 2026 落地時程與對非歐盟中小企業/一人公司的合規衝擊",
+      "path": "tasks/2026-06-20_eu-ai-act-sme-impact.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "done",
+      "task_id": "20260620-X03"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-20",
+      "goal": "2026 年全球電動車（EV）市場降溫與 hybrid 回潮趨勢快掃",
+      "path": "tasks/2026-06-20_ev-market-cooldown-scan.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "done",
+      "task_id": "20260620-X02"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-20",
+      "goal": "2026 年核融合商業化進展：私營 fusion 公司里程碑與時程現實檢驗",
+      "path": "tasks/2026-06-20_fusion-commercialization-reality.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "done",
+      "task_id": "20260620-X04"
     }
   ]
 }
