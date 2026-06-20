@@ -83,15 +83,21 @@ def load_yaml(path: Path) -> dict:
     return data if isinstance(data, dict) else {}
 
 
-def load_deny_list() -> set[str]:
+def load_permission_set(kind: str) -> set[str]:
+    """回傳 PERMISSIONS.yaml 中 permissions.<kind>（allow / ask / deny）的工具集合。"""
     perms = load_yaml(PERMISSIONS_PATH)
-    deny = (perms.get("permissions") or {}).get("deny") or []
-    return {str(x).strip() for x in deny}
+    items = (perms.get("permissions") or {}).get(kind) or []
+    return {str(x).strip() for x in items}
 
 
 def run_log_tools(run_log: dict) -> list[dict]:
     log = run_log.get("execution_log", run_log)
     return [t for t in (log.get("tools_used") or []) if isinstance(t, dict)]
+
+
+def run_log_approvals(run_log: dict) -> list[dict]:
+    log = run_log.get("execution_log", run_log)
+    return [a for a in (log.get("approvals") or []) if isinstance(a, dict)]
 
 
 # --- 四層 gate -------------------------------------------------------------
@@ -105,7 +111,8 @@ def check_schema(card_path: Path) -> tuple[bool, list[str]]:
 
 def check_rule(card: dict, run_log: dict | None) -> tuple[bool, list[str]]:
     msgs: list[str] = []
-    deny = load_deny_list()
+    deny = load_permission_set("deny")
+    ask = load_permission_set("ask")
     allowed = [str(t).strip() for t in (card.get("allowed_tools") or [])]
 
     for tool in allowed:
@@ -115,12 +122,21 @@ def check_rule(card: dict, run_log: dict | None) -> tuple[bool, list[str]]:
     if run_log is not None:
         used = run_log_tools(run_log)
         allowed_set = set(allowed)
+        # ask 等級的動作需有對應的 approved 核准紀錄（GATE_POLICY rule_check）。
+        # 僅在有 run-log 時可評估「實際執行了哪些動作、是否核准」；無 run-log 不誤判。
+        approved = " ".join(
+            str(a.get("action", "")).lower()
+            for a in run_log_approvals(run_log)
+            if str(a.get("status", "")).strip().lower() == "approved"
+        )
         for entry in used:
             name = str(entry.get("tool", "")).strip()
             if name and name not in allowed_set:
                 msgs.append(f"使用了白名單外的工具：{name}")
             if name in deny:
                 msgs.append(f"使用了 deny 工具：{name}")
+            if name in ask and name.lower() not in approved:
+                msgs.append(f"使用了 ask 等級工具但查無核准紀錄：{name}")
             if name == "web_search" and int(entry.get("call_count", 0) or 0) > 3:
                 msgs.append(f"外部查詢超過 3 輪：web_search={entry.get('call_count')}")
 
@@ -149,7 +165,10 @@ def check_completion(card: dict, completion: list[str] | None) -> tuple[bool, li
 def check_risk(card: dict) -> tuple[bool, list[str]]:
     risk = str(card.get("risk_level", "")).strip()
     loc = str((card.get("expected_output") or {}).get("location", "")).strip()
-    if risk in ("high", "critical") and not loc.startswith("outputs/drafts"):
+    # 精確比對 outputs/drafts/ 目錄，避免 outputs/drafts-public/ 之類的前綴誤判。
+    loc_norm = loc.rstrip("/")
+    in_drafts = loc_norm == "outputs/drafts" or loc_norm.startswith("outputs/drafts/")
+    if risk in ("high", "critical") and not in_drafts:
         return False, [f"risk_level={risk} 的輸出須在 outputs/drafts/，目前：{loc or '(未指定)'}"]
     return True, []
 
@@ -222,6 +241,13 @@ def decide(
     # 四層全 pass，且 completion 不是 not_run → pass
     if first is None:
         if outcome.results["completion_check"] == "not_run":
+            # not_run 也受 completion 的迭代預算約束，避免無限 continue（VERIFICATION_LOOP 終止保證）
+            if iteration >= attempts_allowed("completion_check", max_iterations):
+                return (
+                    "exhausted",
+                    "human_gated",
+                    "達迭代上限仍未提供 DoD 逐條結果：停止、寫 logs/errors/、通知使用者",
+                )
             return (
                 "continue",
                 "human_gated",

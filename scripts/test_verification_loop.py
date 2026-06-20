@@ -62,6 +62,28 @@ class TestGates(unittest.TestCase):
         self.assertFalse(ok)
         self.assertTrue(any("超過 3 輪" in m for m in msgs))
 
+    def test_rule_ask_tool_used_without_approval_fails(self):
+        run_log = {"execution_log": {
+            "tools_used": [{"tool": "write_reports", "call_count": 1}],
+            "approvals": [],
+        }}
+        ok, msgs = vl.check_rule(card(allowed_tools=["write_reports"]), run_log)
+        self.assertFalse(ok)
+        self.assertTrue(any("ask 等級" in m for m in msgs))
+
+    def test_rule_ask_tool_used_with_approval_passes(self):
+        run_log = {"execution_log": {
+            "tools_used": [{"tool": "write_reports", "call_count": 1}],
+            "approvals": [{"action": "write_reports 正式報告", "status": "approved", "approved_by": "human"}],
+        }}
+        ok, msgs = vl.check_rule(card(allowed_tools=["write_reports"]), run_log)
+        self.assertTrue(ok, msgs)
+
+    def test_rule_ask_tool_declared_only_no_runlog_passes(self):
+        # 僅在 allowed_tools 宣告 ask 工具、無 run-log → 無法評估執行，不誤判
+        ok, msgs = vl.check_rule(card(allowed_tools=["write_reports"]), None)
+        self.assertTrue(ok, msgs)
+
     def test_completion_not_run_when_no_marks(self):
         ok, msgs = vl.check_completion(card(), None)
         self.assertFalse(ok)
@@ -97,6 +119,19 @@ class TestGates(unittest.TestCase):
         ok, _ = vl.check_risk(c)
         self.assertTrue(ok)
 
+    def test_risk_high_drafts_lookalike_prefix_fails(self):
+        # outputs/drafts-public/ 與 outputs/drafts/ 僅前綴相似，必須被擋
+        c = card(risk_level="high",
+                 expected_output={"format": "md", "location": "outputs/drafts-public/", "filename": "x.md"})
+        ok, _ = vl.check_risk(c)
+        self.assertFalse(ok)
+
+    def test_risk_high_drafts_subdir_passes(self):
+        c = card(risk_level="high",
+                 expected_output={"format": "md", "location": "outputs/drafts/sub/", "filename": "x.md"})
+        ok, _ = vl.check_risk(c)
+        self.assertTrue(ok)
+
 
 class TestBudget(unittest.TestCase):
     def test_attempts_schema_capped_at_2(self):
@@ -121,6 +156,12 @@ class TestDecide(unittest.TestCase):
         out, disp, _ = vl.decide(o, 1, 3)
         self.assertEqual(out, "continue")
         self.assertEqual(disp, "human_gated")
+
+    def test_completion_not_run_exhausts_at_cap(self):
+        # 終止保證：not_run 在達到迭代上限時必須 exhausted，不可無限 continue
+        o = outcome_with(None, {"schema_check": "pass", "rule_check": "pass",
+                                "completion_check": "not_run", "risk_check": "pass"})
+        self.assertEqual(vl.decide(o, 3, 3)[0], "exhausted")
 
     def test_schema_fail_continue_then_exhausted(self):
         o = outcome_with("schema_check", {"schema_check": "fail"})
