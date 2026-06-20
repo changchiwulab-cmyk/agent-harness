@@ -1,6 +1,6 @@
 task_id: "20260620-X04"
 date: "2026-06-20"
-status: "pending"
+status: "done"
 
 # === 任務定義 ===
 goal: "2026 年核融合商業化進展：私營 fusion 公司里程碑與時程現實檢驗"
@@ -49,8 +49,9 @@ max_web_searches: 3
 skill_type: "research"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
-audit_log_ref: ""
+checkpoints:
+  - stage: "完成研究 + 草稿輸出（see checkpoint commit 20260620-X04）"
+actual_tool_calls: 3
+result_summary: "DoD 7/7 通過。涵蓋 CFS/Helion/TAE 各里程碑+宣稱時程，明確分離『已達成里程碑』與『承諾時程』，2 跨公司風險 + 5 來源。過度樂觀宣稱全歸高風險假設；淨發電驗證與投資口徑標 [待驗證]。2 web searches（未用滿 3）。四層 gate 全 pass。"
+completion_time: "2026-06-20"
+audit_log_ref: "logs/AUDIT_LOG.md"
