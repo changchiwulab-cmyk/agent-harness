@@ -1,0 +1,59 @@
+# Task Card — L5：LLM-judge eval harness（evals 深化）
+# 來源：20260620-001 評估 roadmap L5（C 軸 evals-in-CI 5/10：eval_examples 未自動評分）
+
+task_id: "20260620-006"
+date: "2026-06-20"
+status: "review"
+
+# === 任務定義 ===
+goal: "把 skill eval_examples 升級成 LLM-judge 自動 eval：judge 依各 skill 判斷標準逐條評分，用內建 good/bad 當 golden 回歸；live 走獨立 opt-in workflow，不擋既有 PR gate"
+context: |
+  L4 只做結構檢查（good/bad 是否存在），無真正評分。L5 加 LLM-judge：
+  judge 依『判斷標準』表逐條問通過/不通過（structured outputs，預設 Haiku 4.5，依 COST_POLICY 路由）。
+  關鍵約束：核心 validate-spec 不依賴模型/金鑰；LLM-judge 走 skill-evals.yml（workflow_dispatch，缺 secret 即 no-op）。
+  缺 ANTHROPIC_API_KEY 時 run_skill_evals.py 印 skipped、exit 0；--mock 走離線 plumbing。anthropic SDK lazy import。
+input_data:
+  - "skills/*/eval_examples.md"
+  - "scripts/check_skill_evals.py"
+  - "system/COST_POLICY.md"
+  - ".github/workflows/spec-consistency.yml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "check_skill_evals.py 加共享 parser parse_eval_examples（good/bad fence + 判斷標準 criteria），L4 結構檢查與測試仍綠"
+  - "新增 scripts/run_skill_evals.py：judge（structured outputs，預設 claude-haiku-4-5）+ golden 回歸（good 全過/bad≥2 不過）+ 缺金鑰退場 + --mock"
+  - "新增 scripts/test_run_skill_evals.py：parser/aggregate/golden/--mock/no-key 全離線綠"
+  - "新增 .github/workflows/skill-evals.yml（workflow_dispatch，用 secrets.ANTHROPIC_API_KEY，缺即 no-op），不動 spec-consistency.yml 必過閘"
+  - "COST_POLICY.md 註記 eval-judge 預設 Haiku 4.5；全套既有 CI-equivalent 維持綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "py"
+  location: "scripts/"
+  filename: "run_skill_evals.py"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "edit_scripts"
+  - "edit_ci"
+  - "edit_system_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 16
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260620-006 L5 LLM-judge eval harness"
+actual_tool_calls: 0
+result_summary: "共享 parser + run_skill_evals.py（Haiku 4.5 judge、structured outputs、golden 回歸、缺金鑰退場、--mock）+ 離線測試 + opt-in skill-evals.yml。core validate-spec 不依賴模型。LLM-judge live 需使用者提供金鑰。"
+completion_time: "2026-06-20"
+audit_log_ref: "logs/AUDIT_LOG.md"

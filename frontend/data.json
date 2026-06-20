@@ -136,12 +136,12 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 35,
+      "low": 36,
       "medium": 14
     },
     "task_skill": {
       "analysis": 4,
-      "ops": 30,
+      "ops": 31,
       "research": 5,
       "review": 7,
       "writing": 4
@@ -150,9 +150,9 @@
       "done": 22,
       "in_progress": 2,
       "pending": 2,
-      "review": 24
+      "review": 25
     },
-    "task_total": 50
+    "task_total": 51
   },
   "tasks": [
     {
@@ -654,6 +654,16 @@
       "skill_type": "ops",
       "status": "review",
       "task_id": "20260620-005"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-20",
+      "goal": "把 skill eval_examples 升級成 LLM-judge 自動 eval：judge 依各 skill 判斷標準逐條評分，用內建 good/bad 當 golden 回歸；live 走獨立 opt-in workflow，不擋既有 PR gate",
+      "path": "tasks/20260620-006_l5-llm-judge-evals.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260620-006"
     }
   ]
 }

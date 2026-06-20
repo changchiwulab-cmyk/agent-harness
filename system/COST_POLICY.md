@@ -50,7 +50,7 @@ v1 階段採用「粗略護欄 + 事後量測」策略：
 | 最難的長程 agentic／一次到位的複雜實作 | Claude Fable 5 | `claude-fable-5` | $10 / $50 |
 
 規則：
-- 確定性、可機械驗證的步驟（schema 檢查、lint、分類）一律下放 Haiku 4.5，不佔強模型額度。
+- 確定性、可機械驗證的步驟（schema 檢查、lint、分類、**eval-judge 評分**）一律下放 Haiku 4.5，不佔強模型額度。（L5 `scripts/run_skill_evals.py` 預設 `claude-haiku-4-5`。）
 - 規劃/推理/最終整合用 Opus 4.8（預設）；只有當任務複雜度超出 Opus 且值得時才升 Fable 5。
 - 路由判斷本身屬 Haiku 等級，不應消耗重 token（見 `ROUTING_RULES.md` 複雜度原則）。
 - 切換模型會使 prompt cache 失效（快取是 model-scoped）；同一會話內盡量固定主模型，子任務再隔離。

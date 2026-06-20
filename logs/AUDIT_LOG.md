@@ -33,6 +33,27 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260620-006"
+  date: "2026-06-20"
+  skill_type: "ops"
+  goal: "L5：LLM-judge eval harness（依判斷標準逐條評分 + golden 回歸 + opt-in workflow）"
+  status: "review"
+  model_used: "claude-opus-4-8"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 5
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "scripts/run_skill_evals.py"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "check_skill_evals 抽共享 parser（good/bad fence + 判斷標準 criteria），L4 仍綠；run_skill_evals.py judge（structured outputs，預設 Haiku 4.5）+ golden（good 失敗≤1/bad≥2）+ 缺金鑰退場 + --mock；9 個離線測試綠；opt-in skill-evals.yml（workflow_dispatch/weekly，缺 secret no-op），不動 validate-spec 必過閘。LLM-judge live 需使用者提供 ANTHROPIC_API_KEY。COST_POLICY 註記 eval-judge 用 Haiku 4.5。"
+```
+
+```yaml
 - task_id: "20260620-005"
   date: "2026-06-20"
   skill_type: "ops"
