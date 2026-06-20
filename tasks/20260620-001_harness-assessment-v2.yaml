@@ -1,0 +1,58 @@
+# Task Card — Agent Harness 完整重評分 v2 + 最新 AI 技術對標
+# 來源：使用者要求「完整讀取專案、做一次完整評分、對標最新公開 AI 最佳化技術」
+# 背景：v1 自評（2026-05-29, ≈7/10, 成熟度 3）後 R1–R8 已落地，需重評；並新增 2026-06 最新技術軸。
+
+task_id: "20260620-001"
+date: "2026-06-20"
+status: "review"
+
+# === 任務定義 ===
+goal: "對 Agent Harness v2 做一次完整重評分（業界十維 + 馬鞍六原則 + 2026 最新 AI 技術三軸），產出落差分析與新優化 roadmap"
+context: |
+  v1 自評在 R1–R8 落地前完成；本次重評反映已關閉的缺口（失敗路徑 R5、災難恢復 R8、三層觀測 R7、批准/token schema R1/R6）。
+  新增 C 軸：對標 2026-06 最新最佳實踐（最新模型/路由、prompt caching、context engineering、原生 Agent Skills、evals-in-CI、trace 可觀測、harness 安全）。
+  研究方法：3 個探索 agent 盤點全專案 + web research（Anthropic context-engineering / Agent Skills / harness-engineering 2026 文獻）+ claude-api skill 校準模型/快取事實。
+input_data:
+  - "README.md / CLAUDE.md"
+  - "system/*（全部治理檔）"
+  - "outputs/reports/harness-self-assessment-v1.md"
+  - "scripts/governance_metrics.py / logs/"
+
+# === 完成標準 ===
+definition_of_done:
+  - "三軸評分卡：A 業界十維、B 馬鞍六原則、C 2026 最新 AI 技術，各維度 1-10 + 依據"
+  - "自 v1 以來 Delta：R1–R8 逐項標已關閉/部分/未動，並反映到分數變化"
+  - "最新技術落差分析，附來源"
+  - "新優化 roadmap（L1–Ln，避開既有 R 編號），標 impact/effort/risk 與哪些是本 session quick-win"
+  - "輸出到 outputs/drafts/，不修改 system/，不自動晉升 reports/"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-06-20_harness-assessment-v2.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "web_search"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 3
+
+# === Skill 路由 ===
+skill_type: "review"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260620-001 assessment v2 report"
+actual_tool_calls: 0
+result_summary: "三軸評分卡（A 業界十維、B 馬鞍六原則、C 2026 最新技術）+ Delta + 落差 + L1–Ln roadmap，產出草稿，未改 system/。"
+completion_time: "2026-06-20"
+audit_log_ref: "logs/AUDIT_LOG.md"

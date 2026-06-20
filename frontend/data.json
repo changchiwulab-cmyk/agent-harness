@@ -136,23 +136,23 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 30,
+      "low": 31,
       "medium": 14
     },
     "task_skill": {
       "analysis": 4,
       "ops": 26,
       "research": 5,
-      "review": 6,
+      "review": 7,
       "writing": 4
     },
     "task_status": {
       "done": 22,
       "in_progress": 2,
       "pending": 2,
-      "review": 19
+      "review": 20
     },
-    "task_total": 45
+    "task_total": 46
   },
   "tasks": [
     {
@@ -604,6 +604,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-20",
+      "goal": "對 Agent Harness v2 做一次完整重評分（業界十維 + 馬鞍六原則 + 2026 最新 AI 技術三軸），產出落差分析與新優化 roadmap",
+      "path": "tasks/20260620-001_harness-assessment-v2.yaml",
+      "risk_level": "low",
+      "skill_type": "review",
+      "status": "review",
+      "task_id": "20260620-001"
     }
   ]
 }
