@@ -52,6 +52,6 @@ skill_type: "research"
 checkpoints:
   - stage: "完成研究 + 草稿輸出（see checkpoint commit 20260620-X04）"
 actual_tool_calls: 3
-result_summary: "DoD 7/7 通過。涵蓋 CFS/Helion/TAE 各里程碑+宣稱時程，明確分離『已達成里程碑』與『承諾時程』，2 跨公司風險 + 5 來源。過度樂觀宣稱全歸高風險假設；淨發電驗證與投資口徑標 [待驗證]。2 web searches（未用滿 3）。四層 gate 全 pass。"
+result_summary: "DoD 7/7。涵蓋 CFS/Helion/TAE 各里程碑+宣稱時程，明確分離『已達成里程碑』與『承諾時程』，2 跨公司風險 + 5 來源。過度樂觀宣稱全歸高風險假設；淨發電驗證與投資口徑標 [待驗證]。2 web searches（未用滿 3）。Gate 校正（PR #102 Codex review）：completion_check 初版來源時效僅標到年，已補粒度（ResearchAndMarkets 2025-09、TAE 內文 2025-11/12，餘標『月份未標示』）。現四層 gate 達成。"
 completion_time: "2026-06-20"
 audit_log_ref: "logs/AUDIT_LOG.md"

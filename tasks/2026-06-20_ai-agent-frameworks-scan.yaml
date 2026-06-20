@@ -54,6 +54,6 @@ skill_type: "research"
 checkpoints:
   - stage: "完成研究 + 草稿輸出（see checkpoint commit 20260620-X01）"
 actual_tool_calls: 3
-result_summary: "DoD 6/6 通過。涵蓋 5 個框架（LangGraph/CrewAI/AutoGen/OpenAI Agents SDK/Claude Agent SDK）各定位+場景+取捨，1 段一人公司選型推論，4 來源。1 web search 限制下 Claude Agent SDK 獨立 benchmark 與量化採用率不足，明確標 [待驗證]。四層 gate 全 pass。"
+result_summary: "DoD 6/6。涵蓋 5 個框架（LangGraph/CrewAI/AutoGen/OpenAI Agents SDK/Claude Agent SDK）各定位+場景+取捨，1 段一人公司選型推論，5 來源。1 web search 限制下 Claude Agent SDK 獨立 benchmark 與量化採用率不足，明確標 [待驗證]。Gate 校正（PR #102 Codex review）：completion_check 初版高估——來源時效僅標到年，未達 DoD 的 YYYY-MM/Qx；已補正（OpenAgents 定到 2026-02、其餘如實標『月份未標示』），現 schema/rule/completion/risk 皆達成。"
 completion_time: "2026-06-20"
 audit_log_ref: "logs/AUDIT_LOG.md"

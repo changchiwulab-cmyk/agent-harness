@@ -6,6 +6,8 @@
 - 投入：3 tool calls / 1 web search / ~750 字
 - 狀態：草稿（workflow 測試批次 X01・科技領域）
 
+> 修訂註記（2026-06-20，回應 PR #102 Codex review）：原稿來源時效僅標到「2026」年，未達 DoD 要求的 YYYY-MM/Qx 粒度。已補正：能查到月份者標 YYYY-MM（如 OpenAgents 2026-02）；比較型部落格無明確發布月份者改標「2026，月份未標示」，不硬編造日期。
+
 ## 結論
 
 2026 年的 agent 編排框架已從 2024–2025 的爆發期收斂成幾個成熟選項：**LangGraph 成為企業級、需可觀測/可回溯場景的事實標準；CrewAI 是原型加速器；AutoGen 偏研究/學術；OpenAI、Google 則用 Agents SDK / ADK 補齊各自生態。** 對一人公司而言，重點不是「哪個最強」，而是「單人能不能長期維運」——這一點與本 harness 的設計哲學（可控 > 能力）一致，因此**有狀態、可 checkpoint、可審計的框架（LangGraph 取向）比角色扮演式的快速原型框架更值得押注**；而既然使用者已深度整合 Claude 生態，Claude Agent SDK 是最低切換成本的預設選項。
@@ -46,16 +48,18 @@
 
 ## 來源
 
-- [Multi-Agent Orchestration Frameworks 2026 (Presenc AI)](https://presenc.ai/research/multi-agent-orchestration-frameworks-2026)（時效：2026）
-- [LangGraph vs CrewAI vs AutoGen vs Custom — 2026 Benchmark (Tensoria)](https://tensoria.fr/en/blog/multi-agent-orchestration-comparison)（時效：2026）
-- [Best AI Agent Frameworks 2026: Production-Tested Rankings (Alice Labs)](https://alicelabs.ai/en/insights/best-ai-agent-frameworks-2026)（時效：2026）
-- [Agentic AI Frameworks 2026: LangGraph vs CrewAI vs OpenAI SDK (Uvik)](https://uvik.net/blog/agentic-ai-frameworks/)（時效：2026）
+- [CrewAI vs LangGraph vs AutoGen vs OpenAgents — Best AI Agent Framework (OpenAgents)](https://openagents.org/blog/posts/2026-02-23-open-source-ai-agent-frameworks-compared)（時效：2026-02）
+- [Multi-Agent Orchestration Frameworks 2026 (Presenc AI)](https://presenc.ai/research/multi-agent-orchestration-frameworks-2026)（時效：2026，月份未標示）
+- [LangGraph vs CrewAI vs AutoGen vs Custom — 2026 Benchmark (Tensoria)](https://tensoria.fr/en/blog/multi-agent-orchestration-comparison)（時效：2026，月份未標示）
+- [Best AI Agent Frameworks 2026: Production-Tested Rankings (Alice Labs)](https://alicelabs.ai/en/insights/best-ai-agent-frameworks-2026)（時效：2026，月份未標示）
+- [Agentic AI Frameworks 2026: LangGraph vs CrewAI vs OpenAI SDK (Uvik)](https://uvik.net/blog/agentic-ai-frameworks/)（時效：2026，月份未標示）
 
 ## 執行紀錄
 
 - web search：1 次（query：AI agent orchestration frameworks 2026 LangGraph CrewAI AutoGen comparison production）
-- 工具呼叫：2 次（web_search + Write）；另 1 次 file_read（user_prefs）
+- 工具呼叫：2 次（web_search + Write）；另 1 次 file_read（user_prefs）；Codex review 後以 Edit 補正來源時效粒度，未新增 web search
 - 預算狀態：tool_calls 3/3、web_searches 1/1
+- 來源時效：OpenAgents 可定到 2026-02；其餘比較型部落格無明確發布月份，標「2026，月份未標示」
 - 限制：Quick Scan，Claude Agent SDK 與量化採用率未深挖，已標 [待驗證]
 
 ---

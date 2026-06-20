@@ -6,6 +6,8 @@
 - 投入：3 tool calls / 2 web searches / ~1,400 字
 - 狀態：草稿（workflow 測試批次 X04・科學/能源領域）
 
+> 修訂註記（2026-06-20，回應 PR #102 Codex review）：原稿來源時效僅標到「2026」年。已補正：能定出月份者標 YYYY-MM（如 ResearchAndMarkets 報告 2025-09 發布；TAE 里程碑 2025-11/2025-12 已在內文標月）；其餘無明確發布月份的綜述文章標「2026，月份未標示」，不硬編造。
+
 ## 結論
 
 2026 年私營核融合的真實狀態是**「物理與工程里程碑確實在推進，但『併網商業化時程』仍高度承諾性、且已開始滑期」**。最該分清的是兩件事：一是**已發生的硬里程碑**（電漿溫度、磁體製造、裝置組裝、首次特定電漿形成）——這些有實證；二是**對外宣稱的併網/供電時程**（2028 供電、2030s 商轉）——這些是承諾，尚未兌現，且已有指標案例（CFS SPARC 首電漿由 2025 滑到 2027）顯示滑期是常態。資金面則確實熱絡：產業累計投資 2025-09 已達約 US$100 億。**對決策者的提醒：把「里程碑新聞」與「商轉時程」分開讀；2030 前出現可併網的商業電廠機率不高，2030–2035 是較常被引用、但仍樂觀的區間。**
@@ -69,17 +71,18 @@
 
 ## 來源
 
-- [Fusion Energy in 2026: SPARC, Helion, TAE, and NIF Milestones (pdpspectra)](https://pdpspectra.com/blog/fusion-energy-2026-commonwealth-helion/)（時效：2026）
-- [Helion, CFS, Tokamak Energy & TAE: How Fusion Technologies Diverge by 2026 (BusinessCraft Nordic)](https://businesscraft.se/business/helion-cfs-tokamak-energy-tae-how-fusion-technologies-are-diverging-by-2026/)（時效：2026）
-- [The State of Fusion Energy in 2026: Real Reactors, Real Grids, Real Caveats (Earth911)](https://earth911.com/eco-tech/the-state-of-fusion-energy-in-2026-real-reactors-real-grids-real-caveats/)（時效：2026）
-- [Global Nuclear Fusion Energy Market Report 2026 — Path to 2046 (ResearchAndMarkets)](https://www.businesswire.com/news/home/20250926273024/en/Global-Nuclear-Fusion-Energy-Market-Report-2026-Highlights-Commercialization-Path-to-2046---ResearchAndMarkets.com)（時效：2026）
-- [Top 10 Fusion Energy Startups to Watch in 2026 (NatureTechMemos)](https://www.naturetechmemos.com/p/top-10-fusion-energy-startups-to-watch-in-2026)（時效：2026）
+- [Global Nuclear Fusion Energy Market Report 2026 — Path to 2046 (ResearchAndMarkets via BusinessWire)](https://www.businesswire.com/news/home/20250926273024/en/Global-Nuclear-Fusion-Energy-Market-Report-2026-Highlights-Commercialization-Path-to-2046---ResearchAndMarkets.com)（時效：2025-09 發布）
+- [Fusion Energy in 2026: SPARC, Helion, TAE, and NIF Milestones (pdpspectra)](https://pdpspectra.com/blog/fusion-energy-2026-commonwealth-helion/)（時效：2026，月份未標示）
+- [Helion, CFS, Tokamak Energy & TAE: How Fusion Technologies Diverge by 2026 (BusinessCraft Nordic)](https://businesscraft.se/business/helion-cfs-tokamak-energy-tae-how-fusion-technologies-are-diverging-by-2026/)（時效：2026，月份未標示）
+- [The State of Fusion Energy in 2026: Real Reactors, Real Grids, Real Caveats (Earth911)](https://earth911.com/eco-tech/the-state-of-fusion-energy-in-2026-real-reactors-real-grids-real-caveats/)（時效：2026，月份未標示）
+- [Top 10 Fusion Energy Startups to Watch in 2026 (NatureTechMemos)](https://www.naturetechmemos.com/p/top-10-fusion-energy-startups-to-watch-in-2026)（時效：2026，月份未標示）
 
 ## 執行紀錄
 
 - web search：2 次（private fusion companies 2026 milestones；commercialization timeline reality/skepticism）
-- 工具呼叫：3 次（2 web_search + Write）
+- 工具呼叫：3 次（2 web_search + Write）；Codex review 後以 Edit 補正來源時效粒度，未新增 web search
 - 預算狀態：tool_calls 3/5、web_searches 2/3（2 輪足夠分離里程碑與承諾，未用滿）
+- 來源時效：ResearchAndMarkets 可定到 2025-09 發布、TAE 里程碑內文標 2025-11/12；綜述文章無月份者標「2026，月份未標示」
 - 限制：Standard，淨發電第三方驗證與投資口徑未深挖，過度樂觀宣稱已歸入高風險假設
 
 ---
