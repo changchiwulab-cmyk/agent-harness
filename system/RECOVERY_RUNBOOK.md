@@ -41,9 +41,15 @@ git checkout <commit> -- <file>                    # 取該版本到工作樹
 ### 場景 C — Context / session 在任務中途重置
 1. 找最後 checkpoint：`git log --oneline --grep="checkpoint: <task_id>"`
 2. 讀 Task Card：確認 goal / definition_of_done / 已完成到第幾個 checkpoint
-3. 讀 `logs/runs/<RUN>.yaml`（若有）：確認 gate_results 與最後階段
-4. 讀 `logs/approvals/`：確認是否有待處理批准（避免重複請求人工）
-5. 從「最後 checkpoint 之後、尚未完成的子任務」**接續**執行——不要從頭重做。
+3. 讀 `logs/runs/<RUN>.yaml`（若有）的 **`resume_state`** 區塊：直接取得 `last_completed_dod` /
+   `next_step` / `pending_approvals` / `key_files`——這是結構化接續狀態，優先於人工推敲。
+   （若該任務未寫 runs，退回讀 gate_results 與 checkpoint stage 推斷。）
+4. 讀 `logs/approvals/`：與 `resume_state.pending_approvals` 交叉確認，避免重複請求人工。
+5. 從 `resume_state.next_step`（或最後 checkpoint 之後尚未完成的子任務）**接續**執行——不要從頭重做。
+
+> **接續狀態來源**：`resume_state` 由執行期每次 checkpoint／壓縮前寫入（schema 見
+> `system/EXECUTION_LOG_SCHEMA.yaml`）。此為補齊「場景 C 接續」實證的結構化基礎，下次真實
+> 多階段任務中途可據此實測一次。
 
 ### 場景 D — 整批變更要回滾（已 commit、未 push 或可重置）
 ```bash

@@ -61,5 +61,14 @@ execution_log:
     completion_check: ""              # pass / fail
     risk_check: ""                    # pass / fail
 
+  # --- 接續日誌 / handoff（選填；R9 新增）---
+  # context 壓縮或 session 中斷後，RECOVERY_RUNBOOK 場景 C 讀此區塊「接續」而非重做。
+  # 建議每次 checkpoint 與壓縮前更新。
+  resume_state:
+    last_completed_dod: ""            # 已完成到第幾條 definition_of_done
+    next_step: ""                     # 下一步要做什麼
+    pending_approvals: []             # 待處理的 approval（避免重複請求人工）
+    key_files: []                     # 接續所需的關鍵檔案路徑
+
   # --- 備註 ---
   notes: ""
