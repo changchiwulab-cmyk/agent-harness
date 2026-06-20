@@ -10,6 +10,10 @@ on:
   schedule:
     - cron: "0 3 * * 1"  # Mondays 03:00 UTC
 
+# Least privilege: this workflow only checks out the repo and runs scripts.
+permissions:
+  contents: read
+
 jobs:
   skill-evals:
     runs-on: ubuntu-latest
