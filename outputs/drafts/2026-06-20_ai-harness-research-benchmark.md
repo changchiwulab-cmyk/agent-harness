@@ -6,26 +6,36 @@
 ## 結論
 
 這個 harness **已經相當成熟**：它幾乎 1:1 對應 2026《Agent Harness Engineering: A Survey》
-提出的六要素模型 `H = (E, T, C, S, L, V)`，六個要素全部都有對應實作（多數系統只實作 2–4 個）。
+提出的 **ETCLOVG 七層分類學**（Execution / Tools / Context / Lifecycle / Observability /
+Verification / Governance），七層全部都有對應實作（多數系統只實作 2–4 層）。其中**最強的兩層
+正是 Observability 與 Governance**——這兩層在本 harness 是整個治理平面與量測腳本/稽核日誌，
+因此把它們納入比對只會**強化「已成熟」結論**，4 個缺口仍然成立。
 因此本次優化的正確策略是**加法式補缺口**，而非重寫。對照「2026 研究已收斂、harness 尚未顯式
 納入」的方向，盤點出 **4 個高價值缺口**，全部可在不違背核心哲學（可控 > 能力、draft-first、
 human-confirmed memory、單代理）的前提下補上，構成 v2.1。
 
+> 命名注記：部分文獻把同一框架寫成六要素 `H=(E,T,C,S,L,V)`（State 顯式、未把 O/G 獨立）。
+> 本文採該綜述 OpenReview 版的七層 ETCLOVG 為準；各來源對字母精確對應略有出入，標 `[待驗證]`。
+
 ## 已知事實
 
-### 六要素對照（harness 現況）
+### ETCLOVG 七層對照（harness 現況）
 
-| 要素 | 論文定義 | harness 現有對應 | 評估 |
-|------|---------|-----------------|------|
-| **E** Execution Loop | observe-think-act、終止、錯誤恢復 | `CLAUDE.md` 9 步流程、連續失敗 3 次停止、checkpoint | 強 |
-| **T** Tool Registry | 型別化工具、白名單、schema 驗證 | Task Card `allowed_tools`、`permissions_guard.py` PreToolUse hook | 強（已落實「工具最小化」原則：per-task 白名單） |
-| **C** Context Manager | 進什麼 context、壓縮、檢索 | `CLAUDE.md` context 規則、`COST_POLICY.md` | 中（壓縮觸發偏粗略 → 缺口 3） |
-| **S** State Store | 跨輪/跨 session 持久化、崩潰恢復 | git checkpoint、`memory/`、`RECOVERY_RUNBOOK.md` | 中（接續狀態未結構化 → 缺口 3） |
-| **L** Lifecycle Hooks | 認證、稽核、政策強制 | `.claude/settings.json` PreToolUse、`GATE_POLICY.yaml`、`APPROVAL_POLICY.yaml` | 強（缺顯式三要素建模 → 缺口 4） |
-| **V** Evaluation Interface | 軌跡、成功訊號、回饋 | `GATE_POLICY.yaml` 四層閘、`eval_examples.md`、`FAILURE_TAXONOMY.yaml` | 強 |
+| 層 | 論文定義 | harness 現有對應 | 評估 |
+|----|---------|-----------------|------|
+| **E** Execution | sandbox/隔離、observe-think-act、終止、錯誤恢復 | `CLAUDE.md` 9 步流程、連續失敗 3 次停止、checkpoint | 強 |
+| **T** Tools | 協定、整合、白名單、schema 驗證 | Task Card `allowed_tools`、`permissions_guard.py` PreToolUse hook | 強（已落實「工具最小化」：per-task 白名單） |
+| **C** Context | 記憶與持久化、壓縮、檢索 | `CLAUDE.md` context 規則、`COST_POLICY.md`、`memory/` | 中（壓縮粗略 + 程序記憶缺席 → 缺口 1/2/3） |
+| **L** Lifecycle | 狀態、任務迴圈、跨 session | git checkpoint、`memory/`、`RECOVERY_RUNBOOK.md` | 中（接續狀態未結構化 → 缺口 3） |
+| **O** Observability | traces、成本追蹤 | `governance_metrics.py`、`AUDIT_LOG.md`、`logs/runs/`、frontend 治理面板 | 強 |
+| **V** Verification | 評估、回歸、回饋 | `GATE_POLICY.yaml` 四層閘、`eval_examples.md`、`FAILURE_TAXONOMY.yaml`、CI 測試 | 強 |
+| **G** Governance | 權限、稽核 | `PERMISSIONS.yaml`、`APPROVAL_POLICY.yaml`、整個治理平面 | 強（缺顯式三要素建模 → 缺口 4） |
 
-> 論文「全棧實作（六要素皆具）」名單包含 Claude Code、OpenHands、SWE-agent、AIOS；本 harness
-> 是疊在 Claude Code 之上的治理層，等同站在全棧基礎上再加單人公司治理。
+> 七層全部都有對應；**O（Observability）與 G（Governance）是 harness 覆蓋最強的兩層**——
+> 整個治理平面 + 量測腳本 + 稽核/執行日誌 + 前端面板。把這兩層納入比對只會**強化「已成熟」**
+> 結論，不新增缺口。論文「全棧實作」名單含 Claude Code、OpenHands、SWE-agent、AIOS；本 harness
+> 疊在 Claude Code 之上，等同站在全棧基礎再加單人公司治理。
+> `[待驗證]` 各來源對字母精確對應略有出入（另有六要素 `H=(E,T,C,S,L,V)` 寫法，State 顯式、未獨立 O/G）。
 
 ### 4 個研究已領先的缺口
 
@@ -75,7 +85,7 @@ human-confirmed memory、單代理）的前提下補上，構成 v2.1。
 
 ## 來源
 
-1. Agent Harness Engineering: A Survey（六要素模型 H=(E,T,C,S,L,V)、失敗模式、maturity）—
+1. Agent Harness Engineering: A Survey（ETCLOVG 七層分類學、失敗模式、maturity；另有六要素 H=(E,T,C,S,L,V) 寫法）—
    https://github.com/Gloriaameng/Awesome-Agent-Harness ／ https://openreview.net/pdf?id=eONq7FdiHa
 2. Awesome list for AI agent harness engineering（patterns/permissions/observability/memory）—
    https://github.com/ai-boost/awesome-harness-engineering

@@ -9,7 +9,7 @@ execution_log:
   # --- 執行細節 ---
   tools_used:
     - tool: web_search
-      call_count: 6
+      call_count: 3                   # 3 次 WebSearch 查詢（≤ max_web_searches 5）；另 7 次 WebFetch 屬 URL 讀取，見 notes
     - tool: file_read
       call_count: 14
     - tool: file_write
@@ -61,4 +61,4 @@ execution_log:
       - "system/GATE_POLICY.yaml"
 
   # --- 備註 ---
-  notes: "v2.1 升級執行紀錄。依 D006（checkpoints>=3）補寫；同時作為新 resume_state 欄位的首個實填樣本，供 RECOVERY 場景 C 接續實證。"
+  notes: "v2.1 升級執行紀錄。依 D006（checkpoints>=3）補寫；同時作為新 resume_state 欄位的首個實填樣本，供 RECOVERY 場景 C 接續實證。web 研究於 plan/研究階段執行：3 次 WebSearch（≤ max_web_searches 5，rule_check 因此 pass）+ 7 次 WebFetch（抓特定 URL，屬讀取非搜尋）；執行階段未再新增 web search。"

@@ -23,16 +23,20 @@
 
 ---
 
-## LSN-20260620-01 ｜ 多代理/超長原文審查會數倍燒 token
-- trigger: SEC-03 成本失控 ／ 校準偏差
-- guideline: 建立涉及多代理或超長原文的 review/research Task Card 時，預期 token 為常態的數倍，先上調 `max_tool_calls` 一檔；RETRO 校準該 skill 平均時用中位數或排除離群值。
-- source: outputs/drafts/2026-05-29_observability-metrics.md（review 平均被單筆 ~120K 任務拉高）
-- date: 2026-06-20
-- status: active
+## 目前 active 教訓
 
-## LSN-20260620-02 ｜ 高決策價值的 research 值得放寬查詢深度
+（無。）本庫 ship 時不含任何 active 教訓——實際教訓**只由 RETRO 經人工確認後晉升**（見上方寫入規則）。
+下列為**示意範例**：已註解、不啟用、不會被任務載入，僅展示候選教訓長相；待真實 RETRO 確認後才轉為 active。
+
+<!-- 候選範例（皆源自既有紀錄，但尚未經 RETRO 核准，故不啟用）：
+
+## LSN-YYYYMMDD-NN ｜ 多代理/超長原文審查會數倍燒 token
+- trigger: SEC-03 成本失控 ／ 校準偏差
+- guideline: 涉及多代理或超長原文的 review/research，預期 token 為常態數倍，先上調 max_tool_calls 一檔；RETRO 校準該 skill 平均時用中位數或排除離群值。
+- source: outputs/drafts/2026-05-29_observability-metrics.md（review 平均被單筆 ~120K 任務拉高）
+
+## LSN-YYYYMMDD-NN ｜ 高決策價值的 research 值得放寬查詢深度
 - trigger: research 深度不足、硬湊結論
-- guideline: 顧問決策型 research，於 Task Card 顯式把 `max_web_searches` 放寬至 5，並在 DoD 要求「政策時序 + 敏感性表」；實測比 3 輪多產出最高 ROI 的決策輸入。
-- source: tasks/2026-05-02_taiwan-ai-industry-deep-dive.yaml（result_summary：5 search 比 3 search 多三項高 ROI 產出）
-- date: 2026-06-20
-- status: active
+- guideline: 顧問決策型 research，於 Task Card 顯式把 max_web_searches 放寬至 5，並在 DoD 要求「政策時序 + 敏感性表」。
+- source: tasks/2026-05-02_taiwan-ai-industry-deep-dive.yaml（5 search 比 3 search 多三項高 ROI 產出）
+-->

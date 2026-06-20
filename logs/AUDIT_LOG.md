@@ -41,7 +41,7 @@
   model_used: "claude-opus"
   tools_called:
     - tool_name: "web_search"
-      call_count: 6
+      call_count: 3
     - tool_name: "file_read"
       call_count: 14
     - tool_name: "file_write"
