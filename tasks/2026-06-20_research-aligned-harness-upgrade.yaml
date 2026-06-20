@@ -1,0 +1,66 @@
+task_id: "20260620-001"
+date: "2026-06-20"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "對照 2026 公開 AI agent 研究，將 harness 由 v2 升級為 v2.1：補上 4 個研究已領先的缺口"
+
+context: |
+  使用者要求「檢視專案，對照最新公開 AI 進化論文做優化」。
+  盤點發現 harness 已成熟，幾乎 1:1 對應 2026《Agent Harness Engineering: A Survey》
+  六要素模型 H=(E,T,C,S,L,V)。故採加法式升級，不重寫，維持核心哲學
+  （可控 > 能力、draft-first、human-confirmed memory、單代理不上 swarm）。
+  本卡屬 harness 自我修改：改 system/、skills/ 屬 ask 權限，已由使用者於 plan 階段核准。
+  研究依據：Reflexion/ACON 失敗驅動學習、Memory 四類型學、~70% 預算門檻壓縮、
+  致命三要素 + OWASP LLM06:2025。
+
+input_data:
+  - "CLAUDE.md"
+  - "system/GATE_POLICY.yaml"
+  - "system/FAILURE_TAXONOMY.yaml"
+  - "system/RETRO_FLOW.md"
+  - "system/RECOVERY_RUNBOOK.md"
+  - "system/COST_POLICY.md"
+  - "memory/README.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "產出論文對照基準文件（research skill 格式）於 outputs/drafts/，含六要素對照表與 4 缺口的論文佐證與引用"
+  - "改進 1：新增 memory/lessons/ 程序性記憶庫，並接線至 CLAUDE.md、各 SKILL.md、RETRO_FLOW.md（失敗→guideline 人工確認後晉升）"
+  - "改進 2：memory/README.md 新增記憶四類型學（working/episodic/semantic/procedural）對照"
+  - "改進 3：壓縮觸發改為 ~70% 預算門檻，CLAUDE.md/COST_POLICY/FAILURE_TAXONOMY(SPEC-03)/RECOVERY_RUNBOOK 四處一致；EXECUTION_LOG_SCHEMA 加選填 resume_state；Scenario C 讀 resume_state"
+  - "改進 4：FAILURE_TAXONOMY 新增 SEC-05 致命三要素、GATE_POLICY risk_check 加三要素檢查、AGENT_CONTEXT escalate_when 補一條"
+  - "README 版本表新增 v2.1、logs/AUDIT_LOG.md 補本卡紀錄、frontend/data.json 重生無漂移"
+  - "CI 全綠：validate_task_card.py、check_spec_consistency.rb、check_context_budget.rb、所有 YAML 可解析"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-06-20_ai-harness-research-benchmark.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "web_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 5
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
