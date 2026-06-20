@@ -27,7 +27,7 @@
 | 維度 | 問題 | 更新對象 |
 |------|------|---------|
 | 成本 | 每種任務類型實際花了多少 token？ | COST_POLICY.md 任務級預算 |
-| 錯誤 | 哪類錯誤最常出現？比例有變嗎？ | GLOBAL_RULES.md 失敗分類學 |
+| 錯誤 | 哪類錯誤最常出現？比例有變嗎？ | GLOBAL_RULES.md 失敗分類學；`memory/lessons/`（精煉成指引） |
 | 流程 | 哪裡卡住最久？哪個步驟多餘？ | 對應 SKILL.md |
 | 權限 | 哪些 ask 每次都被 approve？ | PERMISSIONS.yaml（畢業候選） |
 | 品質 | definition_of_done 夠具體嗎？ | TASK_CARD_TEMPLATE.yaml |
@@ -46,6 +46,9 @@
 Retro 報告產出後：
 - 使用者確認哪些建議要採納
 - 修改對應的系統檔案（屬於 ask 權限）
+- **失敗→指引精煉**：把本批重複 ≥ 2 次的同類失敗（或有校準數據佐證者）精煉成 1–3 條 guideline，
+  經人工確認後寫入 `memory/lessons/[skill].md` 或 `_GLOBAL.md`（程序性記憶；對應 Reflexion/ACON 路線）。
+  屬 `write_long_term_memory`（ask 權限），格式見 `memory/lessons/_GLOBAL.md`。
 - 記錄到 audit log
 
 ### 5. 晉升至 reports/

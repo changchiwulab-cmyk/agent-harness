@@ -4,6 +4,7 @@
 提案撰寫、報告產出、文件包裝、內容規劃、SOP 撰寫、對外文案。
 
 ## 執行流程
+0. 先載入 `memory/lessons/writing.md` + `memory/lessons/_GLOBAL.md`（若存在）的教訓清單，套用到本次執行
 1. 確認寫作目標、讀者、格式、篇幅（從 Task Card 取得）
 2. 載入相關 context（project context、參考資料）
 3. 先產出大綱，確認結構

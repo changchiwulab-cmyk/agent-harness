@@ -6,6 +6,7 @@
 與 research 的差異：research 回答「事實是什麼」，analysis 回答「該怎麼選」。
 
 ## 執行流程
+0. 先載入 `memory/lessons/analysis.md` + `memory/lessons/_GLOBAL.md`（若存在）的教訓清單，套用到本次執行
 1. 確認決策問題（從 Task Card 的 goal 取得）
 2. 列出決策選項（包含「不做」選項）
 3. 對每個選項跑六維評估：價值、成本、風險、可行性、執行難度、回報

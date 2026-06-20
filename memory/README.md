@@ -5,6 +5,7 @@
 ```
 memory/
   user_prefs.md          ← 指標檔，實際偏好存於 ~/.claude/memory/
+  lessons/               ← 程序性記憶：失敗精煉成的可載入指引（_GLOBAL.md + 按需 per-skill）
   active_projects/       ← 進行中專案的持久 context
     [project_name]/
       context.md         ← 該專案的背景、目標、限制
@@ -30,6 +31,26 @@ memory/
 > **Decision Log 說明**：重要決策不再用自由格式 decisions.md，改用結構化 YAML。
 > 每筆決策一個檔案，格式見 `tasks/DECISION_LOG_TEMPLATE.yaml`。
 > 檔名格式：`YYYYMMDD-D###_決策簡述.yaml`。寫入前需人工確認。
+
+## 記憶類型學（four-type，對齊 2026 記憶綜述）
+
+把現有儲存對齊認知記憶四類型，讓「該存哪裡」有原則可循：
+
+| 類型 | 定義 | harness 對應 | 管理 |
+|------|------|-------------|------|
+| 工作記憶 working | 當前任務的即時上下文 | session 對話歷史 | Claude Code 自動（達 ~70% 預算壓縮） |
+| 情節記憶 episodic | 過去執行的經驗軌跡 | `logs/runs/` + `logs/AUDIT_LOG.md` | 自動寫；`RECOVERY_RUNBOOK` 可檢索接續 |
+| 語意記憶 semantic | 已驗證的知識、SOP、專案背景 | `active_projects/*/context.md`、SOP/模板 | 人工確認寫入 |
+| 程序記憶 procedural | 「該怎麼做」的可執行指引 | `lessons/`（_GLOBAL + per-skill） | RETRO 精煉、人工確認晉升 |
+
+> procedural 一型過去缺席，由 `lessons/` 補上；它是「失敗 → 指引」迴圈的落點（見 `system/RETRO_FLOW.md`）。
+
+### lessons/（程序性記憶）寫入規則
+
+- **載入**：任務組裝 context 時載入 `lessons/[skill].md` + `lessons/_GLOBAL.md`（若存在）。
+- **晉升**：只在 RETRO 經人工確認後寫入；收錄門檻為「同類失敗重複 ≥ 2 次」或有校準數據佐證。
+- **不自動寫**：維持「不自動把對話內容當長期知識」原則；過時指引改 `status: superseded`，不刪除。
+- 條目格式見 `memory/lessons/_GLOBAL.md`。
 
 ## Memory 邊界（與外部系統）
 
