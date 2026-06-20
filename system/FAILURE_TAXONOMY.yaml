@@ -1,4 +1,4 @@
-# Failure Taxonomy — 14 種 Agent 常見失敗模式
+# Failure Taxonomy — 15 種 Agent 常見失敗模式
 # 從 GLOBAL_RULES.md 提取為獨立可引用檔案。
 # 每種失敗標註類別、頻率、緩解措施。
 
@@ -86,3 +86,8 @@ categories:
       name: "幻覺驅動行動"
       description: "基於幻覺的資訊採取真實動作"
       mitigation: "區分已知事實/推論/待驗證；外部動作前交叉驗證來源"
+
+    - id: SEC-05
+      name: "致命三要素疊加 (lethal trifecta)"
+      description: "任務同時具備：(a) 私有/敏感資料存取 + (b) 不可信外部內容暴露 + (c) 對外/可外洩動作。三者疊加時，即使單項看似低風險，整體屬高風險（對應 OWASP LLM06:2025 Excessive Agency）"
+      mitigation: "GATE_POLICY risk_check 偵測三要素是否同時成立 → 強制升級 high、輸出鎖 outputs/drafts/、要求人工確認後才可對外"

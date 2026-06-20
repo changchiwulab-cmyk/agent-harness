@@ -46,5 +46,6 @@ gates:
       - risk_level 與執行中實際動作的風險等級一致
       - high / critical 等級的輸出已存放在 outputs/drafts/
       - 對外動作（如有）已轉為草稿等待人工確認
+      - "致命三要素檢查（SEC-05）：若任務同時涉及 (a) 私有/敏感資料 (b) 不可信外部內容 (c) 對外動作 → 強制升級為 high、輸出鎖 outputs/drafts/、要求人工"
     on_fail: "輸出移至 outputs/drafts/，等待人工審閱後才可發布"
     rollback: "所有產出鎖定在 drafts/；Audit Log 標記 risk_escalated: true"
