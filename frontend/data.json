@@ -76,6 +76,17 @@
       "related_task": "20260509-N06",
       "revisit_trigger": "v0.2.0 plugin 達到 agent-harness 全部 system/ 規格 round-trip 後評估轉 public；或下個 session 試行 bootstrap 後發現非預期問題",
       "status": "active"
+    },
+    {
+      "date": "2026-06-20",
+      "decision": "選 B：runtime 強制可機械驗證的部分，其餘誠實標註強制力等級",
+      "decision_id": "20260620-D008",
+      "path": "memory/active_projects/agent-harness/decisions/20260620-D008_runtime-enforcement.yaml",
+      "project": "agent-harness",
+      "reasoning": "四層 Gate（schema/rule/completion/risk）、連續失敗計數、ask 級檔案寫入皆可確定性驗證，\n分別由 gate_runner.py（schema 重用 validate_task_card.py）、failure_tracker.py（達 3 次寫 errors + 非零 exit）、\nwrite_guard.py（PreToolUse 攔 system//skills//memory//outputs/reports//CLAUDE.md）落地。\n「無 Task Card 不執行」在檔案寫入時無法可靠判定需求是否已立卡，維持 prompt 級並於 README 誠實標註，\n避免以不可靠啟發式製造 false positive（沿用 permissions_guard 的保守設計哲學）。\n",
+      "related_task": "20260620-001",
+      "revisit_trigger": "出現 write_guard false positive 影響日常工作 > 2 次；或 Claude Code 推出原生 PreToolUse 路徑級權限可取代 write_guard",
+      "status": "active"
     }
   ],
   "logs": [
@@ -136,12 +147,12 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 30,
-      "medium": 14
+      "low": 34,
+      "medium": 16
     },
     "task_skill": {
-      "analysis": 4,
-      "ops": 26,
+      "analysis": 5,
+      "ops": 31,
       "research": 5,
       "review": 6,
       "writing": 4
@@ -150,9 +161,9 @@
       "done": 22,
       "in_progress": 2,
       "pending": 2,
-      "review": 19
+      "review": 25
     },
-    "task_total": 45
+    "task_total": 51
   },
   "tasks": [
     {
@@ -604,6 +615,66 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-20",
+      "goal": "產出 v3 遷移就緒度評估草稿：逐模組標保留/下放原生/並存 + 就緒度判定，盤點不可替代資產（含本批 runtime 強制層），對齊 D003/D007 並給 Go/No-Go 建議",
+      "path": "tasks/2026-06-20_r10-v3-readiness-assessment.yaml",
+      "risk_level": "low",
+      "skill_type": "analysis",
+      "status": "review",
+      "task_id": "20260620-006"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-20",
+      "goal": "把 system/GATE_POLICY.yaml 的四層 checklist 從 prompt 提醒，變成 scripts/gate_runner.py 的確定性 post-execution 驗證器，對既有 run log + task card 獨立重跑四層 gate",
+      "path": "tasks/2026-06-20_r11-gate-runner.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260620-001"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-20",
+      "goal": "把『連續失敗 3 次就停』從 prompt 自律變成可執行的 circuit breaker：persistent 計數器 + 達門檻自動寫 logs/errors/ + 非零 exit 強制停止",
+      "path": "tasks/2026-06-20_r12-failure-tracker.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260620-002"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-20",
+      "goal": "新增 scripts/write_guard.py（PreToolUse hook）攔截對 PERMISSIONS ask 級路徑的 Write/Edit/MultiEdit，把硬規則 #2 與 ask 級從 ~30% 提升到檔案層 runtime 強制",
+      "path": "tasks/2026-06-20_r13-write-guard.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260620-003"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-20",
+      "goal": "把 R11–R13 的 runtime 強制成果寫進規格文件，並誠實標註每條規則的強制力等級（runtime-enforced / heuristic / prompt-only），呼應自評書對命題一致性的批判",
+      "path": "tasks/2026-06-20_r14-enforcement-docs.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260620-004"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-20",
+      "goal": "為 governance_metrics.py M4 補上季度自動回看：reviewed_on 距今超過一季 (90天) 自動 warn，且 aggregate>50% 時明確建議啟動 v3 遷移就緒度評估 (R10)",
+      "path": "tasks/2026-06-20_r9-native-overlap-quarterly.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260620-005"
     }
   ]
 }

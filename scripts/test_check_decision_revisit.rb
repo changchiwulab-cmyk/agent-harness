@@ -20,10 +20,10 @@ class TestDecisionRevisit < Minitest::Test
     assert_equal 0, @status, "script should exit 0 (read-only report)"
   end
 
-  def test_lists_all_seven_decisions
+  def test_lists_all_eight_decisions
     %w[
       20260403-D001 20260403-D002 20260415-D003 20260415-D004
-      20260415-D005 20260424-D006 20260509-D007
+      20260415-D005 20260424-D006 20260509-D007 20260620-D008
     ].each { |id| assert_includes @out, id, "missing decision #{id}" }
   end
 
@@ -37,10 +37,10 @@ class TestDecisionRevisit < Minitest::Test
     assert_includes @out, 'logs/runs 現有'  # D006 detail
   end
 
-  def test_json_is_parseable_with_seven_decisions
+  def test_json_is_parseable_with_eight_decisions
     data = JSON.parse(@json_raw)
     assert data['decisions'].is_a?(Array)
-    assert_equal 7, data['decisions'].length
+    assert_equal 8, data['decisions'].length
     assert data.key?('metrics')
   end
 end
