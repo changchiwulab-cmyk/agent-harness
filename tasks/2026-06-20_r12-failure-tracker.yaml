@@ -1,0 +1,56 @@
+# Task Card — R12 Failure Tracker（連續失敗 3 次 circuit breaker）
+# 來源：workflow 優化計畫「主軸：硬規則 runtime 強制化」R12
+# 補洞：CLAUDE.md 硬規則 #3「連續失敗 3 次就停下來」原本 0% runtime 強制（無計數器）
+
+task_id: "20260620-002"
+date: "2026-06-20"
+status: "review"
+
+# === 任務定義 ===
+goal: "把『連續失敗 3 次就停』從 prompt 自律變成可執行的 circuit breaker：persistent 計數器 + 達門檻自動寫 logs/errors/ + 非零 exit 強制停止"
+context: |
+  CLAUDE.md 硬規則 #3 與 FAILURE_TAXONOMY SEC-03/SPEC-02 原本只是 prompt 提醒，無任何計數。
+  failure_tracker.py 用 logs/.failure_state.json 保存連續失敗數，record-failure/record-success/check/reset，
+  達 3 次時寫 ERROR_LOG_TEMPLATE 格式的 circuit-breaker error log（error_type 取合法枚舉，過 logs lint）並回 exit 1。
+  狀態檔為 runtime 狀態，加入 .gitignore 不入版控。
+input_data:
+  - "CLAUDE.md"
+  - "system/FAILURE_TAXONOMY.yaml"
+  - "logs/errors/ERROR_LOG_TEMPLATE.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "scripts/failure_tracker.py：record-failure/record-success/check/status/reset + persistent state + 門檻 trip"
+  - "達門檻時自動寫 logs/errors/<date>_<task>_circuit-breaker.md（含 ERROR_LOG_TEMPLATE 欄位、合法 error_type）並 exit 1"
+  - "logs/.failure_state.json 加入 .gitignore"
+  - "scripts/test_failure_tracker.py 全綠（transitions + CLI trip/check/success/reset + error log 欄位）"
+  - "CI 新增 failure tracker 測試步驟"
+
+# === 輸出定義 ===
+expected_output:
+  format: "py"
+  location: "scripts/"
+  filename: "failure_tracker.py"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"

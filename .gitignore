@@ -8,3 +8,6 @@
 *.credentials
 __pycache__/
 *.pyc
+
+# runtime 狀態（failure_tracker circuit breaker 計數，R12）
+logs/.failure_state.json
