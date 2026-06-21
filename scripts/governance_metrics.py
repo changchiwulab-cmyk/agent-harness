@@ -241,8 +241,17 @@ def metric_m3(cards: list[dict], audit_ids: set[str]) -> MetricResult:
     )
 
 
-def metric_m4(overlap_data: dict) -> MetricResult:
-    """M4 — Claude Code 原生功能重疊度 (manual input)."""
+QUARTER_DAYS = 90  # NATIVE_OVERLAP revisit_trigger: 每季度
+
+
+def metric_m4(overlap_data: dict, today: date | None = None) -> MetricResult:
+    """M4 — Claude Code 原生功能重疊度 (manual input) + 季度自動回看 (R9).
+
+    除既有 pct 閾值 (>50 alert / 40-50 warn)，新增兩件 R9 缺口：
+      1. 季度回看 staleness：reviewed_on 距 today 超過一季 (90 天) → 至少 warn
+         （資料過期不該讀成乾淨 ok）。需傳入 today；不傳則沿用舊行為（向後相容）。
+      2. v3 評估觸發建議：pct > 50 時明確建議啟動 v3 遷移就緒度評估（R10）。
+    """
     pct = overlap_data.get("aggregate_estimate_pct")
     reviewed_on = overlap_data.get("reviewed_on", "(unknown)")
     if pct is None:
@@ -260,13 +269,44 @@ def metric_m4(overlap_data: dict) -> MetricResult:
         status = "warn"
     else:
         status = "ok"
+
+    # 季度回看 staleness（R9）
+    days_since: int | None = None
+    overdue = False
+    if today is not None and isinstance(reviewed_on, str):
+        try:
+            rev = date.fromisoformat(reviewed_on)
+            days_since = (today - rev).days
+            overdue = days_since > QUARTER_DAYS
+        except ValueError:
+            pass
+    if overdue and status == "ok":
+        status = "warn"
+
+    recommend_v3 = pct > 50
+    notes: list[str] = []
+    if overdue:
+        notes.append(f"季度回看逾期（距上次評估 {days_since} 天 > {QUARTER_DAYS}）")
+    if recommend_v3:
+        notes.append("aggregate > 50% → 建議啟動 v3 遷移就緒度評估（R10）")
+    current = f"{pct}% (reviewed {reviewed_on})"
+    if notes:
+        current += " — " + "；".join(notes)
+
     return MetricResult(
         id="M4",
-        name="Claude Code 原生功能重疊度（人工評估）",
-        current=f"{pct}% (reviewed {reviewed_on})",
-        threshold="> 50% → alert；40-50% → warn",
+        name="Claude Code 原生功能重疊度（人工評估，含季度回看）",
+        current=current,
+        threshold="> 50% → alert + 建議 v3 評估；40-50% → warn；季度（90天）未回看 → 至少 warn",
         status=status,
-        details={"aggregate_pct": pct, "reviewed_on": reviewed_on, "modules": overlap_data.get("modules", [])},
+        details={
+            "aggregate_pct": pct,
+            "reviewed_on": reviewed_on,
+            "days_since_review": days_since,
+            "quarter_overdue": overdue,
+            "recommend_v3_eval": recommend_v3,
+            "modules": overlap_data.get("modules", []),
+        },
     )
 
 
@@ -488,6 +528,11 @@ def render_markdown(metrics: list[MetricResult], today: date) -> str:
         lines.append("- 有 warn：下一次 retro 把這些指標納入討論清單")
     else:
         lines.append("- 全部 ok：保持現狀，下個月再採集")
+    # R9：原生重疊度季度回看的專屬建議
+    if any(m.details.get("recommend_v3_eval") for m in metrics):
+        lines.append("- **M4 原生重疊度 > 50%：建議啟動 v3 遷移就緒度評估（R10，outputs/drafts/v3-readiness-assessment.md）**")
+    if any(m.details.get("quarter_overdue") for m in metrics):
+        lines.append("- **M4 季度回看逾期：請依 system/NATIVE_OVERLAP.yaml revisit_trigger 重新逐模組評估重疊度**")
     return "\n".join(lines) + "\n"
 
 
@@ -508,7 +553,7 @@ def collect_metrics(today: date) -> list[MetricResult]:
         metric_m1(cards, today),
         metric_m2(drafts, reports),
         metric_m3(cards, audit_ids),
-        metric_m4(overlap),
+        metric_m4(overlap, today),
     ]
 
 

@@ -188,6 +188,42 @@ class TestMetricM4(unittest.TestCase):
         self.assertEqual(result.status, "alert")
         self.assertIn("error", result.details)
 
+    # --- R9: 季度回看 staleness + v3 評估建議 ---
+    def test_backward_compatible_without_today(self):
+        # 不傳 today → 不做 staleness（既有呼叫端不受影響）
+        result = gm.metric_m4({"aggregate_estimate_pct": 30, "reviewed_on": "2026-05-09"})
+        self.assertEqual(result.status, "ok")
+        self.assertIsNone(result.details["days_since_review"])
+
+    def test_quarter_overdue_bumps_ok_to_warn(self):
+        result = gm.metric_m4(
+            {"aggregate_estimate_pct": 30, "reviewed_on": "2026-01-01"}, today=date(2026, 6, 21)
+        )
+        self.assertEqual(result.status, "warn")
+        self.assertTrue(result.details["quarter_overdue"])
+        self.assertGreater(result.details["days_since_review"], gm.QUARTER_DAYS)
+
+    def test_fresh_review_stays_ok(self):
+        result = gm.metric_m4(
+            {"aggregate_estimate_pct": 30, "reviewed_on": "2026-05-09"}, today=date(2026, 6, 21)
+        )
+        self.assertEqual(result.status, "ok")
+        self.assertFalse(result.details["quarter_overdue"])
+
+    def test_recommend_v3_eval_above_50(self):
+        result = gm.metric_m4(
+            {"aggregate_estimate_pct": 60, "reviewed_on": "2026-05-09"}, today=date(2026, 6, 21)
+        )
+        self.assertEqual(result.status, "alert")
+        self.assertTrue(result.details["recommend_v3_eval"])
+        self.assertIn("v3", result.current)
+
+    def test_no_v3_recommendation_below_50(self):
+        result = gm.metric_m4(
+            {"aggregate_estimate_pct": 45, "reviewed_on": "2026-05-09"}, today=date(2026, 6, 21)
+        )
+        self.assertFalse(result.details["recommend_v3_eval"])
+
 
 class TestLoadAuditTaskIds(unittest.TestCase):
     """Regression: load_audit_task_ids must accept any YAML quoting style.

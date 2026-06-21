@@ -1,0 +1,58 @@
+# Task Card — R9 NATIVE_OVERLAP 季度自動回看
+# 來源：workflow 優化計畫「收尾：roadmap R9」
+# 註：M4 既有 pct 閾值，本卡補真正缺口＝季度 staleness + v3 評估觸發建議
+
+task_id: "20260620-005"
+date: "2026-06-20"
+status: "review"
+
+# === 任務定義 ===
+goal: "為 governance_metrics.py M4 補上季度自動回看：reviewed_on 距今超過一季 (90天) 自動 warn，且 aggregate>50% 時明確建議啟動 v3 遷移就緒度評估 (R10)"
+context: |
+  M4 已讀 NATIVE_OVERLAP.aggregate_estimate_pct 並做 >50 alert / 40-50 warn，
+  故 R9 真正缺口是『季度回看』本身：資料過期不該讀成乾淨 ok，且超標時要把球導向 R10。
+  metric_m4 加 today 參數（不傳則向後相容，既有呼叫端與測試不受影響），
+  計算 days_since_review / quarter_overdue / recommend_v3_eval，並在報告建議動作段顯示。
+  前端面板刻意延後：R7 已記錄『接入 metrics 需改 data.json schema（受 CI drift-check 與結構鎖定測試保護），
+  風險高於價值』；本卡沿用該決策，觀測數據由 governance_metrics 報告交付（見 result_summary）。
+input_data:
+  - "scripts/governance_metrics.py"
+  - "scripts/test_governance_metrics.py"
+  - "system/NATIVE_OVERLAP.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "metric_m4 新增 today 參數：算 days_since_review / quarter_overdue / recommend_v3_eval；overdue 把 ok 升 warn"
+  - "不傳 today 時行為與舊版一致（向後相容）；collect_metrics 傳入 today"
+  - "報告建議動作段：>50% 顯示『建議啟動 v3 評估 (R10)』、逾季顯示『請重新逐模組評估』"
+  - "test_governance_metrics.py 新增 5 個 R9 測試（向後相容 / overdue 升 warn / fresh ok / v3 建議 / 不建議）全綠"
+  - "前端面板沿用 R7 決策延後（理由記於本卡）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "py"
+  location: "scripts/"
+  filename: "governance_metrics.py"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: "M4 補季度 staleness（90天逾季自動 warn）+ aggregate>50% 的 v3 評估觸發建議；today 參數向後相容。新增 5 測試（共 32 全綠）。前端『治理成熟度』面板沿用 R7（20260529-009）已記錄之延後決策：接入需改受 CI drift-check 與結構鎖定測試保護的 data.json schema，風險高於本批增量價值——觀測數據已可由 governance_metrics 報告取得。"
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
