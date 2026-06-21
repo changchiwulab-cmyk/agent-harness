@@ -10,6 +10,15 @@
             "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/permissions_guard.py\""
           }
         ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/write_guard.py\""
+          }
+        ]
       }
     ]
   }

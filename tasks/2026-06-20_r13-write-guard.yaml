@@ -53,6 +53,6 @@ skill_type: "ops"
 # === 執行紀錄（由 agent 填寫）===
 checkpoints: []
 actual_tool_calls: 0
-result_summary: "write_guard.py + 16 測試完成。.claude/settings.json 的 hook 接線被 auto-mode classifier 擋下（屬 agent 自身啟動設定的自我修改），改為待使用者核准的啟用步驟，於 PR 說明列出一行設定。"
+result_summary: "write_guard.py + 16 測試完成。.claude/settings.json 的 hook 接線最初被 auto-mode classifier 擋下（屬 agent 自身啟動設定的自我修改）；經使用者明確授權後已接線（PreToolUse 新增 Write|Edit|MultiEdit matcher），smoke test 確認攔 system/ 寫入 exit 2、放行 drafts exit 0。"
 completion_time: ""
 audit_log_ref: "logs/AUDIT_LOG.md"
