@@ -1,0 +1,58 @@
+# Task Card — R13 Write Guard（PreToolUse 守衛擴及 Write/Edit）
+# 來源：workflow 優化計畫「主軸：硬規則 runtime 強制化」R13
+# 補洞：硬規則 #2「對外只草稿」與 PERMISSIONS ask 級原本 ~30% 強制（只有 Bash deny 被攔）
+
+task_id: "20260620-003"
+date: "2026-06-20"
+status: "review"
+
+# === 任務定義 ===
+goal: "新增 scripts/write_guard.py（PreToolUse hook）攔截對 PERMISSIONS ask 級路徑的 Write/Edit/MultiEdit，把硬規則 #2 與 ask 級從 ~30% 提升到檔案層 runtime 強制"
+context: |
+  permissions_guard.py 只攔 Bash deny；對 system//skills//memory//outputs/reports//CLAUDE.md 的直接寫入無守衛。
+  write_guard.py 沿用 permissions_guard 的 stdin-JSON / decision / exit-2 模式，deny-list-by-path、保守取向，
+  ask 級預設 block，經人工核准可設 HARNESS_WRITE_GUARD_OVERRIDE=1 放行。
+  硬規則 #1（無 Task Card 不執行）刻意不在此強制——檔案寫入時無可靠訊號，維持 prompt 級（README 誠實標註）。
+  接入 .claude/settings.json（PreToolUse 新增 Write|Edit|MultiEdit matcher）為「啟用」步驟；
+  因屬 agent 自身啟動設定，需使用者核准後套用（見 result_summary）。
+input_data:
+  - "scripts/permissions_guard.py"
+  - "system/PERMISSIONS.yaml"
+  - ".claude/settings.json"
+
+# === 完成標準 ===
+definition_of_done:
+  - "scripts/write_guard.py：evaluate(path) + main()；block system//skills//memory//outputs/reports//CLAUDE.md，allow 其餘"
+  - "支援 HARNESS_WRITE_GUARD_OVERRIDE=1 放行（ask → 已確認）；非 Write/Edit/MultiEdit 工具放行"
+  - "scripts/test_write_guard.py 全綠（各 ask 路徑 block、allow 路徑、override、exit code）"
+  - ".claude/settings.json 新增 Write|Edit|MultiEdit matcher（啟用步驟，待使用者核准）"
+  - "CI 新增 write guard 測試步驟"
+
+# === 輸出定義 ===
+expected_output:
+  format: "py"
+  location: "scripts/"
+  filename: "write_guard.py"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: "write_guard.py + 16 測試完成。.claude/settings.json 的 hook 接線被 auto-mode classifier 擋下（屬 agent 自身啟動設定的自我修改），改為待使用者核准的啟用步驟，於 PR 說明列出一行設定。"
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
