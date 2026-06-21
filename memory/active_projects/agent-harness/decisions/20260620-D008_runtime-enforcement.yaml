@@ -1,0 +1,36 @@
+decision_id: "20260620-D008"
+date: "2026-06-20"
+project: "agent-harness"
+
+# --- 決策內容 ---
+context: |
+  自評報告（harness-self-assessment-v1.md）與第一性原理檢視（plans/ai-bubbly-mountain.md）
+  共同指出最大結構缺口：三條硬規則與四層 Gate 多為 prompt 自律，runtime 強制力近 0
+  （無 Task Card 0%、連續失敗 3 次 0%、對外只草稿 ~30%、四層 Gate 無 post-execution script）。
+  唯一既有 runtime 守衛是 permissions_guard.py（只攔 Bash deny）。
+  系統自身命題「假設 LLM 不可信」與「依賴 LLM 自我審查」相矛盾，需把可機械驗證的規則抬到 runtime。
+
+options_considered:
+  - option: "A. 維持 prompt 自律，僅補文件提醒"
+    pros: "零工程成本"
+    cons: "命題矛盾不解；自評第一缺口仍在；成熟度卡在 3"
+  - option: "B. 把可機械驗證的規則抬到 runtime（gate_runner / failure_tracker / write_guard），不可機械驗證者誠實標註"
+    pros: "補上最大缺口；deny-list 哲學一致；每條規則強制力透明可查"
+    cons: "hook 僅框架內生效（非 OS 沙箱）；硬規則 #1 仍只能 best-effort"
+  - option: "C. 追求 OS 級沙箱全面強制"
+    pros: "最強隔離"
+    cons: "一人公司過度工程；維護成本與價值不成比例；超出 Claude Code hook 能力"
+
+decision: "選 B：runtime 強制可機械驗證的部分，其餘誠實標註強制力等級"
+reasoning: |
+  四層 Gate（schema/rule/completion/risk）、連續失敗計數、ask 級檔案寫入皆可確定性驗證，
+  分別由 gate_runner.py（schema 重用 validate_task_card.py）、failure_tracker.py（達 3 次寫 errors + 非零 exit）、
+  write_guard.py（PreToolUse 攔 system//skills//memory//outputs/reports//CLAUDE.md）落地。
+  「無 Task Card 不執行」在檔案寫入時無法可靠判定需求是否已立卡，維持 prompt 級並於 README 誠實標註，
+  避免以不可靠啟發式製造 false positive（沿用 permissions_guard 的保守設計哲學）。
+
+# --- 追蹤 ---
+risk: "hook 僅對 Claude Code 自身工具呼叫生效，可被繞過（直接 OS 操作）。緩解：定位為框架內護欄而非沙箱，並在 README 標明邊界。write_guard 可能擋到合法 ask 級編輯：以 HARNESS_WRITE_GUARD_OVERRIDE=1 表達『已人工核准』。"
+revisit_trigger: "出現 write_guard false positive 影響日常工作 > 2 次；或 Claude Code 推出原生 PreToolUse 路徑級權限可取代 write_guard"
+related_task: "20260620-001"
+status: "active"

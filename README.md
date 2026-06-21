@@ -126,6 +126,28 @@ ruby -e 'require "yaml"; Dir.glob("**/*.yaml").each{|p| YAML.load_file(p)}; puts
 python system/validate_task_card.py tasks/your-task.yaml
 ```
 
+## Runtime 強制力（v2.1 hardening）
+
+三條硬規則與四層 Gate 過去多為 prompt 自律。v2.1 把「可機械驗證」的部分抬到 runtime，並誠實標註每條規則的實際強制力等級：
+
+| 規則 / 機制 | 強制力 | 落點 |
+|------------|--------|------|
+| 四層 Gate（schema/rule/completion/risk） | **runtime-enforced** | `scripts/gate_runner.py`（schema 重用 `system/validate_task_card.py`） |
+| 連續失敗 3 次停（硬規則 #3） | **runtime-enforced** | `scripts/failure_tracker.py`（達門檻寫 `logs/errors/` + 非零 exit） |
+| 對外只草稿 / ask 級寫入（硬規則 #2） | **runtime-enforced** | `scripts/write_guard.py` PreToolUse 攔 `system/`、`skills/`、`memory/`、`outputs/reports/`、`CLAUDE.md` |
+| Bash deny 清單 | **runtime-enforced** | `scripts/permissions_guard.py` PreToolUse |
+| 無 Task Card 不執行（硬規則 #1） | heuristic / prompt-only | 檔案寫入時無法可靠判定「需求是否已立卡」，仍靠流程自律 |
+| risk 級別與實際動作的語意一致性 | prompt-level | gate_runner 只驗「結構」（高風險產出落點是否在 drafts/），語意一致仍需人工 |
+
+誠實邊界：hook 只對 Claude Code 自身工具呼叫生效，是「框架內」護欄，非作業系統級沙箱。`write_guard` 對 ask 級路徑預設 block；經人工核准的變更可設環境變數 `HARNESS_WRITE_GUARD_OVERRIDE=1` 放行（代表 PERMISSIONS 的 ask → 已確認）。
+
+用法：
+
+```bash
+python scripts/gate_runner.py --run-log logs/runs/<log>.yaml   # 對任務獨立重跑四層 Gate
+python scripts/failure_tracker.py check                        # 連續失敗達 3 次則 exit 1
+```
+
 ## 安全政策
 
 安全議題回報流程見 [SECURITY.md](SECURITY.md)。
@@ -165,7 +187,8 @@ python system/validate_task_card.py tasks/your-task.yaml
 |------|------|-------------|
 | **v1** | 單核心代理 + Task Card + Checkpoint + Verifier + Audit | — |
 | **v1.5** | + Gate Policy + Operating Context + Decision Log + Eval Examples + Weekly Review | 馬鞍工程原則導入：驗證集中化、系統自知、決策可追溯 |
-| **v2（現在）** | + Approval Policy + Failure Taxonomy + Execution Log Schema + Rollback Path + Ops Eval | 馬鞍工程落地：批准流程獨立化、失敗模式可引用、執行紀錄結構化 |
+| **v2** | + Approval Policy + Failure Taxonomy + Execution Log Schema + Rollback Path + Ops Eval | 馬鞍工程落地：批准流程獨立化、失敗模式可引用、執行紀錄結構化 |
+| **v2.1（現在）** | + Gate Runner + Failure Tracker（circuit breaker）+ Write Guard | 硬規則 runtime 強制化：四層 Gate / 失敗計數 / ask 級寫入皆可機械驗證（見「Runtime 強制力」） |
 | **v3** | 拆分 bounded specialists（research/sales/content） | 單一代理的 context 經常超限；任務類型間的規則衝突頻繁 |
 | **v4** | Graph orchestration + 進階 checkpoint persistence | 任務間依賴複雜度超過線性拔分能處理的範圍 |
 

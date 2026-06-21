@@ -1,0 +1,58 @@
+# Task Card — R14 文件對齊與強制力誠實標註
+# 來源：workflow 優化計畫「主軸：硬規則 runtime 強制化」R14
+# 註：本卡修改 system/ + CLAUDE.md（ask 級），以 PR review 作為人工確認閘
+
+task_id: "20260620-004"
+date: "2026-06-20"
+status: "review"
+
+# === 任務定義 ===
+goal: "把 R11–R13 的 runtime 強制成果寫進規格文件，並誠實標註每條規則的強制力等級（runtime-enforced / heuristic / prompt-only），呼應自評書對命題一致性的批判"
+context: |
+  R11–R13 把可機械驗證的規則抬到 runtime；文件需同步，且必須誠實——不可宣稱 100% 硬。
+  README 新增「Runtime 強制力」對照表 + v2.1 版本列；GATE_POLICY 檔頭標註可由 gate_runner 重跑；
+  CLAUDE.md 新增「Runtime 強制」段並明示硬規則 #1 仍為 prompt 級；新增 D008 決策日誌記錄此架構轉向。
+input_data:
+  - "CLAUDE.md"
+  - "README.md"
+  - "system/GATE_POLICY.yaml"
+  - "system/PERMISSIONS.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "README 新增『Runtime 強制力』表：逐條標 runtime-enforced/heuristic/prompt-only + 落點檔案；版本表加 v2.1"
+  - "GATE_POLICY.yaml 檔頭標註四層 Gate 可由 scripts/gate_runner.py 重跑、為事後 cross-check"
+  - "CLAUDE.md 新增『Runtime 強制』段，明示硬規則 #1 仍 prompt 級、write_guard override 機制"
+  - "memory/active_projects/agent-harness/decisions/20260620-D008_runtime-enforcement.yaml 記錄決策"
+  - "context budget 仍 < 3000；scripts/check_spec_consistency.rb 綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: "memory/active_projects/agent-harness/decisions/"
+  filename: "20260620-D008_runtime-enforcement.yaml"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "modify_system_rules"
+  - "modify_claude_md"
+  - "write_long_term_memory"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"

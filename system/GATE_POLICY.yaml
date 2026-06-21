@@ -1,6 +1,12 @@
 # Gate Policy — 四層驗證 Checklist
 # 每次任務完成後，依此順序逐層執行。任一層失敗則依 on_fail 處理。
 # 各層 rollback 的「操作程序」（用什麼指令還原）見 system/RECOVERY_RUNBOOK.md（R8 交叉引用）。
+#
+# Runtime 強制（R11，v2.1）：本 checklist 已可由 scripts/gate_runner.py 對既有
+# run log + task card 獨立重跑（schema_check 重用 system/validate_task_card.py），
+# 任一層 fail → 非零 exit。用法：python scripts/gate_runner.py --run-log <log>。
+# gate_runner 為「事後 cross-check」，其判定可能與 run log 記錄的 gate_results 不同
+# （獨立重驗，非轉錄）。各 gate 的可機械驗證範圍見對應 description。
 
 gates:
 
