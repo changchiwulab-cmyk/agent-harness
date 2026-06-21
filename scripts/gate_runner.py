@@ -108,10 +108,24 @@ def load_deny_actions() -> set[str]:
 
 
 def gate_schema(task_card_path: Path | None) -> GateResult:
-    """Layer 1 — Task Card field completeness via system/validate_task_card.py."""
+    """Layer 1 — Task Card field completeness.
+
+    Reuses system/validate_task_card.py, then supplements the one GATE_POLICY
+    schema_check requirement the shared validator does not cover: allowed_tools
+    must be non-empty (GATE_POLICY.yaml gates.schema_check). Without this a card
+    could omit the tool whitelist yet still certify at layer 1 — gate_runner is
+    the executable GATE_POLICY, so it must enforce the full checklist.
+    """
     if task_card_path is None:
         return GateResult("schema_check", "fail", "task card not found for this run")
-    errors = validate_task_card.validate(str(task_card_path))
+    errors = list(validate_task_card.validate(str(task_card_path)))
+    try:
+        card = load_task_card(task_card_path)
+        allowed = card.get("allowed_tools")
+        if not isinstance(allowed, list) or not any(str(t).strip() for t in allowed):
+            errors.append("allowed_tools 非空（GATE_POLICY schema_check 要求）")
+    except (OSError, ValueError, yaml.YAMLError):
+        pass  # unparseable card already reported by validate()
     if errors:
         return GateResult("schema_check", "fail", "; ".join(errors), {"errors": errors})
     return GateResult("schema_check", "pass", f"validated {task_card_path.name}")

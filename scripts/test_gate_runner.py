@@ -6,9 +6,12 @@ from __future__ import annotations
 import io
 import json
 import sys
+import tempfile
 import unittest
 from contextlib import redirect_stdout, redirect_stderr
 from pathlib import Path
+
+import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import gate_runner as gr
@@ -39,6 +42,23 @@ class TestSchemaGate(unittest.TestCase):
     def test_missing_card_fails(self):
         res = gr.gate_schema(None)
         self.assertEqual(res.status, "fail")
+
+    def test_empty_allowed_tools_fails(self):
+        # GATE_POLICY schema_check requires allowed_tools non-empty even though the
+        # shared validate_task_card.py does not — gate_runner must enforce it.
+        card = {
+            "task_id": "20260620-999", "date": "2026-06-20", "goal": "x",
+            "definition_of_done": ["x"], "skill_type": "ops", "risk_level": "low",
+            "status": "review",
+            "expected_output": {"format": "md", "location": "outputs/drafts/", "filename": "x.md"},
+            "allowed_tools": [],
+        }
+        with tempfile.TemporaryDirectory() as d:
+            p = Path(d) / "card.yaml"
+            p.write_text(yaml.safe_dump(card, allow_unicode=True), encoding="utf-8")
+            res = gr.gate_schema(p)
+        self.assertEqual(res.status, "fail")
+        self.assertIn("allowed_tools", res.reason)
 
 
 class TestRuleGate(unittest.TestCase):
