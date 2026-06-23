@@ -1,0 +1,63 @@
+# Task Card — R9 NATIVE_OVERLAP 季度 revisit 自動化
+# 來源：20260529-001 自我評估 roadmap R9（弱點 #6：NATIVE_OVERLAP 有 revisit_trigger
+# 「每季度」欄位但無機制；R7 已加 M4 % 閾值，缺時間維度 staleness + v3 觸發 + RETRO 串接）
+
+task_id: "20260623-001"
+date: "2026-06-23"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "為 NATIVE_OVERLAP 加上季度 revisit 自動化：M4 加時間維度 staleness 偵測 + >50% 明確觸發 v3 評估建議，並於 RETRO_FLOW 與 R4 決策回看同一節奏合流"
+context: |
+  R1–R8 已完成。roadmap 剩策略層 R9/R10；本卡只做 R9（使用者確認）。
+  現況：governance_metrics.py M4 已有 >50% alert / ≥40% warn 的「%」閾值（R7 加），
+  但 NATIVE_OVERLAP.yaml 的 revisit_trigger:「每季度」無任何機制——reviewed_on 過期不會被偵測。
+  R9 補三項窄缺口：(1) 時間維度 staleness（reviewed_on 逾 90 天 → warn）；
+  (2) >50% 時明確建議產出 v3-readiness-assessment（R10）；
+  (3) RETRO_FLOW §2 加「原生重疊回看」列，與既有「決策回看」(R4) 同一 RETRO 節奏合流（不另造流程）。
+  落地通則：script/test/CI 屬 allow（git checkpoint）；改 system/（RETRO_FLOW、NATIVE_OVERLAP）走 ask，先草稿 diff 再人工確認套用。
+input_data:
+  - "scripts/governance_metrics.py"
+  - "scripts/test_governance_metrics.py"
+  - "scripts/check_decision_revisit.rb"
+  - "system/NATIVE_OVERLAP.yaml"
+  - "system/RETRO_FLOW.md"
+  - ".github/workflows/spec-consistency.yml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "governance_metrics.py：metric_m4 加 today 參數（向後相容，預設不檢查 staleness）；reviewed_on 逾 revisit_interval_days（預設 90，可由 NATIVE_OVERLAP 覆寫）→ 至少 warn 且 details.revisit_due=true；staleness 只升 ok→warn，不下調 alert"
+  - "governance_metrics.py：pct>50 時 details.v3_trigger=true，render_markdown 建議動作段明確建議產出 outputs/drafts/v3-readiness-assessment.md（R10）"
+  - "test_governance_metrics.py：新增 stale→warn、fresh→ok、custom interval、stale 不下調 alert、v3_trigger 旗標、render 含 v3 建議 等案例；既有 M4 案例仍綠"
+  - "test_governance_metrics.py 接入 CI（.github/workflows/spec-consistency.yml）——目前未在 CI 跑"
+  - "system/RETRO_FLOW.md §2 分析維度表新增『原生重疊回看』一列（指向 governance_metrics M4 + NATIVE_OVERLAP.yaml）——system/ 變更，草稿 diff 待人工確認"
+  - "本機跑全套 CI-equivalent（Ruby + Python 測試）全綠；governance_metrics.py --today 2026-06-23 → M4 ok（45 天<90、30%<40%）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "py"
+  location: "scripts/"
+  filename: "governance_metrics.py"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
