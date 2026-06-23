@@ -189,6 +189,105 @@ class TestMetricM4(unittest.TestCase):
         self.assertIn("error", result.details)
 
 
+class TestMetricM4Revisit(unittest.TestCase):
+    """R9: 季度 revisit staleness + v3 觸發旗標."""
+
+    def test_warn_when_review_stale(self):
+        # 30% 本來 ok，但 reviewed_on 逾 90 天 → 升 warn。
+        result = gm.metric_m4(
+            {"aggregate_estimate_pct": 30, "reviewed_on": "2026-01-01"}, date(2026, 6, 23)
+        )
+        self.assertEqual(result.status, "warn")
+        self.assertTrue(result.details["revisit_due"])
+        self.assertEqual(result.details["review_age_days"], 173)
+
+    def test_ok_when_review_fresh(self):
+        # 45 天 < 90 → 不到期，維持 ok。
+        result = gm.metric_m4(
+            {"aggregate_estimate_pct": 30, "reviewed_on": "2026-05-09"}, date(2026, 6, 23)
+        )
+        self.assertEqual(result.status, "ok")
+        self.assertFalse(result.details["revisit_due"])
+
+    def test_custom_revisit_interval_overrides_default(self):
+        result = gm.metric_m4(
+            {"aggregate_estimate_pct": 30, "reviewed_on": "2026-05-09",
+             "revisit_interval_days": 30},
+            date(2026, 6, 23),
+        )
+        self.assertEqual(result.status, "warn")  # 45 天 > 30
+        self.assertEqual(result.details["revisit_interval_days"], 30)
+
+    def test_staleness_does_not_downgrade_alert(self):
+        # 55% 已是 alert；即使逾期也不可被 staleness 降成 warn。
+        result = gm.metric_m4(
+            {"aggregate_estimate_pct": 55, "reviewed_on": "2026-01-01"}, date(2026, 6, 23)
+        )
+        self.assertEqual(result.status, "alert")
+        self.assertTrue(result.details["revisit_due"])
+
+    def test_no_today_skips_staleness(self):
+        # 向後相容：不傳 today → 不做 staleness，純看 %。
+        result = gm.metric_m4({"aggregate_estimate_pct": 30, "reviewed_on": "2020-01-01"})
+        self.assertEqual(result.status, "ok")
+        self.assertNotIn("revisit_due", result.details)
+
+    def test_v3_trigger_flag_above_50(self):
+        result = gm.metric_m4(
+            {"aggregate_estimate_pct": 55, "reviewed_on": "2026-05-09"}, date(2026, 6, 23)
+        )
+        self.assertEqual(result.status, "alert")
+        self.assertTrue(result.details["v3_trigger"])
+
+    def test_v3_trigger_false_at_or_below_50(self):
+        result = gm.metric_m4(
+            {"aggregate_estimate_pct": 50, "reviewed_on": "2026-05-09"}, date(2026, 6, 23)
+        )
+        self.assertFalse(result.details["v3_trigger"])
+
+    def test_unparseable_reviewed_on_skips_staleness(self):
+        result = gm.metric_m4(
+            {"aggregate_estimate_pct": 30, "reviewed_on": "(unknown)"}, date(2026, 6, 23)
+        )
+        self.assertEqual(result.status, "ok")
+        self.assertNotIn("revisit_due", result.details)
+
+
+class TestRenderM4Recommendations(unittest.TestCase):
+    """R9: render_markdown 建議動作段須帶 v3 / revisit 具體建議."""
+
+    def test_render_includes_v3_recommendation(self):
+        metrics = [
+            gm.metric_m1([], date(2026, 6, 23)),
+            gm.metric_m2(5, 0),
+            gm.metric_m3([], set()),
+            gm.metric_m4({"aggregate_estimate_pct": 55, "reviewed_on": "2026-05-09"}, date(2026, 6, 23)),
+        ]
+        md = gm.render_markdown(metrics, date(2026, 6, 23))
+        self.assertIn("v3-readiness-assessment.md", md)
+
+    def test_render_includes_revisit_due_recommendation(self):
+        metrics = [
+            gm.metric_m1([], date(2026, 6, 23)),
+            gm.metric_m2(5, 0),
+            gm.metric_m3([], set()),
+            gm.metric_m4({"aggregate_estimate_pct": 30, "reviewed_on": "2026-01-01"}, date(2026, 6, 23)),
+        ]
+        md = gm.render_markdown(metrics, date(2026, 6, 23))
+        self.assertIn("季度 revisit 到期", md)
+
+    def test_render_no_extra_recommendation_when_ok(self):
+        metrics = [
+            gm.metric_m1([], date(2026, 6, 23)),
+            gm.metric_m2(5, 0),
+            gm.metric_m3([], set()),
+            gm.metric_m4({"aggregate_estimate_pct": 30, "reviewed_on": "2026-05-09"}, date(2026, 6, 23)),
+        ]
+        md = gm.render_markdown(metrics, date(2026, 6, 23))
+        self.assertNotIn("v3-readiness-assessment.md", md)
+        self.assertNotIn("季度 revisit 到期", md)
+
+
 class TestLoadAuditTaskIds(unittest.TestCase):
     """Regression: load_audit_task_ids must accept any YAML quoting style.
 

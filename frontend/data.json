@@ -136,23 +136,23 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 30,
+      "low": 31,
       "medium": 14
     },
     "task_skill": {
       "analysis": 4,
-      "ops": 26,
+      "ops": 27,
       "research": 5,
       "review": 6,
       "writing": 4
     },
     "task_status": {
       "done": 22,
-      "in_progress": 2,
+      "in_progress": 3,
       "pending": 2,
       "review": 19
     },
-    "task_total": 45
+    "task_total": 46
   },
   "tasks": [
     {
@@ -604,6 +604,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-23",
+      "goal": "為 NATIVE_OVERLAP 加上季度 revisit 自動化：M4 加時間維度 staleness 偵測 + >50% 明確觸發 v3 評估建議，並於 RETRO_FLOW 與 R4 決策回看同一節奏合流",
+      "path": "tasks/2026-06-23_r9-native-overlap-revisit.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "in_progress",
+      "task_id": "20260623-001"
     }
   ]
 }
