@@ -218,6 +218,36 @@ class TestMetricM4Revisit(unittest.TestCase):
         self.assertEqual(result.status, "warn")  # 45 天 > 30
         self.assertEqual(result.details["revisit_interval_days"], 30)
 
+    def test_quoted_string_interval_does_not_crash(self):
+        # Codex P2: revisit_interval_days: "90" 是合法 YAML，須轉 int 不可炸 TypeError。
+        result = gm.metric_m4(
+            {"aggregate_estimate_pct": 30, "reviewed_on": "2026-01-01",
+             "revisit_interval_days": "90"},
+            date(2026, 6, 23),
+        )
+        self.assertEqual(result.status, "warn")  # 173 天 > 90
+        self.assertEqual(result.details["revisit_interval_days"], 90)
+        self.assertIsInstance(result.details["revisit_interval_days"], int)
+
+    def test_invalid_interval_falls_back_to_default(self):
+        result = gm.metric_m4(
+            {"aggregate_estimate_pct": 30, "reviewed_on": "2026-05-09",
+             "revisit_interval_days": "abc"},
+            date(2026, 6, 23),
+        )
+        self.assertEqual(result.details["revisit_interval_days"], 90)  # 退回預設
+        self.assertEqual(result.status, "ok")  # 45 天 < 90
+
+    def test_threshold_reflects_custom_interval(self):
+        # Codex P2: 閾值字串須由 effective interval 組出，不可硬寫 90。
+        result = gm.metric_m4(
+            {"aggregate_estimate_pct": 30, "reviewed_on": "2026-05-09",
+             "revisit_interval_days": 30},
+            date(2026, 6, 23),
+        )
+        self.assertIn("逾 30 天", result.threshold)
+        self.assertNotIn("逾 90 天", result.threshold)
+
     def test_staleness_does_not_downgrade_alert(self):
         # 55% 已是 alert；即使逾期也不可被 staleness 降成 warn。
         result = gm.metric_m4(

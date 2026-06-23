@@ -293,7 +293,12 @@ def metric_m4(overlap_data: dict, today: date | None = None) -> MetricResult:
         notes.append("重疊 > 50%：建議產出 outputs/drafts/v3-readiness-assessment.md（R10）")
 
     # 季度 staleness：reviewed_on 逾期 → 至少 warn（不下調 alert）。
-    interval_days = overlap_data.get("revisit_interval_days", DEFAULT_REVISIT_INTERVAL_DAYS)
+    # revisit_interval_days 可能被引號包成字串（YAML 合法，如 "90"）；轉 int，無法解析則退回預設。
+    raw_interval = overlap_data.get("revisit_interval_days", DEFAULT_REVISIT_INTERVAL_DAYS)
+    try:
+        interval_days = int(raw_interval)
+    except (TypeError, ValueError):
+        interval_days = DEFAULT_REVISIT_INTERVAL_DAYS
     reviewed_date = _parse_iso_date(reviewed_on)
     if today is not None and reviewed_date is not None:
         age_days = (today - reviewed_date).days
@@ -314,7 +319,7 @@ def metric_m4(overlap_data: dict, today: date | None = None) -> MetricResult:
         id="M4",
         name="Claude Code 原生功能重疊度（人工評估）",
         current=current,
-        threshold="> 50% → alert（觸發 v3 評估）；40-50% → warn；reviewed_on 逾 90 天 → warn",
+        threshold=f"> 50% → alert（觸發 v3 評估）；40-50% → warn；reviewed_on 逾 {interval_days} 天 → warn",
         status=status,
         details=details,
     )
