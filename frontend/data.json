@@ -147,8 +147,8 @@
       "writing": 4
     },
     "task_status": {
-      "done": 22,
-      "in_progress": 3,
+      "done": 23,
+      "in_progress": 2,
       "pending": 2,
       "review": 19
     },
@@ -612,7 +612,7 @@
       "path": "tasks/2026-06-23_r9-native-overlap-revisit.yaml",
       "risk_level": "low",
       "skill_type": "ops",
-      "status": "in_progress",
+      "status": "done",
       "task_id": "20260623-001"
     }
   ]

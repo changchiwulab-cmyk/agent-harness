@@ -32,6 +32,7 @@
 | 權限 | 哪些 ask 每次都被 approve？ | PERMISSIONS.yaml（畢業候選） |
 | 品質 | definition_of_done 夠具體嗎？ | TASK_CARD_TEMPLATE.yaml |
 | 決策回看 | 有 decision 觸發 revisit 嗎？（跑 `scripts/check_decision_revisit.rb`） | 對應 Decision Log 的 status |
+| 原生重疊回看 | NATIVE_OVERLAP `reviewed_on` 過季了嗎？aggregate 跨閾值了嗎？（跑 `python3 scripts/governance_metrics.py` 看 M4） | `system/NATIVE_OVERLAP.yaml`（更新 `reviewed_on` + 逐模組 %）；>50% 觸發 R10 v3 評估 |
 
 ### 3. 輸出
 

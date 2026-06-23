@@ -33,6 +33,27 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260623-001"
+  date: "2026-06-23"
+  skill_type: "ops"
+  goal: "R9：NATIVE_OVERLAP 季度 revisit 自動化（M4 staleness + v3 觸發 + 與 R4 RETRO 合流）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "create_output_files"
+      call_count: 6
+  checkpoints: 3
+  approval_needed: true
+  approval_given: true
+  output_path: "scripts/governance_metrics.py"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "roadmap R9（R1–R8 已完成）。M4 加 today 參數（向後相容）：reviewed_on 逾 revisit_interval_days（NATIVE_OVERLAP 設 90）→ revisit_due 且 ok 升 warn（不下調 alert）；pct>50 → v3_trigger，render 建議產出 v3-readiness-assessment.md（R10）。test 加 11 案例並接入 CI（原未跑）。system/ 變更（RETRO_FLOW『原生重疊回看』列 + NATIVE_OVERLAP revisit_interval_days）經人工確認（選項 1.2）。全套 CI-equivalent 綠。DoD 6/6。"
+```
+
+```yaml
 - task_id: "20260529-011"
   date: "2026-05-29"
   skill_type: "ops"

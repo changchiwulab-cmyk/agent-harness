@@ -4,7 +4,7 @@
 
 task_id: "20260623-001"
 date: "2026-06-23"
-status: "in_progress"
+status: "done"
 
 # === 任務定義 ===
 goal: "為 NATIVE_OVERLAP 加上季度 revisit 自動化：M4 加時間維度 staleness 偵測 + >50% 明確觸發 v3 評估建議，並於 RETRO_FLOW 與 R4 決策回看同一節奏合流"
@@ -56,8 +56,18 @@ max_web_searches: 0
 skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - "checkpoint: 20260623-001 R9 task card - native-overlap quarterly revisit"
+  - "checkpoint: 20260623-001 R9 M4 quarterly staleness + v3 trigger; wire metrics test into CI"
+  - "checkpoint: 20260623-001 R9 apply system/ changes (RETRO_FLOW row + revisit_interval_days)"
+actual_tool_calls: 12
+result_summary: |
+  governance_metrics.py M4 加 today 參數（向後相容）：reviewed_on 逾 revisit_interval_days
+  （NATIVE_OVERLAP 現設 90，可覆寫）→ details.revisit_due=true 且 ok 升 warn（不下調 alert）；
+  pct>50 → details.v3_trigger=true，render 建議產出 v3-readiness-assessment.md（R10）。
+  test_governance_metrics.py 加 11 案例（staleness/v3/render）並接入 CI（原本未跑）。
+  本機跑：--today 2026-06-23 → M4 ok（45 天<90、30%<40%）；--today 2026-09-01 → M4 warn（115 天>90）。
+  system/ 變更（RETRO_FLOW「原生重疊回看」列 + NATIVE_OVERLAP revisit_interval_days）經人工確認（選項 1.2）後套用。
+  全套 CI-equivalent 綠。
+completion_time: "2026-06-23"
 audit_log_ref: "logs/AUDIT_LOG.md"
