@@ -46,7 +46,7 @@
       call_count: 3
   checkpoints: 1
   approval_needed: true
-  approval_given: false
+  approval_given: true
   output_path: "outputs/drafts/2026-06-23_v3-readiness-assessment.md"
   error_summary: ""
   estimated_tokens: "~17K"

@@ -58,3 +58,6 @@ risk: "high — 涉及新 repo 建立、跨 session 切換工作流。緩解：b
 revisit_trigger: "v0.2.0 plugin 達到 agent-harness 全部 system/ 規格 round-trip 後評估轉 public；或下個 session 試行 bootstrap 後發現非預期問題"
 related_task: "20260509-N06"
 status: "active"
+# 2026-06-23 R10 複查（task 20260623-002）：四項決策（repo 名 / Apache-2.0 / Private / 獨立 repo）不變；
+# bootstrap 檔案樹仍完整備於 outputs/drafts/agent-governance-bootstrap/，尚未實際建 repo（仍待下個 session）。
+# T-B 未觸發，故無急迫性；待 NATIVE_OVERLAP 破 50% 或使用者明示再執行。
