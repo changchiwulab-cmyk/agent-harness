@@ -135,24 +135,24 @@
     },
     "run_total": 2,
     "task_risk": {
-      "high": 1,
+      "high": 2,
       "low": 31,
       "medium": 14
     },
     "task_skill": {
-      "analysis": 4,
+      "analysis": 5,
       "ops": 27,
       "research": 5,
       "review": 6,
       "writing": 4
     },
     "task_status": {
-      "done": 23,
+      "done": 24,
       "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 46
+    "task_total": 47
   },
   "tasks": [
     {
@@ -604,6 +604,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-23",
+      "goal": "產出 v3 遷移就緒度評估草稿：逐模組標『保留/下放原生/並存』就緒度、列不可替代資產、盤點 v3 觸發現況，並提出 D003/D007 更新建議。只評估不遷移。",
+      "path": "tasks/2026-06-23_r10-v3-readiness-assessment.yaml",
+      "risk_level": "high",
+      "skill_type": "analysis",
+      "status": "done",
+      "task_id": "20260623-002"
     },
     {
       "approval_needed": true,

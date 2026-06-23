@@ -33,6 +33,27 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260623-002"
+  date: "2026-06-23"
+  skill_type: "analysis"
+  goal: "R10：v3 遷移就緒度評估（只評估不遷移，對齊 A01，提出 D003/D007 加註）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 5
+    - tool_name: "create_output_files"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "outputs/drafts/2026-06-23_v3-readiness-assessment.md"
+  error_summary: ""
+  estimated_tokens: "~17K"
+  notes: "roadmap R10（最後一項策略層）。結論：維持 v2 hold——T-A（D003 規模觸發）+ T-B（NATIVE_OVERLAP 30% 重疊觸發）皆未達標；執行就緒度 ≈7.6/10（A01 裁決 + D007 bootstrap 已備）。逐模組 14 ready/2 partial，下放原生5/並存11/保留0。校正 A01 §4.2 摘要列計數出入。不可替代資產 4 類 + R7 引擎。D003/D007 以 proposed diff 加註（ask 待確認，故 approval_given=false）。識別 R11：T-A 觸發自動化與 R9 T-B 偵測合流。analysis skill 首筆樣本（補 R3）。"
+```
+
+```yaml
 - task_id: "20260623-001"
   date: "2026-06-23"
   skill_type: "ops"
