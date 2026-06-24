@@ -108,32 +108,47 @@
       "started_at": "2026-05-29 05:25",
       "status": "failed",
       "task_id": "20260529-003"
+    },
+    {
+      "ended_at": "2026-06-24 01:15",
+      "gate_results": {
+        "completion_check": "pass",
+        "risk_check": "pass",
+        "rule_check": "pass",
+        "schema_check": "pass"
+      },
+      "path": "logs/runs/RUN-20260624-001.yaml",
+      "run_id": "RUN-20260624-001",
+      "skill_type": "research",
+      "started_at": "2026-06-24 00:45",
+      "status": "completed",
+      "task_id": "20260624-R01"
     }
   ],
   "overview": {
     "gate_results": {
       "completion_check": {
         "not_run": 1,
-        "pass": 1
+        "pass": 2
       },
       "risk_check": {
         "not_run": 1,
-        "pass": 1
+        "pass": 2
       },
       "rule_check": {
         "not_run": 1,
-        "pass": 1
+        "pass": 2
       },
       "schema_check": {
         "fail": 1,
-        "pass": 1
+        "pass": 2
       }
     },
     "run_status": {
-      "completed": 1,
+      "completed": 2,
       "failed": 1
     },
-    "run_total": 2,
+    "run_total": 3,
     "task_risk": {
       "high": 1,
       "low": 31,
