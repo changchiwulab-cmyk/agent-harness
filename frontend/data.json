@@ -76,6 +76,17 @@
       "related_task": "20260509-N06",
       "revisit_trigger": "v0.2.0 plugin 達到 agent-harness 全部 system/ 規格 round-trip 後評估轉 public；或下個 session 試行 bootstrap 後發現非預期問題",
       "status": "active"
+    },
+    {
+      "date": "2026-06-24",
+      "decision": "暫定採納 A01 排序「A 零售電商 ＞ B 製造業 ＞ C 醫療照護 ＞ D 不做」與 4 階段進入路線\n作為 AI 落地切入方向：\n  階段0(M0–1) 建零售 AI 導入 SOP + 對接補貼 + 合規顧問疊加；\n  階段1(M1–6) 零售補貼陪跑為主力（月 3–5 案）累積案例；\n  階段2(M6–12) 達標後找 IPC 夥伴試製造單機/單線 PoC；\n  階段3(M12+) 醫療僅接非醫材行政/流程類。\n「暫定」＝A01 假設前提（獲客模式、時間飽和度）尚待使用者確認；非定案承諾。\n",
+      "decision_id": "20260624-D008",
+      "path": "memory/active_projects/agent-harness/decisions/20260624-D008_ai-entry-strategy.yaml",
+      "project": "agent-harness",
+      "reasoning": "排序與困難度（R01 12/25/30）一致、與 T03「高 ROI 低門檻」順位一致：\n零售在失誤後果(1)、系統整合(2)、ROI 可量化(220%/客單明確) 三維皆最低門檻，\n最符合一人公司「時間為瓶頸、需可標準化現金流」的資源結構；製造、醫療單案利潤高\n但需垂直背景/夥伴與長週期，宜分階段在現金流穩固後再進。D 機會成本過高故 No-Go。\n採分階段而非單選，是為了在低風險先建現金流與案例，再用累積資本承擔較高難度選項。\n",
+      "related_task": "20260624-A01",
+      "revisit_trigger": "階段 1 完成 3 件零售補貼陪跑案後，回填實際獲客率與單案工時；若獲客率顯著低於假設\n或單案工時超估 → 重評排序與階段時點。或 A01「待驗證」四項任一證偽。或 2027 補貼結構\n轉向國防/半導體（T03 敏感性）。本觸發為人工 RETRO 判斷（MANUAL），非腳本可量測指標。\n",
+      "status": "active"
     }
   ],
   "logs": [
@@ -151,23 +162,23 @@
     "run_total": 3,
     "task_risk": {
       "high": 1,
-      "low": 32,
+      "low": 33,
       "medium": 14
     },
     "task_skill": {
       "analysis": 5,
-      "ops": 26,
+      "ops": 27,
       "research": 6,
       "review": 6,
       "writing": 4
     },
     "task_status": {
-      "done": 24,
+      "done": 25,
       "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 47
+    "task_total": 48
   },
   "tasks": [
     {
@@ -639,6 +650,16 @@
       "skill_type": "analysis",
       "status": "done",
       "task_id": "20260624-A01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-24",
+      "goal": "將 A01（20260624-A01）AI 切入決策落為正式 Decision Log D008，並依 RETRO_FLOW §5 晉升 A01 草稿至 outputs/reports/",
+      "path": "tasks/2026-06-24_promote-a01-decision.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260624-O01"
     }
   ]
 }

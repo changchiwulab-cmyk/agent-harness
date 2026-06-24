@@ -33,6 +33,31 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260624-O01"
+  date: "2026-06-24"
+  skill_type: "ops"
+  goal: "A01 決策落為 Decision Log D008 + 依 RETRO_FLOW §5 晉升 A01 至 outputs/reports/"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "file_write"
+      call_count: 3
+    - tool_name: "file_edit"
+      call_count: 3
+  checkpoints: 2
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/reports/ai-entry-strategy-decision-v1.md; memory/active_projects/agent-harness/decisions/20260624-D008_ai-entry-strategy.yaml"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "依 RETRO_FLOW §5 晉升：reports/ 加晉升標記區塊（採納清單）+ A01 原文逐字保留（未竄改結論/數字/排序），原 draft 加回指。Decision Log D008（暫定採納+回看觸發，related_task=20260624-A01，status=active）。manifest decisions 7→8 同步。寫 reports/（write_reports）與 decisions/（write_long_term_memory）皆屬 ask，使用者本 session 明示核准。未修改 system/。checkpoints=2（<3，免 logs/runs）。"
+```
+
+---
+
+```yaml
 - task_id: "20260624-A01"
   date: "2026-06-24"
   skill_type: "analysis"

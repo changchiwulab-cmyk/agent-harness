@@ -1,3 +1,39 @@
+# AI 落地切入產業決策 — 正式報告（ai-entry-strategy-decision-v1）
+
+---
+
+## 晉升標記
+
+| 項目 | 內容 |
+|------|------|
+| **原始 draft** | `outputs/drafts/20260624-A01_ai-entry-go-nogo-decision.md` |
+| **晉升日期** | 2026-06-24 |
+| **晉升任務** | Task Card `20260624-O01`（tasks/2026-06-24_promote-a01-decision.yaml） |
+| **審閱者** | 人工核准（使用者於本 session 明示要求晉升） |
+| **原始產出日期** | 2026-06-24 |
+| **原始任務** | Task Card `20260624-A01`（tasks/2026-06-24_ai-entry-go-nogo-decision.yaml） |
+| **對應 Decision Log** | `memory/active_projects/agent-harness/decisions/20260624-D008_ai-entry-strategy.yaml` |
+
+### 採納項目清單
+
+| # | 項目 | 狀態 | 追蹤 |
+|---|------|:----:|------|
+| 1 | 排序 A 零售電商 ＞ B 製造業 ＞ C 醫療照護 ＞ D 不做 | ✅ 暫定採納 | Decision Log D008；本報告 §結論與建議 |
+| 2 | 4 階段進入路線（含進入門檻） | ✅ 暫定採納 | D008 revisit_trigger 綁階段 1 數據 |
+| 3 | 假設前提五項（獲客模式、時間飽和度等） | ⏳ 待使用者校正 | 本報告 §假設前提 |
+| 4 | 零售獲客率 / 單案工時 | ⏳ 待階段 1 實跑驗證 | 本報告 §待驗證；達標即啟動階段 2 |
+
+> **定調：暫定採納 + 回看觸發**。本決策非定案承諾——A01 假設前提與階段 1 實跑數據確認前，排序與時點可能調整，回看條件見 Decision Log D008 `revisit_trigger`。
+
+### 未變更 system/
+本晉升為決策記錄性質，未變更任何 `system/` 檔；A01 分析結論、數字與排序逐字保留，本報告僅於上方新增「晉升標記」。
+
+---
+
+以下為原始草稿全文保留（除上方「晉升標記」為新增，其餘未變動）。
+
+---
+
 # AI 落地切入產業 Go/No-Go 決策分析（零售電商 / 製造業 / 醫療照護 / 不做）
 
 - Task ID：20260624-A01
@@ -129,7 +165,3 @@
 ---
 
 **End of A01**
-
----
-
-> **已晉升**：本草稿已於 2026-06-24 晉升為正式報告 `outputs/reports/ai-entry-strategy-decision-v1.md`（晉升 Task Card `20260624-O01`），並落為 Decision Log `20260624-D008`（暫定採納+回看觸發）。原草稿保留作歷史備援，後續引用請使用 reports/ 版本。
