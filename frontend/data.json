@@ -30,7 +30,7 @@
       "project": "agent-harness",
       "reasoning": "四項觸發條件均未達標：context 未超限、無規則衝突、 token 雖超預估但未超 dashboard 上限、錯誤率僅 1/8（非阻斷性）。 一人公司原則：不做沒有實際需求的架構升級。\n",
       "related_task": "20260409-001",
-      "revisit_trigger": "任一 v3 觸發條件持續 2 週以上；或單 session context 超限頻率 > 30%。【2026-06-24 R10 readiness 評估：NATIVE_OVERLAP aggregate 仍 30% < 50%、四項升級觸發條件全未達標，維持 hold】",
+      "revisit_trigger": "任一 v3 觸發條件持續 2 週以上；或單 session context 超限頻率 > 30%。",
       "status": "active"
     },
     {
