@@ -136,23 +136,23 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 30,
+      "low": 31,
       "medium": 14
     },
     "task_skill": {
       "analysis": 4,
       "ops": 26,
-      "research": 5,
+      "research": 6,
       "review": 6,
       "writing": 4
     },
     "task_status": {
-      "done": 22,
+      "done": 23,
       "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 45
+    "task_total": 46
   },
   "tasks": [
     {
@@ -604,6 +604,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-24",
+      "goal": "比較零售電商／製造業／醫療照護三產業的 AI 落地應用困難度（台灣為主＋國際標竿對照），產出結構化困難度分析報告",
+      "path": "tasks/2026-06-24_ai-adoption-difficulty-3industries.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "done",
+      "task_id": "20260624-R01"
     }
   ]
 }
