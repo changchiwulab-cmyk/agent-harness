@@ -1,0 +1,53 @@
+# Task Card
+# 命名規則：YYYY-MM-DD_[簡述].yaml
+
+task_id: "20260624-O01"
+date: "2026-06-24"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "將 A01（20260624-A01）AI 切入決策落為正式 Decision Log D008，並依 RETRO_FLOW §5 晉升 A01 草稿至 outputs/reports/"
+context: "使用者本 session 明示要求。write_long_term_memory（寫 decisions/）與 write_reports（晉升 reports/）皆屬 ask 權限，使用者已核准 → approval_given=true。決策定調＝暫定採納+回看觸發"
+input_data:
+  - "outputs/drafts/20260624-A01_ai-entry-go-nogo-decision.md（待晉升原文）"
+  - "tasks/DECISION_LOG_TEMPLATE.yaml / system/RETRO_FLOW.md §5（格式依據）"
+
+# === 完成標準（最重要的欄位）===
+definition_of_done:
+  - "建立 memory/active_projects/agent-harness/decisions/20260624-D008_ai-entry-strategy.yaml，欄位齊全（context/options_considered/decision/reasoning/risk/revisit_trigger/related_task=20260624-A01/status=active），決策定調為暫定採納+回看觸發"
+  - "晉升 outputs/reports/ai-entry-strategy-decision-v1.md，含晉升標記表 + 採納項目清單 + A01 原文逐字保留（不竄改分析結論/數字/排序）"
+  - "原 A01 draft 檔尾加『已晉升』回指"
+  - "frontend/data.json 同步（decisions 7→8）且 --check 無 drift"
+  - "logs/AUDIT_LOG.md 記一筆（approval_needed=true、approval_given=true）"
+  - "schema / spec-consistency / manifest drift 全綠"
+  - "≥1 git checkpoint"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/reports/"
+  filename: "ai-entry-strategy-decision-v1.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "file_edit"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
