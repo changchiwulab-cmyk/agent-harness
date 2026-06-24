@@ -3,7 +3,7 @@
 
 task_id: "20260624-R01"
 date: "2026-06-24"
-status: "in_progress"
+status: "done"
 
 # === 任務定義 ===
 goal: "比較零售電商／製造業／醫療照護三產業的 AI 落地應用困難度（台灣為主＋國際標竿對照），產出結構化困難度分析報告"
@@ -38,6 +38,7 @@ allowed_tools:
   - "file_read"
   - "web_search"
   - "file_search"
+  - "file_write"   # 寫草稿/卡片（write_drafts 屬 allow 權限）
 
 # === 成本控制 ===
 max_tool_calls: 14
@@ -48,8 +49,11 @@ max_web_searches: 6
 skill_type: "research"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
-audit_log_ref: ""
+checkpoints:
+  - "2c99aef 建立並驗證 Task Card"
+  - "b07ce60 資料蒐集第一輪（3 web search）"
+  - "報告完成 commit（見 PR）"
+actual_tool_calls: 11           # ~3 file_read + 6 web_search + file_write(卡+報告)
+result_summary: "DoD 全條通過。三產業（零售電商/製造業/醫療照護）各含 ≥3 量化資料 + 台灣/國際對照；7 維度困難度評分矩陣（12/25/30）；總排序 零售<製造<醫療 + 各產業最低門檻切入點；四態分類完整；6 web_search 達上限，台灣智慧製造量化數據列待驗證。"
+completion_time: "2026-06-24"
+audit_log_ref: "logs/AUDIT_LOG.md#20260624-R01"

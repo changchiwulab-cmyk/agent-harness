@@ -33,6 +33,31 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260624-R01"
+  date: "2026-06-24"
+  skill_type: "research"
+  goal: "比較零售電商／製造業／醫療照護三產業的 AI 落地困難度（台灣為主＋國際標竿）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 6
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 2
+  checkpoints: 3
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260624-R01_ai-adoption-difficulty-3industries.md"
+  error_summary: ""
+  estimated_tokens: "~30K"
+  notes: "三產業×≥3 量化 + 台灣/國際對照；自訂 7 維度困難度評分矩陣（零售12/製造25/醫療30）；總排序 零售<製造<醫療 + 各產業最低門檻切入點；四態分類完整。內部沿用 T03（台灣醫療/IPC 切片）省一輪搜尋。6 web_search 達上限 → 台灣智慧製造官方導入率列待驗證。零售 ROI 220% 等行銷型來源標高風險假設。草稿留 drafts/，升級 reports/ 需另行人工核准。"
+```
+
+---
+
+```yaml
 - task_id: "20260529-011"
   date: "2026-05-29"
   skill_type: "ops"
