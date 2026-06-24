@@ -5,7 +5,7 @@
 
 task_id: "20260529-012"
 date: "2026-05-29"
-status: "in_progress"
+status: "done"
 
 # === 任務定義 ===
 goal: "對 v2 既有模組做 v3 遷移就緒度評估，逐項裁決保留/下放原生/並存，明列不可替代治理資產，對齊既有 v3_extraction_plan，回寫 D003/D007。只評估不遷移。"
@@ -53,8 +53,11 @@ max_web_searches: 0
 skill_type: "analysis"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - "checkpoint: 20260529-012 R10 task card 建立（in_progress）"
+  - "checkpoint: 20260529-012 readiness 草稿 + D003/D007 交叉引用"
+  - "checkpoint: 20260529-012 run log + card done + 重生 audit/manifest"
+actual_tool_calls: 9
+result_summary: "產出 outputs/drafts/v3-readiness-assessment.md：逐 16 模組標保留(8)/下放原生(4)/並存(4)+就緒度(ready 7/blocked 9)；明列 4 件不可替代資產（校準表、FAILURE_TAXONOMY、Decision Log、Audit Log）；對齊 2026-05-09_v3_extraction_plan.md 並校正其 §4.2 統計筆誤；列 G1–G5 遷移前置缺口。D003/D007 加 readiness 交叉引用、status 維持 active、decision 本體不翻案。結論：整體未就緒，維持 hold（aggregate 30% < 50%）。只評估不遷移，未動任何 system/ 模組檔。run log：logs/runs/RUN-20260529-012.yaml。"
+completion_time: "2026-06-24"
 audit_log_ref: "logs/AUDIT_LOG.md"

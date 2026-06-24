@@ -30,7 +30,7 @@
       "project": "agent-harness",
       "reasoning": "四項觸發條件均未達標：context 未超限、無規則衝突、 token 雖超預估但未超 dashboard 上限、錯誤率僅 1/8（非阻斷性）。 一人公司原則：不做沒有實際需求的架構升級。\n",
       "related_task": "20260409-001",
-      "revisit_trigger": "任一 v3 觸發條件持續 2 週以上；或單 session context 超限頻率 > 30%",
+      "revisit_trigger": "任一 v3 觸發條件持續 2 週以上；或單 session context 超限頻率 > 30%。【2026-06-24 R10 readiness 評估：NATIVE_OVERLAP aggregate 仍 30% < 50%、四項升級觸發條件全未達標，維持 hold】",
       "status": "active"
     },
     {
@@ -74,7 +74,7 @@
       "project": "agent-harness",
       "reasoning": "四個子題答案均選與 plan §6 + N4 §1.3 解耦聲明對齊的選項。\nApache-2.0 偏好為日後與企業整合保留 patent 條款（MIT 也可，但 Apache 多 patent 保護成本接近於零）。\nPrivate 起步是為了讓 v0.1.0 → v0.2.0 之間的 API breaking change 不被外部使用者卡住；\nv0.2.0 穩定後手動轉 public。\n",
       "related_task": "20260509-N06",
-      "revisit_trigger": "v0.2.0 plugin 達到 agent-harness 全部 system/ 規格 round-trip 後評估轉 public；或下個 session 試行 bootstrap 後發現非預期問題",
+      "revisit_trigger": "v0.2.0 plugin 達到 agent-harness 全部 system/ 規格 round-trip 後評估轉 public；或下個 session 試行 bootstrap 後發現非預期問題。【2026-06-24 R10 readiness 評估：bootstrap 子題答案不變；plugin home 同掛 hook+skill+command（H3）待 repo 真正建立後驗證，見 readiness §五 G3】",
       "status": "active"
     }
   ],
@@ -108,51 +108,66 @@
       "started_at": "2026-05-29 05:25",
       "status": "failed",
       "task_id": "20260529-003"
+    },
+    {
+      "ended_at": "2026-06-24 00:00",
+      "gate_results": {
+        "completion_check": "pass",
+        "risk_check": "pass",
+        "rule_check": "pass",
+        "schema_check": "pass"
+      },
+      "path": "logs/runs/RUN-20260529-012.yaml",
+      "run_id": "RUN-20260529-012",
+      "skill_type": "analysis",
+      "started_at": "2026-06-24 00:00",
+      "status": "completed",
+      "task_id": "20260529-012"
     }
   ],
   "overview": {
     "gate_results": {
       "completion_check": {
         "not_run": 1,
-        "pass": 1
+        "pass": 2
       },
       "risk_check": {
         "not_run": 1,
-        "pass": 1
+        "pass": 2
       },
       "rule_check": {
         "not_run": 1,
-        "pass": 1
+        "pass": 2
       },
       "schema_check": {
         "fail": 1,
-        "pass": 1
+        "pass": 2
       }
     },
     "run_status": {
-      "completed": 1,
+      "completed": 2,
       "failed": 1
     },
-    "run_total": 2,
+    "run_total": 3,
     "task_risk": {
-      "high": 1,
+      "high": 2,
       "low": 30,
       "medium": 14
     },
     "task_skill": {
-      "analysis": 4,
+      "analysis": 5,
       "ops": 26,
       "research": 5,
       "review": 6,
       "writing": 4
     },
     "task_status": {
-      "done": 22,
+      "done": 23,
       "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 45
+    "task_total": 46
   },
   "tasks": [
     {
@@ -524,6 +539,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-004"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-29",
+      "goal": "對 v2 既有模組做 v3 遷移就緒度評估，逐項裁決保留/下放原生/並存，明列不可替代治理資產，對齊既有 v3_extraction_plan，回寫 D003/D007。只評估不遷移。",
+      "path": "tasks/2026-05-29_r10-v3-readiness-assessment.yaml",
+      "risk_level": "high",
+      "skill_type": "analysis",
+      "status": "done",
+      "task_id": "20260529-012"
     },
     {
       "approval_needed": true,
