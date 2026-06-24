@@ -1,0 +1,60 @@
+# Task Card — R10 v3 遷移就緒度評估
+# 來源：20260529-001 自我評估 roadmap R10（長期/戰略；原排程 R4+R7→R9→R10）。
+# 使用者指示「r10 單獨執行」＝略過 R9 相依，獨立執行 R10。
+# 注意：只評估不遷移。產出為草稿（risk=high → drafts/ 等人工）；D003/D007 僅加交叉引用，分支直接改、PR review 作關卡。
+
+task_id: "20260529-012"
+date: "2026-05-29"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "對 v2 既有模組做 v3 遷移就緒度評估，逐項裁決保留/下放原生/並存，明列不可替代治理資產，對齊既有 v3_extraction_plan，回寫 D003/D007。只評估不遷移。"
+context: |
+  自我評估 roadmap 把 R10 列為長期戰略項：在不實際遷移的前提下，評估 v2 → v3 的「搬得動嗎、搬之前缺什麼」。
+  與 2026-05-09_v3_extraction_plan.md（講「v3 該長怎樣」）互補：本卡換成「就緒度」視角，逐模組標 ready/blocked + 缺口。
+  NATIVE_OVERLAP aggregate 維持 30% < 50%，尚未到強制觸發點，故結論維持 hold；D003/D007 僅加 readiness 交叉引用，不翻案。
+input_data:
+  - "outputs/reports/harness-self-assessment-v1.md（§五 R10 定義）"
+  - "outputs/drafts/2026-05-09_v3_extraction_plan.md（§4.2 裁決、§7 遷移路徑、§9 待驗證）"
+  - "system/NATIVE_OVERLAP.yaml（逐模組重疊數據）"
+  - "memory/active_projects/agent-harness/decisions/20260415-D003_v3-upgrade-hold.yaml"
+  - "memory/active_projects/agent-harness/decisions/20260509-D007_v3-plugin-bootstrap-decisions.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "outputs/drafts/v3-readiness-assessment.md：逐模組三態裁決表（保留/下放原生/並存）+ 理由 + 就緒度（ready/blocked + 缺什麼）"
+  - "明列不可替代治理資產（校準表、FAILURE_TAXONOMY、Decision Log、Audit Log）並說明原生為何不提供、必須保留/抽出"
+  - "與 2026-05-09_v3_extraction_plan.md 對齊：明示沿用處與新增的就緒度判斷差異"
+  - "就緒度缺口清單（遷移前置條件，對齊 extraction plan §7 路徑與 §9 待驗證 H1–H3）+ 觸發實際遷移的條件"
+  - "D003/D007 加 readiness 交叉引用 + revisit 註記，status 維持 active、decision 本體不翻案"
+  - "未遷移任何 system/ 模組檔；草稿留 outputs/drafts/；CI-equivalent 全綠（含 manifest 無 drift）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "v3-readiness-assessment.md"
+
+# === 風險與權限 ===
+risk_level: "high"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "create_output_files"
+  - "modify_memory"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 14
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
