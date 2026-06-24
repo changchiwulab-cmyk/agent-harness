@@ -1,0 +1,55 @@
+# Task Card
+# 命名規則：YYYY-MM-DD_[簡述].yaml
+
+task_id: "20260624-R01"
+date: "2026-06-24"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "比較零售電商／製造業／醫療照護三產業的 AI 落地應用困難度（台灣為主＋國際標竿對照），產出結構化困難度分析報告"
+context: "一人公司評估 AI 顧問／落地服務的切入產業，需要可驗證的困難度事實基礎；刻意選跨越低/中/高困難度光譜的三產業以利對比"
+input_data:
+  - "outputs/drafts/20260502-T03_taiwan-ai-industry-deep-dive.md（內部既有台灣 AI 資料）"
+  - "memory/ 既有 context"
+  - "web_search（台灣 + 國際）"
+
+# === 完成標準（最重要的欄位）===
+definition_of_done:
+  - "三產業各自分析，每產業至少 3 個量化資料（附來源與時效）"
+  - "統一困難度框架：7 個維度評分矩陣，三產業逐維度橫向對比表"
+  - "每個關鍵量化主張 ≥2 個獨立來源交叉驗證"
+  - "台灣在地法規/案例 ＋ 對應國際標竿對照（每產業至少 1 組）"
+  - "產出困難度總排序（含理由），並指出各產業最低門檻切入點"
+  - "事實 / 合理推論 / 待驗證 / 高風險假設四態明確分開"
+  - "輸出符合 skills/research/SKILL.md 六段格式（結論→已知事實→合理推論→待驗證→高風險假設→來源）"
+  - "預算 ~3500-5000 字"
+  - "≥2 次 git checkpoint"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260624-R01_ai-adoption-difficulty-3industries.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "web_search"
+  - "file_search"
+
+# === 成本控制 ===
+max_tool_calls: 14
+max_retries: 3
+max_web_searches: 6
+
+# === Skill 路由 ===
+skill_type: "research"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
