@@ -24,6 +24,7 @@ reasoning: >
   一人公司原則：不做沒有實際需求的架構升級。
 
 risk: "若業務急速擴張，v2 的單代理架構可能成為瓶頸"
-revisit_trigger: "任一 v3 觸發條件持續 2 週以上；或單 session context 超限頻率 > 30%"
+revisit_trigger: "任一 v3 觸發條件持續 2 週以上；或單 session context 超限頻率 > 30%。【2026-06-24 R10 readiness 評估：NATIVE_OVERLAP aggregate 仍 30% < 50%、四項升級觸發條件全未達標，維持 hold】"
 related_task: "20260409-001"
+related_assessment: "outputs/drafts/v3-readiness-assessment.md（R10，task 20260529-012）"
 status: "active"
