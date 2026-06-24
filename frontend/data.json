@@ -151,23 +151,23 @@
     "run_total": 3,
     "task_risk": {
       "high": 1,
-      "low": 31,
+      "low": 32,
       "medium": 14
     },
     "task_skill": {
-      "analysis": 4,
+      "analysis": 5,
       "ops": 26,
       "research": 6,
       "review": 6,
       "writing": 4
     },
     "task_status": {
-      "done": 23,
+      "done": 24,
       "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 46
+    "task_total": 47
   },
   "tasks": [
     {
@@ -629,6 +629,16 @@
       "skill_type": "research",
       "status": "done",
       "task_id": "20260624-R01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-24",
+      "goal": "基於 R01 困難度研究，對零售電商/製造業/醫療照護＋不做四選項做 Go/No-Go，產出排序與分階段進入路線（沿用 R01 假設前提，一人公司視角）",
+      "path": "tasks/2026-06-24_ai-entry-go-nogo-decision.yaml",
+      "risk_level": "low",
+      "skill_type": "analysis",
+      "status": "done",
+      "task_id": "20260624-A01"
     }
   ]
 }

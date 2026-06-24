@@ -33,6 +33,29 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260624-A01"
+  date: "2026-06-24"
+  skill_type: "analysis"
+  goal: "對零售電商/製造業/醫療照護＋不做四選項做 AI 落地切入 Go/No-Go 決策（排序+分階段，沿用 R01 persona）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 2
+  checkpoints: 2
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260624-A01_ai-entry-go-nogo-decision.md"
+  error_summary: ""
+  estimated_tokens: "~15K"
+  notes: "承接 R01。四選項×七維（價值/成本/風險/可行性/執行難度/預期回報/一人公司適配度）量化；含強制『不做』；結論先行排序 A>B>C>D + 4 階段進入路線（含進入門檻）；假設前提明列供校正。0 web_search，事實全溯源 R01/T03。checkpoints=2（<3，免 logs/runs）。COST_POLICY analysis 成本樣本 #2（~15K；#1 governance ~16K）→ 已 2 筆，待第 3 筆於 RETRO 計算係數。"
+```
+
+---
+
+```yaml
 - task_id: "20260624-R01"
   date: "2026-06-24"
   skill_type: "research"
