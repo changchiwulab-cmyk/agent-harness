@@ -33,6 +33,29 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260625-T07"
+  date: "2026-06-25"
+  skill_type: "ops"
+  goal: "補 T04 缺口#3：COST_POLICY 批次 web-search 節流與快取規則"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "outputs/drafts/20260625-T07_phase-summary.md"
+  error_summary: ""
+  estimated_tokens: "~9K"
+  notes: "COST_POLICY 新增『批次 web-search 節流與快取』：快取優先、批次合計 ≤ 卡數×2、卡間間隔、觸發上限以既有結果補足。純政策文字（web_search 無 wrapper）。未動 GLOBAL_RULES（context budget OK）。ask 級待 PR #109 review。"
+```
+
+---
+
+```yaml
 - task_id: "20260625-T06"
   date: "2026-06-25"
   skill_type: "ops"
