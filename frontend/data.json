@@ -136,23 +136,23 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 30,
+      "low": 34,
       "medium": 14
     },
     "task_skill": {
-      "analysis": 4,
+      "analysis": 5,
       "ops": 26,
-      "research": 5,
-      "review": 6,
+      "research": 7,
+      "review": 7,
       "writing": 4
     },
     "task_status": {
       "done": 22,
       "in_progress": 2,
       "pending": 2,
-      "review": 19
+      "review": 23
     },
-    "task_total": 45
+    "task_total": 49
   },
   "tasks": [
     {
@@ -604,6 +604,46 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-25",
+      "goal": "盤點 2026 年主流 LLM 的價格 / 能力 / long-context 趨勢，回答『現在的取捨在哪』",
+      "path": "tasks/2026-06-25_t01-llm-pricing-capability-trend.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "review",
+      "task_id": "20260625-T01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-25",
+      "goal": "盤點 2026 年 AI 治理與法規現況：EU AI Act 落地時程、台灣 AI 基本法/PDPA 進度，對一人公司的實務影響",
+      "path": "tasks/2026-06-25_t02-ai-governance-regulation.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "review",
+      "task_id": "20260625-T02"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-25",
+      "goal": "一人公司若要做 multi-agent 編排，該選哪個框架？對 LangGraph / CrewAI / Claude Agent SDK（含『不自建、續用單代理 harness』）做 Go/No-Go",
+      "path": "tasks/2026-06-25_t03-multi-agent-framework-selection.yaml",
+      "risk_level": "low",
+      "skill_type": "analysis",
+      "status": "review",
+      "task_id": "20260625-T03"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-25",
+      "goal": "回測 T01-T03 三卡的 harness 執行：四層 gate 結果、成本對照、失敗模式盤點、跨主題一致性，並指出框架缺口",
+      "path": "tasks/2026-06-25_t04-harness-3theme-test-analysis.yaml",
+      "risk_level": "low",
+      "skill_type": "review",
+      "status": "review",
+      "task_id": "20260625-T04"
     }
   ]
 }

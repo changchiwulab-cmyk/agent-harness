@@ -33,6 +33,104 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260625-T04"
+  date: "2026-06-25"
+  skill_type: "review"
+  goal: "回測 T01-T03 三卡的 harness 執行：四層 gate、成本、失敗模式、跨主題一致性、框架缺口"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260625-T04_harness-3theme-test-analysis.md"
+  error_summary: ""
+  estimated_tokens: "~8K"
+  notes: "3 主題自測系列第 4 張（框架回測）。結論：harness 在 3 主題跨 2 skill 下成立且行為一致。四層 gate 逐層執行；completion_check 實際攔下 T02 缺漏（gate 有效正面證據）。框架缺口 4 條（run-log scope 對乾淨批次零紀錄、low-risk 讓 risk/approval gate 空轉、web rate-limit 事後保護、completion 依賴誠實自評）。揭露同 session 自審＝循環驗證限制。本批 4 卡皆未達 D006 run-log 觸發條件，故無 logs/runs/。"
+```
+
+---
+
+```yaml
+- task_id: "20260625-T03"
+  date: "2026-06-25"
+  skill_type: "analysis"
+  goal: "multi-agent 編排框架選型（LangGraph/CrewAI/Claude Agent SDK/不做）Go/No-Go"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "web_search"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260625-T03_multi-agent-framework-selection.md"
+  error_summary: ""
+  estimated_tokens: "~15K"
+  notes: "3 主題自測系列第 3 張（analysis）。4 選項各跑 7 維表，含「不做」。結論：現在不做、續用單代理 harness；v3 觸發後選 Claude Agent SDK。web 2/3。DoD 7/7。"
+```
+
+---
+
+```yaml
+- task_id: "20260625-T02"
+  date: "2026-06-25"
+  skill_type: "research"
+  goal: "AI 治理與法規盤點：EU AI Act 時程、台灣 AI 基本法/PDPA，對一人公司實務影響"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "web_search"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260625-T02_ai-governance-regulation.md"
+  error_summary: ""
+  estimated_tokens: "~15K"
+  notes: "3 主題自測系列第 2 張（research）。EU AI Act 時程（含 Omnibus 延後）+ 台灣 AI 基本法 2025-12-23 三讀 + PDPA + 七大原則。completion_check 第 1 輪攔下缺『實務影響』獨立節（DoD#3），補 5 條落地檢查點後通過。web 2/3。DoD 7/7。"
+```
+
+---
+
+```yaml
+- task_id: "20260625-T01"
+  date: "2026-06-25"
+  skill_type: "research"
+  goal: "盤點 2026 主流 LLM 價格/能力/long-context 趨勢"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "web_search"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260625-T01_llm-pricing-capability-trend.md"
+  error_summary: ""
+  estimated_tokens: "~13K"
+  notes: "3 主題自測系列第 1 張（research）。3+ 家供應商量化價格表 + long-context 趨勢（13 款 1M+、Anthropic 取消長上下文加價、1M 真實可用率 74-76%）。web 2/3（夠了就停）。DoD 7/7。"
+```
+
+---
+
+```yaml
 - task_id: "20260529-011"
   date: "2026-05-29"
   skill_type: "ops"
