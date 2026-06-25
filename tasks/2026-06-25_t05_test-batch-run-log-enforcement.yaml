@@ -1,0 +1,70 @@
+# Task Card — test_batch run-log 強制機制（落實 T04 缺口 #1）
+task_id: "20260625-T05"
+date: "2026-06-25"
+status: "pending"
+
+# === 任務定義 ===
+goal: "實作 test_batch 旗標（CI 硬擋：測試批次必留 run-log）+ 回填 T01-T04 run-logs + 修正 T04 §3 per-ID（回應 Codex P2），關閉 T04 缺口 #1"
+context: |
+  T04 框架回測列出 4 條缺口，使用者選做缺口 #1：run-log scope（D006）對「乾淨成功批次」零紀錄。
+  同時 PR #109 收到 Codex P2 review：T04 §3 失敗模式只做 4 類別彙整、未逐 ID 列舉，DoD#3 被高估。
+  本卡一併處理：A 機制（template + schema + check_spec_consistency 硬擋 + 測試）、B 回填（4 卡標旗標
+  + 4 run-logs + data.json）、C 修正 T04 §3。延伸同分支 → PR #109。新決策 D008 additive 延伸 D006。
+input_data:
+  - "outputs/drafts/20260625-T04_harness-3theme-test-analysis.md"
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+  - "memory/active_projects/agent-harness/decisions/20260424-D006_execution-log-scope.yaml"
+  - "scripts/check_spec_consistency.rb"
+  - "scripts/test_check_spec_consistency.rb"
+  - "tasks/TASK_CARD_TEMPLATE.yaml"
+  - "logs/AUDIT_LOG.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "tasks/TASK_CARD_TEMPLATE.yaml 新增可選欄位 test_batch（預設 false，含說明）"
+  - "system/EXECUTION_LOG_SCHEMA.yaml 使用範圍新增第 5 觸發條件 test_batch:true，並引用 D008"
+  - "scripts/check_spec_consistency.rb 新增 top-level 函式：test_batch:true 但無對應 logs/runs/ run-log → error；test_batch 非 boolean → error"
+  - "scripts/test_check_spec_consistency.rb 新增至少 4 個 minitest 案例覆蓋上述規則"
+  - "tasks/2026-06-25_t0{1..4} 四張卡各加 test_batch: true"
+  - "新增 logs/runs/RUN-20260625-001..004.yaml（映射 T01..T04，status completed、gate 全 pass、token source rule_estimated）"
+  - "outputs/drafts/20260625-T04 §3 改為逐 ID 列舉全部 15 個失敗模式（觸發/攔截/未觸發 + 一句話）"
+  - "memory/active_projects/agent-harness/decisions/20260625-D008_*.yaml 建立（additive 延伸 D006，D006 維持 active）"
+  - "frontend/data.json 重新產生且 --check 無漂移"
+  - "驗證全綠：check_spec_consistency.rb OK、test_check_spec_consistency.rb 全綠、pytest 7 passed、validate_task_card 對 T05 pass、ALL_YAML_OK；含負向測試（暫移 run-log → check 應報 error）"
+  - "outputs/drafts/20260625-T05_phase-summary.md 產出實作摘要；logs/AUDIT_LOG.md 新增 1 筆"
+
+# === 輸出定義 ===
+expected_output:
+  format: "mixed"
+  location: "outputs/drafts/"
+  filename: "20260625-T05_phase-summary.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 30
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 測試批次旗標 ===
+test_batch: false
+
+# === 執行紀錄 ===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
