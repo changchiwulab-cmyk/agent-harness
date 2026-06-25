@@ -1,0 +1,37 @@
+# Execution Log — 3 主題自測批次 T04 框架回測（test_batch 觸發，D008 第 5 條）
+
+execution_log:
+  run_id: "RUN-20260625-004"
+  task_id: "20260625-T04"
+  skill_type: "review"
+  started_at: "2026-06-25 09:36"
+  ended_at: "2026-06-25 09:45"
+  status: "completed"
+
+  tools_used:
+    - tool: file_read
+      call_count: 4
+    - tool: file_write
+      call_count: 1
+
+  checkpoints:
+    - commit: "59626d3"
+      stage: "C4：框架回測報告 + AUDIT_LOG + frontend data.json"
+
+  token_estimate:
+    input: 6000
+    output: 2000
+    total: 8000
+    source: "rule_estimated"
+
+  approvals: []
+
+  output_path: "outputs/drafts/20260625-T04_harness-3theme-test-analysis.md"
+  error_summary: ""
+  gate_results:
+    schema_check: "pass"
+    rule_check: "pass"
+    completion_check: "pass"
+    risk_check: "pass"
+
+  notes: "3 主題自測批次第 4 張（框架回測）。結論：harness 在 3 主題跨 2 skill 下成立且行為一致。§3 失敗模式評估後由 Codex P2 外審指出需 per-ID 全列舉，已於 T05 修正（異 session 外審捕捉同 session 自審漏項，印證 VAL-03 緩解）。DoD 7/7。"

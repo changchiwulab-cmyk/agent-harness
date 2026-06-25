@@ -1,0 +1,39 @@
+# Execution Log — 3 主題自測批次 T02（test_batch 觸發，D008 第 5 條）
+
+execution_log:
+  run_id: "RUN-20260625-002"
+  task_id: "20260625-T02"
+  skill_type: "research"
+  started_at: "2026-06-25 09:12"
+  ended_at: "2026-06-25 09:24"
+  status: "completed"
+
+  tools_used:
+    - tool: file_read
+      call_count: 3
+    - tool: web_search
+      call_count: 2
+    - tool: file_write
+      call_count: 2
+
+  checkpoints:
+    - commit: "940e4e3"
+      stage: "C2：AI 治理法規研究草稿（completion_check 攔下 DoD#3 缺漏後補正）"
+
+  token_estimate:
+    input: 11500
+    output: 3500
+    total: 15000
+    source: "rule_estimated"
+
+  approvals: []
+
+  output_path: "outputs/drafts/20260625-T02_ai-governance-regulation.md"
+  error_summary: ""
+  gate_results:
+    schema_check: "pass"
+    rule_check: "pass"
+    completion_check: "pass"
+    risk_check: "pass"
+
+  notes: "3 主題自測批次第 2 張。EU AI Act 時程 + 台灣 AI 基本法 + PDPA。completion_check 第 1 輪攔下缺『實務影響』獨立節（DoD#3），補 5 條落地檢查點後通過——gate 有效性正面證據。web 2/3。DoD 7/7。"

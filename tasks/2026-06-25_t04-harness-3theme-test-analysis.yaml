@@ -51,6 +51,9 @@ max_tool_calls: 8
 max_retries: 3
 max_web_searches: 0
 
+# === 測試批次 ===
+test_batch: true               # 3 主題自測批次，強制留 run-log（D008）
+
 # === Skill 路由 ===
 skill_type: "review"
 
@@ -58,6 +61,6 @@ skill_type: "review"
 checkpoints:
   - "C4: 20260625-T04 框架回測報告 + AUDIT_LOG + frontend data.json"
 actual_tool_calls: 2
-result_summary: "DoD 7/7 通過。結論：harness 在 3 主題跨 2 skill 下成立且行為一致。四層 gate 逐層執行；completion_check 實際攔下 T02 缺漏（gate 有效正面證據）；成本全在預算內（T01 41%/T02 47%/T03 75%）；無逃逸失敗模式。揭露限制：同 session 自審＝循環驗證（VAL-03），建議異 session 複核。框架缺口 4 條：run-log scope 對乾淨批次零紀錄、low-risk 讓 risk/approval gate 空轉、web rate-limit 事後保護、completion_check 依賴誠實自評。本批 4 卡皆未達 D006 run-log 觸發條件，故無 logs/runs/（已於報告記錄）。"
+result_summary: "DoD 7/7 通過。結論：harness 在 3 主題跨 2 skill 下成立且行為一致。四層 gate 逐層執行；completion_check 實際攔下 T02 缺漏（gate 有效正面證據）；成本全在預算內（T01 41%/T02 47%/T03 75%）；無逃逸失敗模式。揭露限制：同 session 自審＝循環驗證（VAL-03），建議異 session 複核。框架缺口 4 條：run-log scope 對乾淨批次零紀錄、low-risk 讓 risk/approval gate 空轉、web rate-limit 事後保護、completion_check 依賴誠實自評。後續（T05/D008）：缺口#1 已修——4 卡標 test_batch:true 並回填 RUN-20260625-001..004；§3 失敗模式由類別級升級為 per-ID 全 15 模式列舉（回應 Codex P2 異 session 外審，印證 VAL-03 自審缺口需外審補強）。"
 completion_time: "2026-06-25"
 audit_log_ref: "logs/AUDIT_LOG.md"

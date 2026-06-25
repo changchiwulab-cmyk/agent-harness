@@ -46,6 +46,9 @@ max_tool_calls: 10
 max_retries: 3
 max_web_searches: 3
 
+# === 測試批次 ===
+test_batch: true               # 3 主題自測批次，強制留 run-log（D008）
+
 # === Skill 路由 ===
 skill_type: "research"
 

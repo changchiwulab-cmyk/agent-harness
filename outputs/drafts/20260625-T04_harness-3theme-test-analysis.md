@@ -55,16 +55,31 @@ status: draft
 - 三張內容卡都**主動少用 1 輪 web search**（2/3）——與既有 20260502-T01 quick-scan 的「夠了就停」行為一致，呼應 COST_POLICY「能讀檔/夠用就別多查」。
 - 無一卡逼近 `max_tool_calls`；analysis（T03）用量比最高（75%），符合 analysis 多選項評估較重的預期。
 
-## 3. 失敗模式盤點（對照 system/FAILURE_TAXONOMY.yaml）
+## 3. 失敗模式盤點（對照 system/FAILURE_TAXONOMY.yaml，逐 ID）
 
-| 類別 | 代表模式 | 本次狀態 |
-|---|---|---|
-| 規格 SPEC | 角色/目標違反、步驟迴圈、不知何時停 | 未觸發（每卡綁定單一 skill + DoD，2/3 search 即停） |
-| 協調 COORD | Context 重置、模糊需求硬做、目標偏離 | 未觸發（需求已於 plan 階段以 AskUserQuestion 釐清） |
-| 驗證 VAL | 假完成、驗證不完整、判斷錯誤 | **近觸發即攔截**：T02 假完成風險被 completion_check 擋下；VAL-03（自審）為本卡已揭露之殘留風險 |
-| 安全 SEC（獨立維度） | 未授權動作、資料洩漏、成本失控、幻覺行動 | 未觸發（全 allow 動作、無外發、成本在預算內、事實附來源並標 [待驗證]） |
+> 回應 Codex P2（PR #109）：原版只做 4 類別彙整、未逐 ID 評估，DoD#3 被高估為通過；此處改為**列舉全部 15 個模式**。
+> 註：FAILURE_TAXONOMY 檔頭稱「14 種」但實含 15 個 ID（SEC 為獨立維度），數字不一致待澄清，本卡不改 taxonomy。
 
-亮點：相較 2026-04 的 S01（web search 第 3 輪 rate-limit），本次因每卡只用 2 輪、未逼上限，**未重演 rate-limit**。
+| ID | 名稱 | 本次狀態 | 一句話佐證 |
+|---|---|---|---|
+| SPEC-01 | 角色/目標違反 | 未觸發 | 每卡綁定單一 skill_type，輸出格式符合對應 SKILL.md |
+| SPEC-02 | 步驟重複/迴圈 | 未觸發 | 無重複動作；每卡 web search 2/3 即停 |
+| SPEC-03 | 對話歷史遺失 | 未觸發 | 關鍵狀態寫入卡/草稿/checkpoint，未跨輪遺失 |
+| SPEC-04 | 不知道何時停止 | 未觸發 | 逐條比對 DoD 後停；completion_check 明確收斂 |
+| COORD-01 | Context 被重置 | 未觸發 | git checkpoint C1–C4 保存進度，無重置 |
+| COORD-02 | 模糊需求硬做 | 未觸發 | 主題/輸入/成本取向於 plan 階段以 AskUserQuestion 釐清後才執行 |
+| COORD-03 | 目標偏離 | 未觸發 | 各卡產出對應其 goal，無偏離 |
+| COORD-04 | 忽略使用者輸入 | 未觸發 | 使用者選定的主題/來源/形態全數落實於卡 |
+| VAL-01 | 假完成 | **近觸發即攔截** | T02 第 1 輪缺 DoD#3 獨立節，被 completion_check 抓出並補正，未假完成 |
+| VAL-02 | 驗證不完整 | 未觸發 | 各卡 DoD 逐條 pass/fail；四層 gate 逐層執行 |
+| VAL-03 | 驗證判斷錯誤（自審循環） | **殘留風險，外審已緩解** | T04 與受審卡同 session（循環驗證）；Codex P2 異 session 外審即此風險之緩解實例 |
+| SEC-01 | 未授權動作 | 未觸發 | 全程 allow 級工具，未碰 deny 清單 |
+| SEC-02 | 資料洩漏 | 未觸發 | 無敏感資料進 context；輸出僅公開研究素材 |
+| SEC-03 | 成本失控 | 未觸發 | 每卡 web ≤2/3、tool calls 未逼上限、成本在 COST_POLICY 預算內 |
+| SEC-04 | 幻覺驅動行動 | 未觸發 | 事實附來源、不確定標 [待驗證]；無基於幻覺的對外動作 |
+
+亮點：相較 2026-04 的 S01（web search 第 3 輪 rate-limit），本次每卡只用 2 輪、未逼上限，**未重演 rate-limit**。
+DoD#3 由「類別級彙整」升級為「per-ID 全列舉」後通過（修正紀錄見 T05 / `logs/runs/RUN-20260625-004.yaml`）。
 
 ## 4. 跨主題一致性分析
 
