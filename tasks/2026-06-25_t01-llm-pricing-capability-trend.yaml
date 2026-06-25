@@ -1,0 +1,59 @@
+# Task Card — 3 主題自測系列 第 1 張（research）
+task_id: "20260625-T01"
+date: "2026-06-25"
+status: "pending"              # pending → in_progress → checkpoint → review → done / failed
+
+# === 任務定義 ===
+goal: "盤點 2026 年主流 LLM 的價格 / 能力 / long-context 趨勢，回答『現在的取捨在哪』"
+context: |
+  屬「3 主題端到端自測」系列第 1 張（research）。本系列刻意用 3 個不同主題、跨 2 種 skill
+  （research×2 + analysis×1）跑過 harness 全流程，驗證框架在多主題下是否成立（對照既有
+  20260502-T01/02/03 的『同主題不同深度』）。本卡題目偏技術趨勢盤點，外部題材，web search ≤3。
+  使用者背景：20+ 年管理顧問、一人公司、Claude 生態深度整合，關心定價與長上下文的實務取捨。
+input_data:
+  - "memory/user_prefs.md"
+  - "memory/active_projects/agent-harness/context.md"
+  - "skills/research/SKILL.md"
+  - "outputs/reports/token-calibration-v1.md"
+
+# === 完成標準（最重要的欄位）===
+definition_of_done:
+  - "涵蓋至少 3 家主流 LLM 供應商（如 Anthropic Claude / OpenAI / Google Gemini）2026 現況，每家至少 2 個量化資料點（價格 per Mtoken、context 視窗大小擇要），附時效與來源"
+  - "long-context 趨勢獨立成節：context window 上限演進 + 長上下文的成本/效能取捨"
+  - "輸出符合 skills/research/SKILL.md 六區塊格式：結論 → 已知事實 → 合理推論 → 待驗證 → 高風險假設 → 來源"
+  - "事實 / 合理推論 / 待驗證 / 高風險假設四態明確分開；每個事實主張附來源"
+  - "web search ≤ 3 輪；查不到或時效不明處明確標記 [待驗證]，不硬湊"
+  - "至少 1 次 git checkpoint"
+  - "篇幅約 1200-2000 字（含表格）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260625-T01_llm-pricing-capability-trend.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "web_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 3
+
+# === Skill 路由 ===
+skill_type: "research"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"

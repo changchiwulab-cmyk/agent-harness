@@ -1,0 +1,62 @@
+# Task Card — 3 主題自測系列 第 4 張（review／框架回測）
+task_id: "20260625-T04"
+date: "2026-06-25"
+status: "pending"
+
+# === 任務定義 ===
+goal: "回測 T01-T03 三卡的 harness 執行：四層 gate 結果、成本對照、失敗模式盤點、跨主題一致性，並指出框架缺口"
+context: |
+  屬「3 主題端到端自測」系列第 4 張（review）。前三卡是『內容面』交付物；本卡是『框架面』回測，
+  對應使用者選的『兩者並重』。本卡不審查內容對錯本身（那是各卡自己的 completion gate），而是把
+  harness 當受測對象：四層 gate 是否真的逐層跑、成本是否落在 COST_POLICY 預算內、是否觸發任何
+  FAILURE_TAXONOMY 模式、run-log scope（D006）是否漏記、低風險卡是否讓 approval/risk gate 空轉。
+  不用 web；只讀三卡草稿 + 各卡 gate 結果 + 既有 system 規則檔。
+input_data:
+  - "outputs/drafts/20260625-T01_llm-pricing-capability-trend.md"
+  - "outputs/drafts/20260625-T02_ai-governance-regulation.md"
+  - "outputs/drafts/20260625-T03_multi-agent-framework-selection.md"
+  - "system/GATE_POLICY.yaml"
+  - "system/FAILURE_TAXONOMY.yaml"
+  - "system/COST_POLICY.md"
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "Gate 結果表：schema_check / rule_check / completion_check / risk_check × T01-T03，逐格 pass/fail/not_run 並一句話佐證"
+  - "成本對照表：每卡 token 估計 vs COST_POLICY 任務級預算（research 32K、analysis 20K）+ web search 次數 vs 上限（3）"
+  - "失敗模式盤點：對照 system/FAILURE_TAXONOMY.yaml 14 種，列出本次觸發了哪些、如何處理；未觸發者一句話帶過"
+  - "跨主題一致性分析：2 research + 1 analysis 的格式遵循度、DoD 通過率、行為差異"
+  - "框架缺口與建議：至少 3 條具體可行動建議（例：run-log scope 漏記、低風險卡 gate 空轉、web rate-limit 風險）"
+  - "輸出符合 skills/review/SKILL.md 格式（總體評估 / 通過項 / 必須修改 / 建議修改 / DoD 逐條確認）"
+  - "結論明確回答：harness 在 3 個不同主題下是否成立"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260625-T04_harness-3theme-test-analysis.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "review"
+
+# === 執行紀錄 ===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"

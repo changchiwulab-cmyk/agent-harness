@@ -1,0 +1,60 @@
+# Task Card — 3 主題自測系列 第 3 張（analysis）
+task_id: "20260625-T03"
+date: "2026-06-25"
+status: "pending"
+
+# === 任務定義 ===
+goal: "一人公司若要做 multi-agent 編排，該選哪個框架？對 LangGraph / CrewAI / Claude Agent SDK（含『不自建、續用單代理 harness』）做 Go/No-Go"
+context: |
+  屬「3 主題端到端自測」系列第 3 張（analysis）。換 skill（analysis）測 harness 在決策型任務的
+  六維評估流程是否成立。本卡與本專案 v3/v4 路線圖（拆 bounded specialists / graph orchestration）
+  直接相關，刻意把『不做、續用現有單代理 harness』列為一個正式選項，呼應 README 的『現階段不做清單』。
+  外部題材，web search ≤3（補框架現況事實）。
+input_data:
+  - "memory/user_prefs.md"
+  - "memory/active_projects/agent-harness/context.md"
+  - "skills/analysis/SKILL.md"
+  - "system/NATIVE_OVERLAP.yaml"
+  - "README.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "至少評估 4 個選項，含『不做（續用現有單代理 harness）』：LangGraph / CrewAI / Claude Agent SDK / 不做"
+  - "每個選項跑 skills/analysis/SKILL.md 七維表：價值 / 成本 / 風險 / 可行性 / 執行難度 / 預期回報 / 一人公司適配度，逐格有依據"
+  - "成本與風險具體化（時間/學習曲線/鎖定風險等），不只說『高/低』"
+  - "結論與建議：明確排序 + 為什麼，且可追溯到表格內容"
+  - "高風險假設 + 待驗證（含驗證方式）兩節齊備"
+  - "結論與本專案 v3 升級觸發條件（context 超限 / 規則衝突 / 成本超標 / 錯誤率）對齊討論"
+  - "web search ≤ 3 輪；至少 1 次 git checkpoint；篇幅約 1500-2200 字"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260625-T03_multi-agent-framework-selection.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "web_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 3
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄 ===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"

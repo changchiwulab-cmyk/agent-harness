@@ -1,0 +1,57 @@
+# Task Card — 3 主題自測系列 第 2 張（research）
+task_id: "20260625-T02"
+date: "2026-06-25"
+status: "pending"
+
+# === 任務定義 ===
+goal: "盤點 2026 年 AI 治理與法規現況：EU AI Act 落地時程、台灣 AI 基本法/PDPA 進度，對一人公司的實務影響"
+context: |
+  屬「3 主題端到端自測」系列第 2 張（research）。同 skill（research）不同主題，用來和 T01 比較
+  harness 在不同題材下的行為一致性。外部題材，web search ≤3。聚焦對一人公司 / 顧問業者實際會
+  踩到的合規點（資料處理、透明度義務、風險分級），不做法律意見，只做事實盤點 + 待驗證標記。
+input_data:
+  - "memory/user_prefs.md"
+  - "memory/active_projects/agent-harness/context.md"
+  - "skills/research/SKILL.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "EU AI Act：說明風險分級架構 + 2026 年當下已生效/待生效的關鍵義務時程，至少 2 個可查證時間點，附來源"
+  - "台灣：AI 基本法（草案/進度）與個資法（PDPA）對 AI 應用的關鍵要求，至少 2 個具體事實點，附來源；進度不明處標 [待驗證]"
+  - "獨立節『對一人公司的實務影響』：列出 3-5 條落地檢查點（資料處理 / 透明度 / 風險分級 / 跨境）"
+  - "輸出符合 skills/research/SKILL.md 六區塊格式（結論 → 已知事實 → 合理推論 → 待驗證 → 高風險假設 → 來源）"
+  - "事實 / 推論 / 待驗證 / 高風險假設四態明確分開；法規時程類主張交叉至少 2 來源或標 [待驗證]"
+  - "web search ≤ 3 輪"
+  - "至少 1 次 git checkpoint；篇幅約 1200-2000 字"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260625-T02_ai-governance-regulation.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "web_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 3
+
+# === Skill 路由 ===
+skill_type: "research"
+
+# === 執行紀錄 ===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
