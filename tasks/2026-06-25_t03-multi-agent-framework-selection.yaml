@@ -1,7 +1,7 @@
 # Task Card — 3 主題自測系列 第 3 張（analysis）
 task_id: "20260625-T03"
 date: "2026-06-25"
-status: "pending"
+status: "review"
 
 # === 任務定義 ===
 goal: "一人公司若要做 multi-agent 編排，該選哪個框架？對 LangGraph / CrewAI / Claude Agent SDK（含『不自建、續用單代理 harness』）做 Go/No-Go"
@@ -53,8 +53,9 @@ max_web_searches: 3
 skill_type: "analysis"
 
 # === 執行紀錄 ===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - "C3: 20260625-T03 框架選型分析草稿（卡 + 草稿同 commit）"
+actual_tool_calls: 3
+result_summary: "DoD 7/7 通過。4 選項（不做／Claude Agent SDK／CrewAI／LangGraph）各跑 7 維表，含量化依據（1-2 週學習曲線、3× token、60-80 行樣板、2026-06-15 SDK 額度制）。結論：現在不做、觸發後選 Claude Agent SDK；與 v3 四觸發條件對齊獨立節。高風險假設 + 待驗證（附驗證方式）齊備。web search 2/3 輪。"
+completion_time: "2026-06-25"
 audit_log_ref: "logs/AUDIT_LOG.md"
