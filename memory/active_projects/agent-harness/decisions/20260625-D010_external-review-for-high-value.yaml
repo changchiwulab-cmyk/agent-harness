@@ -1,0 +1,33 @@
+decision_id: "20260625-D010"
+date: "2026-06-25"
+project: "agent-harness"
+
+# --- 決策內容 ---
+context: |
+  T04 框架回測缺口 #4：completion_check 依賴執行者誠實自評；當審查者與被審者是同一 session 時，
+  屬 FAILURE_TAXONOMY VAL-03「循環驗證（自己審自己）」。實證：T04 §3 失敗模式自審只做類別彙整、
+  漏了 per-ID 列舉，是由 Codex（異 session 外審）在 PR #109 抓出。需決定是否、以及對哪些產出
+  把「異 session/外部 review」制度化。
+
+options_considered:
+  - option: "A. 不做：續靠同 session 自審 + completion_check"
+    pros: "零流程成本"
+    cons: "VAL-03 循環驗證盲點續存；高價值產出（晉升 reports、回測報告）可信度打折"
+  - option: "B. 全部產出都要外審"
+    pros: "最嚴謹"
+    cons: "過重；low-risk 小草稿也要外審，違反『可控 > 儀式』，拖慢一人公司節奏"
+  - option: "C. 只『高價值產出』需異 session/外部 review（晉升 reports、test_batch 回測報告、risk>=high）"
+    pros: "風險對齊成本；高價值才付外審成本；Codex PR review 已是現成外審管道"
+    cons: "需定義『高價值』邊界；依賴有外審管道（PR review）"
+
+decision: "選 C（高價值產出需異 session/外部 review），於 APPROVAL_POLICY triggers 落地"
+reasoning: |
+  外審成本應與產出價值對齊：低風險小草稿用 completion_check 自審即可，但晉升 reports/、
+  test_batch 回測報告、risk>=high 這類「會被當證據或對外」的產出，自審盲點代價高，值得外審。
+  Codex PR review 已證明異 session 外審能抓到同 session 漏項（T04 §3），是現成且低成本的管道。
+
+# --- 追蹤 ---
+risk: "『高價值』邊界可能被低估而繞過外審；或外審管道（Codex/人工）不可用時卡關。緩解：邊界寫進 APPROVAL_POLICY trigger；無外審管道時產出停 review/draft 不結案。"
+revisit_trigger: "出現 2 次以上『高價值產出未經外審即被當最終結論引用』，或外審成為瓶頸拖慢交付 → 重新檢視邊界與管道。"
+related_task: "20260625-T08"
+status: "active"

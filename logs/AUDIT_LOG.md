@@ -33,6 +33,29 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260625-T08"
+  date: "2026-06-25"
+  skill_type: "ops"
+  goal: "補 T04 缺口#4：APPROVAL_POLICY 高價值產出需異 session 外審 trigger + D010"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "outputs/drafts/20260625-T08_phase-summary.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "APPROVAL_POLICY triggers 加『高價值產出（reports/、test_batch 報告、risk>=high）需異 session/外部 review』，method 沿用 human_confirm（不動 approval enum/測試）。D010 選 C（只高價值外審）。引用 Codex 抓 T04 §3 為外審實例。ask 級待 PR #109 review。"
+```
+
+---
+
+```yaml
 - task_id: "20260625-T07"
   date: "2026-06-25"
   skill_type: "ops"

@@ -33,6 +33,11 @@ triggers:
     action: "先存 drafts/，確認後移至 reports/"
     method: draft_first
 
+  - condition: "高價值產出（晉升 outputs/reports/、test_batch 回測/分析報告、risk_level >= high）"
+    action: "需異 session 或外部 review（人工 / Codex PR review）複核通過後才算完成；同 session 自審不足以結案"
+    method: human_confirm
+    note: "T04 §5 缺口#4：completion_check 依賴同 session 自評（FAILURE_TAXONOMY VAL-03 循環驗證）。Codex PR review 抓到 T04 §3 自審漏掉的 per-ID 列舉，即此外審的實例。2026-06-25 T08 / 決策 D010 新增。"
+
 approval_methods:
   human_confirm:
     description: "直接向使用者展示內容並等待明確同意"

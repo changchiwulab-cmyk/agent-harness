@@ -87,6 +87,28 @@
       "related_task": "20260625-T05",
       "revisit_trigger": "出現 2 次以上『該標 test_batch 卻漏標、導致測試批次無 run-log』→ 考慮自動偵測；或 D006 四條觸發本身被調整時一併檢視。",
       "status": "active"
+    },
+    {
+      "date": "2026-06-25",
+      "decision": "選 C（M5 指標 + 高風險演練），由使用者於計畫 3 確認",
+      "decision_id": "20260625-D009",
+      "path": "memory/active_projects/agent-harness/decisions/20260625-D009_gate-coverage-metric-and-drill.yaml",
+      "project": "agent-harness",
+      "reasoning": "沿用本專案 R7「觀測優先」精神：先把空轉可見化（M5），再用一次真實高風險演練（DR1）證明\nrisk_check（high→drafts）與 approval flow 真的會動，並留下真實 approval record 供 M5 取用。\n與既有 test_dummy_task_smoke（契約測試）互補：契約測 structure、演練測真實 run、M5 測持續覆蓋。\n",
+      "related_task": "20260625-T06",
+      "revisit_trigger": "M5 連續 2 個月 warn（真的長期空轉），或演練流於形式（每次內容雷同無檢驗價值）→ 重新檢視門檻與演練設計。",
+      "status": "active"
+    },
+    {
+      "date": "2026-06-25",
+      "decision": "選 C（高價值產出需異 session/外部 review），於 APPROVAL_POLICY triggers 落地",
+      "decision_id": "20260625-D010",
+      "path": "memory/active_projects/agent-harness/decisions/20260625-D010_external-review-for-high-value.yaml",
+      "project": "agent-harness",
+      "reasoning": "外審成本應與產出價值對齊：低風險小草稿用 completion_check 自審即可，但晉升 reports/、\ntest_batch 回測報告、risk>=high 這類「會被當證據或對外」的產出，自審盲點代價高，值得外審。\nCodex PR review 已證明異 session 外審能抓到同 session 漏項（T04 §3），是現成且低成本的管道。\n",
+      "related_task": "20260625-T08",
+      "revisit_trigger": "出現 2 次以上『高價值產出未經外審即被當最終結論引用』，或外審成為瓶頸拖慢交付 → 重新檢視邊界與管道。",
+      "status": "active"
     }
   ],
   "logs": [
@@ -194,51 +216,66 @@
       "started_at": "2026-06-25 10:00",
       "status": "completed",
       "task_id": "20260625-T05"
+    },
+    {
+      "ended_at": "2026-06-25 11:08",
+      "gate_results": {
+        "completion_check": "pass",
+        "risk_check": "pass",
+        "rule_check": "pass",
+        "schema_check": "pass"
+      },
+      "path": "logs/runs/RUN-20260625-006.yaml",
+      "run_id": "RUN-20260625-006",
+      "skill_type": "writing",
+      "started_at": "2026-06-25 11:00",
+      "status": "completed",
+      "task_id": "20260625-DR1"
     }
   ],
   "overview": {
     "gate_results": {
       "completion_check": {
         "not_run": 1,
-        "pass": 6
+        "pass": 7
       },
       "risk_check": {
         "not_run": 1,
-        "pass": 6
+        "pass": 7
       },
       "rule_check": {
         "not_run": 1,
-        "pass": 6
+        "pass": 7
       },
       "schema_check": {
         "fail": 1,
-        "pass": 6
+        "pass": 7
       }
     },
     "run_status": {
-      "completed": 6,
+      "completed": 7,
       "failed": 1
     },
-    "run_total": 7,
+    "run_total": 8,
     "task_risk": {
-      "high": 1,
+      "high": 2,
       "low": 34,
-      "medium": 15
+      "medium": 18
     },
     "task_skill": {
       "analysis": 5,
-      "ops": 27,
+      "ops": 30,
       "research": 7,
       "review": 7,
-      "writing": 4
+      "writing": 5
     },
     "task_status": {
       "done": 22,
       "in_progress": 2,
       "pending": 2,
-      "review": 24
+      "review": 28
     },
-    "task_total": 50
+    "task_total": 54
   },
   "tasks": [
     {
@@ -692,6 +729,16 @@
       "task_id": "20260529-010"
     },
     {
+      "approval_needed": true,
+      "date": "2026-06-25",
+      "goal": "高風險 gate 演練：起草一封對外電子報草稿，驗證 risk_check（high→drafts）與 approval flow 在真實 run 留痕",
+      "path": "tasks/2026-06-25_dr1_high-risk-gate-drill.yaml",
+      "risk_level": "high",
+      "skill_type": "writing",
+      "status": "review",
+      "task_id": "20260625-DR1"
+    },
+    {
       "approval_needed": false,
       "date": "2026-06-25",
       "goal": "盤點 2026 年主流 LLM 的價格 / 能力 / long-context 趨勢，回答『現在的取捨在哪』",
@@ -740,6 +787,36 @@
       "skill_type": "ops",
       "status": "review",
       "task_id": "20260625-T05"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-25",
+      "goal": "補 T04 缺口 #2（低風險批次讓 risk/approval gate 空轉）：新增 M5 gate 覆蓋指標 + 跑一次高風險演練留痕",
+      "path": "tasks/2026-06-25_t06_gate-coverage-metric-and-drill.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260625-T06"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-25",
+      "goal": "補 T04 缺口 #3（web-search 事後保護非事前節流）：COST_POLICY 新增批次 web-search 節流與快取規則",
+      "path": "tasks/2026-06-25_t07_batch-web-search-throttle.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260625-T07"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-25",
+      "goal": "補 T04 缺口 #4（completion_check 依賴誠實自評）：APPROVAL_POLICY 新增高價值產出需異 session 外審 trigger",
+      "path": "tasks/2026-06-25_t08_external-review-for-high-value.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260625-T08"
     }
   ]
 }
