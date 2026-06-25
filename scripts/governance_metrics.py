@@ -13,6 +13,7 @@ Metrics:
     M2 — outputs/drafts:reports 比例
     M3 — audit log 覆蓋率
     M4 — Claude Code 原生功能重疊度（人工 input from system/NATIVE_OVERLAP.yaml）
+    M5 — risk/approval gate 覆蓋率（近 3 月是否有 high/critical 卡或 approval record）
 """
 
 from __future__ import annotations
@@ -33,6 +34,7 @@ AUDIT_LOG = ROOT / "logs" / "AUDIT_LOG.md"
 DRAFTS_DIR = ROOT / "outputs" / "drafts"
 REPORTS_DIR = ROOT / "outputs" / "reports"
 NATIVE_OVERLAP = ROOT / "system" / "NATIVE_OVERLAP.yaml"
+APPROVALS_DIR = ROOT / "logs" / "approvals"
 
 # Status values that should have a corresponding audit entry.
 COMPLETED_STATUSES = {"review", "done", "failed", "partial"}
@@ -79,6 +81,7 @@ def load_task_cards() -> list[dict]:
         cards.append({
             "task_id": task_id,
             "status": data.get("status", "pending"),
+            "risk_level": data.get("risk_level", "low"),
             "year_month": f"{ymd[:4]}-{ymd[4:6]}",
             "path": str(path.relative_to(ROOT)),
         })
@@ -122,6 +125,30 @@ def load_native_overlap() -> dict:
     if not NATIVE_OVERLAP.exists():
         return {}
     return yaml.safe_load(NATIVE_OVERLAP.read_text(encoding="utf-8")) or {}
+
+
+def load_approval_records() -> list[dict]:
+    """Return approval record dicts from logs/approvals/*.yaml (skips TEMPLATE).
+
+    Each file's top-level key is `approval_records` (a list); see
+    APPROVAL_POLICY.yaml. Malformed files are skipped rather than raised — the
+    spec-consistency CI lint already hard-fails on bad approval YAML.
+    """
+    records: list[dict] = []
+    if not APPROVALS_DIR.exists():
+        return records
+    for path in sorted(APPROVALS_DIR.glob("*.yaml")):
+        if "TEMPLATE" in path.name:
+            continue
+        try:
+            doc = yaml.safe_load(path.read_text(encoding="utf-8"))
+        except yaml.YAMLError:
+            continue
+        if isinstance(doc, dict) and isinstance(doc.get("approval_records"), list):
+            for rec in doc["approval_records"]:
+                if isinstance(rec, dict):
+                    records.append(rec)
+    return records
 
 
 # --- Metric calculators ----------------------------------------------------
@@ -267,6 +294,39 @@ def metric_m4(overlap_data: dict) -> MetricResult:
         threshold="> 50% → alert；40-50% → warn",
         status=status,
         details={"aggregate_pct": pct, "reviewed_on": reviewed_on, "modules": overlap_data.get("modules", [])},
+    )
+
+
+def metric_m5(cards: list[dict], approvals: list[dict], today: date) -> MetricResult:
+    """M5 — risk/approval gate 覆蓋率（近 3 月）.
+
+    T04 缺口 #2：低風險批次讓 risk/approval gate 空轉。近 3 個日曆月窗內，
+    若既無 high/critical risk 的卡、也無 approval record，代表這兩條 gate 路徑
+    在真實 run 從未被運動到 → warn（把空轉可見化）；有任一 → ok。
+    """
+    today_ym = f"{today.year:04d}-{today.month:02d}"
+    window = {_ym_minus(today_ym, i) for i in (2, 1, 0)}
+    high_cards = [
+        c for c in cards
+        if c.get("year_month") in window and c.get("risk_level") in {"high", "critical"}
+    ]
+    recent_approvals = [
+        a for a in approvals
+        if isinstance(a.get("date"), str) and a["date"][:7] in window
+    ]
+    covered = len(high_cards) + len(recent_approvals)
+    status = "ok" if covered > 0 else "warn"
+    return MetricResult(
+        id="M5",
+        name="risk/approval gate 覆蓋率（近 3 月）",
+        current=f"high/critical 卡={len(high_cards)}, approval records={len(recent_approvals)}",
+        threshold="近 3 月 high/critical 卡 + approval 皆為 0 → warn（gate 空轉）",
+        status=status,
+        details={
+            "window": sorted(window),
+            "high_risk_task_ids": sorted(c.get("task_id", "") for c in high_cards),
+            "recent_approval_count": len(recent_approvals),
+        },
     )
 
 
@@ -504,11 +564,13 @@ def collect_metrics(today: date) -> list[MetricResult]:
     drafts = count_dir_md_files(DRAFTS_DIR)
     reports = count_dir_md_files(REPORTS_DIR)
     overlap = load_native_overlap()
+    approvals = load_approval_records()
     return [
         metric_m1(cards, today),
         metric_m2(drafts, reports),
         metric_m3(cards, audit_ids),
         metric_m4(overlap),
+        metric_m5(cards, approvals, today),
     ]
 
 

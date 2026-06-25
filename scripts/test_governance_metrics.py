@@ -189,6 +189,32 @@ class TestMetricM4(unittest.TestCase):
         self.assertIn("error", result.details)
 
 
+class TestMetricM5(unittest.TestCase):
+    def test_ok_when_high_risk_card_in_window(self):
+        cards = [{"task_id": "20260625-X1", "status": "review", "risk_level": "high", "year_month": "2026-06"}]
+        result = gm.metric_m5(cards, [], date(2026, 6, 25))
+        self.assertEqual(result.status, "ok")
+        self.assertIn("20260625-X1", result.details["high_risk_task_ids"])
+
+    def test_ok_when_approval_record_in_window(self):
+        cards = [{"task_id": "20260625-Y1", "status": "done", "risk_level": "low", "year_month": "2026-06"}]
+        approvals = [{"task_id": "20260625-Y1", "date": "2026-06-20", "status": "approved"}]
+        result = gm.metric_m5(cards, approvals, date(2026, 6, 25))
+        self.assertEqual(result.status, "ok")
+        self.assertEqual(result.details["recent_approval_count"], 1)
+
+    def test_warn_when_no_high_risk_and_no_approval(self):
+        cards = [{"task_id": "20260625-Z1", "status": "done", "risk_level": "low", "year_month": "2026-06"}]
+        result = gm.metric_m5(cards, [], date(2026, 6, 25))
+        self.assertEqual(result.status, "warn")
+
+    def test_old_coverage_outside_window_does_not_count(self):
+        cards = [{"task_id": "20260101-A1", "status": "done", "risk_level": "critical", "year_month": "2026-01"}]
+        approvals = [{"task_id": "20260101-A1", "date": "2026-01-05", "status": "approved"}]
+        result = gm.metric_m5(cards, approvals, date(2026, 6, 25))
+        self.assertEqual(result.status, "warn")
+
+
 class TestLoadAuditTaskIds(unittest.TestCase):
     """Regression: load_audit_task_ids must accept any YAML quoting style.
 
@@ -264,9 +290,9 @@ class TestMainExitCode(unittest.TestCase):
         # JSON parses
         import json
         parsed = json.loads(out.getvalue())
-        self.assertEqual(len(parsed), 4)
+        self.assertEqual(len(parsed), 5)
         ids = {m["id"] for m in parsed}
-        self.assertEqual(ids, {"M1", "M2", "M3", "M4"})
+        self.assertEqual(ids, {"M1", "M2", "M3", "M4", "M5"})
 
 
 class TestObservability(unittest.TestCase):
@@ -323,8 +349,8 @@ class TestObservability(unittest.TestCase):
         data = _json.loads(out.getvalue())
         self.assertEqual(set(data.keys()), {"workflow", "business", "failures"})
 
-    def test_existing_json_still_four_metrics(self):
-        """Guard: --json output must remain M1–M4 only (no regression)."""
+    def test_existing_json_now_five_metrics(self):
+        """Guard: --json output is M1–M5 (M5 added for T04 gap #2)."""
         import io
         import json as _json
         from contextlib import redirect_stdout
@@ -333,7 +359,7 @@ class TestObservability(unittest.TestCase):
         with redirect_stdout(out):
             gm.main(["--json", "--today", "2026-05-29"])
         data = _json.loads(out.getvalue())
-        self.assertEqual({m["id"] for m in data}, {"M1", "M2", "M3", "M4"})
+        self.assertEqual({m["id"] for m in data}, {"M1", "M2", "M3", "M4", "M5"})
 
 
 if __name__ == "__main__":
