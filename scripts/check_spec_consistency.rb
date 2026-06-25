@@ -42,6 +42,28 @@ rescue ArgumentError
   nil
 end
 
+# test_batch:true 的卡必須有對應 logs/runs/ run-log（D008, 2026-06-25；CI 硬性強制）
+# cards: Array of [task_file, task_hash]；run_task_ids: 已存在 run-log 的 task_id 清單
+def test_batch_run_log_violations(cards, run_task_ids)
+  ids = Array(run_task_ids).compact
+  violations = []
+  cards.each do |task_file, task|
+    next unless task.is_a?(Hash)
+    next unless task.key?('test_batch')
+
+    tb = task['test_batch']
+    unless [true, false].include?(tb)
+      violations << "#{task_file}: test_batch must be boolean"
+      next
+    end
+
+    if tb == true && !ids.include?(task['task_id'])
+      violations << "#{task_file}: test_batch:true 但缺對應 logs/runs/ run-log (task_id #{task['task_id']})"
+    end
+  end
+  violations
+end
+
 
 if __FILE__ == $PROGRAM_NAME
 
@@ -60,6 +82,7 @@ required_dirs.each do |dir|
 end
 
 # 2) Task Card schema 驗證（排除模板）
+parsed_cards = []
 Dir.glob('tasks/**/*.yaml').sort.each do |task_file|
   next if File.basename(task_file).include?('TEMPLATE')
 
@@ -68,6 +91,7 @@ Dir.glob('tasks/**/*.yaml').sort.each do |task_file|
     errors << "#{task_file}: root must be mapping"
     next
   end
+  parsed_cards << [task_file, task]
 
   REQUIRED_FIELDS.each do |field|
     value = task[field]
@@ -142,6 +166,17 @@ Dir.glob('tasks/**/*.yaml').sort.each do |task_file|
     end
   end
 end
+
+# 2b) test_batch:true 的卡必須有對應 logs/runs/ run-log（D008, 2026-06-25）
+run_task_ids = []
+Dir.glob('logs/runs/*.yaml').sort.each do |run_file|
+  doc = YAML.load_file(run_file)
+  next unless doc.is_a?(Hash)
+
+  log = doc['execution_log'].is_a?(Hash) ? doc['execution_log'] : doc
+  run_task_ids << log['task_id'] if log['task_id']
+end
+errors.concat(test_batch_run_log_violations(parsed_cards, run_task_ids))
 
 # 3) 範例 Task Card 的 input_data / expected_output.location 路徑檢查
 Dir.glob('tasks/examples/*.yaml').sort.each do |task_file|

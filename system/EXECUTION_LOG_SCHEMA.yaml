@@ -6,6 +6,7 @@
 #   2. status = partial（部分完成）
 #   3. risk_level >= high 的任務（需 4 層 gate 完整紀錄）
 #   4. checkpoints >= 3（多階段複雜任務，需分段溯源）
+#   5. test_batch: true（明確標記的測試/演練批次，需留 run-log 證據，不受 happy-path 豁免；2026-06-25 D008 新增，CI 硬性強制）
 # 其他 happy-path 任務僅寫 logs/AUDIT_LOG.md 即可。
 #
 # 理由：近 5 筆任務零失敗零 partial，AUDIT_LOG 已充分；schema 對失敗後 post-mortem

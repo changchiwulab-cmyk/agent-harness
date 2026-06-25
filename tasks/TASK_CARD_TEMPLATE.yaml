@@ -34,6 +34,9 @@ max_tool_calls: 5              # 單一任務最多工具呼叫次數
 max_retries: 3                 # 連續失敗最多重試次數
 max_web_searches: 3            # web search 上限
 
+# === 測試批次 ===
+test_batch: false              # 選填。true = 測試/演練批次，強制寫 logs/runs/（即使未達 D006 其他觸發條件）；見 D008
+
 # === Skill 路由 ===
 skill_type: ""                 # research / writing / ops / review
 

@@ -124,3 +124,41 @@ class TestLogsSchemaLintConstants < Minitest::Test
     assert_equal 5, ALLOWED_ERROR_TYPE.length
   end
 end
+
+# ── 測試 test_batch run-log 強制（D008, 2026-06-25）──────────────────────────────
+class TestTestBatchRunLog < Minitest::Test
+  def card(task_id, test_batch)
+    h = { 'task_id' => task_id }
+    h['test_batch'] = test_batch unless test_batch == :absent
+    h
+  end
+
+  def test_true_with_matching_run_log_ok
+    cards = [['t.yaml', card('20260625-T01', true)]]
+    assert_empty test_batch_run_log_violations(cards, ['20260625-T01'])
+  end
+
+  def test_true_without_run_log_flags
+    cards = [['t.yaml', card('20260625-T01', true)]]
+    violations = test_batch_run_log_violations(cards, [])
+    assert_equal 1, violations.length
+    assert_match(/test_batch:true/, violations.first)
+  end
+
+  def test_false_never_flags
+    cards = [['t.yaml', card('20260625-T01', false)]]
+    assert_empty test_batch_run_log_violations(cards, [])
+  end
+
+  def test_absent_field_never_flags
+    cards = [['t.yaml', card('20260625-T01', :absent)]]
+    assert_empty test_batch_run_log_violations(cards, [])
+  end
+
+  def test_non_boolean_flags
+    cards = [['t.yaml', card('20260625-T01', 'yes')]]
+    violations = test_batch_run_log_violations(cards, ['20260625-T01'])
+    assert_equal 1, violations.length
+    assert_match(/must be boolean/, violations.first)
+  end
+end
