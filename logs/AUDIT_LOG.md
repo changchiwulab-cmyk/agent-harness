@@ -33,6 +33,31 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260625-T05"
+  date: "2026-06-25"
+  skill_type: "ops"
+  goal: "test_batch run-log 強制機制（CI 硬擋）+ 回填 T01-T04 run-logs + 修正 T04 §3（Codex P2）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 9
+    - tool_name: "file_write"
+      call_count: 13
+    - tool_name: "bash"
+      call_count: 7
+  checkpoints: 4
+  approval_needed: true
+  approval_given: false
+  output_path: "outputs/drafts/20260625-T05_phase-summary.md"
+  error_summary: ""
+  estimated_tokens: "~27K"
+  notes: "落實 T04 缺口#1。A：test_batch 旗標 + EXECUTION_LOG_SCHEMA 第5觸發 + check_spec_consistency 硬擋 + 5 單元測試；B：T01-T04 標 test_batch:true + 回填 RUN-20260625-001..004；C：T04 §3 per-ID 全 15 模式（回應 Codex P2 異 session 外審）；D008 additive 延伸 D006。負向測試確認硬擋有效。ruby tests 25 runs 0 fail、pytest 7 passed、data.json 無漂移。ask 級變更（system/、memory/）待 PR #109 review。本卡 checkpoints=4 依 D006 rule#4 另寫 RUN-20260625-005。"
+```
+
+---
+
+```yaml
 - task_id: "20260625-T04"
   date: "2026-06-25"
   skill_type: "review"

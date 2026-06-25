@@ -76,6 +76,17 @@
       "related_task": "20260509-N06",
       "revisit_trigger": "v0.2.0 plugin 達到 agent-harness 全部 system/ 規格 round-trip 後評估轉 public；或下個 session 試行 bootstrap 後發現非預期問題",
       "status": "active"
+    },
+    {
+      "date": "2026-06-25",
+      "decision": "選 C（test_batch 顯式標記 + CI 硬擋），additive 延伸 D006，不取代之",
+      "decision_id": "20260625-D008",
+      "path": "memory/active_projects/agent-harness/decisions/20260625-D008_test-batch-run-log-trigger.yaml",
+      "project": "agent-harness",
+      "reasoning": "D006 的核心理由（happy-path AUDIT_LOG 已足、不強加儀式）仍成立，故不回退。\n測試/演練批次是「刻意要留證據」的特例，與一般 happy-path 性質不同，適合用顯式旗標區分。\n以 CI 硬性強制（test_batch:true 但缺對應 run-log → 紅燈）回應 T04 自己的觀察：\n「規範若只寫在文件、靠自律，容易淪為沒人遵守」。D006 四條觸發維持不變，本條為第 5 條。\n",
+      "related_task": "20260625-T05",
+      "revisit_trigger": "出現 2 次以上『該標 test_batch 卻漏標、導致測試批次無 run-log』→ 考慮自動偵測；或 D006 四條觸發本身被調整時一併檢視。",
+      "status": "active"
     }
   ],
   "logs": [
@@ -108,40 +119,115 @@
       "started_at": "2026-05-29 05:25",
       "status": "failed",
       "task_id": "20260529-003"
+    },
+    {
+      "ended_at": "2026-06-25 09:12",
+      "gate_results": {
+        "completion_check": "pass",
+        "risk_check": "pass",
+        "rule_check": "pass",
+        "schema_check": "pass"
+      },
+      "path": "logs/runs/RUN-20260625-001.yaml",
+      "run_id": "RUN-20260625-001",
+      "skill_type": "research",
+      "started_at": "2026-06-25 09:00",
+      "status": "completed",
+      "task_id": "20260625-T01"
+    },
+    {
+      "ended_at": "2026-06-25 09:24",
+      "gate_results": {
+        "completion_check": "pass",
+        "risk_check": "pass",
+        "rule_check": "pass",
+        "schema_check": "pass"
+      },
+      "path": "logs/runs/RUN-20260625-002.yaml",
+      "run_id": "RUN-20260625-002",
+      "skill_type": "research",
+      "started_at": "2026-06-25 09:12",
+      "status": "completed",
+      "task_id": "20260625-T02"
+    },
+    {
+      "ended_at": "2026-06-25 09:36",
+      "gate_results": {
+        "completion_check": "pass",
+        "risk_check": "pass",
+        "rule_check": "pass",
+        "schema_check": "pass"
+      },
+      "path": "logs/runs/RUN-20260625-003.yaml",
+      "run_id": "RUN-20260625-003",
+      "skill_type": "analysis",
+      "started_at": "2026-06-25 09:24",
+      "status": "completed",
+      "task_id": "20260625-T03"
+    },
+    {
+      "ended_at": "2026-06-25 09:45",
+      "gate_results": {
+        "completion_check": "pass",
+        "risk_check": "pass",
+        "rule_check": "pass",
+        "schema_check": "pass"
+      },
+      "path": "logs/runs/RUN-20260625-004.yaml",
+      "run_id": "RUN-20260625-004",
+      "skill_type": "review",
+      "started_at": "2026-06-25 09:36",
+      "status": "completed",
+      "task_id": "20260625-T04"
+    },
+    {
+      "ended_at": "2026-06-25 10:40",
+      "gate_results": {
+        "completion_check": "pass",
+        "risk_check": "pass",
+        "rule_check": "pass",
+        "schema_check": "pass"
+      },
+      "path": "logs/runs/RUN-20260625-005.yaml",
+      "run_id": "RUN-20260625-005",
+      "skill_type": "ops",
+      "started_at": "2026-06-25 10:00",
+      "status": "completed",
+      "task_id": "20260625-T05"
     }
   ],
   "overview": {
     "gate_results": {
       "completion_check": {
         "not_run": 1,
-        "pass": 1
+        "pass": 6
       },
       "risk_check": {
         "not_run": 1,
-        "pass": 1
+        "pass": 6
       },
       "rule_check": {
         "not_run": 1,
-        "pass": 1
+        "pass": 6
       },
       "schema_check": {
         "fail": 1,
-        "pass": 1
+        "pass": 6
       }
     },
     "run_status": {
-      "completed": 1,
+      "completed": 6,
       "failed": 1
     },
-    "run_total": 2,
+    "run_total": 7,
     "task_risk": {
       "high": 1,
       "low": 34,
-      "medium": 14
+      "medium": 15
     },
     "task_skill": {
       "analysis": 5,
-      "ops": 26,
+      "ops": 27,
       "research": 7,
       "review": 7,
       "writing": 4
@@ -150,9 +236,9 @@
       "done": 22,
       "in_progress": 2,
       "pending": 2,
-      "review": 23
+      "review": 24
     },
-    "task_total": 49
+    "task_total": 50
   },
   "tasks": [
     {
@@ -644,6 +730,16 @@
       "skill_type": "review",
       "status": "review",
       "task_id": "20260625-T04"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-25",
+      "goal": "實作 test_batch 旗標（CI 硬擋：測試批次必留 run-log）+ 回填 T01-T04 run-logs + 修正 T04 §3 per-ID（回應 Codex P2），關閉 T04 缺口 #1",
+      "path": "tasks/2026-06-25_t05_test-batch-run-log-enforcement.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260625-T05"
     }
   ]
 }

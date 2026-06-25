@@ -1,7 +1,7 @@
 # Task Card — test_batch run-log 強制機制（落實 T04 缺口 #1）
 task_id: "20260625-T05"
 date: "2026-06-25"
-status: "pending"
+status: "review"
 
 # === 任務定義 ===
 goal: "實作 test_batch 旗標（CI 硬擋：測試批次必留 run-log）+ 回填 T01-T04 run-logs + 修正 T04 §3 per-ID（回應 Codex P2），關閉 T04 缺口 #1"
@@ -63,8 +63,12 @@ skill_type: "ops"
 test_batch: false
 
 # === 執行紀錄 ===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - "b26bfb0 ① 建 T05 卡"
+  - "4196860 ② test_batch CI 硬擋機制 + 單元測試"
+  - "3d734da ③ 回填 T01-T04 run-logs + T04 §3 per-ID"
+  - "④ 收尾：T05 摘要 + D008 + AUDIT_LOG + data.json"
+actual_tool_calls: 25
+result_summary: "DoD 全項完成。A 機制：test_batch 欄位 + EXECUTION_LOG_SCHEMA 第5觸發 + check_spec_consistency 硬擋函式 + 5 單元測試。B 回填：T01-T04 標 test_batch:true + RUN-20260625-001..004。C：T04 §3 改 per-ID 全 15 模式（回應 Codex P2）。D008 additive 延伸 D006。驗證全綠（check_spec OK、ruby tests 25 runs 0 fail、pytest 7 passed、data.json 無漂移）；負向測試確認硬擋有效。ask 級變更待 PR #109 review。"
+completion_time: "2026-06-25"
 audit_log_ref: "logs/AUDIT_LOG.md"

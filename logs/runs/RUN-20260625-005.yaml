@@ -1,0 +1,49 @@
+# Execution Log — T05 test_batch run-log 強制機制（checkpoints>=3，D006 rule#4 觸發）
+
+execution_log:
+  run_id: "RUN-20260625-005"
+  task_id: "20260625-T05"
+  skill_type: "ops"
+  started_at: "2026-06-25 10:00"
+  ended_at: "2026-06-25 10:40"
+  status: "completed"
+
+  tools_used:
+    - tool: file_read
+      call_count: 9
+    - tool: file_write
+      call_count: 13
+    - tool: bash
+      call_count: 7
+
+  checkpoints:
+    - commit: "b26bfb0"
+      stage: "① 建 T05 卡"
+    - commit: "4196860"
+      stage: "② test_batch CI 硬擋機制 + 單元測試"
+    - commit: "3d734da"
+      stage: "③ 回填 T01-T04 run-logs + T04 §3 per-ID"
+    - commit: "pending"
+      stage: "④ 收尾：T05 摘要 + D008 + AUDIT_LOG + data.json"
+
+  token_estimate:
+    input: 20000
+    output: 7000
+    total: 27000
+    source: "rule_estimated"
+
+  approvals:
+    - action: "修改 system/EXECUTION_LOG_SCHEMA.yaml + TASK_CARD_TEMPLATE.yaml + scripts/ + 寫 memory/decisions/D008（ask 級）"
+      status: "pending"
+      approved_by: "human"
+      timestamp: ""
+
+  output_path: "outputs/drafts/20260625-T05_phase-summary.md"
+  error_summary: ""
+  gate_results:
+    schema_check: "pass"
+    rule_check: "pass"
+    completion_check: "pass"
+    risk_check: "pass"
+
+  notes: "落實 T04 缺口#1：test_batch 旗標 + CI 硬擋 + 回填 T01-T04 run-logs + Codex P2 修正（T04 §3 per-ID）。負向測試確認硬擋有效。ask 級變更待 PR #109 review 核准。"

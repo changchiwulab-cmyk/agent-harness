@@ -1,0 +1,34 @@
+decision_id: "20260625-D008"
+date: "2026-06-25"
+project: "agent-harness"
+
+# --- 決策內容 ---
+context: |
+  3 主題自測（T01-T04，2026-06-25）的框架回測（T04）揭露缺口 #1：D006 將 logs/runs/ 使用
+  範圍收斂為 failed/partial/high-risk/checkpoints>=3 四條觸發。刻意做的「測試/演練批次」全屬
+  low-risk happy-path、各僅 1 checkpoint，故跑完零 run-log——只有 AUDIT_LOG，對「測試」場景
+  證據偏薄。需在不回退 D006「不對短小 happy-path 強加儀式」原則的前提下，補上測試批次的證據留存。
+
+options_considered:
+  - option: "A. 不做：缺口續存，測試批次靠 AUDIT_LOG + 報告自行佐證"
+    pros: "零改動；維持現狀"
+    cons: "測試批次無結構化 run-log，gate_results/token/checkpoint 不可機讀溯源；T04 缺口未閉合"
+  - option: "B. 全任務強制寫 runs/"
+    pros: "資料最完整"
+    cons: "正是 D006 已否決的過度工程；對短小 happy-path 強加儀式負擔"
+  - option: "C. 新增 test_batch:true 為第 5 觸發條件（顯式標記 + CI 硬擋）"
+    pros: "只有明確標記的測試/演練批次才強制；不影響一般 happy-path；CI（check_spec_consistency.rb）硬性強制，不淪為沒人遵守的文件"
+    cons: "需新增旗標欄位與 lint 規則；依賴作者正確標記 test_batch"
+
+decision: "選 C（test_batch 顯式標記 + CI 硬擋），additive 延伸 D006，不取代之"
+reasoning: |
+  D006 的核心理由（happy-path AUDIT_LOG 已足、不強加儀式）仍成立，故不回退。
+  測試/演練批次是「刻意要留證據」的特例，與一般 happy-path 性質不同，適合用顯式旗標區分。
+  以 CI 硬性強制（test_batch:true 但缺對應 run-log → 紅燈）回應 T04 自己的觀察：
+  「規範若只寫在文件、靠自律，容易淪為沒人遵守」。D006 四條觸發維持不變，本條為第 5 條。
+
+# --- 追蹤 ---
+risk: "依賴作者把測試批次正確標 test_batch:true；若漏標仍會落回 happy-path 豁免。緩解：將測試批次納入 retro 檢查清單。"
+revisit_trigger: "出現 2 次以上『該標 test_batch 卻漏標、導致測試批次無 run-log』→ 考慮自動偵測；或 D006 四條觸發本身被調整時一併檢視。"
+related_task: "20260625-T05"
+status: "active"
