@@ -1,0 +1,57 @@
+# Task Card — 高風險 gate 演練（T06-B；對應 test_failure_drill 的 risk/approval 版）
+task_id: "20260625-DR1"
+date: "2026-06-25"
+status: "review"
+
+# === 任務定義 ===
+goal: "高風險 gate 演練：起草一封對外電子報草稿，驗證 risk_check（high→drafts）與 approval flow 在真實 run 留痕"
+context: |
+  T04 缺口 #2：所有真實 run 都 low-risk，risk_check/approval 路徑從未被運動到（只有 test_dummy_task_smoke
+  測契約）。本卡刻意設 risk_level: high + 對外動作（電子報），讓 harness 真的走一次：
+  risk_check 把高風險輸出鎖在 outputs/drafts/、approval flow 產生真實 logs/approvals/ 紀錄、
+  high-risk 依 D006 rule#3 寫 logs/runs/。內容為合成演練稿，明標不發布。對應 T06 的 M5 指標提供真實資料。
+input_data:
+  - "system/APPROVAL_POLICY.yaml"
+  - "system/PERMISSIONS.yaml"
+  - "memory/active_projects/agent-harness/context.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "產出對外電子報草稿，明確標示為『演練、不發布』，停在 outputs/drafts/（risk_check：high→drafts，不進 reports/）"
+  - "寫真實 approval record 到 logs/approvals/2026-06-25_20260625-DR1_approval.yaml（human_confirm / approved）"
+  - "寫 logs/runs/RUN-20260625-006.yaml（status completed、risk_check 記錄、gate 全 pass）"
+  - "全程無實際對外發送（硬規則 #2）；無觸及 deny 清單"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260625-DR1_newsletter-drill-draft.md"
+
+# === 風險與權限 ===
+risk_level: "high"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "write_drafts"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 0
+
+# === 測試批次 ===
+test_batch: false
+
+# === Skill 路由 ===
+skill_type: "writing"
+
+# === 執行紀錄 ===
+checkpoints:
+  - "T06-B: DR1 高風險演練（草稿 + approval + run-log）"
+actual_tool_calls: 3
+result_summary: "DoD 4/4 通過。高風險對外電子報草稿停 drafts/（risk_check：high→drafts，未進 reports/）；approval record APR-20260625-001 留痕（human_confirm/approved）；RUN-20260625-006 記 risk_check；未發送任何外部訊息。為 T04 缺口#2 提供真實 risk/approval 覆蓋。"
+completion_time: "2026-06-25"
+audit_log_ref: "logs/AUDIT_LOG.md"

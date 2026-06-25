@@ -1,0 +1,41 @@
+# Execution Log — 高風險 gate 演練 DR1（risk_level high，D006 rule#3 觸發）
+
+execution_log:
+  run_id: "RUN-20260625-006"
+  task_id: "20260625-DR1"
+  skill_type: "writing"
+  started_at: "2026-06-25 11:00"
+  ended_at: "2026-06-25 11:08"
+  status: "completed"
+
+  tools_used:
+    - tool: file_read
+      call_count: 2
+    - tool: file_write
+      call_count: 1
+
+  checkpoints:
+    - commit: "pending"
+      stage: "高風險演練草稿 + approval record + run-log"
+
+  token_estimate:
+    input: 3000
+    output: 1200
+    total: 4200
+    source: "rule_estimated"
+
+  approvals:
+    - action: "對外電子報草稿（演練，不發布）"
+      status: "approved"
+      approved_by: "human"
+      timestamp: "2026-06-25"
+
+  output_path: "outputs/drafts/20260625-DR1_newsletter-drill-draft.md"
+  error_summary: ""
+  gate_results:
+    schema_check: "pass"
+    rule_check: "pass"
+    completion_check: "pass"
+    risk_check: "pass"
+
+  notes: "T06-B 高風險 gate 演練。risk_level high + 對外動作 → risk_check 把輸出鎖在 drafts/、approval flow 留痕（APR-20260625-001）、未發送任何外部訊息。為 T04 缺口#2 提供真實 risk/approval 覆蓋，供 M5 指標取用。對應 R5 failure-drill 的 risk/approval 版。"

@@ -1,7 +1,7 @@
 # Task Card — T04 缺口 #2 收斂（gate 覆蓋）
 task_id: "20260625-T06"
 date: "2026-06-25"
-status: "pending"
+status: "review"
 
 # === 任務定義 ===
 goal: "補 T04 缺口 #2（低風險批次讓 risk/approval gate 空轉）：新增 M5 gate 覆蓋指標 + 跑一次高風險演練留痕"
@@ -57,8 +57,10 @@ test_batch: false
 skill_type: "ops"
 
 # === 執行紀錄 ===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - "4e6d471 M5 risk/approval gate 覆蓋指標 + 測試"
+  - "DR1 高風險演練 + D009 + T06 摘要/audit"
+actual_tool_calls: 18
+result_summary: "DoD 全項完成。A：governance_metrics.py 加 load_approval_records + risk_level + metric_m5（近3月無 high/critical 卡且無 approval → warn），collect_metrics(M1-M5)；2 個釘 4 的測試更新為 5、新增 TestMetricM5（31 tests 全綠）。B：DR1 高風險演練（草稿停 drafts、approval APR-20260625-001、RUN-20260625-006），M5 即時轉為 high/critical=2、approvals=3。D009 記錄 gate 覆蓋＝M5+演練。"
+completion_time: "2026-06-25"
 audit_log_ref: "logs/AUDIT_LOG.md"

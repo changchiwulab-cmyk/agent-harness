@@ -1,0 +1,32 @@
+decision_id: "20260625-D009"
+date: "2026-06-25"
+project: "agent-harness"
+
+# --- 決策內容 ---
+context: |
+  T04 框架回測缺口 #2：所有真實 run 都 low-risk，risk_check trivially pass、approval flow 從未在
+  真實 run 觸發；高風險/批准路徑只有 tests/e2e/test_dummy_task_smoke.py 測「契約」，真實 run 從未走過。
+  需決定怎麼讓這兩條 gate 不空轉、且空轉時被看見。
+
+options_considered:
+  - option: "A. 只加 M5 觀測指標"
+    pros: "輕；把空轉可見化，不強加儀式"
+    cons: "只是『看到』，沒有真的走過一次高風險/approval 路徑，無真實樣本"
+  - option: "B. 只做週期性高風險演練"
+    pros: "真的走過 risk/approval 路徑，累積真實 approval record"
+    cons: "一次性；沒有持續監測，下次又可能長期空轉而無人察覺"
+  - option: "C. M5 觀測 + 週期性高風險演練（兩者都做）"
+    pros: "M5 持續監測空轉、演練提供真實樣本並驗證路徑；觀測 + 實證互補"
+    cons: "工作量較大；演練內容須為合成、嚴守不發布"
+
+decision: "選 C（M5 指標 + 高風險演練），由使用者於計畫 3 確認"
+reasoning: |
+  沿用本專案 R7「觀測優先」精神：先把空轉可見化（M5），再用一次真實高風險演練（DR1）證明
+  risk_check（high→drafts）與 approval flow 真的會動，並留下真實 approval record 供 M5 取用。
+  與既有 test_dummy_task_smoke（契約測試）互補：契約測 structure、演練測真實 run、M5 測持續覆蓋。
+
+# --- 追蹤 ---
+risk: "M5 的 3 月窗只要有任一舊 approval 即 ok，可能偽綠（長期只靠舊樣本）。緩解：窗口短到 3 月、未來可加『近 N 筆無 high-risk run』的更嚴版本。"
+revisit_trigger: "M5 連續 2 個月 warn（真的長期空轉），或演練流於形式（每次內容雷同無檢驗價值）→ 重新檢視門檻與演練設計。"
+related_task: "20260625-T06"
+status: "active"

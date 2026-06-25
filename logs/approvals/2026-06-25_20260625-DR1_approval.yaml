@@ -1,0 +1,14 @@
+# Approval record — 高風險 gate 演練 DR1（T06-B）
+# 對外動作（電子報草稿）+ risk_level high → APPROVAL_POLICY 觸發 human_confirm。
+
+approval_records:
+  - approval_id: "APR-20260625-001"
+    task_id: "20260625-DR1"
+    date: "2026-06-25"
+    action: "高風險 gate 演練：對外電子報草稿（合成、不發布），驗證 risk_check 與 approval flow"
+    approval_method: "human_confirm"
+    risk_level: "high"
+    status: "approved"
+    approved_by: "human"
+    rationale: "使用者於計畫 3（ExitPlanMode）核准本演練；草稿明標不發布、停 drafts/、不晉升 reports/。"
+    linked_run: "RUN-20260625-006"

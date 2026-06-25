@@ -33,6 +33,54 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260625-T06"
+  date: "2026-06-25"
+  skill_type: "ops"
+  goal: "補 T04 缺口#2：M5 risk/approval gate 覆蓋指標 + 高風險演練"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "file_write"
+      call_count: 8
+    - tool_name: "bash"
+      call_count: 4
+  checkpoints: 2
+  approval_needed: true
+  approval_given: false
+  output_path: "outputs/drafts/20260625-T06_phase-summary.md"
+  error_summary: ""
+  estimated_tokens: "~22K"
+  notes: "M5『risk/approval gate 覆蓋率』加入 governance_metrics（M1-M5），2 個釘 4 的測試更新 + TestMetricM5（31 tests 綠）。高風險演練 DR1 提供真實覆蓋，M5 由 high/critical=1 → 2。D009 記 gate 覆蓋=M5+演練。ask 級（scripts/、memory/）待 PR #109 review。"
+```
+
+---
+
+```yaml
+- task_id: "20260625-DR1"
+  date: "2026-06-25"
+  skill_type: "writing"
+  goal: "高風險 gate 演練：對外電子報草稿（合成、不發布），驗證 risk_check + approval flow"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/20260625-DR1_newsletter-drill-draft.md"
+  error_summary: ""
+  estimated_tokens: "~4K"
+  notes: "T06-B 高風險演練。risk_level high + 對外動作 → risk_check 鎖 drafts/、approval APR-20260625-001 留痕、RUN-20260625-006、未發送任何外部訊息。為 T04 缺口#2 提供真實 risk/approval 覆蓋。對應 R5 failure-drill 的 risk/approval 版。"
+```
+
+---
+
+```yaml
 - task_id: "20260625-T05"
   date: "2026-06-25"
   skill_type: "ops"
