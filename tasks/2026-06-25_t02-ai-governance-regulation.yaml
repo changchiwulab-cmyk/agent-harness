@@ -1,7 +1,7 @@
 # Task Card — 3 主題自測系列 第 2 張（research）
 task_id: "20260625-T02"
 date: "2026-06-25"
-status: "pending"
+status: "review"
 
 # === 任務定義 ===
 goal: "盤點 2026 年 AI 治理與法規現況：EU AI Act 落地時程、台灣 AI 基本法/PDPA 進度，對一人公司的實務影響"
@@ -50,8 +50,9 @@ max_web_searches: 3
 skill_type: "research"
 
 # === 執行紀錄 ===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - "C2: 20260625-T02 AI 治理法規研究草稿（卡 + 草稿同 commit）"
+actual_tool_calls: 4
+result_summary: "DoD 7/7 通過。EU AI Act 時程表（5 時點 + Omnibus 延後）+ 台灣 AI 基本法（2025-12-23 三讀）+ PDPA 銜接 + 七大原則；六區塊齊備。completion_check 第一輪發現缺『對一人公司實務影響』獨立節（DoD#3），補上 5 條落地檢查點後通過——gate 確實攔到缺漏。web search 2/3 輪。時程浮動處列 [待驗證]。"
+completion_time: "2026-06-25"
 audit_log_ref: "logs/AUDIT_LOG.md"
