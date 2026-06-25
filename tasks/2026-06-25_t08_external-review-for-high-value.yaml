@@ -1,0 +1,61 @@
+# Task Card — T04 缺口 #4 收斂（異 session 外審制度化）
+task_id: "20260625-T08"
+date: "2026-06-25"
+status: "pending"
+
+# === 任務定義 ===
+goal: "補 T04 缺口 #4（completion_check 依賴誠實自評）：APPROVAL_POLICY 新增高價值產出需異 session 外審 trigger"
+context: |
+  T04 §5 缺口 #4：completion_check 依賴執行者誠實自評，同 session 自審＝循環驗證（VAL-03）。
+  Codex PR review 已是「異 session 外審」的實例（它抓到 T04 §3 自審漏掉的 per-ID 列舉），
+  但無政策把它制度化。本卡在 APPROVAL_POLICY 新增 trigger：高價值產出需異 session/外部 review
+  才算完成，並記決策 D010 引用上述實證。
+input_data:
+  - "outputs/drafts/20260625-T04_harness-3theme-test-analysis.md"
+  - "system/APPROVAL_POLICY.yaml"
+  - "system/FAILURE_TAXONOMY.yaml"
+  - "tasks/DECISION_LOG_TEMPLATE.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "system/APPROVAL_POLICY.yaml triggers 新增：高價值產出（晉升 reports/、test_batch 回測報告、risk>=high）→ 需異 session 或外部 review 才算完成"
+  - "標註 Codex PR review 為既有外審實作實例"
+  - "決策 D010（高價值產出需異 session 外審）寫入 memory/.../decisions/，引用 T04 §5 VAL-03 與 Codex 抓 §3 實證"
+  - "outputs/drafts/20260625-T08_phase-summary.md 摘要；AUDIT_LOG +T08"
+  - "驗證：check_spec_consistency.rb OK、ALL_YAML_OK、APPROVAL_POLICY 仍可被 e2e smoke 載入"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260625-T08_phase-summary.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+# === 測試批次 ===
+test_batch: false
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄 ===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"

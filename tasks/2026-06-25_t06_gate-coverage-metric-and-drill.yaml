@@ -1,0 +1,64 @@
+# Task Card — T04 缺口 #2 收斂（gate 覆蓋）
+task_id: "20260625-T06"
+date: "2026-06-25"
+status: "pending"
+
+# === 任務定義 ===
+goal: "補 T04 缺口 #2（低風險批次讓 risk/approval gate 空轉）：新增 M5 gate 覆蓋指標 + 跑一次高風險演練留痕"
+context: |
+  T04 §5 缺口 #2：所有卡都 low-risk，risk_check trivially pass、approval 從未在真實 run 觸發；
+  高風險/批准路徑目前只有 tests/e2e/test_dummy_task_smoke.py 測「契約」，真實 run 從未走過。
+  使用者選「兩者都做」：(A) governance_metrics.py 加 M5「risk/approval gate 覆蓋率」把空轉可見化；
+  (B) 建並執行一張高風險演練卡 DR1，走 risk_check（high→drafts）+ approval flow，留下真實 approval record。
+input_data:
+  - "outputs/drafts/20260625-T04_harness-3theme-test-analysis.md"
+  - "scripts/governance_metrics.py"
+  - "scripts/test_governance_metrics.py"
+  - "system/APPROVAL_POLICY.yaml"
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "governance_metrics.py：load_task_cards 帶出 risk_level；新增 load_approval_records()；新增 metric_m5()（近 3 月無 high/critical 卡且無 approval record → warn，否則 ok）；加入 collect_metrics（M1-M5）"
+  - "更新 test_governance_metrics.py 兩個釘 4 的測試（test_main_runs_against_real_repo、test_existing_json_still_four_metrics）為 5/{M1..M5}；新增 TestMetricM5（有/無覆蓋兩案）"
+  - "建並執行高風險演練卡 tasks/2026-06-25_dr1_high-risk-gate-drill.yaml（risk high、approval_needed true）"
+  - "DR1 產出 outputs/drafts/20260625-DR1_*.md（明標演練、停 drafts/）+ 真實 logs/approvals/2026-06-25_20260625-DR1_approval.yaml + logs/runs/RUN-20260625-006.yaml"
+  - "決策 D009（gate 覆蓋 = M5 + 週期性高風險演練）寫入 memory/.../decisions/"
+  - "驗證全綠：test_governance_metrics.py、check_spec_consistency.rb、validate_task_card（T06/DR1）、pytest、data.json --check"
+  - "outputs/drafts/20260625-T06_phase-summary.md 摘要；AUDIT_LOG +T06 +DR1"
+
+# === 輸出定義 ===
+expected_output:
+  format: "mixed"
+  location: "outputs/drafts/"
+  filename: "20260625-T06_phase-summary.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 30
+max_retries: 3
+max_web_searches: 0
+
+# === 測試批次 ===
+test_batch: false
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄 ===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"

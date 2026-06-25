@@ -1,0 +1,60 @@
+# Task Card — T04 缺口 #3 收斂（批次 web-search 節流）
+task_id: "20260625-T07"
+date: "2026-06-25"
+status: "pending"
+
+# === 任務定義 ===
+goal: "補 T04 缺口 #3（web-search 事後保護非事前節流）：COST_POLICY 新增批次 web-search 節流與快取規則"
+context: |
+  T04 §5 缺口 #3：COST_POLICY 只有「單卡 ≤3 輪」事後上限；同批/同日多卡仍有 rate-limit 風險
+  （2026-04 S01 前例：第 3 輪 web search 撞 rate limit）。web_search 無程式碼 wrapper，只能用規則約束。
+  本卡延伸既有「能讀檔解決的不做 web search」，加批次層級的「先查內部/既有 outputs（快取效應）+
+  批次合計上限 + 卡間間隔」。純政策文字，無程式碼/CI；不動 GLOBAL_RULES（避 3K context budget）。
+input_data:
+  - "outputs/drafts/20260625-T04_harness-3theme-test-analysis.md"
+  - "system/COST_POLICY.md"
+  - "logs/errors/2026-04-04_20260404-S01_error.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "system/COST_POLICY.md『行為規則 / 工具呼叫限制』新增子節『批次 web-search 節流與快取』"
+  - "規則含：同批/同日多卡先查 project 內部與既有 outputs/（快取效應）再外查；批次合計建議上限；卡間留間隔避免 rate-limit（引 2026-04 S01）"
+  - "不動 GLOBAL_RULES.md；context budget 檢查仍通過"
+  - "outputs/drafts/20260625-T07_phase-summary.md 摘要；AUDIT_LOG +T07"
+  - "驗證：check_spec_consistency.rb OK、ALL_YAML_OK、context budget OK"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260625-T07_phase-summary.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_logs"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+# === 測試批次 ===
+test_batch: false
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄 ===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
