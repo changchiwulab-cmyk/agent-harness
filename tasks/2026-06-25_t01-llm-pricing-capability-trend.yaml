@@ -1,7 +1,7 @@
 # Task Card — 3 主題自測系列 第 1 張（research）
 task_id: "20260625-T01"
 date: "2026-06-25"
-status: "pending"              # pending → in_progress → checkpoint → review → done / failed
+status: "review"              # pending → in_progress → checkpoint → review → done / failed
 
 # === 任務定義 ===
 goal: "盤點 2026 年主流 LLM 的價格 / 能力 / long-context 趨勢，回答『現在的取捨在哪』"
@@ -52,8 +52,9 @@ max_web_searches: 3
 skill_type: "research"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - "C1: 20260625-T01 LLM 趨勢研究草稿（卡 + 草稿同 commit）"
+actual_tool_calls: 3
+result_summary: "DoD 7/7 通過。3+ 家供應商（Claude/OpenAI/Google + DeepSeek）量化價格表 + long-context 獨立節（13 款 1M+、Llama 4 Scout 10M、1M 真實可用率 74-76%、Anthropic 取消長上下文加價）。六區塊格式齊備。web search 2/3 輪（第 2 輪即足，省 1 輪）。四態分離，Opus 版本號等 4 項列 [待驗證]。"
+completion_time: "2026-06-25"
 audit_log_ref: "logs/AUDIT_LOG.md"
