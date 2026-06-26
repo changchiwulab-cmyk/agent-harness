@@ -56,6 +56,15 @@ class TestCheckPrimitives(unittest.TestCase):
         with self.assertRaises(ValueError):
             RE.run_check(SAMPLE, {"type": "nope"})
 
+    def test_malformed_check_missing_field_raises(self):
+        # 缺 pattern / token / before-after → 必須大聲 raise（不靜默當失敗）
+        with self.assertRaises(ValueError):
+            RE.run_check(SAMPLE, {"id": "x", "type": "required_regex"})
+        with self.assertRaises(ValueError):
+            RE.run_check(SAMPLE, {"id": "x", "type": "required_heading"})
+        with self.assertRaises(ValueError):
+            RE.run_check(SAMPLE, {"id": "x", "type": "heading_order", "before": "結論"})
+
 
 class TestEvaluateScoring(unittest.TestCase):
     def test_score_and_threshold(self):
@@ -78,6 +87,12 @@ class TestEvaluateScoring(unittest.TestCase):
         self.assertEqual(res["score"], 0.0)
         self.assertFalse(res["passed"])
 
+    def test_evaluate_propagates_malformed_check(self):
+        # malformed rubric 不可被吞成「失敗的一條」，要往外拋
+        rubric = {"pass_threshold": 0.8, "checks": [{"id": "a", "type": "forbidden_regex"}]}
+        with self.assertRaises(ValueError):
+            RE.evaluate(rubric, SAMPLE)
+
 
 class TestExtractionAndGolden(unittest.TestCase):
     def test_discover_skills_has_five(self):
@@ -89,6 +104,18 @@ class TestExtractionAndGolden(unittest.TestCase):
         ex = RE.extract_examples("research")
         self.assertTrue(ex["good"] and "結論" in ex["good"])
         self.assertTrue(ex["bad"] is not None)
+
+    def test_parse_examples_missing_section_returns_none(self):
+        md = "## 好的輸出範例\n\n```markdown\n## 結論\nok\n```\n"  # 無壞範例
+        ex = RE.parse_examples(md)
+        self.assertIsNotNone(ex["good"])
+        self.assertIsNone(ex["bad"])
+
+    def test_golden_invariant_raises_when_example_missing(self):
+        import unittest.mock as mock
+        with mock.patch.object(RE, "extract_examples", return_value={"good": "x", "bad": None}):
+            with self.assertRaises(ValueError):
+                RE.check_golden_invariant("research")
 
     def test_golden_invariant_all_skills(self):
         for skill in RE.discover_skills():

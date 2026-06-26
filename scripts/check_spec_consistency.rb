@@ -36,6 +36,13 @@ ALLOWED_ERROR_TYPE = %w[tool_failure rule_violation schema_failure timeout unkno
 # --- v2.1 治理層硬化：信任邊界 + eval harness schema 常數 ---
 REQUIRED_SEC_IDS = %w[SEC-05 SEC-06 SEC-07].freeze
 ALLOWED_RUBRIC_CHECK_TYPES = %w[required_heading required_regex forbidden_regex heading_order heading_nonempty].freeze
+RUBRIC_CHECK_REQUIRED_FIELDS = {
+  'required_heading' => %w[token],
+  'heading_nonempty' => %w[token],
+  'required_regex' => %w[pattern],
+  'forbidden_regex' => %w[pattern],
+  'heading_order' => %w[before after]
+}.freeze
 
 def parse_iso_date(value)
   return value if value.is_a?(Date)
@@ -303,7 +310,15 @@ Dir.glob('skills/*/rubric.yaml').sort.each do |rb_file|
       end
       errors << "#{rb_file}: checks[#{i}] missing id" if c['id'].to_s.strip.empty?
       ctype = c['type']
-      unless ALLOWED_RUBRIC_CHECK_TYPES.include?(ctype)
+      if ALLOWED_RUBRIC_CHECK_TYPES.include?(ctype)
+        # 依 type 驗必填參數，避免 malformed check 在 runtime 被靜默當失敗
+        required = RUBRIC_CHECK_REQUIRED_FIELDS[ctype] || []
+        required.each do |fld|
+          if c[fld].nil? || c[fld].to_s.strip.empty?
+            errors << "#{rb_file}: checks[#{i}] type #{ctype} missing '#{fld}'"
+          end
+        end
+      else
         errors << "#{rb_file}: checks[#{i}] invalid type #{ctype} (allowed: #{ALLOWED_RUBRIC_CHECK_TYPES.join('/')})"
       end
     end

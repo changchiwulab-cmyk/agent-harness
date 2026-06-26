@@ -70,21 +70,32 @@ def section_body(text, token):
     return ""
 
 
+def _require(check, field):
+    """取 check[field]；缺漏或空 → 視為 rubric 定義錯誤，明確 raise（不靜默當失敗）。"""
+    value = check.get(field)
+    if value is None or (isinstance(value, str) and value.strip() == ""):
+        raise ValueError(
+            "malformed rubric check (id=%s type=%s): missing '%s'"
+            % (check.get("id"), check.get("type"), field)
+        )
+    return value
+
+
 def run_check(text, check):
     t = check.get("type")
     if t == "required_heading":
-        return heading_index(text, check["token"]) >= 0
+        return heading_index(text, _require(check, "token")) >= 0
     if t == "forbidden_regex":
-        return re.search(check["pattern"], text, re.MULTILINE) is None
+        return re.search(_require(check, "pattern"), text, re.MULTILINE) is None
     if t == "required_regex":
-        return re.search(check["pattern"], text, re.MULTILINE) is not None
+        return re.search(_require(check, "pattern"), text, re.MULTILINE) is not None
     if t == "heading_order":
-        a = heading_index(text, check["before"])
-        b = heading_index(text, check["after"])
+        a = heading_index(text, _require(check, "before"))
+        b = heading_index(text, _require(check, "after"))
         return a >= 0 and b >= 0 and a < b
     if t == "heading_nonempty":
-        return section_body(text, check["token"]).strip() != ""
-    raise ValueError("unknown check type: %s" % t)
+        return section_body(text, _require(check, "token")).strip() != ""
+    raise ValueError("unknown check type: %s (id=%s)" % (t, check.get("id")))
 
 
 def evaluate(rubric, text):
@@ -93,10 +104,9 @@ def evaluate(rubric, text):
     checks = rubric.get("checks", []) or []
     results = []
     for c in checks:
-        try:
-            passed = run_check(text, c)
-        except Exception:
-            passed = False
+        # 不吞例外：malformed rubric / unknown type 應大聲失敗，
+        # 否則 threshold < 1.0 時某條準則可能靜默不再被執行而 CI 仍綠。
+        passed = run_check(text, c)
         results.append((c.get("id", c.get("type")), bool(passed), c.get("desc", "")))
     total = len(results)
     n_pass = sum(1 for _, p, _ in results if p)
@@ -125,21 +135,34 @@ def _first_block_after(md, heading_token):
     return fence.group(1) if fence else None
 
 
-def extract_examples(skill):
-    """從 skills/<skill>/eval_examples.md 取出 good / bad 範例文字。"""
-    path = os.path.join(SKILLS_DIR, skill, "eval_examples.md")
-    with open(path, encoding="utf-8") as f:
-        md = f.read()
+def parse_examples(md):
+    """從 eval_examples.md 內文取出 good / bad 範例（找不到回 None）。"""
     return {
         "good": _first_block_after(md, "好的輸出範例"),
         "bad": _first_block_after(md, "壞的輸出範例"),
     }
 
 
+def extract_examples(skill):
+    """從 skills/<skill>/eval_examples.md 取出 good / bad 範例文字。"""
+    path = os.path.join(SKILLS_DIR, skill, "eval_examples.md")
+    with open(path, encoding="utf-8") as f:
+        md = f.read()
+    return parse_examples(md)
+
+
 def check_golden_invariant(skill):
     """同一 skill：good 必過、bad 必不過。回傳 (ok, good_result, bad_result)。"""
     rubric = load_rubric(skill)
     ex = extract_examples(skill)
+    # 範例缺失（標題/碼塊被移除或改名）必須在評分前大聲失敗——
+    # 否則 bad=None 被當空字串而「不過」，不變式會在負例消失後仍假性通過。
+    for kind in ("good", "bad"):
+        if ex[kind] is None:
+            raise ValueError(
+                "%s/eval_examples.md：找不到「%s」碼塊（無法跑 golden regression）"
+                % (skill, "好的輸出範例" if kind == "good" else "壞的輸出範例")
+            )
     good = evaluate(rubric, ex["good"])
     bad = evaluate(rubric, ex["bad"])
     ok = good["passed"] and not bad["passed"]
