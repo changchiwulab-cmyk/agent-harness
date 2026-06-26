@@ -1,0 +1,65 @@
+# Task Card — Evaluation Plane（評估 / 回歸閘門）
+# 來源：20260626-001 架構缺口設計 §三 缺口 1（最高槓桿）
+# 目的：把品質從「人讀範例」升級為「自動評分 + CI 回歸閘門」，閉合三大核心價值的「可量化」
+# 安全：建立 evals/ 資料與 scripts/ + CI；改 system/（新增 EVAL_POLICY.md）走 ask；不碰生產資料
+
+task_id: "20260626-002"
+date: "2026-06-26"
+status: "pending"
+
+# === 任務定義 ===
+goal: "建立 Evaluation Plane：把 skills/*/eval_examples.md 結構化為可跑的 golden 案例，新增 deterministic 評分器與 CI 回歸閘門，並把 logs/errors/ 每筆轉成回歸案例"
+context: |
+  自我評估的成熟度天花板是「設計完備、未經實證」。成本已被量化（COST_POLICY 校準係數），
+  但輸出品質從未被量化——只有人讀的 eval_examples.md，無自動評分、無回歸閘門。
+  業界 2026 標配：golden 回歸集每 PR 跑、component-level、failure→regression、LLM-as-judge 斷言需人工驗證。
+  本卡先做 deterministic 層（穩定、可擋 CI），LLM-as-judge 設為 advisory（不擋 CI、斷言人工驗證後才升級）。
+input_data:
+  - "skills/research/eval_examples.md"
+  - "skills/analysis/eval_examples.md"
+  - "skills/writing/eval_examples.md"
+  - "skills/ops/eval_examples.md"
+  - "skills/review/eval_examples.md"
+  - "logs/errors/"
+  - ".github/workflows/spec-consistency.yml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "evals/<skill>/cases.yaml（5 個 skill）：每案含 id / input / rubric / must_include / must_not_include / expected_class，內容由對應 eval_examples.md 結構化而來"
+  - "evals/regression/：logs/errors/ 每筆錯誤至少轉一個回歸案例"
+  - "scripts/run_evals.py：deterministic 評分（must_include / must_not_include / 結構比對 / 分類正確率），輸出 pass rate；可選 --judge 跑人工驗證過的 LLM-as-judge rubric（預設不擋 CI）"
+  - "scripts/test_run_evals.py：run_evals 的單元測試，與既有測試風格一致"
+  - "system/EVAL_POLICY.md：定義 deterministic pass rate 門檻、失敗即擋、『每筆 error log 必轉一個 regression case』規則（改 system/ 走 ask，列 diff 後確認）"
+  - ".github/workflows/spec-consistency.yml 新增一步跑 run_evals.py；deterministic 低於門檻則 CI 紅"
+  - "全套 CI-equivalent 仍綠；frontend manifest 無漂移"
+
+# === 輸出定義 ===
+expected_output:
+  format: "py"
+  location: "scripts/"
+  filename: "run_evals.py"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "create_output_files"
+  - "modify_system_rules"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

@@ -1,0 +1,56 @@
+# Task Card — Observability 對齊 OTel GenAI Semantic Conventions（純對齊）
+# 來源：20260626-001 架構缺口設計 §三 缺口 4
+# 目的：把自訂的三層指標 + EXECUTION_LOG_SCHEMA 欄位映射到 OTel GenAI 標準詞彙，利於 v3 抽出與外部接軌
+# 安全：新增 system/OBSERVABILITY_MAPPING.md 走 ask；不導入 OTel SDK、不加 runtime 依賴
+
+task_id: "20260626-005"
+date: "2026-06-26"
+status: "pending"
+
+# === 任務定義 ===
+goal: "新增 system/OBSERVABILITY_MAPPING.md，把 governance_metrics.py 三層指標與 EXECUTION_LOG_SCHEMA 欄位映射到 OTel GenAI semantic conventions（gen_ai.* agent/tool/usage span 與 decision graph），並可選為 governance_metrics 加 --otel 匯出"
+context: |
+  業界 observability 收斂到 OpenTelemetry GenAI semantic conventions（LLM/agent/tool/MCP span、content capture、quality eval），
+  設計重點是捕捉 decision graph 而非只有 I/O。本專案已有 governance_metrics.py 三層指標，但詞彙自訂。
+  本卡純對齊（映射文件 + 可選匯出旗標），不換 runtime、不導入 OTel SDK，降低與原生演進的耦合。
+input_data:
+  - "scripts/governance_metrics.py"
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+  - "outputs/drafts/2026-05-29_observability-metrics.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "system/OBSERVABILITY_MAPPING.md：run→agent span、tool call→tool span、token_estimate→gen_ai.usage、gate_results/decision log→decision graph 屬性的逐欄映射表（改 system/ 走 ask）"
+  - "EXECUTION_LOG_SCHEMA.yaml 每個欄位在 mapping 文件都有對應條目（enforcement：doc-completeness 檢查，可加進 check_spec_consistency.rb 或獨立小檢查）"
+  - "（可選）scripts/governance_metrics.py 新增 --otel 旗標，以 OTel 命名匯出 JSON，不新增第三方依賴"
+  - "全套 CI-equivalent 仍綠；frontend manifest 無漂移"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "system/"
+  filename: "OBSERVABILITY_MAPPING.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "modify_system_rules"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 2
+
+# === Skill 路由 ===
+skill_type: "writing"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

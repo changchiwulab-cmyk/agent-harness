@@ -1,0 +1,65 @@
+# Task Card — 架構缺口檢視與補齊設計（workflow 架構檢視）
+# 來源：使用者要求「依專案走向 + 最新 AI 公開架構發展，補齊缺的架構」
+# 目的：盤點 2025–2026 最新 agent 架構，對照本專案，設計四個缺口的補齊方案並建實作卡
+# 安全：純讀取 + web search + 寫 drafts + 建 Task Card，不改 system/、不碰生產資料
+
+task_id: "20260626-001"
+date: "2026-06-26"
+status: "review"
+
+# === 任務定義 ===
+goal: "盤點最新 AI 公開架構發展（2025–2026），對照 Agent Harness 現況，設計並建卡補齊四個缺口（Evaluation Plane / Input 安全 / Context Engineering / Observability 對齊），每塊綁一個 enforcement 點"
+context: |
+  自我評估（20260529-001）點名天花板＝「設計完備、關鍵路徑未經實證」。R5 已坐實失敗→恢復閉環；
+  但輸出品質（可量化的第三條）與輸入安全（prompt injection）兩條閉環仍缺。
+  使用者於本 session 經 AskUserQuestion 選定：交付方式＝規劃＋建 Task Card；範圍＝四塊全做。
+  依 harness 硬規則，本卡只產設計草稿 + 建實作卡，不修改任何 system/ 檔。
+input_data:
+  - "outputs/reports/harness-self-assessment-v1.md"
+  - "outputs/drafts/2026-05-09_v3_extraction_plan.md"
+  - "system/NATIVE_OVERLAP.yaml"
+  - "system/FAILURE_TAXONOMY.yaml"
+  - "system/GATE_POLICY.yaml"
+  - "skills/research/SKILL.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "outputs/drafts/2026-06-26_architecture-gap-fill.md：含最新架構摘要（附來源）、四缺口設計、每塊對應一個 enforcement 點（J5）、與 v3/R9-R10 的銜接、風險與待驗證"
+  - "四張實作 Task Card 建立（20260626-002 eval-plane / 003 input-security / 004 context-engineering / 005 observability-otel），皆 status: pending 且通過 validate_task_card.py"
+  - "frontend/data.json 重新產生且 generate_frontend_manifest.py --check 無漂移"
+  - "未修改任何 system/ / skills/ / CLAUDE.md / logs/ 檔（本輪＝純規劃）"
+  - "check_spec_consistency.rb 與全庫 YAML parse 皆綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-06-26_architecture-gap-fill.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true   # 設計草稿 gating 下游 system/ 變更（對齊 20260509-A01 慣例）；等人工審閱後 002–005 才執行
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "web_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "create_task_card"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 25
+max_retries: 3
+max_web_searches: 6
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260626-001 architecture gap-fill design + 4 implementation cards"
+actual_tool_calls: 0
+result_summary: "產出架構缺口補齊設計草稿，對照 2025–2026 最新架構（context engineering / evals / OTel semconv / OWASP LLM01），設計四缺口並各綁 enforcement 點；建立 002–005 四張實作卡（pending）；重生 frontend manifest；未改 system/。"
+completion_time: "2026-06-26"
+audit_log_ref: "logs/AUDIT_LOG.md"

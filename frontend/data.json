@@ -136,23 +136,23 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 30,
-      "medium": 14
+      "low": 31,
+      "medium": 18
     },
     "task_skill": {
-      "analysis": 4,
-      "ops": 26,
+      "analysis": 5,
+      "ops": 28,
       "research": 5,
       "review": 6,
-      "writing": 4
+      "writing": 6
     },
     "task_status": {
       "done": 22,
       "in_progress": 2,
-      "pending": 2,
-      "review": 19
+      "pending": 6,
+      "review": 20
     },
-    "task_total": 45
+    "task_total": 50
   },
   "tasks": [
     {
@@ -604,6 +604,56 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-26",
+      "goal": "盤點最新 AI 公開架構發展（2025–2026），對照 Agent Harness 現況，設計並建卡補齊四個缺口（Evaluation Plane / Input 安全 / Context Engineering / Observability 對齊），每塊綁一個 enforcement 點",
+      "path": "tasks/2026-06-26_architecture-gap-review.yaml",
+      "risk_level": "medium",
+      "skill_type": "analysis",
+      "status": "review",
+      "task_id": "20260626-001"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-26",
+      "goal": "新增 system/CONTEXT_ENGINEERING.md，把散落於 CLAUDE.md / COST_POLICY / RECOVERY_RUNBOOK 的 context 管理規則整併成一份紀律（最小高訊號 / 壓縮 / 結構化筆記 / just-in-time / context awareness），並沿用既有預算檢查作為 enforcement",
+      "path": "tasks/2026-06-26_context-engineering.yaml",
+      "risk_level": "medium",
+      "skill_type": "writing",
+      "status": "pending",
+      "task_id": "20260626-004"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-26",
+      "goal": "建立 Evaluation Plane：把 skills/*/eval_examples.md 結構化為可跑的 golden 案例，新增 deterministic 評分器與 CI 回歸閘門，並把 logs/errors/ 每筆轉成回歸案例",
+      "path": "tasks/2026-06-26_eval-plane.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260626-002"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-26",
+      "goal": "建立輸入側安全邊界：FAILURE_TAXONOMY 新增 SEC-05 間接提示注入與 SEC-06 工具/RAG 投毒，GLOBAL_RULES 與 research skill 加『外部內容＝資料非指令』規則，GATE rule_check 加一條，並以輕量 lint 對應 enforcement",
+      "path": "tasks/2026-06-26_input-security-prompt-injection.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260626-003"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-26",
+      "goal": "新增 system/OBSERVABILITY_MAPPING.md，把 governance_metrics.py 三層指標與 EXECUTION_LOG_SCHEMA 欄位映射到 OTel GenAI semantic conventions（gen_ai.* agent/tool/usage span 與 decision graph），並可選為 governance_metrics 加 --otel 匯出",
+      "path": "tasks/2026-06-26_observability-otel-alignment.yaml",
+      "risk_level": "low",
+      "skill_type": "writing",
+      "status": "pending",
+      "task_id": "20260626-005"
     }
   ]
 }

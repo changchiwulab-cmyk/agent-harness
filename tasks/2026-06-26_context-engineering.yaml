@@ -1,0 +1,59 @@
+# Task Card — Context Engineering 紀律（形式化）
+# 來源：20260626-001 架構缺口設計 §三 缺口 3
+# 目的：把散落的 token 預算/壓縮/結構化筆記/just-in-time 整併成一份紀律，對齊 Anthropic 2025 context engineering
+# 安全：新增 system/CONTEXT_ENGINEERING.md 走 ask；enforcement 沿用既有 check_context_budget.rb
+
+task_id: "20260626-004"
+date: "2026-06-26"
+status: "pending"
+
+# === 任務定義 ===
+goal: "新增 system/CONTEXT_ENGINEERING.md，把散落於 CLAUDE.md / COST_POLICY / RECOVERY_RUNBOOK 的 context 管理規則整併成一份紀律（最小高訊號 / 壓縮 / 結構化筆記 / just-in-time / context awareness），並沿用既有預算檢查作為 enforcement"
+context: |
+  Context Engineering 在 2025 成為獨立紀律（Anthropic）：找出最小高訊號 token 集，
+  手法含 compaction、structured note-taking、context editing、just-in-time/progressive disclosure、最小工具集。
+  本專案這些都已有（≤3K/≤1.5K 上限、20 輪壓縮、checkpoint/run-log 即結構化筆記、路徑引用即 just-in-time），
+  但散在 4 個檔、未成紀律。本卡只做整併 + 索引，不重複內容、不新增未強制的純文檔。
+input_data:
+  - "CLAUDE.md"
+  - "system/COST_POLICY.md"
+  - "system/RECOVERY_RUNBOOK.md"
+  - "system/FAILURE_TAXONOMY.yaml"
+  - "scripts/check_context_budget.rb"
+
+# === 完成標準 ===
+definition_of_done:
+  - "system/CONTEXT_ENGINEERING.md 五節：最小高訊號 / 壓縮 / 結構化筆記＝外部記憶 / just-in-time / context awareness，每節以索引引用既有檔（單一事實來源、不複製內容）（改 system/ 走 ask）"
+  - "明確交叉引用失敗模式 COORD-01（context 重置）與 SPEC-03（對話歷史遺失）與 RECOVERY_RUNBOOK"
+  - "enforcement：新文件納入 check_context_budget.rb 掃描範圍，確認紀律與檢查一致（無未強制的孤兒規則）"
+  - "context budget CI（CLAUDE.md+GLOBAL_RULES ≤3K）仍綠；全套 CI-equivalent 仍綠；frontend manifest 無漂移"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "system/"
+  filename: "CONTEXT_ENGINEERING.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "modify_system_rules"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "writing"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
