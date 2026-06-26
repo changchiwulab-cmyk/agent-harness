@@ -1,0 +1,65 @@
+task_id: "20260626-I01"
+date: "2026-06-26"
+status: "review"
+
+# === 任務定義 ===
+goal: "台灣智慧製造產業深度報告：4-6 切片量化、政策法規、日韓/東南亞區域對標、12 個月機會日曆、敏感性表、一人顧問切入點"
+
+context: |
+  屬「不同產業類別」實證系列（I-Series）的第 1 張。
+  本系列固定 deep-dive 深度、變動產業類別，測試 deep-dive 方法論能否跨產業泛化
+  （對照組為 2026-05 的 T01/T02/T03「不同深度」系列）。
+  刻意對齊 T03 deep-dive 投入（max_tool_calls=10、web_searches=5），超出 COST_POLICY
+  research 32K 建議上限與 5-tool-call / 3-search 軟上限，屬受控邊界實驗。
+  新增 T03 沒有的「區域對標」節（日 / 韓 / 東南亞）。
+  使用者背景：20+ 年管理顧問、一人公司、Claude 生態深度整合。
+  注意：依 D006，checkpoint >= 3 須補寫 logs/runs/；本卡預期 2 次 checkpoint。
+
+input_data:
+  - "outputs/drafts/20260502-T03_taiwan-ai-industry-deep-dive.md"
+  - "skills/research/SKILL.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "涵蓋 4-6 個產業切片（工具機/精密機械、電子代工 EMS、智慧工廠/工業自動化、傳產數位升級、淨零對製造衝擊擇 4-6），每切片含至少 3 個量化資料（市場規模/成長率/玩家數，附時效與來源）"
+  - "每個關鍵主張至少 2 個獨立來源交叉驗證"
+  - "獨立節「政策與法規」：智慧機械/製造業數位轉型補貼 + 主管機關 + 淨零對製造的法規衝擊"
+  - "獨立節「區域對標」：對日（FA/工業機器人）、韓（智慧工廠政策）、東南亞（製造遷移承接）至少各 1 段"
+  - "12 個月機會日曆：依季度切分本地關鍵事件 / 補貼窗口 / 展會"
+  - "敏感性分析表：列出 3-5 個核心假設，逐項說明假設失效時結論如何變動"
+  - "對 20 年管理顧問一人公司的切入點（依 ROI 排序，僅列舉不做 Go/No-Go）"
+  - "事實 / 合理推論 / 待驗證 / 高風險假設四態明確分開"
+  - "輸出符合 skills/research/SKILL.md 格式，約 3500-4500 字（含表格）"
+  - "至少 2 次 git checkpoint（建議：完成資料蒐集後 1 次、完成切片分析後 1 次）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260626-I01_manufacturing-deep-dive.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "web_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 5
+
+# === Skill 路由 ===
+skill_type: "research"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"

@@ -1,0 +1,66 @@
+task_id: "20260626-I05"
+date: "2026-06-26"
+status: "review"
+
+# === 任務定義 ===
+goal: "跨 4 產業（製造/醫療/綠能ESG/專業服務）橫向綜合比較 + I-Series deep-dive 方法論觀察（mini-retro）"
+
+context: |
+  屬「不同產業類別」實證系列（I-Series）的收束張，整合 I01-I04 四份 deep-dive。
+  雙重目的：(1) 對使用者產出跨產業橫向比較與機會優先序；
+  (2) 測試層 mini-retro — 評估 deep-dive 方法論跨 4 產業的泛化程度與 cost-quality。
+  完成 I01-I05 共 5 張卡正好跨過 RETRO_FLOW「累積 5 任務」門檻，故本卡含方法論觀察節。
+  依 ROUTING「一卡一 skill」本卡視為 research（跨產業比較為主）；mini-retro 為其中一節。
+  依 RETRO_FLOW，方法論建議只停在 drafts/，不在本卡直接修改任何系統檔；
+  若要正式採納並改 COST_POLICY/SKILL，另開經人工核准的 review 卡。
+  使用者背景：20+ 年管理顧問、一人公司。
+
+input_data:
+  - "outputs/drafts/20260626-I01_manufacturing-deep-dive.md"
+  - "outputs/drafts/20260626-I02_healthcare-deep-dive.md"
+  - "outputs/drafts/20260626-I03_greentech-esg-deep-dive.md"
+  - "outputs/drafts/20260626-I04_professional-services-deep-dive.md"
+  - "system/COST_POLICY.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "橫向比較表：4 產業 × 至少 6 維度（市場規模/成長/政策紅利/進入門檻/一人顧問適配度/區域對標位置）"
+  - "跨產業共通主題：淨零、AI 落地、高齡化、合規收緊如何同時穿過 4 產業，至少 3 條"
+  - "跨 4 產業的機會優先序（對 20 年管顧一人公司），有排序理由"
+  - "mini-retro：逐產業 cost（web search 次數/字數）-quality 對照表 + 方法論在哪個產業吃力的觀察"
+  - "mini-retro：對 COST_POLICY.md（research 上限是否需按產業調整）與 skills/research/SKILL.md（是否需產業特化切片範本）的具體建議，明確標示為『建議、待人工核准』"
+  - "事實 / 合理推論 / 待驗證 / 高風險假設四態分開（綜合層級）"
+  - "輸出符合 skills/research/SKILL.md 格式，約 2500-3500 字"
+  - "至少 1 次 git checkpoint"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260626-I05_cross-industry-synthesis.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "web_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 6
+max_retries: 3
+max_web_searches: 2
+
+# === Skill 路由 ===
+skill_type: "research"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
