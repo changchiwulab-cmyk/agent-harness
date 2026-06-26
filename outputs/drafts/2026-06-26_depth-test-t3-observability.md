@@ -40,7 +40,7 @@ harness 的**靜態防漂移（工具層可觀測性）已達生產級**：5 個
 |---|:--:|:--:|:--:|
 | analysis | 3 | 16000 | 8.7 |
 | ops | 23 | 15272 | 11.5 |
-| research | 5 | 23600 | 4.8 |
+| research | 8 | 22500 | 6.6 |
 | review | 5 | 34800 | 9.2 |
 | writing | 4 | 16500 | 5.8 |
 
@@ -50,14 +50,16 @@ harness 的**靜態防漂移（工具層可觀測性）已達生產級**：5 個
 
 | 維度 | 數量 | 觀察 |
 |---|:--:|---|
-| Task Card 總數 | 48 | done 22 / **review 19** / in_progress 5 / pending 2 |
-| AUDIT_LOG 任務筆數 | 41 | 與業務層 40 筆大致對齊 |
+| Task Card 總數 | 48 | done 25 / **review 19** / in_progress 2 / pending 2 |
+| AUDIT_LOG 任務筆數 | 43 | 與業務層 43 筆一致 |
 | `logs/runs/` run log | **2** | completed 1（system-validation）+ failed 1（R5） |
 | `logs/errors/` 真實 error log | 2 | tool_failure 1 + schema_failure 1 |
-| outputs drafts:reports | 26 : 3 | 草稿為主，晉升率低（符合 drafts-first 設計） |
+| outputs drafts:reports | 30 : 3 | 草稿為主，晉升率低（符合 drafts-first 設計） |
+
+> **量測時點（反身計入）**：本表與 §3 反映本研究三張卡（`20260626-001/002/003`）標記 done 後的**最終提交狀態**——其中 3 筆 done、3 筆 audit、業務層 research 的 3 筆即本研究自身。初稿曾誤用「執行中（卡片尚為 in_progress）」的快照（done 22 / in_progress 5 / audit 41 / drafts 26），經 PR 自動審查（Codex P2）指出後校正為提交態（與 `frontend/data.json` overview 一致）。此事件本身即印證 §結論「狀態量測需對齊提交態、生命週期需閉環」。
 
 **斷點 1（最重要）**：**19/48（40%）Task Card 停在 `review` 狀態**——非終態（done/failed）。可能是「等人工審閱」或「狀態漂移未收尾」；無機制區分，是可追溯性的真實黑洞。
-**斷點 2**：41 筆 audit 對 2 筆 run log——但這**多屬 D006 設計**（run log 僅 failed/partial/high-risk/checkpoints≥3 才必填），非缺陷；代價是工作流層樣本天生稀疏。
+**斷點 2**：43 筆 audit 對 2 筆 run log——但這**多屬 D006 設計**（run log 僅 failed/partial/high-risk/checkpoints≥3 才必填），非缺陷；代價是工作流層樣本天生稀疏。
 
 ### 5. 成本／context 橫切視角
 
@@ -76,7 +78,7 @@ harness 的**靜態防漂移（工具層可觀測性）已達生產級**：5 個
 ## 待驗證
 
 - 19 張 `review` 卡逐張屬「真的等審閱」還是「狀態忘了更新」？需逐卡核對 result_summary／completion_time。
-- governance_metrics 的 M3 audit 覆蓋率「全 ok」是否因門檻寬鬆？需確認門檻定義 vs 41/48 的實際覆蓋。
+- governance_metrics 的 M3 audit 覆蓋率「全 ok」是否因門檻寬鬆？需確認門檻定義 vs 43/48 的實際覆蓋。
 - `frontend/data.json` 只含 2 logs——前端看板是否反映 run log 稀疏，使用者看板觀感是否誤導「執行很少」？
 
 ## 高風險假設
@@ -98,6 +100,6 @@ harness 的**靜態防漂移（工具層可觀測性）已達生產級**：5 個
 ## 來源
 
 - 唯讀實跑：`scripts/generate_frontend_manifest.py --check`、`check_spec_consistency.rb`、`check_context_budget.rb`、`check_decision_revisit.rb`、`governance_metrics.py`
-- 可追溯性：`tasks/20*.yaml`（48 張，status 分佈）、`logs/AUDIT_LOG.md`（41 筆）、`logs/runs/*.yaml`（2 筆）、`logs/errors/`（2 筆）、`outputs/drafts|reports`
+- 可追溯性：`tasks/20*.yaml`（48 張，status 分佈）、`logs/AUDIT_LOG.md`（43 筆）、`logs/runs/*.yaml`（2 筆）、`logs/errors/`（2 筆）、`outputs/drafts|reports`
 - `system/EXECUTION_LOG_SCHEMA.yaml`（D006 run log 使用範圍 + R6 token source 欄）、`system/COST_POLICY.md`
 - 交叉引用：T1（gate 真實演練會餵回工作流層樣本）

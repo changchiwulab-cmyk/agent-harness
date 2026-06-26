@@ -8,7 +8,7 @@
 
 ## 結論
 
-harness 的可靠性**呈現明顯的分層落差**：**Schema 層（第一道 gate）已達生產級實證**——多種破壞模式（8/9 fixture）全數被 `validate_task_card.py` 正確攔下、且 R5 已在真實故障下走完「重試 1 次 → 停 → 寫 error/run log」閉環。但**其餘三道 gate（rule / completion / risk）仍是「契約釘樁 + LLM 推理」，從未在真實故障下被獨立坐實**：`tests/e2e/test_dummy_task_smoke.py` 自承四層 gate 是 *in-process 模擬*，僅 `schema_check` 真正 shell out 到實際 validator。恢復面則健康：22 個 checkpoint commit 可被 `git log --grep` 尋回、工作樹乾淨、`RECOVERY_RUNBOOK` 場景指令實跑可用。
+harness 的可靠性**呈現明顯的分層落差**：**Schema 層（第一道 gate）已達生產級實證**——多種破壞模式（8/9 fixture）全數被 `validate_task_card.py` 正確攔下、且 R5 已在真實故障下走完「重試 1 次 → 停 → 寫 error/run log」閉環。但**其餘三道 gate（rule / completion / risk）仍是「契約釘樁 + LLM 推理」，從未在真實故障下被獨立坐實**：`tests/e2e/test_dummy_task_smoke.py` 自承四層 gate 是 *in-process 模擬*，僅 `schema_check` 真正 shell out 到實際 validator。恢復面則健康：22+ 個 checkpoint commit（量測時點數，隨後續 commit 持續增加）可被 `git log --grep` 尋回、工作樹乾淨、`RECOVERY_RUNBOOK` 場景指令實跑可用。
 
 一句話：**「失敗 → 恢復」閉環在 schema 維度已坐實，但「四層 gate 全在真實故障下正確 on_fail」目前對 3/4 層仍是假設而非事實。**
 
@@ -64,7 +64,7 @@ harness 的可靠性**呈現明顯的分層落差**：**Schema 層（第一道 g
 
 ### 4. 恢復資料源實跑（`RECOVERY_RUNBOOK` 唯讀驗證）
 
-- `git log --oneline --grep="checkpoint:"` → **22 個 checkpoint commit 可尋回**（最舊到本任務皆在）。
+- `git log --oneline --grep="checkpoint:"` → **22 個 checkpoint commit 可尋回**（量測時點數，隨後續 commit 持續增加；最舊到本任務皆在）。
 - `git status --short` → 工作樹乾淨（場景 A「未 commit 破壞」的還原基準存在）。
 - runbook 列的恢復資料源（checkpoint commits / Task Card / run log / approvals / AUDIT_LOG）**全部實體存在且指令可跑**。
 
