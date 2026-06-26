@@ -33,6 +33,81 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260626-003"
+  date: "2026-06-26"
+  skill_type: "research"
+  goal: "深度測試研究 T3：可觀測性/紀錄防漂移（+成本/context 橫切）——唯讀實跑全套觀測腳本 + 端到端可追溯性稽核"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "run_readonly_script"
+      call_count: 7
+    - tool_name: "create_output_files"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/2026-06-26_depth-test-t3-observability.md"
+  error_summary: ""
+  estimated_tokens: "~20K"
+  notes: "5 唯讀腳本全綠（drift/spec/budget/revisit/metrics）。發現：run log 僅 2 筆、19/48 卡卡在 review（40% 未閉環）、零 dashboard 實測 token；context 餘裕 60%（~1197/3000）。三層觀測評級 工具8/工作流5/業務6。缺口只提案（R-T3a/b/c）不就地修。run log 依 D006 範圍不需寫（low-risk happy-path）。"
+```
+
+---
+
+```yaml
+- task_id: "20260626-002"
+  date: "2026-06-26"
+  skill_type: "research"
+  goal: "深度測試研究 T2：安全/權限邊界——對抗式探測 permissions_guard deny 強度與規避漏洞"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "run_readonly_probe"
+      call_count: 2
+    - tool_name: "create_output_files"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/2026-06-26_depth-test-t2-security.md"
+  error_summary: ""
+  estimated_tokens: "~22K"
+  notes: "43 例對抗探針：0 false positive、11 false negative（含 /bin/rm 絕對路徑、變數間接、git clean/truncate/dd、SES/Slack web API、+refspec 強推）。guard 自承 deny-list 非 sandbox，多數 FN 屬設計取捨；4 個低成本收緊點（R-T2a/b/c）。所有測試命令僅作字串比對，未實際執行。未改 system/scripts。"
+```
+
+---
+
+```yaml
+- task_id: "20260626-001"
+  date: "2026-06-26"
+  skill_type: "research"
+  goal: "深度測試研究 T1：可靠性/故障恢復——多失敗模式 schema 探針 + 四層 gate 矩陣 + 14 種失敗分類學覆蓋 + 恢復路徑實跑"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 5
+    - tool_name: "run_readonly_probe"
+      call_count: 2
+    - tool_name: "create_output_files"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/2026-06-26_depth-test-t1-reliability.md"
+  error_summary: ""
+  estimated_tokens: "~20K"
+  notes: "schema gate 8/9 多模式 fixture 正確攔截、control 通過。發現 rule/completion/risk gate 為 in-process 模擬（僅 schema 真 shell out），真實故障未獨立坐實。FAILURE_TAXONOMY 14 種：實證/部分 5、僅設計 9。恢復資料源 22 checkpoints 實跑可用。缺口只提案（R-T1a/b/c）。fixture 暫存 scratchpad 未進 tasks/。"
+```
+
+---
+
+```yaml
 - task_id: "20260529-011"
   date: "2026-05-29"
   skill_type: "ops"

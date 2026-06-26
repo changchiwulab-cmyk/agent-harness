@@ -147,8 +147,8 @@
       "writing": 4
     },
     "task_status": {
-      "done": 22,
-      "in_progress": 5,
+      "done": 25,
+      "in_progress": 2,
       "pending": 2,
       "review": 19
     },
@@ -612,7 +612,7 @@
       "path": "tasks/2026-06-26_depth-test-t1-reliability.yaml",
       "risk_level": "low",
       "skill_type": "research",
-      "status": "in_progress",
+      "status": "done",
       "task_id": "20260626-001"
     },
     {
@@ -622,7 +622,7 @@
       "path": "tasks/2026-06-26_depth-test-t2-security.yaml",
       "risk_level": "low",
       "skill_type": "research",
-      "status": "in_progress",
+      "status": "done",
       "task_id": "20260626-002"
     },
     {
@@ -632,7 +632,7 @@
       "path": "tasks/2026-06-26_depth-test-t3-observability.yaml",
       "risk_level": "low",
       "skill_type": "research",
-      "status": "in_progress",
+      "status": "done",
       "task_id": "20260626-003"
     }
   ]

@@ -6,7 +6,7 @@
 
 task_id: "20260626-001"
 date: "2026-06-26"
-status: "in_progress"
+status: "done"
 
 # === 任務定義 ===
 goal: "用實證探針深度測試 harness 的可靠性與故障恢復路徑，坐實/挑戰『失敗→恢復閉環』的真實強度，產出研究草稿"
@@ -56,8 +56,9 @@ max_web_searches: 0
 skill_type: "research"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - "checkpoint: [20260626-001/002/003] 深度測試研究 T1-T3 task cards 建立"
+actual_tool_calls: 8
+result_summary: "schema gate 多模式探針 8/9 fixture 正確攔截、control 通過，超越 R5 單一案例。揭露 rule/completion/risk gate 為 in-process 模擬（僅 schema_check 真 shell out 到 validate_task_card），三層在真實故障下未獨立坐實。FAILURE_TAXONOMY 14 種覆蓋：實證/部分 5、僅設計 9（SEC-01 + schema-stop 證據最硬）。恢復資料源 22 checkpoint commits + 乾淨樹實跑可用。缺口只提案（R-T1a 真實演練 rule/completion/risk）不就地修。產出 outputs/drafts/2026-06-26_depth-test-t1-reliability.md。"
+completion_time: "2026-06-26"
 audit_log_ref: "logs/AUDIT_LOG.md"

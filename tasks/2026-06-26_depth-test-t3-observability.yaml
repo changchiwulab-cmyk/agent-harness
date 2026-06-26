@@ -6,7 +6,7 @@
 
 task_id: "20260626-003"
 date: "2026-06-26"
-status: "in_progress"
+status: "done"
 
 # === 任務定義 ===
 goal: "實跑 harness 全套唯讀觀測/防漂移腳本取得真實健康度，稽核端到端可追溯性與成本/context 餘裕，產出研究草稿"
@@ -57,8 +57,9 @@ max_web_searches: 0
 skill_type: "research"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - "checkpoint: [20260626-001/002/003] 深度測試研究 T1-T3 task cards 建立"
+actual_tool_calls: 8
+result_summary: "5 唯讀腳本全綠（generate_frontend_manifest --check / check_spec_consistency / check_context_budget / check_decision_revisit / governance_metrics）。可追溯性稽核：48 卡（done 22 / review 19 / in_progress 5 / pending 2）、41 audit、僅 2 run log、零 dashboard 實測 token。關鍵斷點：19/48（40%）卡卡在 review 未閉環；run log 稀疏（多屬 D006 設計）。context 餘裕 60%（~1197/3000）。三層觀測評級 工具8/工作流5/業務6，印證自評可觀測 6。成本/context 橫切已併入。缺口只提案（R-T3a 狀態收尾 / R-T3b 實測 token / R-T3c 補樣本）。產出 outputs/drafts/2026-06-26_depth-test-t3-observability.md。"
+completion_time: "2026-06-26"
 audit_log_ref: "logs/AUDIT_LOG.md"
