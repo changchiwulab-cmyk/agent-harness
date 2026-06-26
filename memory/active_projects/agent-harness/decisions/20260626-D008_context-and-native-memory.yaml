@@ -1,0 +1,40 @@
+decision_id: "20260626-D008"
+date: "2026-06-26"
+project: "agent-harness"
+
+# --- 決策內容 ---
+context: |
+  v2.1 治理層硬化盤點發現：context 工程規則散落在 CLAUDE.md（3K 上限、20 輪壓縮）、
+  COST_POLICY（量化基準）、子代理隔離數字，無單一政策；且 native-memory 自 2026-05-09 的
+  PoC（outputs/drafts/2026-05-09_n07_native-memory-evaluation.md）一直卡在 draft 未決。
+  本決策收斂兩件事：(1) 是否新增 CONTEXT_POLICY 統一政策；(2) 是否採用 Claude Code 原生跨
+  session 記憶。
+
+options_considered:
+  - option: "新增 system/CONTEXT_POLICY.md 統一 context 工程政策"
+    pros: "對齊 2026 業界首要槓桿；散落規則收斂為單一事實來源；不與原生重疊（治理意圖層）"
+    cons: "多一個 system/ 檔，維護面增加"
+  - option: "維持散落現狀"
+    pros: "零變更"
+    cons: "規則無單一出處，retro 時難回看；context 工程未被當一級模組"
+  - option: "native memory：採用原生跨 session 自動記憶"
+    pros: "省人工策展；對齊原生 first-class 能力"
+    cons: "與『長期記憶需人工確認』硬規則直接衝突；自動寫入屬 PERMISSIONS deny"
+  - option: "native memory：混合（採原生 session 壓縮，不採跨 session 自動記憶）"
+    pros: "拿到原生壓縮紅利，又守住人工確認硬規則；memory/ 仍為人工策展事實來源"
+    cons: "未吃滿原生記憶能力（刻意保守）"
+
+decision: |
+  - 新增 system/CONTEXT_POLICY.md，把 context 預算配置 / 壓縮 / JIT 取用 / 子代理隔離 /
+    記憶架構收斂為單一政策。
+  - native memory 採「混合」：採用原生 session 壓縮；不採用原生跨 session 自動記憶
+    （維持長期記憶需人工確認）；memory/active_projects 保留為人工策展事實來源。
+reasoning: |
+  context 工程是 2026 可靠度首要槓桿，值得升為一級政策；但記憶面以「可控 > 能力」為先，
+  自動跨 session 記憶會破壞 audit 可追溯與人工確認硬規則，故只取原生壓縮這層無衝突的紅利。
+
+# --- 追蹤 ---
+risk: "low — 新政策為既有散落規則的收斂，不改行為；混合記憶策略偏保守。"
+revisit_trigger: "Claude Code 原生記憶提供『人工確認後才持久化』的 gate；或 context 3K 上限頻繁卡關"
+related_task: "20260626-004"
+status: "active"

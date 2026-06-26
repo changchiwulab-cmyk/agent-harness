@@ -1,0 +1,49 @@
+task_id: "20260626-003"
+date: "2026-06-26"
+status: "done"
+
+# === 任務定義 ===
+goal: "補齊評測架構：讓 skills 的 eval_examples golden set 可被 deterministic 跑成 regression"
+context: "eval_examples.md 有好/壞範例但無 runner/rubric/regression，『可量化』原則對輸出品質失守。屬改 skills/+system/，走 ask。"
+input_data:
+  - "skills/research/eval_examples.md"
+  - "skills/analysis/eval_examples.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "新增 system/EVAL_POLICY.md（評什麼/怎麼評/rubric schema/不變式）"
+  - "新增 skills/<5 type>/rubric.yaml 機器可讀評分準則"
+  - "新增 scripts/run_evals.py + scripts/test_run_evals.py，good 必過 bad 必不過"
+  - "RETRO_FLOW 新增 eval 維度；CI 串接 run_evals 與 e2e smoke"
+  - "check_spec_consistency.rb 驗 rubric.yaml schema"
+
+# === 輸出定義 ===
+expected_output:
+  format: "py"
+  location: "scripts/"
+  filename: "run_evals.py"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "write_drafts"
+  - "write_logs"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 1
+
+# === Skill 路由 ===
+skill_type: "ops"
+model_tier: "standard"
+
+# === 執行紀錄 ===
+checkpoints:
+  - "checkpoint: 20260626-002/003 v2.1 治理層硬化 — 信任邊界 + Eval harness"
+actual_tool_calls: 0
+result_summary: "DoD 5/5 pass。run_evals.py 對 5 skill golden set regression（good 滿分、bad 0），CI 串接 + 單元/e2e 全綠。"
+completion_time: "2026-06-26"
+audit_log_ref: "logs/AUDIT_LOG.md"

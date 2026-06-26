@@ -38,12 +38,12 @@ v1 階段採用「粗略護欄 + 事後量測」策略：
 | CLAUDE.md + GLOBAL_RULES | 控制在 3K 以內 | 硬限制 |
 | 單一 skill prompt | 控制在 1.5K 以內 | 硬限制 |
 
-## 模型路由規則（v2 準備）
+## 模型路由規則（v2.1 已落地 → 見 system/MODEL_POLICY.md）
 
-v1 先用單一模型（Claude）。未來如需降本：
-- 分類、抽取、格式檢查 → 便宜模型（Haiku 等級）
-- 規劃、推理、整合分析 → 強模型（Sonnet/Opus 等級）
-- 路由判斷本身 → 便宜模型
+原則（分類/抽取/格式檢查用便宜模型；規劃/推理/整合用強模型；路由判斷用便宜模型）
+已自 v2.1 起獨立為治理政策 `system/MODEL_POLICY.md`，含四層分級（Haiku 4.5 / Sonnet 4.6 /
+Opus 4.8 / Fable 5）、skill_type→預設 tier 對應，及 Task Card 可選 `model_tier` 欄（D009）。
+本檔僅保留成本基準；選模治理意圖以 MODEL_POLICY 為準。
 
 ## 事後量測流程（每週）
 

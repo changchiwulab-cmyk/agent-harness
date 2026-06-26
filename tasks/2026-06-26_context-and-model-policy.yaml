@@ -1,0 +1,49 @@
+task_id: "20260626-004"
+date: "2026-06-26"
+status: "done"
+
+# === 任務定義 ===
+goal: "補齊上下文工程與模型路由政策，收斂散落規則並落地 COST_POLICY 未竟的 v2 model routing"
+context: "context 規則散落（CLAUDE.md/COST_POLICY/子代理數字）無單一政策；native-memory 決策卡 draft；model routing 自 v1 列 v2 準備但未實作。屬改 system/，走 ask。"
+input_data:
+  - "system/COST_POLICY.md"
+  - "system/NATIVE_OVERLAP.yaml"
+  - "outputs/drafts/2026-05-09_n07_native-memory-evaluation.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "新增 system/CONTEXT_POLICY.md：context 預算/壓縮/JIT/子代理隔離/記憶架構收斂為單一政策"
+  - "新增 system/MODEL_POLICY.md：四層分級 + skill_type→預設 tier；COST_POLICY 模型路由段標已落地並互連"
+  - "TASK_CARD_TEMPLATE 新增可選 model_tier 欄；CLAUDE.md 加 CONTEXT/MODEL_POLICY 指標"
+  - "寫 Decision Log D008(context/native-memory)、D009(model routing)"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "system/"
+  filename: "CONTEXT_POLICY.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "write_drafts"
+  - "write_logs"
+
+# === 成本控制 ===
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 1
+
+# === Skill 路由 ===
+skill_type: "writing"
+model_tier: "standard"
+
+# === 執行紀錄 ===
+checkpoints:
+  - "checkpoint: 20260626-004 Tier2 context + model policy + D008/D009"
+actual_tool_calls: 0
+result_summary: "DoD 4/4 pass。CONTEXT_POLICY + MODEL_POLICY + model_tier 欄 + D008/D009，context budget 仍 < 3K。"
+completion_time: "2026-06-26"
+audit_log_ref: "logs/AUDIT_LOG.md"

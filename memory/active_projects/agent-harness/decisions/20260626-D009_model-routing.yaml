@@ -1,0 +1,35 @@
+decision_id: "20260626-D009"
+date: "2026-06-26"
+project: "agent-harness"
+
+# --- 決策內容 ---
+context: |
+  COST_POLICY.md 自 v1 起把「模型路由」列為 v2 準備項，但一直標註未實作。v2.1 盤點決定
+  把它落地為治理政策。問題：要不要自建 router runtime，還是只定治理意圖由人/平台執行？
+
+options_considered:
+  - option: "新增 system/MODEL_POLICY.md，只定 skill→tier 治理意圖 + 可選 model_tier 欄"
+    pros: "補完自家 roadmap；貴模型只用在需推理處；不與原生 router 重複（NATIVE_OVERLAP ~40%）"
+    cons: "非強制，靠人/平台遵循"
+  - option: "自建 model router runtime（依 skill 自動指派模型）"
+    pros: "強制一致"
+    cons: "與 Claude Code 平台模型選擇高度重疊；違背 v3『砍冗餘、不重造原生』方向；維護成本高"
+  - option: "維持 COST_POLICY 一段話現狀"
+    pros: "零變更"
+    cons: "roadmap 永遠未落地；無明確 skill→tier 對應"
+
+decision: |
+  - 新增 system/MODEL_POLICY.md：定義 cheap/standard/strong/creative 四層（Haiku 4.5 /
+    Sonnet 4.6 / Opus 4.8 / Fable 5）與 skill_type→預設 tier 對應；risk>=high 至少 standard、
+    gate/judge 用 strong。
+  - TASK_CARD_TEMPLATE 新增可選 model_tier 欄。
+  - 不自建 router runtime；COST_POLICY 模型路由段標為已落地並互連。
+reasoning: |
+  治理意圖（哪類任務該用哪 tier）是不可替代的價值；runtime 指派與平台重疊度高，自建違背
+  v3 減重方向。可選欄位 + 預設表，兼顧一致性與彈性。
+
+# --- 追蹤 ---
+risk: "low — 純政策與可選欄位，不改既有任務行為。"
+revisit_trigger: "Claude 模型家族更新（新增/汰換 tier 成員）；或單任務成本持續超 COST_POLICY 預算"
+related_task: "20260626-004"
+status: "active"

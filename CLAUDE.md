@@ -25,6 +25,7 @@
 - 只載入 Task Card 白名單內的工具
 - 長對話 20 輪後摘要壓縮
 - 大型檔案用路徑引用，不全文貼入
+- 完整上下文工程規則見 system/CONTEXT_POLICY.md；分層選模見 system/MODEL_POLICY.md
 
 ## Checkpoint
 

@@ -1,0 +1,50 @@
+task_id: "20260626-002"
+date: "2026-06-26"
+status: "done"
+
+# === 任務定義 ===
+goal: "補齊信任邊界/安全架構：處理對抗性輸入（indirect prompt injection / lethal trifecta）"
+context: "v2 威脅模型只假設 LLM 自己失控，缺『輸入是對抗性的』一軸；SECURITY.md 為空白模板。屬改 system/，走 ask（PR review 即 diff 審批）。"
+input_data:
+  - "system/FAILURE_TAXONOMY.yaml"
+  - "system/PERMISSIONS.yaml"
+  - "SECURITY.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "新增 system/TRUST_BOUNDARY.yaml：三層信任分級 + core_rules TB-01~06 + lethal trifecta 對照（exfiltration 腿標 blocked）"
+  - "改寫 SECURITY.md 為雙軸威脅模型真政策（非空白模板）"
+  - "FAILURE_TAXONOMY 新增 SEC-05(注入)/SEC-06(工具污染)/SEC-07(外洩)"
+  - "GLOBAL_RULES 加信任邊界段；research skill 加不可信內容/provenance 段"
+  - "check_spec_consistency.rb 驗 TRUST_BOUNDARY schema + SEC-05~07 存在；新增 tests/e2e/test_trust_boundary.py 並過"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: "system/"
+  filename: "TRUST_BOUNDARY.yaml"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "write_drafts"
+  - "write_logs"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 2
+
+# === Skill 路由 ===
+skill_type: "writing"
+model_tier: "strong"
+
+# === 執行紀錄 ===
+checkpoints:
+  - "checkpoint: 20260626-002/003 v2.1 治理層硬化 — 信任邊界 + Eval harness"
+actual_tool_calls: 0
+result_summary: "DoD 5/5 pass。TRUST_BOUNDARY + SECURITY 改寫 + SEC-05~07 + CI/e2e enforcement，全綠。改 system/ 走 ask（PR review）。"
+completion_time: "2026-06-26"
+audit_log_ref: "logs/AUDIT_LOG.md"

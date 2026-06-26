@@ -1,0 +1,50 @@
+task_id: "20260626-001"
+date: "2026-06-26"
+status: "done"
+
+# === 任務定義 ===
+goal: "完整檢視專案，對照 2026 公開 AI 架構前沿盤點缺口，產出架構落差報告"
+context: "使用者要求『完整檢視專案，根據專案走向跟最新 ai 公開架構發展，補齊缺的架構』。本卡為盤點與報告（review），補架構的實作另立 002/003/004。"
+input_data:
+  - "README.md"
+  - "system/*"
+  - "outputs/reports/harness-self-assessment-v1.md"
+  - "outputs/drafts/2026-05-09_v3_extraction_plan.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "對照 2026 前沿維度（context engineering / 安全 lethal-trifecta / evals / memory / MCP / permissions / observability / orchestration）逐一標現況與落差"
+  - "明列本次補齊項（Tier 1 安全+eval，Tier 2 context+model）與刻意不補項（多代理/複雜 MCP/自動外發）"
+  - "與 v3 抽出規劃對齊，標示新增模組屬不可替代治理層"
+  - "輸出為 outputs/drafts/ 草稿，待人工確認後可依 RETRO_FLOW 晉升 reports/"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-06-26_architecture-gap-review.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "web_search"
+  - "write_drafts"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 3
+
+# === Skill 路由 ===
+skill_type: "review"
+model_tier: "strong"
+
+# === 執行紀錄 ===
+checkpoints:
+  - "checkpoint: 20260626-001 架構落差報告草稿"
+actual_tool_calls: 0
+result_summary: "DoD 4/4 pass。八維盤點 + Tier1/Tier2 補齊清單 + 不做清單 + v3 對齊，輸出 drafts。"
+completion_time: "2026-06-26"
+audit_log_ref: "logs/AUDIT_LOG.md"

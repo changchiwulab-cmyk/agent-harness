@@ -8,7 +8,7 @@
 不是多代理平台，不是 AI 自動化全套。
 是一個讓 Claude 穩定幫你做事、不失控的結構。
 
-## 架構：三平面、十六模組
+## 架構：三平面、二十模組
 
 ```
 控制平面（Control）
@@ -31,7 +31,11 @@
 ├── 13. Cost Policy        system/COST_POLICY.md — 成本控制
 ├── 14. Failure Taxonomy   system/FAILURE_TAXONOMY.yaml — 失敗分類學（v2 新增）
 ├── 15. Execution Log      system/EXECUTION_LOG_SCHEMA.yaml — 執行紀錄 schema（v2 新增）
-└── 16. Audit Log          logs/AUDIT_LOG.md — 稽核紀錄
+├── 16. Audit Log          logs/AUDIT_LOG.md — 稽核紀錄
+├── 17. Trust Boundary     system/TRUST_BOUNDARY.yaml — 信任邊界/注入防禦（v2.1 新增）
+├── 18. Eval Policy        system/EVAL_POLICY.md + skills/*/rubric.yaml — 評測 harness（v2.1 新增）
+├── 19. Context Policy     system/CONTEXT_POLICY.md — 上下文工程（v2.1 新增）
+└── 20. Model Policy       system/MODEL_POLICY.md — 模型分層路由（v2.1 新增）
 ```
 
 ## 資料夾結構
@@ -49,8 +53,12 @@ agent-harness/
 │   ├── GATE_POLICY.yaml            ← 四層驗證 checklist + rollback（v1.5+v2）
 │   ├── AGENT_CONTEXT.yaml          ← 系統自我認知與邊界（v1.5 新增）
 │   ├── APPROVAL_POLICY.yaml        ← 批准流程規則（v2 新增）
-│   ├── FAILURE_TAXONOMY.yaml       ← 14 種失敗模式獨立檔（v2 新增）
-│   └── EXECUTION_LOG_SCHEMA.yaml   ← 執行紀錄結構定義（v2 新增）
+│   ├── FAILURE_TAXONOMY.yaml       ← 17 種失敗模式獨立檔（v2；v2.1 加 SEC-05~07）
+│   ├── EXECUTION_LOG_SCHEMA.yaml   ← 執行紀錄結構定義（v2 新增）
+│   ├── TRUST_BOUNDARY.yaml         ← 信任分層 + 注入/trifecta 防禦（v2.1 新增）
+│   ├── EVAL_POLICY.md              ← 評測政策 + rubric schema（v2.1 新增）
+│   ├── CONTEXT_POLICY.md           ← 上下文工程政策（v2.1 新增）
+│   └── MODEL_POLICY.md             ← 模型分層路由政策（v2.1 新增）
 ├── tasks/
 │   ├── TASK_CARD_TEMPLATE.yaml
 │   ├── DECISION_LOG_TEMPLATE.yaml  ← 決策紀錄模板（v1.5 新增）
@@ -59,7 +67,8 @@ agent-harness/
 ├── skills/
 │   ├── research/
 │   │   ├── SKILL.md           ← 研究分析
-│   │   └── eval_examples.md   ← 好/壞輸出範例（v1.5 新增）
+│   │   ├── eval_examples.md   ← 好/壞輸出範例（v1.5 新增）
+│   │   └── rubric.yaml        ← deterministic 評分準則（v2.1 新增，每個 skill 一份）
 │   ├── analysis/
 │   │   ├── SKILL.md           ← 決策支援與策略分析
 │   │   └── eval_examples.md   ← 好/壞輸出範例（v2 新增）
@@ -166,6 +175,7 @@ python system/validate_task_card.py tasks/your-task.yaml
 | **v1** | 單核心代理 + Task Card + Checkpoint + Verifier + Audit | — |
 | **v1.5** | + Gate Policy + Operating Context + Decision Log + Eval Examples + Weekly Review | 馬鞍工程原則導入：驗證集中化、系統自知、決策可追溯 |
 | **v2（現在）** | + Approval Policy + Failure Taxonomy + Execution Log Schema + Rollback Path + Ops Eval | 馬鞍工程落地：批准流程獨立化、失敗模式可引用、執行紀錄結構化 |
+| **v2.1（治理層硬化）** | + Trust Boundary（信任邊界/注入防禦）+ Eval Harness（rubric + runner + regression）+ Context Policy + Model Policy | 對齊 2026 前沿：補「對抗性輸入」威脅軸、把「可量化」延伸到輸出品質、收斂 context/選模散落規則 |
 | **v3** | 拆分 bounded specialists（research/sales/content） | 單一代理的 context 經常超限；任務類型間的規則衝突頻繁 |
 | **v4** | Graph orchestration + 進階 checkpoint persistence | 任務間依賴複雜度超過線性拔分能處理的範圍 |
 

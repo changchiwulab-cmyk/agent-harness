@@ -76,6 +76,28 @@
       "related_task": "20260509-N06",
       "revisit_trigger": "v0.2.0 plugin 達到 agent-harness 全部 system/ 規格 round-trip 後評估轉 public；或下個 session 試行 bootstrap 後發現非預期問題",
       "status": "active"
+    },
+    {
+      "date": "2026-06-26",
+      "decision": "- 新增 system/CONTEXT_POLICY.md，把 context 預算配置 / 壓縮 / JIT 取用 / 子代理隔離 /\n  記憶架構收斂為單一政策。\n- native memory 採「混合」：採用原生 session 壓縮；不採用原生跨 session 自動記憶\n  （維持長期記憶需人工確認）；memory/active_projects 保留為人工策展事實來源。\n",
+      "decision_id": "20260626-D008",
+      "path": "memory/active_projects/agent-harness/decisions/20260626-D008_context-and-native-memory.yaml",
+      "project": "agent-harness",
+      "reasoning": "context 工程是 2026 可靠度首要槓桿，值得升為一級政策；但記憶面以「可控 > 能力」為先，\n自動跨 session 記憶會破壞 audit 可追溯與人工確認硬規則，故只取原生壓縮這層無衝突的紅利。\n",
+      "related_task": "20260626-004",
+      "revisit_trigger": "Claude Code 原生記憶提供『人工確認後才持久化』的 gate；或 context 3K 上限頻繁卡關",
+      "status": "active"
+    },
+    {
+      "date": "2026-06-26",
+      "decision": "- 新增 system/MODEL_POLICY.md：定義 cheap/standard/strong/creative 四層（Haiku 4.5 /\n  Sonnet 4.6 / Opus 4.8 / Fable 5）與 skill_type→預設 tier 對應；risk>=high 至少 standard、\n  gate/judge 用 strong。\n- TASK_CARD_TEMPLATE 新增可選 model_tier 欄。\n- 不自建 router runtime；COST_POLICY 模型路由段標為已落地並互連。\n",
+      "decision_id": "20260626-D009",
+      "path": "memory/active_projects/agent-harness/decisions/20260626-D009_model-routing.yaml",
+      "project": "agent-harness",
+      "reasoning": "治理意圖（哪類任務該用哪 tier）是不可替代的價值；runtime 指派與平台重疊度高，自建違背\nv3 減重方向。可選欄位 + 預設表，兼顧一致性與彈性。\n",
+      "related_task": "20260626-004",
+      "revisit_trigger": "Claude 模型家族更新（新增/汰換 tier 成員）；或單任務成本持續超 COST_POLICY 預算",
+      "status": "active"
     }
   ],
   "logs": [
@@ -136,23 +158,23 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 30,
-      "medium": 14
+      "low": 31,
+      "medium": 17
     },
     "task_skill": {
       "analysis": 4,
-      "ops": 26,
+      "ops": 27,
       "research": 5,
-      "review": 6,
-      "writing": 4
+      "review": 7,
+      "writing": 6
     },
     "task_status": {
-      "done": 22,
+      "done": 26,
       "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 45
+    "task_total": 49
   },
   "tasks": [
     {
@@ -604,6 +626,46 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-26",
+      "goal": "完整檢視專案，對照 2026 公開 AI 架構前沿盤點缺口，產出架構落差報告",
+      "path": "tasks/2026-06-26_architecture-gap-review.yaml",
+      "risk_level": "low",
+      "skill_type": "review",
+      "status": "done",
+      "task_id": "20260626-001"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-26",
+      "goal": "補齊上下文工程與模型路由政策，收斂散落規則並落地 COST_POLICY 未竟的 v2 model routing",
+      "path": "tasks/2026-06-26_context-and-model-policy.yaml",
+      "risk_level": "medium",
+      "skill_type": "writing",
+      "status": "done",
+      "task_id": "20260626-004"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-26",
+      "goal": "補齊評測架構：讓 skills 的 eval_examples golden set 可被 deterministic 跑成 regression",
+      "path": "tasks/2026-06-26_eval-harness.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260626-003"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-26",
+      "goal": "補齊信任邊界/安全架構：處理對抗性輸入（indirect prompt injection / lethal trifecta）",
+      "path": "tasks/2026-06-26_security-trust-boundary.yaml",
+      "risk_level": "medium",
+      "skill_type": "writing",
+      "status": "done",
+      "task_id": "20260626-002"
     }
   ]
 }

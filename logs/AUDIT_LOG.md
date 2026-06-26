@@ -33,6 +33,92 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260626-004"
+  date: "2026-06-26"
+  skill_type: "writing"
+  goal: "Tier2：補 CONTEXT_POLICY + MODEL_POLICY，收斂散落規則並落地 model routing"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "file_write"
+      call_count: 6
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "system/CONTEXT_POLICY.md"
+  error_summary: ""
+  estimated_tokens: "~26K"
+  notes: "新增 CONTEXT_POLICY（context 預算/壓縮/JIT/子代理/記憶）+ MODEL_POLICY（四層 Haiku/Sonnet/Opus/Fable + skill→tier）；TASK_CARD 加 model_tier 欄；D008/D009。改 system/ 走 ask：approval 走本 PR diff 閘，merge 後回填 logs/approvals/。context budget 仍 <3K。"
+```
+
+```yaml
+- task_id: "20260626-003"
+  date: "2026-06-26"
+  skill_type: "ops"
+  goal: "補 Eval harness：讓 skills golden set 可 deterministic 跑成 regression"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "file_write"
+      call_count: 9
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "scripts/run_evals.py"
+  error_summary: ""
+  estimated_tokens: "~30K"
+  notes: "EVAL_POLICY + 5 rubric.yaml + run_evals.py（good 滿分/bad 0）+ 單元/e2e 測試 + CI 串接 + check_spec_consistency rubric 驗證。approval 走本 PR diff 閘，merge 後回填。"
+```
+
+```yaml
+- task_id: "20260626-002"
+  date: "2026-06-26"
+  skill_type: "writing"
+  goal: "補信任邊界/安全架構：處理 indirect prompt injection / lethal trifecta"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 7
+    - tool_name: "file_write"
+      call_count: 8
+  checkpoints: 1
+  approval_needed: true
+  approval_given: false
+  output_path: "system/TRUST_BOUNDARY.yaml"
+  error_summary: ""
+  estimated_tokens: "~32K"
+  notes: "TRUST_BOUNDARY.yaml（三層+TB-01~06+trifecta）+ SECURITY.md 改寫 + FAILURE_TAXONOMY SEC-05~07 + GLOBAL_RULES/research skill 段 + CI/e2e enforcement。改 system/ 走 ask：approval 走本 PR diff 閘，merge 後回填 logs/approvals/。"
+```
+
+```yaml
+- task_id: "20260626-001"
+  date: "2026-06-26"
+  skill_type: "review"
+  goal: "完整檢視專案，對照 2026 前沿盤點缺口，產出架構落差報告"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 12
+    - tool_name: "web_search"
+      call_count: 3
+    - tool_name: "write_drafts"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/2026-06-26_architecture-gap-review.md"
+  error_summary: ""
+  estimated_tokens: "~40K"
+  notes: "八維盤點（context/安全/eval/memory/MCP/permissions/observability/orchestration）+ Tier1/Tier2 補齊清單 + 刻意不做清單 + v3 對齊。低風險、只產 draft，待人工確認後可晉升 reports/。"
+```
+
+```yaml
 - task_id: "20260529-011"
   date: "2026-05-29"
   skill_type: "ops"
