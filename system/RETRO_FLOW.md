@@ -31,6 +31,7 @@
 | 流程 | 哪裡卡住最久？哪個步驟多餘？ | 對應 SKILL.md |
 | 權限 | 哪些 ask 每次都被 approve？ | PERMISSIONS.yaml（畢業候選） |
 | 品質 | definition_of_done 夠具體嗎？ | TASK_CARD_TEMPLATE.yaml |
+| Eval | 各 skill 的 deterministic 通過率有變嗎？golden set 是否需更新？（跑 `scripts/run_evals.py`） | 對應 `skills/<type>/rubric.yaml` + `eval_examples.md` |
 | 決策回看 | 有 decision 觸發 revisit 嗎？（跑 `scripts/check_decision_revisit.rb`） | 對應 Decision Log 的 status |
 
 ### 3. 輸出

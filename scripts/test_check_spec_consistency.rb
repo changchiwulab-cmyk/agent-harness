@@ -124,3 +124,17 @@ class TestLogsSchemaLintConstants < Minitest::Test
     assert_equal 5, ALLOWED_ERROR_TYPE.length
   end
 end
+
+# ── 測試 v2.1 治理層硬化常數（信任邊界 + eval harness）─────────────────────────
+class TestV21Constants < Minitest::Test
+  def test_required_sec_ids
+    assert_equal %w[SEC-05 SEC-06 SEC-07], REQUIRED_SEC_IDS
+  end
+
+  def test_allowed_rubric_check_types
+    assert_includes ALLOWED_RUBRIC_CHECK_TYPES, 'required_heading'
+    assert_includes ALLOWED_RUBRIC_CHECK_TYPES, 'heading_order'
+    assert_includes ALLOWED_RUBRIC_CHECK_TYPES, 'forbidden_regex'
+    assert_equal 5, ALLOWED_RUBRIC_CHECK_TYPES.length
+  end
+end

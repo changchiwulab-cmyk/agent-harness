@@ -1,0 +1,18 @@
+# Writing skill 評分準則（deterministic）。對應 skills/writing/eval_examples.md 的判斷標準。
+# 輸出格式隨 expected_output 浮動，故只驗 robust 的反模式與建議先行。
+# 由 scripts/run_evals.py 執行；policy 見 system/EVAL_POLICY.md。
+skill: writing
+pass_threshold: 0.66
+checks:
+  - id: has_recommendation
+    type: required_regex
+    pattern: "建議"
+    desc: "須給出建議（決策支援），不只分析"
+  - id: no_translationese
+    type: forbidden_regex
+    pattern: "不容小覷|不容忽視|旨在探討|的浪潮|綜上所述|本報告旨在"
+    desc: "避免翻譯腔/學術腔"
+  - id: no_numbered_formal_sections
+    type: forbidden_regex
+    pattern: "^#+\\s*[一二三四五六七八九十]、"
+    desc: "避免『一、前言』式冗長公文結構"

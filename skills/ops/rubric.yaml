@@ -1,0 +1,25 @@
+# Ops skill 評分準則（deterministic）。對應 skills/ops/eval_examples.md 的判斷標準。
+# 由 scripts/run_evals.py 執行；policy 見 system/EVAL_POLICY.md。
+skill: ops
+pass_threshold: 0.75
+checks:
+  - id: section_inventory
+    type: required_heading
+    token: "盤點"
+    desc: "操作前需盤點現狀"
+  - id: section_plan
+    type: required_heading
+    token: "計畫"
+    desc: "需先列操作計畫"
+  - id: has_checkpoint
+    type: required_regex
+    pattern: "checkpoint|git commit|git checkpoint"
+    desc: "需提及 checkpoint"
+  - id: plan_first
+    type: required_regex
+    pattern: "等待確認|確認後才執行|[Dd]ry-?run"
+    desc: "計畫先行/等待確認（不先斬後奏）"
+  - id: no_premature_done
+    type: forbidden_regex
+    pattern: "已完成整理|已完成！|都移到對應資料夾了"
+    desc: "不得未經確認就宣稱已執行完成"

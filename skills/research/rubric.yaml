@@ -1,0 +1,42 @@
+# Research skill 評分準則（deterministic）。對應 skills/research/eval_examples.md 的判斷標準。
+# 由 scripts/run_evals.py 執行；policy 見 system/EVAL_POLICY.md。
+skill: research
+pass_threshold: 0.8
+checks:
+  - id: section_conclusion
+    type: required_heading
+    token: "結論"
+    desc: "必須有結論區段"
+  - id: section_facts
+    type: required_heading
+    token: "已知事實"
+    desc: "必須有已知事實區段"
+  - id: section_inference
+    type: required_heading
+    token: "合理推論"
+    desc: "必須有合理推論區段"
+  - id: section_pending
+    type: required_heading
+    token: "待驗證"
+    desc: "必須有待驗證區段"
+  - id: section_highrisk
+    type: required_heading
+    token: "高風險假設"
+    desc: "必須有高風險假設區段"
+  - id: section_sources
+    type: required_heading
+    token: "來源"
+    desc: "必須有來源區段"
+  - id: conclusion_first
+    type: heading_order
+    before: "結論"
+    after: "已知事實"
+    desc: "結論先行（結論早於已知事實）"
+  - id: sources_nonempty
+    type: heading_nonempty
+    token: "來源"
+    desc: "來源區段非空"
+  - id: no_vague_citation
+    type: forbidden_regex
+    pattern: "根據研究|據報導|據傳|眾所周知"
+    desc: "不得使用模糊引用"

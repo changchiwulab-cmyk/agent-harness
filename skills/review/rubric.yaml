@@ -1,0 +1,33 @@
+# Review skill 評分準則（deterministic）。對應 skills/review/eval_examples.md 的判斷標準。
+# 由 scripts/run_evals.py 執行；policy 見 system/EVAL_POLICY.md。
+skill: review
+pass_threshold: 0.8
+checks:
+  - id: section_overall
+    type: required_heading
+    token: "總體"
+    desc: "必須有總體評估區段"
+  - id: section_pass_items
+    type: required_heading
+    token: "通過項"
+    desc: "必須列出通過項（不只挑毛病）"
+  - id: section_must_fix
+    type: required_heading
+    token: "必須修改"
+    desc: "必須有『必須修改』區段"
+  - id: section_suggest_fix
+    type: required_heading
+    token: "建議修改"
+    desc: "必須有『建議修改』區段（與必須修改分級）"
+  - id: section_dod
+    type: required_heading
+    token: "Definition of Done"
+    desc: "必須逐條比對 definition_of_done"
+  - id: has_checklist
+    type: required_regex
+    pattern: "\\[x\\]|\\[ \\]"
+    desc: "DoD 逐條以 checklist 標記"
+  - id: no_vague_review
+    type: forbidden_regex
+    pattern: "有些地方|部分內容|大致符合|寫得不錯"
+    desc: "不得用模糊描述代替具體定位"

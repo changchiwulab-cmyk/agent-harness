@@ -1,0 +1,34 @@
+# Analysis skill 評分準則（deterministic）。對應 skills/analysis/eval_examples.md 的判斷標準。
+# 由 scripts/run_evals.py 執行；policy 見 system/EVAL_POLICY.md。
+skill: analysis
+pass_threshold: 0.8
+checks:
+  - id: section_conclusion
+    type: required_heading
+    token: "結論"
+    desc: "必須有結論/建議區段"
+  - id: section_options
+    type: required_heading
+    token: "選項"
+    desc: "必須有選項比較區段"
+  - id: section_highrisk
+    type: required_heading
+    token: "高風險假設"
+    desc: "必須有高風險假設區段"
+  - id: section_pending
+    type: required_heading
+    token: "待驗證"
+    desc: "必須有待驗證區段"
+  - id: section_next
+    type: required_heading
+    token: "下一步"
+    desc: "必須有建議下一步區段"
+  - id: has_do_nothing
+    type: required_regex
+    pattern: "維持現狀|不做|現狀"
+    desc: "必須評估『不做/維持現狀』選項"
+  - id: conclusion_first
+    type: heading_order
+    before: "結論"
+    after: "選項"
+    desc: "結論先行（結論早於選項比較）"

@@ -33,6 +33,10 @@ ALLOWED_APPROVAL_STATUS = %w[approved rejected superseded].freeze
 REQUIRED_APPROVAL_FIELDS = %w[approval_id task_id date action approval_method status approved_by].freeze
 ALLOWED_ERROR_TYPE = %w[tool_failure rule_violation schema_failure timeout unknown].freeze
 
+# --- v2.1 治理層硬化：信任邊界 + eval harness schema 常數 ---
+REQUIRED_SEC_IDS = %w[SEC-05 SEC-06 SEC-07].freeze
+ALLOWED_RUBRIC_CHECK_TYPES = %w[required_heading required_regex forbidden_regex heading_order heading_nonempty].freeze
+
 def parse_iso_date(value)
   return value if value.is_a?(Date)
   return nil unless value.is_a?(String) && value.match?(DATE_PATTERN)
@@ -233,6 +237,78 @@ Dir.glob('logs/errors/*.md').sort.each do |err_file|
     errors << "#{err_file}: missing error_type"
   elsif !ALLOWED_ERROR_TYPE.include?(etype)
     errors << "#{err_file}: invalid error_type #{etype} (allowed: #{ALLOWED_ERROR_TYPE.join('/')})"
+  end
+end
+
+# 7) system/TRUST_BOUNDARY.yaml — 信任邊界 schema（v2.1）
+tb_path = 'system/TRUST_BOUNDARY.yaml'
+if File.exist?(tb_path)
+  tb = YAML.load_file(tb_path)
+  if tb.is_a?(Hash)
+    tiers = tb['trust_tiers']
+    if tiers.is_a?(Hash)
+      %w[trusted semi_trusted untrusted].each do |t|
+        ok = tiers[t].is_a?(Hash) && tiers[t]['sources'].is_a?(Array) && !tiers[t]['sources'].empty?
+        errors << "#{tb_path}: trust_tiers.#{t} must have non-empty sources" unless ok
+      end
+    else
+      errors << "#{tb_path}: missing trust_tiers mapping"
+    end
+    unless tb['core_rules'].is_a?(Array) && !tb['core_rules'].empty?
+      errors << "#{tb_path}: core_rules must be a non-empty list"
+    end
+    unless tb.dig('lethal_trifecta', 'legs', 'exfiltration_vector', 'status')
+      errors << "#{tb_path}: missing lethal_trifecta.legs.exfiltration_vector.status"
+    end
+  else
+    errors << "#{tb_path}: root must be mapping"
+  end
+else
+  errors << "missing file: #{tb_path}"
+end
+
+# 8) system/FAILURE_TAXONOMY.yaml — 必含注入模式 SEC-05~07（v2.1）
+ft_path = 'system/FAILURE_TAXONOMY.yaml'
+if File.exist?(ft_path)
+  ft = YAML.load_file(ft_path)
+  sec = ft.is_a?(Hash) ? ft.dig('categories', 'security') : nil
+  if sec.is_a?(Array)
+    ids = sec.map { |item| item.is_a?(Hash) ? item['id'] : nil }
+    REQUIRED_SEC_IDS.each do |sid|
+      errors << "#{ft_path}: missing #{sid} in security taxonomy" unless ids.include?(sid)
+    end
+  else
+    errors << "#{ft_path}: categories.security must be a list"
+  end
+end
+
+# 9) skills/*/rubric.yaml — eval rubric schema（v2.1）
+Dir.glob('skills/*/rubric.yaml').sort.each do |rb_file|
+  rb = YAML.load_file(rb_file)
+  unless rb.is_a?(Hash)
+    errors << "#{rb_file}: root must be mapping"
+    next
+  end
+  errors << "#{rb_file}: missing skill" if rb['skill'].to_s.strip.empty?
+  pt = rb['pass_threshold']
+  unless pt.is_a?(Numeric) && pt >= 0 && pt <= 1
+    errors << "#{rb_file}: pass_threshold must be a number in [0,1]"
+  end
+  checks = rb['checks']
+  if checks.is_a?(Array) && !checks.empty?
+    checks.each_with_index do |c, i|
+      unless c.is_a?(Hash)
+        errors << "#{rb_file}: checks[#{i}] must be mapping"
+        next
+      end
+      errors << "#{rb_file}: checks[#{i}] missing id" if c['id'].to_s.strip.empty?
+      ctype = c['type']
+      unless ALLOWED_RUBRIC_CHECK_TYPES.include?(ctype)
+        errors << "#{rb_file}: checks[#{i}] invalid type #{ctype} (allowed: #{ALLOWED_RUBRIC_CHECK_TYPES.join('/')})"
+      end
+    end
+  else
+    errors << "#{rb_file}: checks must be a non-empty list"
   end
 end
 
