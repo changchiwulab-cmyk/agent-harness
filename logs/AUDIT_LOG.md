@@ -33,6 +33,129 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260626-I05"
+  date: "2026-06-26"
+  skill_type: "research"
+  goal: "跨 4 產業橫向綜合比較 + I-Series deep-dive 方法論觀察（mini-retro）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260626-I05_cross-industry-synthesis.md"
+  error_summary: ""
+  estimated_tokens: "~18K"
+  notes: "I-Series 收束張。橫向比較表（4 產業×6 維度）+ 5 條共通主題（合規收緊/AI 落地/淨零穿透/政策日曆/高齡化）+ 機會優先序（容器×內容×合規層）+ mini-retro。mini-retro 證實 deep-dive 方法論可跨產業泛化，但性價比隨產業『政策/法規清晰度』而變；對 COST_POLICY（按產業細分上限+系列共享研究）與 research SKILL（產業切片範本+在地量化稀缺時改用國際資料+推論）提建議，依 RETRO_FLOW 標『待人工核准』，未直接改系統檔。完成 I01-I05 共 5 卡跨過 RETRO 累積門檻。"
+```
+
+---
+
+```yaml
+- task_id: "20260626-I04"
+  date: "2026-06-26"
+  skill_type: "research"
+  goal: "台灣專業服務業深度研究：5 切片量化 + AI 重塑專業服務專題 + 區域對標 + 機會日曆 + 敏感性表 + 一人顧問切入點"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 5
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 2
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260626-I04_professional-services-deep-dive.md"
+  error_summary: ""
+  estimated_tokens: "~31K"
+  notes: "I-Series 第 4 張（對使用者最直接=顧問本業）。5 切片（管顧/法律 legaltech/會計稅務/人資/行銷）+ AI 雙向力專題（壓縮 vs 放大、產品化服務、fractional）+ AI 基本法/律師會計法規 + 日韓菲 BPO 對標。關鍵數據：管顧業 87% 未滿 10 人、台灣法律 AI 普及率 85.6%（高於美 30%）、solo 顧問可多承接 30% 客量、fractional 6 萬→12 萬（2022→2024）。方法論觀察：在地量化最弱（管顧官方調查停 2016）、國際質化最豐，是 mini-retro 重要對照點。"
+```
+
+---
+
+```yaml
+- task_id: "20260626-I03"
+  date: "2026-06-26"
+  skill_type: "research"
+  goal: "台灣綠能·永續·ESG 產業深度研究：5 切片量化 + 碳費/CBAM/ISSB 政策 + 區域對標 + 機會日曆 + 敏感性表 + 一人顧問切入點"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 5
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 2
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260626-I03_greentech-esg-deep-dive.md"
+  error_summary: ""
+  estimated_tokens: "~31K"
+  notes: "I-Series 第 3 張。5 切片（太陽能/離岸風電/儲能/碳費碳管理/ESG 揭露）。關鍵數據：碳費 2026 開徵 NT$300/噸約 500 廠、太陽光電 14.22GW→20GW 目標、離岸風電 2026 5.3GW、全球儲能 2030 US$612B、CBAM 2026 淨成本 ~€3.75/噸但 2028 後急升。方法論觀察：四產業中法規時序資料最密、最量化，deep-dive 對『政策驅動型』產業適配度最高。"
+```
+
+---
+
+```yaml
+- task_id: "20260626-I02"
+  date: "2026-06-26"
+  skill_type: "research"
+  goal: "台灣醫療健康照護產業深度研究：5 切片量化 + 超高齡/長照3.0/資料治理政策 + 區域對標 + 機會日曆 + 敏感性表 + 一人顧問切入點"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 5
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 2
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260626-I02_healthcare-deep-dive.md"
+  error_summary: ""
+  estimated_tokens: "~31K"
+  notes: "I-Series 第 2 張。5 切片（智慧醫院/醫材/長照/數位健康/生技）。關鍵數據：2026 進入超高齡社會（65 歲以上 ≥20%）+ 長照 3.0 同年啟動、長照支出 2026 NT$73.6 億（2016 的 4.5 倍）、醫材市場 2024 US$2.4B、遠距診療 +500%。法規含健保資料管理法草案 + PDPA/PDPC + 遠距診療擴大。方法論觀察：官方來源最齊全權威、量化密度高。"
+```
+
+---
+
+```yaml
+- task_id: "20260626-I01"
+  date: "2026-06-26"
+  skill_type: "research"
+  goal: "台灣智慧製造產業深度研究：5 切片量化 + 數位轉型/關稅/淨零政策 + 區域對標 + 機會日曆 + 敏感性表 + 一人顧問切入點"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 5
+    - tool_name: "file_read"
+      call_count: 2
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 2
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260626-I01_manufacturing-deep-dive.md"
+  error_summary: ""
+  estimated_tokens: "~30K"
+  notes: "I-Series 第 1 張（不同產業類別實證；對照 T01-T03 不同深度系列）。5 切片（工具機/EMS/智慧工廠/傳產數位/淨零）。關鍵數據：鴻海 2025 ~US$260B、EMS 全球市佔 >40%、台美關稅 15% 拍板後六成廠商估 2026 營收成長 5-10%、智慧製造全球 2026 ~US$620B。新增 T03 沒有的區域對標節（日韓機器人密度 >600/>1000 每萬人、越南遷移）。方法論觀察：量化可得性高但『機械產值』口徑分歧需校正。"
+```
+
+---
+
+```yaml
 - task_id: "20260529-011"
   date: "2026-05-29"
   skill_type: "ops"

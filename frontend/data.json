@@ -136,13 +136,13 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 30,
+      "low": 35,
       "medium": 14
     },
     "task_skill": {
       "analysis": 4,
       "ops": 26,
-      "research": 5,
+      "research": 10,
       "review": 6,
       "writing": 4
     },
@@ -150,9 +150,9 @@
       "done": 22,
       "in_progress": 2,
       "pending": 2,
-      "review": 19
+      "review": 24
     },
-    "task_total": 45
+    "task_total": 50
   },
   "tasks": [
     {
@@ -604,6 +604,56 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-26",
+      "goal": "跨 4 產業（製造/醫療/綠能ESG/專業服務）橫向綜合比較 + I-Series deep-dive 方法論觀察（mini-retro）",
+      "path": "tasks/2026-06-26_cross-industry-synthesis.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "review",
+      "task_id": "20260626-I05"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-26",
+      "goal": "台灣綠能·永續·ESG 產業深度報告：4-6 切片量化、政策法規、日韓/東南亞區域對標、12 個月機會日曆、敏感性表、一人顧問切入點",
+      "path": "tasks/2026-06-26_greentech-esg-deep-dive.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "review",
+      "task_id": "20260626-I03"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-26",
+      "goal": "台灣醫療健康照護產業深度報告：4-6 切片量化、政策法規、日韓/東南亞區域對標、12 個月機會日曆、敏感性表、一人顧問切入點",
+      "path": "tasks/2026-06-26_healthcare-deep-dive.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "review",
+      "task_id": "20260626-I02"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-26",
+      "goal": "台灣智慧製造產業深度報告：4-6 切片量化、政策法規、日韓/東南亞區域對標、12 個月機會日曆、敏感性表、一人顧問切入點",
+      "path": "tasks/2026-06-26_manufacturing-deep-dive.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "review",
+      "task_id": "20260626-I01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-26",
+      "goal": "台灣專業服務業深度報告：4-6 切片量化、政策法規、日韓/東南亞區域對標、12 個月機會日曆、敏感性表、一人顧問切入點（含 AI 如何重塑顧問業本身）",
+      "path": "tasks/2026-06-26_professional-services-deep-dive.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "review",
+      "task_id": "20260626-I04"
     }
   ]
 }

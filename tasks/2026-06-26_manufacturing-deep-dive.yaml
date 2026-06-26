@@ -58,8 +58,10 @@ max_web_searches: 5
 skill_type: "research"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - "2c7b1b3 完成製造業資料蒐集（5 web search）"
+  - "f37a304 完成切片分析 + deep-dive 草稿"
+actual_tool_calls: 8
+result_summary: "DoD 全條通過。5 切片（工具機/EMS/智慧工廠/傳產數位/淨零）+ 量化財務 + 數位轉型補助 + 區域對標（日韓機器人密度/越南遷移）+ 12 月機會日曆 + 5 條敏感性假設 + 一人顧問 ROI 切入點。5 web search 用滿。~4200 字。"
+completion_time: "2026-06-26"
 audit_log_ref: "logs/AUDIT_LOG.md"

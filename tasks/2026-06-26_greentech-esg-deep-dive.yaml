@@ -56,8 +56,10 @@ max_web_searches: 5
 skill_type: "research"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - "c6f0ca4 完成綠能ESG資料蒐集（5 web search）"
+  - "7f0ddd0 完成切片分析 + deep-dive 草稿"
+actual_tool_calls: 8
+result_summary: "DoD 全條通過。5 切片（太陽能/離岸風電/儲能/碳費碳管理/ESG揭露）+ 量化裝置容量 + 碳費/CBAM/ISSB 政策時鐘 + 區域對標（日氫能/韓儲能/東南亞再生）+ 12 月機會日曆 + 6 條敏感性假設 + 一人顧問 ROI 切入點。5 web search 用滿。~4300 字。"
+completion_time: "2026-06-26"
 audit_log_ref: "logs/AUDIT_LOG.md"

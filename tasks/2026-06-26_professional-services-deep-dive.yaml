@@ -57,8 +57,10 @@ max_web_searches: 5
 skill_type: "research"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - "129b3fb 完成專業服務資料蒐集（5 web search）"
+  - "5104f23 完成切片分析 + deep-dive 草稿"
+actual_tool_calls: 8
+result_summary: "DoD 全條通過。5 切片（管顧/法律legaltech/會計稅務/人資/行銷）+ AI 重塑專業服務專題（壓縮vs放大/產品化/fractional）+ AI基本法/律師會計法規 + 區域對標（日韓菲BPO）+ 12 月機會日曆 + 6 條敏感性假設 + ROI 切入點。5 web search 用滿。~4600 字。"
+completion_time: "2026-06-26"
 audit_log_ref: "logs/AUDIT_LOG.md"
