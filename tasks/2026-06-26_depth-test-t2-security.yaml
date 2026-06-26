@@ -1,0 +1,63 @@
+# Task Card — 深度測試研究 T2：安全性／權限邊界
+# 來源：使用者 /goal「做 3 個不同面向的深度測試研究」之第 2 面向
+# 脈絡：自我評估給安全 9（招牌）。本次以對抗式探測檢驗它是否名副其實——
+#       permissions_guard.py deny 命中與規避（false negative）、SEC-01/02/04 政策落地、deny-by-default。
+# 安全：唯讀執行——把測試命令以 JSON 餵給 guard 的 stdin 觀察 decision，不實際執行任何危險命令。
+
+task_id: "20260626-002"
+date: "2026-06-26"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "對抗式深度測試 harness 的權限邊界，實證 permissions_guard.py 的 deny 強度與規避漏洞，逐條評估 SEC 政策落地，產出研究草稿"
+context: |
+  安全是 harness 招牌（自評 9），但「最強項」也需被對抗驗證才算坐實。
+  本研究把候選危險命令以 hook JSON 餵給 permissions_guard.py 的 stdin，觀察 allow/block decision：
+  正命中（rm -rf / mail / webhook / stripe / git push --force）與規避變形（rm -fr、多空白、引號拆分、env 包裝、大小寫）。
+  再對照 PERMISSIONS.yaml deny 清單與 FAILURE_TAXONOMY 安全四項（SEC-01 未授權、SEC-02 洩漏、SEC-04 幻覺驅動），
+  逐條給「擋得住／設計上擋／有缺口」評級。所有測試命令僅用於餵 stdin 字串比對，絕不實際執行。
+input_data:
+  - "system/PERMISSIONS.yaml"
+  - "system/FAILURE_TAXONOMY.yaml"
+  - "scripts/permissions_guard.py"
+  - "scripts/test_permissions_guard.py"
+
+# === 完成標準 ===
+definition_of_done:
+  - "deny 正命中表：對 PERMISSIONS deny 對應的每條 guard 規則各餵 ≥1 命令，記錄 decision=block 與 reason"
+  - "規避對抗表：對每條 deny 規則造 ≥2 變形命令找 false negative，記錄哪些漏過（decision=allow）並標風險"
+  - "基線：實跑 scripts/test_permissions_guard.py 記錄現有測試通過數與覆蓋盲區"
+  - "SEC 政策落地評級：SEC-01/02/04 + deny-by-default 各標『擋得住／設計上擋／有缺口』並附依據"
+  - "產出 outputs/drafts/2026-06-26_depth-test-t2-security.md，遵循 結論→已知事實→合理推論→待驗證→高風險假設→來源；發現的缺口只提案不就地修 guard"
+  - "全程唯讀（不實際執行危險命令）、不修改 system/／skills/／scripts/／CLAUDE.md"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-06-26_depth-test-t2-security.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "create_output_files"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "research"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"

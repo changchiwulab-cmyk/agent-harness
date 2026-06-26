@@ -1,0 +1,63 @@
+# Task Card — 深度測試研究 T1：可靠性／故障恢復
+# 來源：使用者 /goal「做 3 個不同面向的深度測試研究」之第 1 面向
+# 脈絡：延續 20260529-001 自我評估（可靠 7「未實證」、耐久 6）→ R5 單一 schema-fail 故障演練，
+#       本次擴大為「多失敗模式 + 四層 gate 矩陣 + 14 種失敗分類學覆蓋 + 恢復路徑實跑」的實證探測。
+# 安全：純唯讀執行 harness 自帶 validator/git 唯讀指令，探針 fixture 暫存 scratchpad/，不污染 tasks/，不改 system/。
+
+task_id: "20260626-001"
+date: "2026-06-26"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "用實證探針深度測試 harness 的可靠性與故障恢復路徑，坐實/挑戰『失敗→恢復閉環』的真實強度，產出研究草稿"
+context: |
+  自我評估指出 harness 天花板是「設計完備但關鍵路徑未實證」；可靠性扣分點正是「真實故障從未跑過」。
+  R5 只實證了單一 schema-fail。T1 把實證面擴大：對多種破壞模式各造 fixture 跑 validate_task_card；
+  推演四層 gate（schema/rule/completion/risk）失敗矩陣對照 GATE_POLICY 的 on_fail/rollback；
+  把 FAILURE_TAXONOMY 14 種逐一標「已實證／僅設計」；依 RECOVERY_RUNBOOK 場景 A–D 實跑唯讀恢復指令驗證資料源。
+input_data:
+  - "system/GATE_POLICY.yaml"
+  - "system/FAILURE_TAXONOMY.yaml"
+  - "system/RECOVERY_RUNBOOK.md"
+  - "system/validate_task_card.py"
+  - "tests/e2e/test_failure_drill.py"
+
+# === 完成標準 ===
+definition_of_done:
+  - "多失敗模式 schema 探測：對 ≥5 種破壞模式各造 fixture，實跑 validate_task_card.py 記錄真實 exit code 與錯誤訊息，對照 GATE_POLICY schema_check on_fail（重試 1 次→停）"
+  - "四層 gate 失敗矩陣：schema/rule/completion/risk 各列一違規情境，標記『已實證／僅設計』並對照 on_fail + rollback"
+  - "FAILURE_TAXONOMY 14 種覆蓋表：逐一標『已有實證實例／僅設計』，附證據來源（R5、本次探針、或無）"
+  - "恢復路徑實跑：依 RECOVERY_RUNBOOK 場景 A–D 跑唯讀指令（git log --grep / git status）確認恢復資料源存在、指令可用"
+  - "產出 outputs/drafts/2026-06-26_depth-test-t1-reliability.md，遵循 結論→已知事實→合理推論→待驗證→高風險假設→來源；缺口只提案不就地修"
+  - "全程不修改 system/／skills/／CLAUDE.md；探針 fixture 不進 tasks/"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-06-26_depth-test-t1-reliability.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "create_output_files"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "research"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
