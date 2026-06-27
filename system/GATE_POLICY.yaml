@@ -36,7 +36,7 @@ gates:
       - 逐條列出 definition_of_done
       - 每條標記 pass 或 fail
       - fail 的條目說明缺什麼
-      - "（M1 eval 架構）若產出可對應某 skill rubric，跑 scripts/run_evals.py 的 auto_checks 結構評分；judge_checks 為人工/LLM-as-judge，晉升 reports/ 前由人工確認"
+      - "（M1 eval 架構）若產出可對應某 skill rubric，跑 `python scripts/run_evals.py --output <本任務產出> --skill <skill>` 對『實際產出』做 auto_checks 結構評分（per-output，非 regression）；judge_checks 為人工/LLM-as-judge，晉升 reports/ 前由人工確認"
     on_fail: "列出缺漏清單，詢問使用者是否補充或接受現狀"
     rollback: "產出標記為 partial，存入 outputs/drafts/ 而非 reports/"
 

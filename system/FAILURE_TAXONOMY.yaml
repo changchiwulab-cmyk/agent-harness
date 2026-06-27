@@ -74,8 +74,8 @@ categories:
 
     - id: SEC-02
       name: "資料洩漏"
-      description: "敏感資料出現在不應出現的地方"
-      mitigation: "敏感資料不進 context；輸出前檢查"
+      description: "敏感資料出現在不應出現的地方（含經由 web_search 查詢字串 / 抓取 URL 外洩）"
+      mitigation: "敏感資料不進 context；輸出前檢查；外部查詢/URL 不得含私有資料（避免 query/URL 外洩，見 SECURITY_ARCHITECTURE.md §1-bis）"
 
     - id: SEC-03
       name: "成本失控"

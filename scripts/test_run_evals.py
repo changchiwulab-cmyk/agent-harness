@@ -101,6 +101,43 @@ class TestEvaluateCase(unittest.TestCase):
             self.assertTrue(res["passed"], res)
 
 
+class TestEvaluateSingle(unittest.TestCase):
+    """per-output 模式（GATE completion 評本任務實際產出）。"""
+
+    def test_pass_on_good_output(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / "good.md"
+            p.write_text("# 標題\n## 結論\n" + ("內容 " * 100) + "\n## 來源\n- x",
+                         encoding="utf-8")
+            res = re.evaluate_single(p, "research")
+            self.assertTrue(res["passed"], res)
+
+    def test_fail_on_missing(self):
+        res = re.evaluate_single("/no/such/file.md", "research")
+        self.assertFalse(res["passed"])
+        self.assertEqual(res["reason"], "output_missing")
+
+    def test_fail_on_no_title(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / "bad.md"
+            # 無 # 標題 + 無 conclusion/structure 標記 → 應 FAIL
+            p.write_text("純文字主體沒有任何結構標記 " * 30, encoding="utf-8")
+            res = re.evaluate_single(p, "research")
+            self.assertFalse(res["passed"])
+
+    def test_invalid_skill_raises(self):
+        with self.assertRaises(ValueError):
+            re.evaluate_single("whatever.md", "not-a-skill")
+
+    def test_main_per_output_pass_returns_zero(self):
+        abs_path = str(re.ROOT / "outputs/reports/harness-self-assessment-v1.md")
+        code = re.main(["--output", abs_path, "--skill", "review"])
+        self.assertEqual(code, 0)
+
+    def test_main_per_output_requires_skill(self):
+        self.assertEqual(re.main(["--output", "x.md"]), 2)
+
+
 class TestRunRealRepo(unittest.TestCase):
     def test_run_against_repo_manifest_all_pass(self):
         scorecard = re.run()["scorecard"]

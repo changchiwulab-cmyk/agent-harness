@@ -79,23 +79,20 @@ def evaluate_content(content: str, rubric: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def evaluate_case(root: Path, case: dict[str, Any], rubrics_dir: Path) -> dict[str, Any]:
-    """評估單一 regression case（含檔案存在性 / 非空 / 標題 + rubric auto_checks）。"""
-    case_id = case.get("case_id")
-    skill = case.get("skill")
-    out_rel = case.get("output_path", "")
-    out_path = Path(root) / out_rel
-    result: dict[str, Any] = {
-        "case_id": case_id,
-        "skill": skill,
-        "output_path": out_rel,
-        "passed": False,
-    }
+def evaluate_single(output_path: str | Path, skill: str, rubrics_dir: Path = RUBRICS_DIR) -> dict[str, Any]:
+    """評分單一產出檔（per-output 模式；供 GATE completion 評『本任務實際產出』）。
 
-    if not out_path.exists():
+    含檔案存在性 / 非空 / 標題 + rubric auto_checks 門檻。skill 無效則 raise ValueError。
+    """
+    if skill not in ALLOWED_SKILL:
+        raise ValueError(f"invalid skill '{skill}' (allowed: {sorted(ALLOWED_SKILL)})")
+    path = Path(output_path)
+    result: dict[str, Any] = {"output_path": str(output_path), "skill": skill, "passed": False}
+
+    if not path.exists():
         result["reason"] = "output_missing"
         return result
-    content = out_path.read_text(encoding="utf-8")
+    content = path.read_text(encoding="utf-8")
     if len(content.encode("utf-8")) < MIN_BYTES:
         result["reason"] = "output_too_short"
         return result
@@ -107,6 +104,15 @@ def evaluate_case(root: Path, case: dict[str, Any], rubrics_dir: Path) -> dict[s
     result["passed"] = bool(ev["has_title"] and ev["auto_pass_ratio"] >= min_ratio)
     if not result["passed"]:
         result["reason"] = "below_auto_threshold" if ev["has_title"] else "no_title"
+    return result
+
+
+def evaluate_case(root: Path, case: dict[str, Any], rubrics_dir: Path) -> dict[str, Any]:
+    """評估單一 regression case（委派 evaluate_single，路徑相對 root 解析）。"""
+    out_rel = case.get("output_path", "")
+    result = evaluate_single(Path(root) / out_rel, case.get("skill"), rubrics_dir)
+    result["case_id"] = case.get("case_id")
+    result["output_path"] = out_rel  # 保留相對路徑，維持 scorecard 確定性
     return result
 
 
@@ -146,10 +152,27 @@ def dump(scorecard: dict[str, Any]) -> str:
 # ── CLI ─────────────────────────────────────────────────────────────────────
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Run eval regression set")
+    parser = argparse.ArgumentParser(description="Run eval regression set / per-output gate")
+    parser.add_argument("--output", default=None, help="per-output 模式：評單一產出檔（需搭配 --skill）")
+    parser.add_argument("--skill", default=None, help="per-output 模式的 skill（research/analysis/writing/ops/review）")
     parser.add_argument("--no-write", action="store_true", help="只印摘要不寫 scorecard")
     parser.add_argument("--out", default=str(DEFAULT_OUT), help="scorecard 輸出路徑")
     args = parser.parse_args(argv)
+
+    # per-output 模式（GATE completion 用：評本任務實際產出，非 regression）
+    if args.output:
+        if not args.skill:
+            print("ERROR: --output 需搭配 --skill", file=sys.stderr)
+            return 2
+        try:
+            res = evaluate_single(args.output, args.skill)
+        except (FileNotFoundError, ValueError) as e:
+            print(f"CONFIG ERROR: {e}", file=sys.stderr)
+            return 2
+        mark = "PASS" if res["passed"] else "FAIL"
+        extra = "" if res["passed"] else f" ({res.get('reason')})"
+        print(f"eval [{mark}] {args.output} ({args.skill}) ratio={res.get('auto_pass_ratio')}{extra}")
+        return 0 if res["passed"] else 1
 
     try:
         scorecard = run()
