@@ -136,8 +136,8 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 31,
-      "medium": 18
+      "low": 30,
+      "medium": 19
     },
     "task_skill": {
       "analysis": 5,
@@ -650,7 +650,7 @@
       "date": "2026-06-26",
       "goal": "新增 system/OBSERVABILITY_MAPPING.md，把 governance_metrics.py 三層指標與 EXECUTION_LOG_SCHEMA 欄位映射到 OTel GenAI semantic conventions（gen_ai.* agent/tool/usage span 與 decision graph），並可選為 governance_metrics 加 --otel 匯出",
       "path": "tasks/2026-06-26_observability-otel-alignment.yaml",
-      "risk_level": "low",
+      "risk_level": "medium",
       "skill_type": "writing",
       "status": "pending",
       "task_id": "20260626-005"

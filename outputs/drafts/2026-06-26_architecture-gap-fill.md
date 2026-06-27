@@ -129,7 +129,7 @@ system/EVAL_POLICY.md        # 門檻（pass rate）、失敗即擋、「每筆 
 - 可選：`governance_metrics.py --otel` 以 OTel 命名匯出 JSON（不導入 OTel SDK、不加 runtime 依賴）。
 - **enforcement 點（J5）**：doc-completeness 檢查——`EXECUTION_LOG_SCHEMA.yaml` 每個欄位在 mapping 文件都有對應條目（可加進 `check_spec_consistency.rb` 或獨立小檢查）。
 - **之後會動到的 system/**：新增 `system/OBSERVABILITY_MAPPING.md`（ask）；可選改 `scripts/governance_metrics.py`。
-- **對應 Task Card**：`20260626-005`（skill: writing，risk: low）。
+- **對應 Task Card**：`20260626-005`（skill: writing，risk: medium——寫入 system/ 屬檔案修改）。
 
 ---
 
@@ -143,7 +143,7 @@ system/EVAL_POLICY.md        # 門檻（pass rate）、失敗即擋、「每筆 
    └─→ 005 Observability     （獨立，低風險，建議最後，因要對齊 002 可能新增的指標）
 ```
 - 002、003 為「閉環」型（補品質、補安全），impact 最高，先行。
-- 004、005 為「形式化/對齊」型，低風險，順手即可。
+- 004、005 為「形式化/對齊」型，相對低衝擊（但寫入 system/ 故 risk_level=medium），順手即可。
 - 四者都**設計成可隨 v3 抽進治理層 plugin**（evals/ 對應 plugin 的 `evals/`，SEC-05/06 進 `failure_taxonomy.yaml`，mapping 文件進 plugin docs）。
 
 ## 五、與既有規劃的銜接（不重工）

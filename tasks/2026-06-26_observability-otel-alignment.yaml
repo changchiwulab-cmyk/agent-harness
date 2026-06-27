@@ -32,7 +32,7 @@ expected_output:
   filename: "OBSERVABILITY_MAPPING.md"
 
 # === 風險與權限 ===
-risk_level: "low"
+risk_level: "medium"   # 寫入 system/ 檔屬「檔案修改」→ medium（對齊 PERMISSIONS risk_levels 與 GATE risk_check：宣告風險須與實際動作一致）
 approval_needed: true
 allowed_tools:
   - "file_read"
