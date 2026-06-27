@@ -1,0 +1,50 @@
+task_id: "20260627-002"
+date: "2026-06-27"
+status: "done"
+
+# === 任務定義 ===
+goal: "補齊評估架構（M1）：eval 執行器 + rubric + regression set，把『可量化』從靜態範例升級為可執行評分"
+context: |
+  現況只有 skills/*/eval_examples.md（靜態好/壞範例 + 判斷標準表），無 eval 執行器、無評分、無 regression。
+  對齊 2026 業界 eval harness（LLM-as-judge + 離線 regression）；嚴守哲學：確定性檢查入 CI，judge 為人工/輔助步驟。
+input_data:
+  - "skills/research/eval_examples.md"
+  - "system/GATE_POLICY.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "system/EVAL_POLICY.md 定義評什麼/何時/如何/誰判"
+  - "evals/rubrics/<skill>.yaml 五個 skill 各一份，來源對齊既有 eval_examples 判斷標準"
+  - "evals/regression/manifest.yaml 以 outputs/reports/ 為 golden 建 regression set"
+  - "scripts/run_evals.py + scripts/test_run_evals.py 可跑出 scorecard 到 logs/evals/"
+  - "check_spec_consistency.rb 加 rubric/scorecard schema lint，test 同步更新，全 CI PASS"
+  - "GATE_POLICY.yaml completion_check 引用 eval scorecard（不改四層結構）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: "evals/"
+  filename: "rubrics/research.yaml"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 30
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄 ===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: "EVAL_POLICY + 5 rubrics + regression manifest + run_evals.py(+test) + CI lint + GATE 引用。"
+completion_time: "2026-06-27"
+audit_log_ref: "logs/AUDIT_LOG.md"

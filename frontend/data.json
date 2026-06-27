@@ -76,6 +76,17 @@
       "related_task": "20260509-N06",
       "revisit_trigger": "v0.2.0 plugin 達到 agent-harness 全部 system/ 規格 round-trip 後評估轉 public；或下個 session 試行 bootstrap 後發現非預期問題",
       "status": "active"
+    },
+    {
+      "date": "2026-06-27",
+      "decision": "採 B。六模組（M1 eval / M2 security / M3 context-eng / M4 memory / M5 subagent / M6 trace）\n全數以「對應 enforcement 點」為前提補齊；M1–M3 full（doc+schema+script+CI+test），\nM4–M6 本輪以 policy doc + schema 落地，自動化另開卡。\n與 v3 的關係：擴充的是「治理層深化臂」，砍冗餘臂（Skills/Router/Permission 下放原生）不受影響、續行。\n",
+      "decision_id": "20260627-D008",
+      "path": "memory/active_projects/agent-harness/decisions/20260627-D008_architecture-expansion.yaml",
+      "project": "agent-harness",
+      "reasoning": "新增模組不增加與原生的重疊度（NATIVE_OVERLAP aggregate 不升），因為補的都是原生不做的治理/品質。\n嚴守哲學＝每個模組綁 enforcement、子代理唯讀、記憶走人工 gate、對外仍只草稿，\n所以「補架構」沒有動搖三條設計公理（可驗證成功定義 / 可分類可中止失敗 / 人類在迴路）。\n",
+      "related_task": "20260627-001",
+      "revisit_trigger": "下次季度 RETRO；或 NATIVE_OVERLAP 重評時一併檢視新模組是否仍非重疊；或 M4–M6 自動化開卡時",
+      "status": "active"
     }
   ],
   "logs": [
@@ -136,23 +147,23 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 30,
-      "medium": 14
+      "low": 33,
+      "medium": 17
     },
     "task_skill": {
-      "analysis": 4,
-      "ops": 26,
+      "analysis": 5,
+      "ops": 31,
       "research": 5,
       "review": 6,
       "writing": 4
     },
     "task_status": {
-      "done": 22,
+      "done": 28,
       "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 45
+    "task_total": 51
   },
   "tasks": [
     {
@@ -604,6 +615,66 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-27",
+      "goal": "依 2025–2026 最新 AI agent 架構發展完整檢視專案，產出架構缺口分析 + 補齊 roadmap",
+      "path": "tasks/2026-06-27_architecture-gap-analysis.yaml",
+      "risk_level": "low",
+      "skill_type": "analysis",
+      "status": "done",
+      "task_id": "20260627-001"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-27",
+      "goal": "補齊情境工程架構（M3）：把 Context Manager 從『token 預算』升級為『情境工程』（compaction/結構化筆記/JIT 檢索）",
+      "path": "tasks/2026-06-27_context-engineering.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260627-004"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-27",
+      "goal": "補齊評估架構（M1）：eval 執行器 + rubric + regression set，把『可量化』從靜態範例升級為可執行評分",
+      "path": "tasks/2026-06-27_eval-architecture.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260627-002"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-27",
+      "goal": "補齊受控記憶架構（M4）：四層檔案系統式記憶 + 學習樣式庫，保留人工 gate，解『memory/ 形同虛設』",
+      "path": "tasks/2026-06-27_memory-architecture.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260627-005"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-27",
+      "goal": "補齊安全架構（M2）：命名既有 lethal-trifecta 防線 + 未受信任外部資料協定 + FAILURE_TAXONOMY SEC-05",
+      "path": "tasks/2026-06-27_security-architecture.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260627-003"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-27",
+      "goal": "補齊受控子代理（M5）與 trace 可觀測性（M6）：情境隔離子代理政策 + EXECUTION_LOG trace 區塊 + OTel GenAI 對照",
+      "path": "tasks/2026-06-27_subagent-and-trace.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260627-006"
     }
   ]
 }

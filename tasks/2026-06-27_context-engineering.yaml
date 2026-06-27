@@ -1,0 +1,48 @@
+task_id: "20260627-004"
+date: "2026-06-27"
+status: "done"
+
+# === 任務定義 ===
+goal: "補齊情境工程架構（M3）：把 Context Manager 從『token 預算』升級為『情境工程』（compaction/結構化筆記/JIT 檢索）"
+context: |
+  現況只有 token 預算（CLAUDE.md ≤3K、check_context_budget.rb），無 compaction 協定/結構化筆記/JIT 檢索工程。
+  對齊 Anthropic context engineering（compaction、context 外記憶、JIT retrieval、context-awareness）。
+input_data:
+  - "system/GLOBAL_RULES.md"
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "system/CONTEXT_ENGINEERING.md 定義 compaction 協定/結構化筆記/JIT 檢索/context-awareness"
+  - "compaction 協定連結 COORD-01 / SPEC-03 失敗模式"
+  - "EXECUTION_LOG_SCHEMA.yaml 新增 context_snapshot 欄位"
+  - "全 YAML 可解析、CI PASS"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "system/"
+  filename: "CONTEXT_ENGINEERING.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄 ===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: "CONTEXT_ENGINEERING.md + EXECUTION_LOG_SCHEMA context_snapshot 欄位。"
+completion_time: "2026-06-27"
+audit_log_ref: "logs/AUDIT_LOG.md"

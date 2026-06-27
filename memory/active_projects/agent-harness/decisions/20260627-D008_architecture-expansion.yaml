@@ -1,0 +1,38 @@
+decision_id: "20260627-D008"
+date: "2026-06-27"
+project: "agent-harness"
+
+# --- 決策內容 ---
+context: |
+  使用者要求「依專案走向 + 最新 AI 公開架構發展，補齊缺的架構」。
+  既有 v3 plan（A01）方向是「砍冗餘 + 深化治理層」，表面上與「新增 6 個模組」相衝。
+  本決策釐清：擴充與砍冗餘並不矛盾——新增模組全部落在『不可替代的治理/品質核心』
+  （可量化 eval、安全 trifecta、可恢復 context、受控 memory/subagent、trace 觀測），
+  不是與 Claude Code 原生重疊的部分（Skills/Router/Permission 那些仍待 v3 砍）。
+
+options_considered:
+  - option: "A：不補架構，維持 v2 + 等 v3 砍冗餘"
+    pros: "維護成本最低；符合 v3『瘦身』直覺"
+    cons: "與最新 AI 架構（eval/security/context-eng）落差擴大；可量化/安全核心停在『設計完備未實證』"
+  - option: "B：補齊 6 模組，但全部對應 enforcement 點（hook/CI/schema），嚴守哲學"
+    pros: "深化不可替代治理核心；每條規則可驗證（J5）；不碰 swarm/外發/自動記憶"
+    cons: "模組數短期上升（與 v3 瘦身節奏需協調）"
+  - option: "C：補齊但放寬哲學（引入 swarm / 自動外發 / 自動長期記憶）"
+    pros: "最貼近通用 agent 潮流"
+    cons: "直接違反『可控 > 能力』與『現階段不做清單』；放大 lethal-trifecta 風險"
+
+decision: |
+  採 B。六模組（M1 eval / M2 security / M3 context-eng / M4 memory / M5 subagent / M6 trace）
+  全數以「對應 enforcement 點」為前提補齊；M1–M3 full（doc+schema+script+CI+test），
+  M4–M6 本輪以 policy doc + schema 落地，自動化另開卡。
+  與 v3 的關係：擴充的是「治理層深化臂」，砍冗餘臂（Skills/Router/Permission 下放原生）不受影響、續行。
+reasoning: |
+  新增模組不增加與原生的重疊度（NATIVE_OVERLAP aggregate 不升），因為補的都是原生不做的治理/品質。
+  嚴守哲學＝每個模組綁 enforcement、子代理唯讀、記憶走人工 gate、對外仍只草稿，
+  所以「補架構」沒有動搖三條設計公理（可驗證成功定義 / 可分類可中止失敗 / 人類在迴路）。
+
+# --- 追蹤 ---
+risk: "medium — 模組數短期上升，需在下次 v3 RETRO 與『砍冗餘』節奏對齊，避免頭重腳輕回潮。緩解：每模組綁 enforcement；新模組標 v2.1 非新平面。"
+revisit_trigger: "下次季度 RETRO；或 NATIVE_OVERLAP 重評時一併檢視新模組是否仍非重疊；或 M4–M6 自動化開卡時"
+related_task: "20260627-001"
+status: "active"

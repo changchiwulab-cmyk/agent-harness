@@ -1,0 +1,50 @@
+task_id: "20260627-001"
+date: "2026-06-27"
+status: "done"
+
+# === 任務定義 ===
+goal: "依 2025–2026 最新 AI agent 架構發展完整檢視專案，產出架構缺口分析 + 補齊 roadmap"
+context: |
+  Harness v2 已完成 R1–R8（把既有設計做實），但未對照「AI 公開架構這一年的演進」補新的架構面。
+  本卡產出完整缺口分析報告，作為 M1–M6 六個補齊模組（task 002–006）的依據。
+  使用者於本 session 經 ExitPlanMode 核准 plan（= system/ 變更的人工 gate）。
+input_data:
+  - "outputs/reports/harness-self-assessment-v1.md"
+  - "outputs/drafts/2026-05-09_v3_extraction_plan.md"
+  - "memory/active_projects/agent-harness/plans/ai-bubbly-mountain.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "六軸最新架構（context eng / memory / eval / observability / security / subagents）各列：業界現況 + 來源"
+  - "每軸對照專案現況、缺口、補齊模組、enforcement 點"
+  - "逐項證明新模組不違反『現階段不做清單』哲學"
+  - "報告存入 outputs/drafts/"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-06-27_architecture-gap-analysis.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "web_search"
+  - "file_write"
+
+# === 成本控制 ===
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 6
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄 ===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: "產出 architecture-gap-analysis.md：六軸缺口對照 + M1–M6 模組 + 哲學相容性逐項論證。"
+completion_time: "2026-06-27"
+audit_log_ref: "logs/AUDIT_LOG.md"

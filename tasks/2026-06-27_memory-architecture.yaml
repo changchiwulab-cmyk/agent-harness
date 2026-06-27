@@ -1,0 +1,49 @@
+task_id: "20260627-005"
+date: "2026-06-27"
+status: "done"
+
+# === 任務定義 ===
+goal: "補齊受控記憶架構（M4）：四層檔案系統式記憶 + 學習樣式庫，保留人工 gate，解『memory/ 形同虛設』"
+context: |
+  現況 memory/ 幾乎不運作、auto-write 在 deny；保守過頭＝能力閹割（plan §3.5）。
+  對齊 filesystem-as-memory（Letta benchmark）+ learned-patterns 庫；明文保留『不自動寫長期記憶』，
+  但定義 session 內 working memory 可累積位置與人工晉升 gate。
+input_data:
+  - "memory/README.md"
+  - "system/PERMISSIONS.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "memory/MEMORY_ARCHITECTURE.md 定義 Tier0–3 與各層寫入權限（allow/ask）"
+  - "Tier3 學習樣式庫 learned-patterns 走 human-confirm 晉升，明文不破 deny 規則"
+  - "memory/playbooks/ 目錄 + learned-pattern entry schema（晉升自動化另開卡）"
+  - "全 YAML 可解析、CI PASS"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "memory/"
+  filename: "MEMORY_ARCHITECTURE.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄 ===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: "MEMORY_ARCHITECTURE.md（四層）+ playbooks/ + learned-pattern schema。"
+completion_time: "2026-06-27"
+audit_log_ref: "logs/AUDIT_LOG.md"

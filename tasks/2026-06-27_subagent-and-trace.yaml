@@ -1,0 +1,49 @@
+task_id: "20260627-006"
+date: "2026-06-27"
+status: "done"
+
+# === 任務定義 ===
+goal: "補齊受控子代理（M5）與 trace 可觀測性（M6）：情境隔離子代理政策 + EXECUTION_LOG trace 區塊 + OTel GenAI 對照"
+context: |
+  M5：單代理 + 多代理在『不做清單』，但未區分『情境隔離子代理（該做）』vs『swarm（不做）』。
+  M6：governance_metrics.py 有工具/工作流/業務層，但無 trajectory/trace 級與標準 schema。
+  對齊 Claude Agent SDK subagent（唯讀 fan-out）+ OpenTelemetry GenAI semantic conventions。
+input_data:
+  - "system/COST_POLICY.md"
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "system/SUBAGENT_POLICY.md：子代理只做唯讀情境隔離、主代理保留全部決策與 gate、明文仍不做 swarm"
+  - "EXECUTION_LOG_SCHEMA.yaml 新增 trace 區塊（tool/tokens/latency/outcome，鬆對齊 gen_ai.*）"
+  - "docs/otel-genai-mapping.md：EXECUTION_LOG 欄位 → OTel GenAI 對照"
+  - "全 YAML 可解析、CI PASS"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "system/"
+  filename: "SUBAGENT_POLICY.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄 ===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: "SUBAGENT_POLICY.md + EXECUTION_LOG trace 區塊 + otel-genai-mapping.md。"
+completion_time: "2026-06-27"
+audit_log_ref: "logs/AUDIT_LOG.md"

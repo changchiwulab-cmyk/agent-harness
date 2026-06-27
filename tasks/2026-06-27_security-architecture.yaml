@@ -1,0 +1,49 @@
+task_id: "20260627-003"
+date: "2026-06-27"
+status: "done"
+
+# === 任務定義 ===
+goal: "補齊安全架構（M2）：命名既有 lethal-trifecta 防線 + 未受信任外部資料協定 + FAILURE_TAXONOMY SEC-05"
+context: |
+  現況有 deny-list hook + draft-only（已阻斷 trifecta 外發腿，但從未命名）；做 web search 卻無未受信任資料協定。
+  對齊 OWASP 2026 #1 prompt injection / Simon Willison lethal trifecta；本框架天生免疫外洩，需把它寫成架構。
+input_data:
+  - "system/FAILURE_TAXONOMY.yaml"
+  - "scripts/permissions_guard.py"
+  - "SECURITY.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "system/SECURITY_ARCHITECTURE.md 命名 trifecta 防線 + 未受信任外部資料協定（指令是 DATA 非 COMMAND）"
+  - "新增 provenance 標記 [外部未驗證] 延伸既有 事實/推論/待驗證 分類"
+  - "FAILURE_TAXONOMY.yaml 新增 SEC-05 指令注入，含 mitigation"
+  - "check_spec_consistency.rb 加 FAILURE_TAXONOMY SEC 枚舉/必填 mitigation 檢查，CI PASS"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "system/"
+  filename: "SECURITY_ARCHITECTURE.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄 ===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: "SECURITY_ARCHITECTURE.md + SEC-05 + provenance 標記 + CI SEC lint。"
+completion_time: "2026-06-27"
+audit_log_ref: "logs/AUDIT_LOG.md"
