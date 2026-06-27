@@ -1,0 +1,24 @@
+# Eval regression set
+# 以既有 outputs/ 真實產出為 golden，對應其產出 skill 的 rubric。
+# run_evals.py 對每個 case 跑該 skill rubric 的 auto_checks（確定性結構檢查）。
+# 新增 case：選一份已人工認可的好產出，標 skill + output_path。
+regression_set:
+  version: 1
+  description: "Harness 既有優良產出回歸集；防止未來產出結構性退化（conclusion-first / 結構 / 來源）。"
+  cases:
+    - case_id: "rc-research-01"
+      skill: "research"
+      output_path: "outputs/drafts/20260502-T03_taiwan-ai-industry-deep-dive.md"
+      note: "研究類 golden：結論先行 + 七切片量化 + 來源齊全"
+    - case_id: "rc-analysis-01"
+      skill: "analysis"
+      output_path: "outputs/reports/retro-2026-Q2-01.md"
+      note: "分析類 golden：數據摘要 + 維度分析 + 建議"
+    - case_id: "rc-analysis-02"
+      skill: "analysis"
+      output_path: "outputs/drafts/2026-06-27_architecture-gap-analysis.md"
+      note: "分析類 golden：本次架構缺口分析（摘要先行 + roadmap + 來源）"
+    - case_id: "rc-review-01"
+      skill: "review"
+      output_path: "outputs/reports/harness-self-assessment-v1.md"
+      note: "審查類 golden：摘要 + 評分卡 + 優缺點分級"

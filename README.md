@@ -34,6 +34,25 @@
 └── 16. Audit Log          logs/AUDIT_LOG.md — 稽核紀錄
 ```
 
+## v2.1 架構補齊（2026-06）— 對齊最新 AI 公開架構
+
+> 依 2025–2026 AI agent 架構演進補的六個模組，**深化不可替代的治理/品質核心**
+> （非與 Claude Code 原生重疊的部分）。嚴守「可控 > 能力」：每個模組綁一個 enforcement 點，
+> 不做 swarm、不自動外發、記憶走人工 gate、子代理只做唯讀情境隔離。
+> 緣由與缺口對照見 `outputs/drafts/2026-06-27_architecture-gap-analysis.md`（決策 `D008`）。
+
+```
+執行平面深化
+├── M1 Eval 評估架構       system/EVAL_POLICY.md + evals/ + scripts/run_evals.py — 可執行評分（取代靜態 eval_examples）
+├── M3 Context Engineering system/CONTEXT_ENGINEERING.md — compaction/結構化筆記/JIT（升級自 token 預算）
+└── M5 Subagent 受控子代理 system/SUBAGENT_POLICY.md — 唯讀情境隔離（≠ swarm）
+
+治理平面深化
+├── M2 Security 安全架構    system/SECURITY_ARCHITECTURE.md — lethal trifecta 防線 + 未受信任資料協定 + SEC-05
+├── M4 Memory 受控記憶      memory/MEMORY_ARCHITECTURE.md — 四層記憶 + learned-patterns（仍守 auto-write deny）
+└── M6 Observability trace docs/otel-genai-mapping.md + EXECUTION_LOG trace 區塊 — 對齊 OTel GenAI
+```
+
 ## 資料夾結構
 
 ```

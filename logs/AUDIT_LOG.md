@@ -33,6 +33,144 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260627-001"
+  date: "2026-06-27"
+  skill_type: "analysis"
+  goal: "依最新 AI 架構發展完整檢視專案，產出架構缺口分析 + M1–M6 補齊 roadmap"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 5
+    - tool_name: "file_read"
+      call_count: 12
+    - tool_name: "file_write"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: true
+  output_path: "outputs/drafts/2026-06-27_architecture-gap-analysis.md"
+  error_summary: ""
+  estimated_tokens: "~70K"
+  notes: "六軸（context eng/memory/eval/observability/security/subagents）WebSearch 查證 + 缺口對照 + 哲學相容性逐項論證。plan 經 ExitPlanMode 核准；決策記 D008。"
+```
+
+---
+
+```yaml
+- task_id: "20260627-002"
+  date: "2026-06-27"
+  skill_type: "ops"
+  goal: "補齊評估架構（M1）：eval runner + rubric + regression set"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_write"
+      call_count: 9
+    - tool_name: "bash"
+      call_count: 5
+  checkpoints: 1
+  approval_needed: false
+  approval_given: true
+  output_path: "evals/rubrics/research.yaml"
+  error_summary: ""
+  estimated_tokens: "~30K"
+  notes: "EVAL_POLICY + 5 rubrics + regression manifest + run_evals.py(+13 tests) + check_spec_consistency §7–9 lint + GATE completion 引用。run_evals 4/4 cases pass。CI 加 eval 步驟。"
+```
+
+---
+
+```yaml
+- task_id: "20260627-003"
+  date: "2026-06-27"
+  skill_type: "ops"
+  goal: "補齊安全架構（M2）：命名 lethal-trifecta 防線 + 未受信任外部資料協定 + SEC-05"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_write"
+      call_count: 1
+    - tool_name: "file_edit"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: true
+  output_path: "system/SECURITY_ARCHITECTURE.md"
+  error_summary: ""
+  estimated_tokens: "~18K"
+  notes: "SECURITY_ARCHITECTURE.md + FAILURE_TAXONOMY SEC-05 + provenance 標記 [外部未驗證] + check_spec_consistency §10 SEC 枚舉檢查。"
+```
+
+---
+
+```yaml
+- task_id: "20260627-004"
+  date: "2026-06-27"
+  skill_type: "ops"
+  goal: "補齊情境工程（M3）：compaction/結構化筆記/JIT 檢索 + context_snapshot 欄位"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_write"
+      call_count: 1
+    - tool_name: "file_edit"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: true
+  output_path: "system/CONTEXT_ENGINEERING.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "CONTEXT_ENGINEERING.md（連結 COORD-01/SPEC-03）+ EXECUTION_LOG_SCHEMA context_snapshot 欄位。"
+```
+
+---
+
+```yaml
+- task_id: "20260627-005"
+  date: "2026-06-27"
+  skill_type: "ops"
+  goal: "補齊受控記憶架構（M4）：四層記憶 + learned-patterns 庫，保留人工 gate"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_write"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: true
+  output_path: "memory/MEMORY_ARCHITECTURE.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "MEMORY_ARCHITECTURE.md（Tier0–3，明文保留 auto-write deny）+ playbooks/PLAYBOOK_TEMPLATE.yaml。"
+```
+
+---
+
+```yaml
+- task_id: "20260627-006"
+  date: "2026-06-27"
+  skill_type: "ops"
+  goal: "補齊受控子代理（M5）與 trace 可觀測性（M6）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_write"
+      call_count: 2
+    - tool_name: "file_edit"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: true
+  output_path: "system/SUBAGENT_POLICY.md"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "SUBAGENT_POLICY.md（唯讀情境隔離、明文仍不做 swarm）+ EXECUTION_LOG trace 區塊 + docs/otel-genai-mapping.md。"
+```
+
+---
+
+```yaml
 - task_id: "20260529-011"
   date: "2026-05-29"
   skill_type: "ops"

@@ -11,6 +11,18 @@ revisit_trigger: "每季度；或 Claude Code 主版本升級時"
 
 aggregate_estimate_pct: 30   # plan §Context 的 baseline；A01 §4.1 表 A 9 模組逐項評估後仍與此 baseline 同量級
 
+# v2.1 架構補齊（2026-06，D008）：M1–M6 六個新模組皆為「原生不做的治理/品質核心」
+# （eval 執行器、lethal-trifecta 安全架構、context engineering、受控記憶、受控子代理、OTel trace 對照），
+# 因此 aggregate 不上升。下次季度 revisit 時應一併評估新模組是否仍非重疊。
+v2_1_additions_overlap_pct: 0
+v2_1_additions:
+  - "M1 Eval (EVAL_POLICY + run_evals)"
+  - "M2 Security (SECURITY_ARCHITECTURE + SEC-05)"
+  - "M3 Context Engineering"
+  - "M4 Memory (受控四層)"
+  - "M5 Subagent (唯讀情境隔離)"
+  - "M6 Observability trace (OTel GenAI 對照)"
+
 # 每模組明細（A01 §4.1 表 A）
 modules:
   - name: "Skill Executor (skills/)"

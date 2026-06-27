@@ -1,0 +1,71 @@
+scorecard:
+  cases:
+  - auto_pass_ratio: 1.0
+    auto_results:
+    - id: conclusion-first
+      result: pass
+    - id: structure
+      result: pass
+    case_id: rc-analysis-01
+    has_title: true
+    judge_pending:
+    - options-complete
+    - quantified
+    - assumptions-transparent
+    - solo-company-lens
+    output_path: outputs/reports/retro-2026-Q2-01.md
+    passed: true
+    skill: analysis
+  - auto_pass_ratio: 1.0
+    auto_results:
+    - id: conclusion-first
+      result: pass
+    - id: structure
+      result: pass
+    case_id: rc-analysis-02
+    has_title: true
+    judge_pending:
+    - options-complete
+    - quantified
+    - assumptions-transparent
+    - solo-company-lens
+    output_path: outputs/drafts/2026-06-27_architecture-gap-analysis.md
+    passed: true
+    skill: analysis
+  - auto_pass_ratio: 1.0
+    auto_results:
+    - id: conclusion-first
+      result: pass
+    - id: structure
+      result: pass
+    case_id: rc-research-01
+    has_title: true
+    judge_pending:
+    - sourced-facts
+    - block-classification
+    - honesty
+    output_path: outputs/drafts/20260502-T03_taiwan-ai-industry-deep-dive.md
+    passed: true
+    skill: research
+  - auto_pass_ratio: 1.0
+    auto_results:
+    - id: verdict-first
+      result: pass
+    - id: structure
+      result: pass
+    case_id: rc-review-01
+    has_title: true
+    judge_pending:
+    - specificity
+    - dod-compare
+    - balance
+    - severity
+    output_path: outputs/reports/harness-self-assessment-v1.md
+    passed: true
+    skill: review
+  summary:
+    auto_checks_passed: 8
+    auto_checks_total: 8
+    cases_passed: 4
+    cases_total: 4
+    judge_checks_pending: 15

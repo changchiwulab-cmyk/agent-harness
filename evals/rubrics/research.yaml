@@ -1,0 +1,25 @@
+# Research skill 評分 rubric
+# 來源：skills/research/eval_examples.md「判斷標準」表
+# auto_checks = 確定性結構檢查（run_evals.py 跑、入 CI gate）
+# judge_checks = LLM-as-judge / 人工判斷（內容語意，不入 CI；晉升走人工 gate）
+rubric:
+  skill: "research"
+  source: "skills/research/eval_examples.md"
+  version: 1
+  min_auto_pass_ratio: 0.5
+  auto_checks:
+    - id: "conclusion-first"
+      desc: "開頭即結論/摘要（前 80 行內）"
+      scope: "head"
+      any_markers: ["結論", "摘要", "建議", "總體評估", "綜合判定"]
+    - id: "structure"
+      desc: "具備四區塊/來源結構"
+      scope: "full"
+      any_markers: ["來源", "已知事實", "合理推論", "待驗證", "參考"]
+  judge_checks:
+    - id: "sourced-facts"
+      desc: "每個事實主張有具體來源（非「根據研究」等模糊引用）"
+    - id: "block-classification"
+      desc: "已知事實 / 合理推論 / 待驗證 / 高風險假設 四區明確分開"
+    - id: "honesty"
+      desc: "承認資料不足、標記待驗證，不硬湊結論"

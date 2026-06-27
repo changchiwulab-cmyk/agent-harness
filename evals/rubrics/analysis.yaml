@@ -1,0 +1,25 @@
+# Analysis skill 評分 rubric
+# 來源：skills/analysis/eval_examples.md「判斷標準」表
+rubric:
+  skill: "analysis"
+  source: "skills/analysis/eval_examples.md"
+  version: 1
+  min_auto_pass_ratio: 0.5
+  auto_checks:
+    - id: "conclusion-first"
+      desc: "第一段明確給出建議（選哪個、為什麼）"
+      scope: "head"
+      any_markers: ["結論", "建議", "摘要", "結論與建議"]
+    - id: "structure"
+      desc: "具備選項比較 / 維度 / 下一步 / roadmap 等決策支援結構"
+      scope: "full"
+      any_markers: ["選項", "比較", "維度", "下一步", "建議", "roadmap", "缺口", "相依"]
+  judge_checks:
+    - id: "options-complete"
+      desc: "包含「不做 / 維持現狀」在內的所有可行選項"
+    - id: "quantified"
+      desc: "成本 / 效益有具體數字或範圍，不只「高/低」"
+    - id: "assumptions-transparent"
+      desc: "明確列出高風險假設與驗證方式"
+    - id: "solo-company-lens"
+      desc: "評估執行難度時考量一人公司資源限制"

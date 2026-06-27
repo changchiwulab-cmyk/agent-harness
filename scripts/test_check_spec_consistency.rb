@@ -124,3 +124,15 @@ class TestLogsSchemaLintConstants < Minitest::Test
     assert_equal 5, ALLOWED_ERROR_TYPE.length
   end
 end
+
+# ── 測試 M1 eval / M2 安全架構 lint 常數 ──────────────────────────────────────
+class TestEvalAndSecurityLintConstants < Minitest::Test
+  def test_rubric_scope_enum
+    assert_equal %w[head full], ALLOWED_RUBRIC_SCOPE
+  end
+
+  def test_required_sec_ids_include_prompt_injection
+    assert_includes REQUIRED_SEC_IDS, 'SEC-05'
+    assert_equal %w[SEC-01 SEC-02 SEC-03 SEC-04 SEC-05], REQUIRED_SEC_IDS
+  end
+end

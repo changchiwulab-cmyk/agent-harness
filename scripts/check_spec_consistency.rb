@@ -33,6 +33,10 @@ ALLOWED_APPROVAL_STATUS = %w[approved rejected superseded].freeze
 REQUIRED_APPROVAL_FIELDS = %w[approval_id task_id date action approval_method status approved_by].freeze
 ALLOWED_ERROR_TYPE = %w[tool_failure rule_violation schema_failure timeout unknown].freeze
 
+# --- evals / taxonomy lint 常數（M1 eval 架構 / M2 安全架構）---
+ALLOWED_RUBRIC_SCOPE = %w[head full].freeze
+REQUIRED_SEC_IDS = %w[SEC-01 SEC-02 SEC-03 SEC-04 SEC-05].freeze
+
 def parse_iso_date(value)
   return value if value.is_a?(Date)
   return nil unless value.is_a?(String) && value.match?(DATE_PATTERN)
@@ -233,6 +237,90 @@ Dir.glob('logs/errors/*.md').sort.each do |err_file|
     errors << "#{err_file}: missing error_type"
   elsif !ALLOWED_ERROR_TYPE.include?(etype)
     errors << "#{err_file}: invalid error_type #{etype} (allowed: #{ALLOWED_ERROR_TYPE.join('/')})"
+  end
+end
+
+# 7) evals/rubrics/*.yaml — rubric schema lint（M1 eval 架構）
+Dir.glob('evals/rubrics/*.yaml').sort.each do |rf|
+  doc = YAML.load_file(rf)
+  rubric = doc.is_a?(Hash) ? doc['rubric'] : nil
+  unless rubric.is_a?(Hash)
+    errors << "#{rf}: top-level 'rubric' mapping required"
+    next
+  end
+  errors << "#{rf}: invalid rubric.skill #{rubric['skill'].inspect}" unless ALLOWED_SKILL.include?(rubric['skill'])
+  ac = rubric['auto_checks']
+  if !ac.is_a?(Array) || ac.empty?
+    errors << "#{rf}: rubric.auto_checks must be a non-empty list"
+  else
+    ac.each_with_index do |c, i|
+      ok = c.is_a?(Hash) && !c['id'].to_s.strip.empty? &&
+           c['any_markers'].is_a?(Array) && !c['any_markers'].empty? &&
+           ALLOWED_RUBRIC_SCOPE.include?(c['scope'].to_s)
+      errors << "#{rf}: auto_checks[#{i}] needs id + non-empty any_markers + scope(head/full)" unless ok
+    end
+  end
+  jc = rubric['judge_checks']
+  if jc.is_a?(Array)
+    jc.each_with_index do |c, i|
+      ok = c.is_a?(Hash) && !c['id'].to_s.strip.empty? && !c['desc'].to_s.strip.empty?
+      errors << "#{rf}: judge_checks[#{i}] needs id + desc" unless ok
+    end
+  end
+end
+
+# 8) evals/rubrics 必須覆蓋全部 skill（M1）
+existing_rubric_skills = Dir.glob('evals/rubrics/*.yaml').map { |p| File.basename(p, '.yaml') }
+(ALLOWED_SKILL - existing_rubric_skills).each do |missing|
+  errors << "evals/rubrics: missing rubric for skill '#{missing}'"
+end
+
+# 9) evals/regression/manifest.yaml — regression set lint（M1）
+manifest = 'evals/regression/manifest.yaml'
+if File.exist?(manifest)
+  doc = YAML.load_file(manifest)
+  rs = doc.is_a?(Hash) ? doc['regression_set'] : nil
+  cases = rs.is_a?(Hash) ? rs['cases'] : nil
+  if !cases.is_a?(Array) || cases.empty?
+    errors << "#{manifest}: regression_set.cases must be a non-empty list"
+  else
+    cases.each_with_index do |c, i|
+      unless c.is_a?(Hash)
+        errors << "#{manifest}: cases[#{i}] must be mapping"
+        next
+      end
+      errors << "#{manifest}: cases[#{i}] missing case_id" if c['case_id'].to_s.strip.empty?
+      errors << "#{manifest}: cases[#{i}] invalid skill #{c['skill'].inspect}" unless ALLOWED_SKILL.include?(c['skill'])
+      op = c['output_path']
+      if op.to_s.strip.empty?
+        errors << "#{manifest}: cases[#{i}] missing output_path"
+      elsif !File.exist?(op)
+        errors << "#{manifest}: cases[#{i}] output_path not found: #{op}"
+      end
+    end
+  end
+end
+
+# 10) FAILURE_TAXONOMY.yaml — security 類枚舉與必填欄位（M2 安全架構）
+taxonomy = 'system/FAILURE_TAXONOMY.yaml'
+if File.exist?(taxonomy)
+  doc = YAML.load_file(taxonomy)
+  cats = doc.is_a?(Hash) ? doc['categories'] : nil
+  sec = cats.is_a?(Hash) ? cats['security'] : nil
+  if !sec.is_a?(Array) || sec.empty?
+    errors << "#{taxonomy}: categories.security must be a non-empty list"
+  else
+    sec_ids = sec.map { |e| e.is_a?(Hash) ? e['id'] : nil }
+    REQUIRED_SEC_IDS.each do |id|
+      errors << "#{taxonomy}: missing security failure mode #{id}" unless sec_ids.include?(id)
+    end
+    sec.each do |e|
+      next unless e.is_a?(Hash)
+
+      %w[id name description mitigation].each do |f|
+        errors << "#{taxonomy}: security #{e['id'] || '?'} missing #{f}" if e[f].to_s.strip.empty?
+      end
+    end
   end
 end
 

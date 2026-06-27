@@ -61,5 +61,30 @@ execution_log:
     completion_check: ""              # pass / fail
     risk_check: ""                    # pass / fail
 
+  # --- 情境工程快照（M3；context engineering）---
+  # 長任務（checkpoints >= 3 或觸發壓縮）時記錄，供溯源「壓縮當下保留了什麼」。
+  # 詳見 system/CONTEXT_ENGINEERING.md
+  context_snapshot:
+    compaction_triggered: false       # 是否做過 context 壓縮（原生或主動 20 輪摘要）
+    note_path: ""                     # 結構化筆記/handoff note 路徑（如 memory/active_projects/<p>/notes/...）
+    retained_summary: ""              # 壓縮時保留的關鍵狀態一句話
+
+  # --- 執行 trace（M6；鬆對齊 OpenTelemetry GenAI gen_ai.*）---
+  # 選填；high-risk 或需 trajectory 溯源時逐步記錄。對照見 docs/otel-genai-mapping.md
+  trace:
+    - step: 0                          # 步序
+      type: ""                        # tool_call / reasoning / subagent（gen_ai.operation.name）
+      tool: ""                        # 工具名（gen_ai.tool.name）
+      tokens: 0                       # 該步 token（gen_ai.usage.*）
+      latency_ms: 0                   # 延遲毫秒
+      outcome: ""                     # ok / error
+      # 範例：
+      # - step: 1
+      #   type: tool_call
+      #   tool: web_search
+      #   tokens: 1200
+      #   latency_ms: 3400
+      #   outcome: ok
+
   # --- 備註 ---
   notes: ""

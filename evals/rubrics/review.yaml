@@ -1,0 +1,25 @@
+# Review skill 評分 rubric
+# 來源：skills/review/eval_examples.md「判斷標準」表
+rubric:
+  skill: "review"
+  source: "skills/review/eval_examples.md"
+  version: 1
+  min_auto_pass_ratio: 0.5
+  auto_checks:
+    - id: "verdict-first"
+      desc: "開頭即總體評估（前 80 行內）"
+      scope: "head"
+      any_markers: ["總體評估", "結論", "摘要", "綜合判定", "綜合評等"]
+    - id: "structure"
+      desc: "具備分級 / DoD 逐條 / 平衡（通過項+問題項）"
+      scope: "full"
+      any_markers: ["必須修改", "建議修改", "逐條", "Definition of Done", "DoD", "優點", "缺點", "通過"]
+  judge_checks:
+    - id: "specificity"
+      desc: "問題定位到段落/句子，非「有些地方」"
+    - id: "dod-compare"
+      desc: "逐條列出 definition_of_done + 通過/未通過"
+    - id: "balance"
+      desc: "同時有通過項與問題項，不只挑毛病或全說好"
+    - id: "severity"
+      desc: "嚴重問題放在必須修改、未被降級為建議"

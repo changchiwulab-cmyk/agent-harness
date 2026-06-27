@@ -1,0 +1,16 @@
+# Learned-pattern / Playbook 範本（Memory Tier 3）
+# 複製此檔到 memory/playbooks/<簡述>.yaml 並填寫。
+# 晉升須 human-confirm（同一樣式在 ≥2 個任務被驗證有效）。詳見 memory/MEMORY_ARCHITECTURE.md
+playbook:
+  playbook_id: ""              # 格式：PB-NNN
+  title: ""                    # 一句話：這個樣式解決什麼
+  trigger: ""                  # 何時該調用（情境/任務類型）
+  pattern: ""                  # 具體做法（步驟或原則）
+  evidence:                    # 驗證有效的任務（≥2 筆才可晉升）
+    - task_id: ""
+      outcome: ""
+  anti_pattern: ""             # 不適用/會出錯的情況
+  related_skill: ""            # research / analysis / writing / ops / review（選填）
+  promoted_by: "human"         # 晉升者（固定 human）
+  promoted_on: ""              # YYYY-MM-DD
+  status: "active"             # active / deprecated
