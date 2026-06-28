@@ -130,6 +130,12 @@ class TestValidateResult(unittest.TestCase):
         errs = re_.validate_result("x.yaml", self._record(score_pct=90.0), self.rubrics)
         self.assertTrue(any("score_pct" in e for e in errs))
 
+    def test_non_numeric_score_pct_rejected_without_crash(self):
+        # Hand-authored "80%" / "pending" must surface as a schema error, not a traceback.
+        for bad in ("80%", "pending"):
+            errs = re_.validate_result("x.yaml", self._record(score_pct=bad), self.rubrics)
+            self.assertTrue(any("must be a number" in e for e in errs), bad)
+
 
 class TestGoldenRegression(unittest.TestCase):
     def test_pass_meets_expected(self):

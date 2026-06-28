@@ -180,8 +180,13 @@ def validate_result(name: str, rec: dict, rubrics: dict[str, dict]) -> list[str]
         return errs  # verdict recompute meaningless without full coverage
 
     exp_pct, exp_verdict = compute_verdict(dim_scores, rubric)
-    if abs(float(rec["score_pct"]) - exp_pct) > 0.05:
-        errs.append(f"{name}: score_pct {rec['score_pct']} != recomputed {exp_pct}")
+    sp = rec["score_pct"]
+    if isinstance(sp, bool) or not isinstance(sp, (int, float)):
+        # Hand-authored records may carry "80%" / "pending"; reject explicitly so
+        # --check reports a schema error instead of crashing on float().
+        errs.append(f"{name}: score_pct {sp!r} must be a number")
+    elif abs(float(sp) - exp_pct) > 0.05:
+        errs.append(f"{name}: score_pct {sp} != recomputed {exp_pct}")
     if rec["verdict"] not in VALID_VERDICTS:
         errs.append(f"{name}: invalid verdict '{rec['verdict']}'")
     elif rec["verdict"] != exp_verdict:
