@@ -1,0 +1,44 @@
+decision_id: "20260628-D008"
+date: "2026-06-28"
+project: "agent-harness"
+
+# --- 決策內容 ---
+context: |
+  workflow 架構檢視：對照 2026 公開 harness 元件分類（evals / memory / MCP / permissions /
+  observability / orchestration），本專案在權限/HITL/稽核/成本/恢復上已強，但「可量化」只做了
+  成本一半——COST_POLICY 有實測校準係數，品質卻從未量化。skills/*/eval_examples.md 已有現成
+  rubric（判斷標準表）但是死文件：從不被執行、評分、追蹤。自我評估亦自承「業務層品質趨勢缺、
+  學習迴路開環」。需決定要不要、以及如何補上品質量化這塊架構。
+
+options_considered:
+  - option: "A. 補評估平面（rubric 自評＋schema 守護）"
+    pros: "補上可量化最後一軸；重用既有 eval_examples/drafts 資產；與 GATE 同 deterministic 哲學、零額外模型成本；對齊 2026 eval-driven development；不違反不做清單"
+    cons: "新增第四平面與 5 模組，維護面積增加；rubric 自評仍有 LLM 主觀性（v1 以 schema 守門＋golden 回歸緩解）"
+  - option: "B. 直接做 LLM-as-judge"
+    pros: "最貼 2026 業界主流；裁判較客觀"
+    cons: "需額外模型呼叫與人工校準（85–90% 一致）才可信；違反『先 deterministic』的專案 DNA；v1 過重"
+  - option: "C. 不做，維持 eval_examples 為文件"
+    pros: "最簡；不增維護面積"
+    cons: "可量化永遠半殘；學習迴路持續開環；與業界 harness 標準差距擴大"
+  - option: "D. 改補上下文工程 / 原生收斂(Route 2)"
+    pros: "也是真缺口"
+    cons: "上下文工程與原生重疊高、收益不如品質量化直接；Route 2 屬 v3 戰略、風險與工作量大。皆非本次最高槓桿"
+
+decision: "選 A（評估平面 v1：rubric 自評＋schema 守護），LLM-as-judge 留 v2 介面"
+reasoning: |
+  「可恢復、可審核、可量化」三原則中，可量化是唯一只做一半的（成本有、品質無）。
+  評估平面用最小新增補上品質軸，且全部由既有資產長出來（rubric←eval_examples、
+  golden←既有 drafts、品質趨勢←governance_metrics）。機制刻意對齊 GATE_POLICY 的
+  「Claude 執行 + script/CI 守門」模式，維持專案 deterministic 優先的 DNA，零額外模型成本。
+  LLM-as-judge 雖貼業界主流但需校準才可信，留作 v2 升級路徑。
+
+# --- 追蹤 ---
+risk: |
+  rubric 自評有 LLM 主觀性；緩解：score_pct/verdict 由 run_evals.py --check 重算守門、
+  golden 回歸防靜默劣化、CI 納入。另：新增第四平面提高與原生重疊治理的複雜度（已於
+  NATIVE_OVERLAP 標記 Eval 模組 overlap 15%，屬真差異化）。
+revisit_trigger: |
+  rubric_self 累積 >= 15 筆且至少 1 筆失敗演練 → 評估啟用 LLM-as-judge 並開校準 Task Card；
+  或評分與人工直覺長期背離 → 回頭調 rubric 維度/門檻。
+related_task: "20260628-001"
+status: "active"

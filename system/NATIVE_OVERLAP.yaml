@@ -49,3 +49,7 @@ modules:
     overlap_pct: 100
     native: "Claude Code CLI / web / IDE"
     evidence: "屬於 runtime，不是模組"
+  - name: "Evaluation Plane (system/EVAL_POLICY.yaml + evals/ + scripts/run_evals.py)"
+    overlap_pct: 15
+    native: "—（Claude Code 無內建逐 skill rubric 評分 + golden 回歸 + 品質趨勢觀測）"
+    evidence: "v2.1 新增。rubric 由本專案 eval_examples 轉寫、golden 取自本專案真實產出、verdict 重算守門皆為自有資產；低原生重疊，屬真差異化。next quarterly review 應據此下修 aggregate。"

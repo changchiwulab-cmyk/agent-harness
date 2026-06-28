@@ -8,7 +8,7 @@
 不是多代理平台，不是 AI 自動化全套。
 是一個讓 Claude 穩定幫你做事、不失控的結構。
 
-## 架構：三平面、十六模組
+## 架構：四平面、二十一模組
 
 ```
 控制平面（Control）
@@ -21,18 +21,31 @@
 ├── 5. Context Manager   CLAUDE.md context 規則 — 上下文組裝
 ├── 6. Skill Executor    skills/[type]/SKILL.md + eval_examples.md — 技能執行
 ├── 7. Tool Executor     allowed_tools 白名單 — 工具執行
-├── 8. Gate Verifier     system/GATE_POLICY.yaml — 四層驗證 checklist
+├── 8. Gate Verifier     system/GATE_POLICY.yaml — 五層驗證 checklist
 └── 9. Checkpoint        git commit — 進度保存
 
 治理平面（Governance）
 ├── 10. Agent Context      system/AGENT_CONTEXT.yaml — 系統自我認知
 ├── 11. Permission         system/PERMISSIONS.yaml — 權限策略
 ├── 12. Approval Policy    system/APPROVAL_POLICY.yaml — 批准流程（v2 新增）
-├── 13. Cost Policy        system/COST_POLICY.md — 成本控制
+├── 13. Cost Policy        system/COST_POLICY.md — 成本控制（量化「成本」）
 ├── 14. Failure Taxonomy   system/FAILURE_TAXONOMY.yaml — 失敗分類學（v2 新增）
 ├── 15. Execution Log      system/EXECUTION_LOG_SCHEMA.yaml — 執行紀錄 schema（v2 新增）
 └── 16. Audit Log          logs/AUDIT_LOG.md — 稽核紀錄
+
+評估平面（Evaluation，v2.1 新增 — 量化「品質」，補可量化最後一軸）
+├── 17. Eval Policy        system/EVAL_POLICY.yaml — 評分尺度/verdict/judge 協定/記錄 schema
+├── 18. Rubrics            evals/rubrics/*.yaml — 5 skill 可機讀 rubric（由 eval_examples 轉寫）
+├── 19. Golden Set         evals/golden/cases.yaml — 真實案例回歸錨點
+├── 20. Eval Records       evals/results/*.yaml — 結構化評分記錄
+└── 21. Eval Runner        scripts/run_evals.py — scaffold / schema 守護 / golden 回歸
 ```
+
+> **評估平面緣由**：v2 量化了「成本」（COST_POLICY 校準係數）卻未量化「品質」——
+> `eval_examples.md` 只是死文件，從不被執行/評分/追蹤。v2.1 把它升級成可運行的品質迴路
+> （rubric 自評＋schema 守護，對齊 2026 eval-driven development：rubric + golden set + 回歸閘門），
+> 補上「可量化」最後一軸，並閉合自我評估指出的「業務層品質趨勢缺、學習迴路開環」。
+> LLM-as-judge 為 v2 保留介面，待校準到與人工 85–90% 一致再啟用。
 
 ## 資料夾結構
 
@@ -81,6 +94,10 @@ agent-harness/
 │   ├── runs/                  ← 執行紀錄
 │   ├── approvals/             ← 核准紀錄
 │   └── errors/                ← 錯誤紀錄
+├── evals/                     ← 評估平面（v2.1 新增）
+│   ├── rubrics/              ← 每 skill 可機讀 rubric
+│   ├── golden/cases.yaml     ← 真實案例回歸錨點
+│   └── results/              ← 結構化評分記錄
 └── outputs/
     ├── drafts/                ← 草稿輸出
     └── reports/               ← 正式報告
@@ -165,7 +182,8 @@ python system/validate_task_card.py tasks/your-task.yaml
 |------|------|-------------|
 | **v1** | 單核心代理 + Task Card + Checkpoint + Verifier + Audit | — |
 | **v1.5** | + Gate Policy + Operating Context + Decision Log + Eval Examples + Weekly Review | 馬鞍工程原則導入：驗證集中化、系統自知、決策可追溯 |
-| **v2（現在）** | + Approval Policy + Failure Taxonomy + Execution Log Schema + Rollback Path + Ops Eval | 馬鞍工程落地：批准流程獨立化、失敗模式可引用、執行紀錄結構化 |
+| **v2** | + Approval Policy + Failure Taxonomy + Execution Log Schema + Rollback Path + Ops Eval | 馬鞍工程落地：批准流程獨立化、失敗模式可引用、執行紀錄結構化 |
+| **v2.1（現在）** | + Evaluation Plane（Eval Policy + Rubrics + Golden Set + Eval Records + Eval Runner） | 對齊 2026 eval-driven development：把品質從「死文件」變成可量化、可追蹤、可防漂移的迴路；補可量化最後一軸 |
 | **v3** | 拆分 bounded specialists（research/sales/content） | 單一代理的 context 經常超限；任務類型間的規則衝突頻繁 |
 | **v4** | Graph orchestration + 進階 checkpoint persistence | 任務間依賴複雜度超過線性拔分能處理的範圍 |
 

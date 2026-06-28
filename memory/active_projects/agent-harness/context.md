@@ -24,14 +24,22 @@
 - Agent Context（system/AGENT_CONTEXT.yaml）
 - Permission（system/PERMISSIONS.yaml）
 - Approval Policy（system/APPROVAL_POLICY.yaml）
-- Cost Policy（system/COST_POLICY.md）
+- Cost Policy（system/COST_POLICY.md）— 量化「成本」
 - Failure Taxonomy（system/FAILURE_TAXONOMY.yaml）
 - Execution Log（system/EXECUTION_LOG_SCHEMA.yaml）
 - Audit Log（logs/AUDIT_LOG.md）
 
-## 目前狀態（2026-04-15）
+**評估平面（v2.1 新增 — 量化「品質」）**
+- Eval Policy（system/EVAL_POLICY.yaml）
+- Rubrics（evals/rubrics/*.yaml，由 eval_examples.md 轉寫）
+- Golden Set（evals/golden/cases.yaml）
+- Eval Records（evals/results/*.yaml）
+- Eval Runner（scripts/run_evals.py）— rubric 自評＋schema 守護
+
+## 目前狀態（2026-06-28）
 - v2 框架完成，所有檔案到位
 - 已完成 Week 1 pipeline 驗證（research → review → writing → ops）
+- v2.1 新增評估平面（四平面、二十一模組）：補上「可量化」的品質軸，閉合學習迴路
 - 累積 6 筆 audit log 紀錄
 
 ## Skill 類型

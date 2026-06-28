@@ -87,6 +87,17 @@ v1 先用單一模型（Claude）。未來如需降本：
 
 **下次校準觸發**：再累積 5 筆任務（含至少 1 筆 analysis）後，於下次 retro 重算。
 
+## 與品質量化的關係（評估平面交叉引用）
+
+本檔量化「**成本**」（token / 工具呼叫 / 校準係數）；品質的量化在**評估平面**
+（`system/EVAL_POLICY.yaml` + `evals/`）。兩者合起來才構成「可量化」的完整兩軸：
+
+- 成本軸：本檔的校準係數（research 1.43 / writing 2.00 / ops 1.56 / review 1.25）
+- 品質軸：`evals/results/*.yaml` 的 rubric 評分 + verdict；趨勢見 `governance_metrics.py --observability` 的品質層
+
+> 下次 RETRO 校準成本係數時，建議一併檢視對應 skill 的品質趨勢（avg_score_pct / pass 率），
+> 避免為了壓低成本而讓品質劣化（成本↓但 verdict 轉 partial/fail 應視為退步）。
+
 ## 升級觸發條件
 
 當以下任一條件持續 2 週以上，考慮升級到 v2：

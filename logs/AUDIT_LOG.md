@@ -33,6 +33,31 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260628-001"
+  date: "2026-06-28"
+  skill_type: "ops"
+  goal: "新增評估平面（第四平面）：把 eval_examples.md 轉成可運行的品質迴路，補上「可量化」的品質軸"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 18
+    - tool_name: "file_write"
+      call_count: 22
+    - tool_name: "web_search"
+      call_count: 3
+  checkpoints: 3
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/2026-06-28_evaluation-plane-architecture.md"
+  error_summary: ""
+  estimated_tokens: "~140K"
+  notes: "workflow 架構檢視→補缺。對照 2026 harness 元件分類，補品質量化（rubric 自評＋schema 守護）。新增 system/EVAL_POLICY.yaml + evals/{rubrics,golden,results} + scripts/run_evals.py（19 tests）；接線 check_spec_consistency(evals lint)/governance_metrics(品質層)/frontend(品質面板)/GATE 第五層/CI。決策 D008。全套 CI-equivalent 綠。LLM-as-judge 留 v2。"
+```
+
+---
+
+```yaml
 - task_id: "20260529-011"
   date: "2026-05-29"
   skill_type: "ops"

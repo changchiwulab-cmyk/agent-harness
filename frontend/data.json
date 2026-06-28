@@ -76,6 +76,17 @@
       "related_task": "20260509-N06",
       "revisit_trigger": "v0.2.0 plugin 達到 agent-harness 全部 system/ 規格 round-trip 後評估轉 public；或下個 session 試行 bootstrap 後發現非預期問題",
       "status": "active"
+    },
+    {
+      "date": "2026-06-28",
+      "decision": "選 A（評估平面 v1：rubric 自評＋schema 守護），LLM-as-judge 留 v2 介面",
+      "decision_id": "20260628-D008",
+      "path": "memory/active_projects/agent-harness/decisions/20260628-D008_evaluation-plane.yaml",
+      "project": "agent-harness",
+      "reasoning": "「可恢復、可審核、可量化」三原則中，可量化是唯一只做一半的（成本有、品質無）。\n評估平面用最小新增補上品質軸，且全部由既有資產長出來（rubric←eval_examples、\ngolden←既有 drafts、品質趨勢←governance_metrics）。機制刻意對齊 GATE_POLICY 的\n「Claude 執行 + script/CI 守門」模式，維持專案 deterministic 優先的 DNA，零額外模型成本。\nLLM-as-judge 雖貼業界主流但需校準才可信，留作 v2 升級路徑。\n",
+      "related_task": "20260628-001",
+      "revisit_trigger": "rubric_self 累積 >= 15 筆且至少 1 筆失敗演練 → 評估啟用 LLM-as-judge 並開校準 Task Card；\n或評分與人工直覺長期背離 → 回頭調 rubric 維度/門檻。\n",
+      "status": "active"
     }
   ],
   "eval_overview": {

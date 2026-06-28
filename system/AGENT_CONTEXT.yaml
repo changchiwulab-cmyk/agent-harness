@@ -16,6 +16,7 @@ capabilities:
     - 產出草稿、分析報告、研究筆記
     - 結構化資料整理（CSV / YAML / JSON）
     - 品質審查與邏輯檢查
+    - 品質自評（依 evals/rubrics/<skill>.yaml 做 rubric 評分，scripts/run_evals.py --check 守門）
     - Git checkpoint 進度保存
   cannot_do:
     - 直接對外發送任何內容（Email、訊息、發文）

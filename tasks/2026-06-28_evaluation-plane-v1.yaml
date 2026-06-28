@@ -59,8 +59,11 @@ max_web_searches: 0
 skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
+checkpoints:
+  - "checkpoint: 20260628-001 評估平面核心（EVAL_POLICY + rubrics + golden + runner）"
+  - "checkpoint: 20260628-001 評估平面接線（CI/lint/觀測/前端/gate）"
+  - "checkpoint: 20260628-001 文件 + 決策 + audit（四平面收尾）"
+actual_tool_calls: 40
+result_summary: "新增評估平面（第四平面、模組 17–21），補上「可量化」缺的品質軸。核心：EVAL_POLICY.yaml（評分尺度/verdict/judge/記錄 schema/golden 回歸）、5 skill rubric（由 eval_examples 轉寫）、golden 錨點 + 首筆真實評分記錄、run_evals.py（scaffold/check/judge-stub，19 tests）。接線：check_spec_consistency evals lint、governance_metrics 品質層（閉合 R7 業務層品質缺口）、frontend 品質面板、GATE 第五層 quality_check、CI。文件全更新為四平面。決策 D008。機制採 rubric 自評＋schema 守護（deterministic、零額外模型成本），LLM-as-judge 留 v2。全套 CI-equivalent 綠、Context 預算 ~1.2K/3K。"
 completion_time: "2026-06-28"
 audit_log_ref: "logs/AUDIT_LOG.md"

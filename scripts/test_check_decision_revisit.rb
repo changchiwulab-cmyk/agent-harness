@@ -37,10 +37,10 @@ class TestDecisionRevisit < Minitest::Test
     assert_includes @out, 'logs/runs 現有'  # D006 detail
   end
 
-  def test_json_is_parseable_with_seven_decisions
+  def test_json_is_parseable_with_eight_decisions
     data = JSON.parse(@json_raw)
     assert data['decisions'].is_a?(Array)
-    assert_equal 7, data['decisions'].length
+    assert_equal 8, data['decisions'].length
     assert data.key?('metrics')
   end
 end
