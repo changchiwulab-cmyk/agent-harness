@@ -1,6 +1,7 @@
-# Gate Policy — 四層驗證 Checklist
+# Gate Policy — 五層驗證 Checklist
 # 每次任務完成後，依此順序逐層執行。任一層失敗則依 on_fail 處理。
 # 各層 rollback 的「操作程序」（用什麼指令還原）見 system/RECOVERY_RUNBOOK.md（R8 交叉引用）。
+# 第五層 quality_check 屬評估平面（見 system/EVAL_POLICY.yaml），量化輸出品質，與前四層正交。
 
 gates:
 
@@ -48,3 +49,16 @@ gates:
       - 對外動作（如有）已轉為草稿等待人工確認
     on_fail: "輸出移至 outputs/drafts/，等待人工審閱後才可發布"
     rollback: "所有產出鎖定在 drafts/；Audit Log 標記 risk_escalated: true"
+
+  # --- 第五層：品質驗證（評估平面，於核心四層之後）---
+  # 與前四層正交：前四層驗「對不對／安不安全」，本層量化「好不好」。
+  # 僅在任務有具體交付產出且 skill_type 屬五類（research/analysis/writing/ops/review）時觸發；
+  # happy-path 輕任務可略過，正式報告晉升 outputs/reports/ 前建議必跑。
+  quality_check:
+    description: "依 evals/rubrics/<skill>.yaml 對交付產出做 rubric 評分（機制見 system/EVAL_POLICY.yaml）"
+    checks:
+      - 對交付產出逐維度評分（0/1/2），寫入 evals/results/<eval_id>.yaml
+      - 跑 scripts/run_evals.py --check 重算 score_pct/verdict 並守門
+      - verdict 不低於對應 golden case 的 expected_verdict（如有）
+    on_fail: "verdict == fail → 列缺口維度，產出鎖在 outputs/drafts/，詢問是否補強；不得晉升 reports/"
+    rollback: "產出鎖定在 drafts/；不寫入 golden；保留 eval_record 供 retro 分析"

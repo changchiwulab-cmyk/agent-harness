@@ -33,6 +33,12 @@ ALLOWED_APPROVAL_STATUS = %w[approved rejected superseded].freeze
 REQUIRED_APPROVAL_FIELDS = %w[approval_id task_id date action approval_method status approved_by].freeze
 ALLOWED_ERROR_TYPE = %w[tool_failure rule_violation schema_failure timeout unknown].freeze
 
+# --- evals/ schema lint 常數（評估平面；深度 verdict 重算在 scripts/run_evals.py）---
+ALLOWED_EVAL_JUDGE = %w[rubric_self llm_judge].freeze
+ALLOWED_EVAL_VERDICT = %w[pass partial fail].freeze
+ALLOWED_EVAL_SCORE = [0, 1, 2].freeze
+REQUIRED_EVAL_FIELDS = %w[eval_id task_id skill_type target judge scored_at dimensions score_pct verdict].freeze
+
 def parse_iso_date(value)
   return value if value.is_a?(Date)
   return nil unless value.is_a?(String) && value.match?(DATE_PATTERN)
@@ -52,7 +58,10 @@ required_dirs = [
   'logs/errors',
   'outputs/drafts',
   'outputs/reports',
-  'memory/active_projects'
+  'memory/active_projects',
+  'evals/rubrics',
+  'evals/golden',
+  'evals/results'
 ]
 
 required_dirs.each do |dir|
@@ -233,6 +242,62 @@ Dir.glob('logs/errors/*.md').sort.each do |err_file|
     errors << "#{err_file}: missing error_type"
   elsif !ALLOWED_ERROR_TYPE.include?(etype)
     errors << "#{err_file}: invalid error_type #{etype} (allowed: #{ALLOWED_ERROR_TYPE.join('/')})"
+  end
+end
+
+# 7) evals/rubrics/*.yaml — rubric schema（評估平面）
+Dir.glob('evals/rubrics/*.yaml').sort.each do |rubric_file|
+  doc = YAML.load_file(rubric_file)
+  unless doc.is_a?(Hash)
+    errors << "#{rubric_file}: root must be mapping"
+    next
+  end
+  skill = doc['skill']
+  if skill.nil? || !ALLOWED_SKILL.include?(skill)
+    errors << "#{rubric_file}: invalid or missing skill #{skill.inspect} (allowed: #{ALLOWED_SKILL.join('/')})"
+  end
+  dims = doc['dimensions']
+  if !dims.is_a?(Array) || dims.empty?
+    errors << "#{rubric_file}: dimensions must be a non-empty list"
+  else
+    ids = dims.map { |d| d.is_a?(Hash) ? d['id'] : nil }
+    if ids.any? { |i| i.nil? || i.to_s.strip.empty? }
+      errors << "#{rubric_file}: every dimension needs a non-empty id"
+    end
+    errors << "#{rubric_file}: duplicate dimension ids" if ids.compact.uniq.length != ids.compact.length
+  end
+end
+
+# 8) evals/results/*.yaml — eval_record schema（深度 verdict 重算另由 run_evals.py --check 守門）
+Dir.glob('evals/results/*.yaml').sort.each do |res_file|
+  doc = YAML.load_file(res_file)
+  rec = (doc.is_a?(Hash) && doc['eval_record'].is_a?(Hash)) ? doc['eval_record'] : doc
+  unless rec.is_a?(Hash)
+    errors << "#{res_file}: must contain an eval_record mapping"
+    next
+  end
+  REQUIRED_EVAL_FIELDS.each do |field|
+    value = rec[field]
+    empty = value.nil? || (value.is_a?(String) && value.strip.empty?) || (value.respond_to?(:empty?) && value.empty?)
+    errors << "#{res_file}: missing required field #{field}" if empty
+  end
+  if rec.key?('skill_type') && !ALLOWED_SKILL.include?(rec['skill_type'])
+    errors << "#{res_file}: invalid skill_type #{rec['skill_type']}"
+  end
+  if rec.key?('judge') && !ALLOWED_EVAL_JUDGE.include?(rec['judge'])
+    errors << "#{res_file}: invalid judge #{rec['judge']} (allowed: #{ALLOWED_EVAL_JUDGE.join('/')})"
+  end
+  if rec.key?('verdict') && !ALLOWED_EVAL_VERDICT.include?(rec['verdict'])
+    errors << "#{res_file}: invalid verdict #{rec['verdict']} (allowed: #{ALLOWED_EVAL_VERDICT.join('/')})"
+  end
+  if rec['dimensions'].is_a?(Array)
+    rec['dimensions'].each_with_index do |d, i|
+      next unless d.is_a?(Hash)
+
+      unless ALLOWED_EVAL_SCORE.include?(d['score'])
+        errors << "#{res_file}: dimensions[#{i}] score #{d['score'].inspect} not in 0/1/2"
+      end
+    end
   end
 end
 

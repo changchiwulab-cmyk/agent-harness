@@ -408,12 +408,61 @@ def observability_failures(error_types: list[str]) -> dict:
     return {"errors_total": len(error_types), "by_type": dist}
 
 
+def load_eval_results() -> list[dict]:
+    """Return eval_record dicts from evals/results/*.yaml (handles wrapper or bare)."""
+    out: list[dict] = []
+    d = ROOT / "evals" / "results"
+    if not d.exists():
+        return out
+    for p in sorted(d.glob("*.yaml")):
+        try:
+            doc = yaml.safe_load(p.read_text(encoding="utf-8"))
+        except yaml.YAMLError:
+            continue
+        if not isinstance(doc, dict):
+            continue
+        rec = doc.get("eval_record") if isinstance(doc.get("eval_record"), dict) else doc
+        if isinstance(rec, dict):
+            out.append(rec)
+    return out
+
+
+def observability_quality(evals: list[dict]) -> dict:
+    """Quality layer (評估平面): per-skill count, avg score_pct, pass rate, verdict dist.
+
+    This is the business-layer *quality* trend the self-assessment flagged as the
+    missing axis — cost was quantified (COST_POLICY), quality was not.
+    """
+    by_skill: dict = {}
+    for e in evals:
+        sk = e.get("skill_type") or "unknown"
+        d = by_skill.setdefault(sk, {"count": 0, "scores": [], "verdict": {}})
+        d["count"] += 1
+        v = e.get("verdict") or "unknown"
+        d["verdict"][v] = d["verdict"].get(v, 0) + 1
+        sp = e.get("score_pct")
+        if isinstance(sp, (int, float)):
+            d["scores"].append(float(sp))
+    out: dict = {}
+    for sk in sorted(by_skill):
+        d = by_skill[sk]
+        passes = d["verdict"].get("pass", 0)
+        out[sk] = {
+            "count": d["count"],
+            "avg_score_pct": round(sum(d["scores"]) / len(d["scores"]), 1) if d["scores"] else None,
+            "pass_rate": round(100 * passes / d["count"], 1) if d["count"] else None,
+            "verdict": d["verdict"],
+        }
+    return {"evals_total": len(evals), "by_skill": out}
+
+
 def collect_observability() -> dict:
-    """Assemble the three observability layers (workflow / business / failures)."""
+    """Assemble observability layers (workflow / business / failures / quality)."""
     return {
         "workflow": observability_workflow(load_run_logs()),
         "business": observability_business(load_audit_entries()),
         "failures": observability_failures(load_error_types()),
+        "quality": observability_quality(load_eval_results()),
     }
 
 
@@ -440,6 +489,15 @@ def render_observability_markdown(obs: dict) -> str:
     fa = obs["failures"]
     lines.append(f"### 失敗分佈（{fa['errors_total']} 筆 error log）")
     lines.append(f"- error_type：{fa['by_type'] or '(無)'}")
+    lines.append("")
+    ql = obs.get("quality", {})
+    lines.append(f"### 品質層（評估平面，{ql.get('evals_total', 0)} 筆 eval）")
+    lines.append("| skill | 評分數 | 平均分 | pass 率 | verdict 分佈 |")
+    lines.append("|-------|:-----:|:-----:|:------:|------|")
+    for sk, d in (ql.get("by_skill") or {}).items():
+        avg = f"{d['avg_score_pct']}%" if d["avg_score_pct"] is not None else "—"
+        pr = f"{d['pass_rate']}%" if d["pass_rate"] is not None else "—"
+        lines.append(f"| {sk} | {d['count']} | {avg} | {pr} | {d['verdict']} |")
     lines.append("")
     return "\n".join(lines) + "\n"
 

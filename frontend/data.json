@@ -78,6 +78,33 @@
       "status": "active"
     }
   ],
+  "eval_overview": {
+    "by_skill": {
+      "research": {
+        "avg_score_pct": 100.0,
+        "count": 1,
+        "verdict": {
+          "pass": 1
+        }
+      }
+    },
+    "eval_total": 1,
+    "verdict": {
+      "pass": 1
+    }
+  },
+  "evals": [
+    {
+      "eval_id": "EVAL-20260628-001",
+      "path": "evals/results/EVAL-20260628-001_t01-quick-scan.yaml",
+      "score_pct": 100.0,
+      "scored_at": "2026-06-28",
+      "skill_type": "research",
+      "target": "outputs/drafts/20260502-T01_taiwan-ai-industry-quick-scan.md",
+      "task_id": "20260628-001",
+      "verdict": "pass"
+    }
+  ],
   "logs": [
     {
       "ended_at": "2026-04-09 00:30",
@@ -137,22 +164,22 @@
     "task_risk": {
       "high": 1,
       "low": 30,
-      "medium": 14
+      "medium": 15
     },
     "task_skill": {
       "analysis": 4,
-      "ops": 26,
+      "ops": 27,
       "research": 5,
       "review": 6,
       "writing": 4
     },
     "task_status": {
-      "done": 22,
+      "done": 23,
       "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 45
+    "task_total": 46
   },
   "tasks": [
     {
@@ -604,6 +631,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-28",
+      "goal": "新增評估平面（第四平面）：把 skills/*/eval_examples.md 轉成可機讀 rubric，建立 eval 記錄 schema、deterministic 評分守門 runner、golden 回歸、CI 與觀測/前端接線，讓輸出品質可量化、可追蹤、可防漂移",
+      "path": "tasks/2026-06-28_evaluation-plane-v1.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260628-001"
     }
   ]
 }

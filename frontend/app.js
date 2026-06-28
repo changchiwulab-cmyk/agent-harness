@@ -33,6 +33,7 @@ async function loadData() {
     .map((d) => ({ ...d, _date: decisionDate(d) }))
     .sort((a, b) => a._date.localeCompare(b._date));
   state.overview = payload.overview || {};
+  state.evalOverview = payload.eval_overview || {};
 }
 
 function inDateRange(value, from, to) {
@@ -137,8 +138,34 @@ function renderOverview() {
     .join('');
 }
 
+function renderEval() {
+  const el = $('evalPanel');
+  if (!el) return;
+  const o = state.evalOverview || {};
+  const dist = (obj) => {
+    const entries = Object.entries(obj || {});
+    return entries.length
+      ? entries.map(([k, v]) => `${escapeHtml(k)}: ${escapeHtml(v)}`).join('｜')
+      : '—';
+  };
+  const cards = [
+    [`評分總數`, escapeHtml(o.eval_total ?? 0)],
+    [`Verdict 分佈`, dist(o.verdict)],
+  ];
+  const bySkill = o.by_skill || {};
+  Object.keys(bySkill).sort().forEach((sk) => {
+    const d = bySkill[sk] || {};
+    const avg = d.avg_score_pct == null ? '—' : `${escapeHtml(d.avg_score_pct)}%`;
+    cards.push([`${escapeHtml(sk)}（${escapeHtml(d.count ?? 0)} 筆）`, `平均 ${avg}｜${dist(d.verdict)}`]);
+  });
+  el.innerHTML = cards
+    .map(([label, val]) => `<article class="card"><div class="label">${escapeHtml(label)}</div><div class="value overview-value">${val}</div></article>`)
+    .join('');
+}
+
 function render(tasks, decisions) {
   renderOverview();
+  renderEval();
   renderSummary(tasks, decisions);
   renderTasks(tasks);
   renderTimeline(decisions);

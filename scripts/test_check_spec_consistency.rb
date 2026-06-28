@@ -124,3 +124,24 @@ class TestLogsSchemaLintConstants < Minitest::Test
     assert_equal 5, ALLOWED_ERROR_TYPE.length
   end
 end
+
+# ── 測試評估平面 evals/ schema lint 常數 ──────────────────────────────────────
+class TestEvalSchemaLintConstants < Minitest::Test
+  def test_eval_judge_enum
+    assert_equal %w[rubric_self llm_judge], ALLOWED_EVAL_JUDGE
+  end
+
+  def test_eval_verdict_enum
+    assert_equal %w[pass partial fail], ALLOWED_EVAL_VERDICT
+  end
+
+  def test_eval_score_domain
+    assert_equal [0, 1, 2], ALLOWED_EVAL_SCORE
+  end
+
+  def test_required_eval_fields
+    %w[eval_id task_id skill_type target judge scored_at dimensions score_pct verdict].each do |f|
+      assert_includes REQUIRED_EVAL_FIELDS, f
+    end
+  end
+end

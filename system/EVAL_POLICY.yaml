@@ -68,7 +68,7 @@ golden_regression:
 
 # === 與 GATE_POLICY 的接線 ===
 gate_integration:
-  gate: "quality_check（GATE_POLICY.yaml 第五層，completion_check 之後、risk_check 之前）"
+  gate: "quality_check（GATE_POLICY.yaml 第五層，於核心四層之後）"
   trigger: "任務有具體交付產出（drafts/ 或 reports/）且 skill_type 屬五類之一時"
   on_fail: "verdict == fail → 產出鎖在 outputs/drafts/，列缺口維度，詢問是否補強；不得晉升 reports/"
-  note: "happy-path 輕任務可只記 AUDIT_LOG；正式報告晉升前建議跑一次 eval（對齊 RETRO_FLOW 晉升流程）。"
+  note: "happy-path 輕任務可只記 AUDIT_LOG；正式報告晉升 reports/ 前建議必跑一次 eval（對齊 RETRO_FLOW 晉升流程）。"

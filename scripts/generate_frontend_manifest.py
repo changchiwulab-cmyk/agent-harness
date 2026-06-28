@@ -22,6 +22,7 @@ OUTPUT = FRONTEND_DIR / "data.json"
 TASKS_GLOB = "tasks/20*.yaml"
 LOGS_GLOB = "logs/runs/*.yaml"
 DECISIONS_GLOB = "memory/active_projects/*/decisions/*.yaml"
+EVALS_GLOB = "evals/results/*.yaml"
 
 TASK_FIELDS = (
     "task_id",
@@ -51,6 +52,16 @@ DECISION_FIELDS = (
     "status",
     "related_task",
     "revisit_trigger",
+)
+
+EVAL_FIELDS = (
+    "eval_id",
+    "task_id",
+    "skill_type",
+    "target",
+    "verdict",
+    "score_pct",
+    "scored_at",
 )
 
 
@@ -103,6 +114,47 @@ def collect_decisions(root: Path) -> list[dict[str, Any]]:
     return items
 
 
+def collect_evals(root: Path) -> list[dict[str, Any]]:
+    items = []
+    for p in sorted(root.glob(EVALS_GLOB)):
+        if not p.is_file():
+            continue
+        doc = load_yaml(p)
+        rec = doc.get("eval_record") if isinstance(doc.get("eval_record"), dict) else doc
+        items.append({"path": rel(p, root), **pick(rec, EVAL_FIELDS)})
+    return items
+
+
+def build_eval_overview(evals: list[dict[str, Any]]) -> dict[str, Any]:
+    """Quality overview for the dashboard panel (評估平面).
+
+    Per-skill count / avg score_pct / verdict distribution, plus overall verdict
+    tally. Derived purely from collected evals — deterministic for byte-identical
+    output (CI drift-check friendly).
+    """
+    by_skill: dict[str, dict] = {}
+    verdict_all: dict[str, int] = {}
+    for e in evals:
+        sk = e.get("skill_type") or "unknown"
+        v = e.get("verdict") or "unknown"
+        verdict_all[v] = verdict_all.get(v, 0) + 1
+        d = by_skill.setdefault(sk, {"count": 0, "scores": [], "verdict": {}})
+        d["count"] += 1
+        d["verdict"][v] = d["verdict"].get(v, 0) + 1
+        sp = e.get("score_pct")
+        if isinstance(sp, (int, float)):
+            d["scores"].append(float(sp))
+    out: dict[str, Any] = {}
+    for sk in sorted(by_skill):
+        d = by_skill[sk]
+        out[sk] = {
+            "count": d["count"],
+            "avg_score_pct": round(sum(d["scores"]) / len(d["scores"]), 1) if d["scores"] else None,
+            "verdict": d["verdict"],
+        }
+    return {"eval_total": len(evals), "verdict": verdict_all, "by_skill": out}
+
+
 OVERVIEW_GATES = ("schema_check", "rule_check", "completion_check", "risk_check")
 
 
@@ -146,11 +198,14 @@ def build_overview(tasks: list[dict[str, Any]], logs: list[dict[str, Any]]) -> d
 def build(root: Path) -> dict[str, Any]:
     tasks = collect_tasks(root)
     logs = collect_logs(root)
+    evals = collect_evals(root)
     return {
         "tasks": tasks,
         "logs": logs,
         "decisions": collect_decisions(root),
         "overview": build_overview(tasks, logs),
+        "evals": evals,
+        "eval_overview": build_eval_overview(evals),
     }
 
 
@@ -173,7 +228,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     OUTPUT.write_text(rendered, encoding="utf-8")
-    print(f"Generated {OUTPUT.relative_to(ROOT)} ({len(payload['tasks'])} tasks, {len(payload['logs'])} logs, {len(payload['decisions'])} decisions)")
+    print(f"Generated {OUTPUT.relative_to(ROOT)} ({len(payload['tasks'])} tasks, {len(payload['logs'])} logs, {len(payload['decisions'])} decisions, {len(payload['evals'])} evals)")
     return 0
 
 

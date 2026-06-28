@@ -311,6 +311,19 @@ class TestObservability(unittest.TestCase):
         self.assertEqual(fa["errors_total"], 3)
         self.assertEqual(fa["by_type"], {"tool_failure": 1, "schema_failure": 2})
 
+    def test_quality_per_skill(self):
+        evals = [
+            {"skill_type": "research", "verdict": "pass", "score_pct": 100.0},
+            {"skill_type": "research", "verdict": "partial", "score_pct": 70.0},
+            {"skill_type": "ops", "verdict": "fail", "score_pct": 40.0},
+        ]
+        q = gm.observability_quality(evals)
+        self.assertEqual(q["evals_total"], 3)
+        self.assertEqual(q["by_skill"]["research"]["count"], 2)
+        self.assertEqual(q["by_skill"]["research"]["avg_score_pct"], 85.0)
+        self.assertEqual(q["by_skill"]["research"]["pass_rate"], 50.0)
+        self.assertEqual(q["by_skill"]["ops"]["pass_rate"], 0.0)
+
     def test_main_observability_flag_real_repo(self):
         import io
         import json as _json
@@ -321,7 +334,7 @@ class TestObservability(unittest.TestCase):
             code = gm.main(["--observability", "--today", "2026-05-29"])
         self.assertEqual(code, 0)
         data = _json.loads(out.getvalue())
-        self.assertEqual(set(data.keys()), {"workflow", "business", "failures"})
+        self.assertEqual(set(data.keys()), {"workflow", "business", "failures", "quality"})
 
     def test_existing_json_still_four_metrics(self):
         """Guard: --json output must remain M1–M4 only (no regression)."""

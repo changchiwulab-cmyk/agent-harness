@@ -46,6 +46,12 @@ class TestGenerator(unittest.TestCase):
                         "risk_check": {},
                     },
                 },
+                "evals": [],
+                "eval_overview": {
+                    "eval_total": 0,
+                    "verdict": {},
+                    "by_skill": {},
+                },
             })
 
     def test_multi_project_decisions_are_all_collected(self):
@@ -84,6 +90,29 @@ class TestGenerator(unittest.TestCase):
 
             self.assertEqual(first, second)
             json.loads(first)
+
+
+class TestEvals(unittest.TestCase):
+    def test_collect_and_overview(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            write(
+                root / "evals" / "results" / "EVAL-1.yaml",
+                'eval_record:\n  eval_id: "EVAL-1"\n  skill_type: "research"\n'
+                '  target: "x.md"\n  verdict: "pass"\n  score_pct: 100.0\n',
+            )
+            write(
+                root / "evals" / "results" / "EVAL-2.yaml",
+                'eval_record:\n  eval_id: "EVAL-2"\n  skill_type: "research"\n'
+                '  target: "y.md"\n  verdict: "partial"\n  score_pct: 70.0\n',
+            )
+            payload = gen.build(root)
+            self.assertEqual(len(payload["evals"]), 2)
+            ov = payload["eval_overview"]
+            self.assertEqual(ov["eval_total"], 2)
+            self.assertEqual(ov["verdict"], {"pass": 1, "partial": 1})
+            self.assertEqual(ov["by_skill"]["research"]["count"], 2)
+            self.assertEqual(ov["by_skill"]["research"]["avg_score_pct"], 85.0)
 
 
 class TestDriftCheck(unittest.TestCase):
