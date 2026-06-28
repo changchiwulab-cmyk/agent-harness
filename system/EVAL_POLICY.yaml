@@ -1,0 +1,74 @@
+# Eval Policy — 評估平面（第四平面）品質量化規則
+# 與 GATE_POLICY.yaml 互補但正交：GATE 驗「做得對不對／安不安全」（pass/fail），
+# 本檔評「輸出好不好」（rubric 分數）。與 COST_POLICY.md 互補：COST 量化「成本」，本檔量化「品質」。
+# 機制：rubric 自評＋schema 守護 —— 評分由 Claude 依 rubric 執行（如 GATE 的 completion_check），
+#       deterministic 守門由 scripts/run_evals.py --check + CI 負責（重算 verdict、比對 golden 回歸）。
+# 設計來源：2026 eval-driven development（rubric + golden set + 回歸閘門 + LLM-as-judge）。
+
+purpose: "把 skills/*/eval_examples.md 從死文件升級成可運行、可追蹤、可防漂移的品質迴路"
+
+# === 評分尺度 ===
+# 每個 rubric 維度給一個序數分；分數語意與 eval_examples.md 的「通過/不通過」對齊。
+scoring_scale:
+  "2": "通過（pass）— 完全符合該維度的通過標準"
+  "1": "部分（partial）— 部分符合，有可指明的缺口"
+  "0": "不通過（fail）— 不符合通過標準"
+
+# === verdict 推導規則（deterministic；run_evals.py --check 會重算並守門）===
+verdict_rules:
+  score_pct: "round(100 * sum(dimension_scores) / (2 * dimension_count), 1)"
+  pass_threshold_default: 80          # 各 rubric 可用 pass_threshold 覆寫
+  blocker: "rubric 維度可標 blocker: true；blocker 維度得 0 分時 verdict 直接降為 fail"
+  thresholds:
+    fail: "score_pct < 60，或任一 blocker 維度 == 0"
+    partial: "60 <= score_pct < pass_threshold"
+    pass: "score_pct >= pass_threshold 且無 blocker 維度 == 0"
+  ordering: "fail < partial < pass（golden 回歸比較用）"
+
+# === judge 協定 ===
+judges:
+  rubric_self:
+    status: "v1 啟用（預設）"
+    description: "Claude 依 rubric 維度產結構化評分記錄，CI 以 schema＋verdict 重算守門。零額外模型呼叫、偏 deterministic。"
+  llm_judge:
+    status: "v2 保留介面（尚未實作）"
+    description: "獨立評審 prompt 對輸出評分，需校準到與人工標註 85–90% 一致後才可作為 verdict 來源。"
+    promote_when: "rubric_self 累積 >= 15 筆且至少 1 筆失敗演練；屆時開獨立校準 Task Card。"
+
+# === 資料源位置 ===
+locations:
+  rubrics: "evals/rubrics/<skill>.yaml"       # 每 skill 一份，維度由 skills/<skill>/eval_examples.md 轉寫
+  golden: "evals/golden/cases.yaml"           # 回歸錨點：真實既有產出 + 期望 verdict
+  results: "evals/results/*.yaml"             # 評分記錄，schema 見下
+  enforced_by: "scripts/run_evals.py --check（CI 納入）+ scripts/check_spec_consistency.rb（schema lint）"
+
+# === eval_record schema ===
+# 評分完成後依此 schema 寫入 evals/results/。鏡像 EXECUTION_LOG_SCHEMA.yaml 的記錄風格。
+eval_record:
+  eval_id: "EVAL-YYYYMMDD-###"     # 唯一識別碼
+  task_id: ""                       # 產生 target 的 Task Card（或評估任務）ID
+  skill_type: ""                    # research / analysis / writing / ops / review
+  target: ""                        # 被評估產出的檔案路徑
+  rubric: ""                        # 對應 evals/rubrics/<skill>.yaml
+  judge: "rubric_self"              # rubric_self | llm_judge
+  scored_at: "YYYY-MM-DD"
+  dimensions:                       # 必須剛好覆蓋該 rubric 的所有維度 id（不缺、不多）
+    - id: ""                        # 對應 rubric 維度 id
+      score: 0                      # 0 | 1 | 2
+      note: ""                      # 評分理由（尤其 0/1 分時）
+  score_pct: 0.0                    # 由 dimensions 推導；CI 重算守門
+  verdict: ""                       # pass | partial | fail；由 score_pct + blocker 推導；CI 重算守門
+  notes: ""
+
+# === golden 回歸規則 ===
+golden_regression:
+  description: "evals/golden/cases.yaml 列出真實產出的期望 verdict 作回歸錨點。"
+  rule: "若某 result 的 target 命中 golden case，其 verdict 不得低於 expected_verdict（依 ordering），否則 --check 失敗。"
+  rationale: "防止 rubric/評分隨改動鬆動而靜默劣化；對齊 2026『golden set 取自真實案例』best practice。"
+
+# === 與 GATE_POLICY 的接線 ===
+gate_integration:
+  gate: "quality_check（GATE_POLICY.yaml 第五層，completion_check 之後、risk_check 之前）"
+  trigger: "任務有具體交付產出（drafts/ 或 reports/）且 skill_type 屬五類之一時"
+  on_fail: "verdict == fail → 產出鎖在 outputs/drafts/，列缺口維度，詢問是否補強；不得晉升 reports/"
+  note: "happy-path 輕任務可只記 AUDIT_LOG；正式報告晉升前建議跑一次 eval（對齊 RETRO_FLOW 晉升流程）。"

@@ -1,0 +1,27 @@
+# 首筆真實評分記錄 — 評估既有 research 產出 T01。
+# 機制：rubric 自評（judge: rubric_self）。verdict 與 score_pct 由 dimensions 推導，
+# 由 scripts/run_evals.py --check 重算守門。schema 見 system/EVAL_POLICY.yaml eval_record。
+eval_record:
+  eval_id: "EVAL-20260628-001"
+  task_id: "20260628-001"
+  skill_type: "research"
+  target: "outputs/drafts/20260502-T01_taiwan-ai-industry-quick-scan.md"
+  rubric: "evals/rubrics/research.yaml"
+  judge: "rubric_self"
+  scored_at: "2026-06-28"
+  dimensions:
+    - id: sources
+      score: 2
+      note: "已知事實逐項標來源（Seeking Alpha / DigiTimes）；來源段 3 筆含 URL 與時效；未驗證項誠實標 [待驗證]。"
+    - id: classification
+      score: 2
+      note: "已知事實 / 合理推論 / 待驗證 / 高風險假設 四區塊明確分開。"
+    - id: conclusion_first
+      score: 2
+      note: "首段即「## 結論」，給出可切入點判斷，未先鋪背景。"
+    - id: honesty
+      score: 2
+      note: "多處 [待驗證] / [資料不足]，並於執行紀錄自承 Quick Scan 刻意未深挖 SaaS 段。"
+  score_pct: 100.0
+  verdict: "pass"
+  notes: "首筆樣本，作為 research 通過基準（golden GOLD-research-001）。屬強樣本，未來宜補一筆 partial/fail 樣本擴散分佈。"

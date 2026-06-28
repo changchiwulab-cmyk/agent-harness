@@ -1,0 +1,35 @@
+# Analysis rubric — 由 skills/analysis/eval_examples.md「判斷標準」表轉寫
+skill: analysis
+source: "skills/analysis/eval_examples.md"
+pass_threshold: 80
+dimensions:
+  - id: conclusion
+    name: "結論"
+    blocker: true
+    pass: "第一段明確給出建議（選哪個、為什麼）"
+    fail: "列完優缺點後說「你自己決定」"
+  - id: options_complete
+    name: "選項完整"
+    blocker: false
+    pass: "包含「不做／維持現狀」在內的所有可行選項"
+    fail: "只列推薦選項，忽略其他"
+  - id: quantification
+    name: "量化"
+    blocker: false
+    pass: "成本/效益有具體數字或範圍"
+    fail: "只說「高/低/好/壞」"
+  - id: assumptions_transparent
+    name: "假設透明"
+    blocker: false
+    pass: "明確列出高風險假設及驗證方式"
+    fail: "假設藏在結論裡不說明"
+  - id: next_steps
+    name: "下一步"
+    blocker: false
+    pass: "給出可直接行動的 1-3 個具體步驟"
+    fail: "結尾是「歡迎進一步討論」"
+  - id: solo_company_view
+    name: "一人公司視角"
+    blocker: false
+    pass: "評估執行難度時考量一人資源限制"
+    fail: "用企業級標準評估"

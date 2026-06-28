@@ -1,0 +1,30 @@
+# Writing rubric — 由 skills/writing/eval_examples.md「判斷標準」表轉寫
+skill: writing
+source: "skills/writing/eval_examples.md"
+pass_threshold: 80
+dimensions:
+  - id: structure
+    name: "結構"
+    blocker: true
+    pass: "結論先行、重點明確"
+    fail: "先鋪背景再給建議"
+  - id: length
+    name: "篇幅"
+    blocker: false
+    pass: "在指定限制內"
+    fail: "超出限制 20% 以上"
+  - id: tone
+    name: "用語"
+    blocker: false
+    pass: "台灣商業用語、口語化"
+    fail: "翻譯腔、學術腔"
+  - id: decision_support
+    name: "決策支援"
+    blocker: false
+    pass: "有比較、有建議、有下一步"
+    fail: "只分析不建議"
+  - id: faithful
+    name: "忠實"
+    blocker: false
+    pass: "嚴格遵照大綱，不多加章節"
+    fail: "自行擴充未被要求的內容"

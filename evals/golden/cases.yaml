@@ -1,0 +1,11 @@
+# Golden 回歸錨點 — 真實既有產出 + 期望 verdict
+# 規則見 system/EVAL_POLICY.yaml golden_regression 與 evals/golden/README.md。
+# 只收已實際評分過的案例（避免捏造 expected_verdict）。
+
+golden_cases:
+  - case_id: "GOLD-research-001"
+    skill_type: "research"
+    target: "outputs/drafts/20260502-T01_taiwan-ai-industry-quick-scan.md"
+    expected_verdict: "pass"
+    scored_by: "EVAL-20260628-001"
+    rationale: "四區塊分類完整、結論先行、每個事實有來源、誠實標 [待驗證]；作為 research 通過基準。"

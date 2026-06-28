@@ -1,0 +1,29 @@
+# Research rubric — 由 skills/research/eval_examples.md「判斷標準」表轉寫
+# 維度語意與該檔好/壞範例對齊。score: 2=通過 / 1=部分 / 0=不通過（見 system/EVAL_POLICY.yaml）。
+skill: research
+source: "skills/research/eval_examples.md"
+pass_threshold: 80
+dimensions:
+  - id: sources
+    name: "來源"
+    blocker: true
+    pass: "每個事實主張有具體來源"
+    fail: "「根據研究」「據報導」等模糊引用"
+    auto_signal: ["## 來源"]
+  - id: classification
+    name: "分類"
+    blocker: false
+    pass: "已知事實 / 合理推論 / 待驗證 / 高風險假設 四區塊明確分開"
+    fail: "事實與推論混在一起"
+    auto_signal: ["已知事實", "合理推論", "待驗證", "高風險假設"]
+  - id: conclusion_first
+    name: "結論"
+    blocker: false
+    pass: "第一段就是結論摘要"
+    fail: "先鋪陳背景再給結論"
+    auto_signal: ["## 結論"]
+  - id: honesty
+    name: "誠實"
+    blocker: false
+    pass: "承認資料不足、明確標記 [待驗證]"
+    fail: "硬湊結論、把推測當事實"

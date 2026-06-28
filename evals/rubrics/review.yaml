@@ -1,0 +1,30 @@
+# Review rubric — 由 skills/review/eval_examples.md「判斷標準」表轉寫
+skill: review
+source: "skills/review/eval_examples.md"
+pass_threshold: 80
+dimensions:
+  - id: specificity
+    name: "具體性"
+    blocker: true
+    pass: "問題定位到段落/句子"
+    fail: "「有些地方」「部分內容」等模糊描述"
+  - id: grading
+    name: "分級"
+    blocker: false
+    pass: "必須修改 vs 建議修改明確區分"
+    fail: "所有問題混在一起"
+  - id: dod_check
+    name: "DoD 比對"
+    blocker: false
+    pass: "逐條列出 definition_of_done + 通過/未通過"
+    fail: "沒有比對或只說「大致符合」"
+  - id: balance
+    name: "平衡"
+    blocker: false
+    pass: "有通過項 + 問題項"
+    fail: "只挑毛病或全部說好"
+  - id: severity
+    name: "嚴重度"
+    blocker: false
+    pass: "嚴重問題放在必須修改"
+    fail: "嚴重問題被降級為建議"
