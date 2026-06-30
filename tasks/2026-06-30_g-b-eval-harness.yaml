@@ -1,0 +1,59 @@
+# Task Card — G-B 評估閉環：可執行 evals + LLM-as-judge（含 G-E 觀測對齊）
+# 來源：plan workflow-ai-synchronous-parnas。對齊 2026 eval-driven development。
+# 把「設計完備但未實證」推向「可量化」：eval_examples 目前是散文、不可執行。
+# 注意：新增 scripts/、evals/ 與改 system/EXECUTION_LOG_SCHEMA.yaml；變更在草稿 PR 供 review。
+
+task_id: "20260630-G02"
+date: "2026-06-30"
+status: "pending"
+
+# === 任務定義 ===
+goal: "建立可執行的評估閉環：evals/ 案例 + LLM-as-judge runner + CI baseline，並把執行紀錄詞彙向 OTel gen_ai.* 對齊"
+context: |
+  現況 skills/*/eval_examples.md 是好/壞範例散文、不可執行；GATE 是人工 checklist；
+  governance_metrics 只量『操作』不量『產出品質』。本卡補上可執行 eval 層（量產出品質），
+  並把 EXECUTION_LOG_SCHEMA 詞彙向 OpenTelemetry GenAI 語意慣例對齊（G-E），使觀測標準化可攜。
+input_data:
+  - "skills/research/eval_examples.md"
+  - "skills/analysis/eval_examples.md"
+  - "scripts/governance_metrics.py"
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "evals/<skill>/*.yaml：每 case 含 input + DoD/期望軌跡 + gold 參考（至少涵蓋 research、analysis 各 1 例），來源對齊既有 eval_examples 的 good/bad"
+  - "scripts/run_evals.py：offline runner，套用 LLM-as-judge rubric 對 case 評分；無外呼時走 rule-based fallback（CI 可重現）"
+  - "scripts/test_run_evals.py：單元測試覆蓋 runner 解析與評分聚合，且綠"
+  - "system/EXECUTION_LOG_SCHEMA.yaml 加 gen_ai.* 對照欄位（向 OTel GenAI 語意慣例對齊），向後相容既有 1 筆 run log"
+  - "evals/README.md 說明與 GATE_POLICY（人工）、governance_metrics（操作型）的區隔"
+  - "新增檔與 system/ 變更僅存於草稿 PR、未 merge；CI-equivalent 全綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: "evals/"
+  filename: "README.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "create_output_files"
+  - "modify_system_rules"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

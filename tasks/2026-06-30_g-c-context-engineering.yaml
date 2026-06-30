@@ -1,0 +1,57 @@
+# Task Card — G-C Context Engineering 規範 + 結構化工作筆記
+# 來源：plan workflow-ai-synchronous-parnas。對齊 Anthropic 2025-26 context engineering。
+# 注意：避免與 Claude Code 原生（自動壓縮等）重疊，只寫原生未做的紀律。新增 system/ 屬 ask。
+
+task_id: "20260630-G03"
+date: "2026-06-30"
+status: "pending"
+
+# === 任務定義 ===
+goal: "把 context 從『不可超的預算』升級為『可工程化的產物』：訂 context 組裝順序、JIT 檢索紀律、結構化工作筆記慣例"
+context: |
+  現況 context 只被當 token 預算（CI 上限），memory/『幾乎沒運作』，無任務內工作筆記慣例。
+  本卡新增 system/CONTEXT_ENGINEERING.md，並訂任務級 scratchpad 慣例讓 memory/ 真正運作，
+  且不違反 deny auto_write_memory（scratchpad 屬任務範圍 state，非長期知識）。
+  須留意與原生重疊：壓縮等屬 Claude Code 原生 → 只寫原生未做的紀律（呼應 NATIVE_OVERLAP）。
+input_data:
+  - "CLAUDE.md"
+  - "system/NATIVE_OVERLAP.yaml"
+  - "memory/README.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "system/CONTEXT_ENGINEERING.md：組裝順序（system→memory→tools→history）+ JIT 檢索紀律 + 壓縮/筆記分工 + 子任務 context 隔離"
+  - "明確標出哪些屬 Claude Code 原生（不重造）、哪些是本 harness 補的紀律"
+  - "任務級 scratchpad 慣例（位置/格式/生命週期），與 memory/ 長期記憶規則區隔清楚"
+  - "check_context_budget.rb 仍綠（新規範為獨立檔，不撐破 CLAUDE.md+GLOBAL_RULES 上限）"
+  - "system/ 變更僅存於草稿 PR、未 merge"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "system/"
+  filename: "CONTEXT_ENGINEERING.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "create_output_files"
+  - "modify_system_rules"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
