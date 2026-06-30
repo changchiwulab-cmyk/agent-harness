@@ -4,7 +4,7 @@
 
 task_id: "20260630-G04"
 date: "2026-06-30"
-status: "pending"
+status: "done"
 
 # === 任務定義 ===
 goal: "為多/跨 session 任務補上結構化接續點 state/last_checkpoint.yaml，並接到 RECOVERY_RUNBOOK 與 CI schema lint"
@@ -49,8 +49,9 @@ max_web_searches: 0
 skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
-audit_log_ref: ""
+checkpoints:
+  - "checkpoint: 20260630-G04 cross-session resume state (G-D)"
+actual_tool_calls: 8
+result_summary: "新增 state/last_checkpoint.SCHEMA.yaml + 首個真實 resume 樣本（dogfood）；check_spec_consistency.rb 擴充 state/*.yaml schema lint（跳過 SCHEMA/TEMPLATE）+ 測試常數；RECOVERY_RUNBOOK 場景 C 交叉引用 state/ 為主動接續點。CI-equivalent 綠。system/ 變更待草稿 PR。"
+completion_time: "2026-06-30"
+audit_log_ref: "logs/AUDIT_LOG.md"

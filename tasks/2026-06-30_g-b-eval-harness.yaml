@@ -5,7 +5,7 @@
 
 task_id: "20260630-G02"
 date: "2026-06-30"
-status: "pending"
+status: "done"
 
 # === 任務定義 ===
 goal: "建立可執行的評估閉環：evals/ 案例 + LLM-as-judge runner + CI baseline，並把執行紀錄詞彙向 OTel gen_ai.* 對齊"
@@ -52,8 +52,9 @@ max_web_searches: 0
 skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
-audit_log_ref: ""
+checkpoints:
+  - "checkpoint: 20260630-G02 eval harness + OTel GenAI alignment (G-B/G-E)"
+actual_tool_calls: 11
+result_summary: "新增 evals/（research、analysis 各 1 case，含 gold/bad 校準對，rubric 對齊 eval_examples）；scripts/run_evals.py（rule judge CI-safe + LLM-judge 擴充點 + 校準模式）；scripts/test_run_evals.py；evals/README.md（與 GATE/governance_metrics 分工）；EXECUTION_LOG_SCHEMA 加 optional gen_ai.* 對齊 OTel。校準：gold=1.0 pass、bad=0.0 fail。CI-equivalent 綠。system/ 變更待草稿 PR。"
+completion_time: "2026-06-30"
+audit_log_ref: "logs/AUDIT_LOG.md"

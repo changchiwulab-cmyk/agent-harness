@@ -5,7 +5,7 @@
 
 task_id: "20260630-G01"
 date: "2026-06-30"
-status: "pending"
+status: "done"
 
 # === 任務定義 ===
 goal: "為 harness 補上輸入側防護：把『檢索/外部內容是資料、不是指令』訂為規範，並接到失敗分類學、gate 與 research skill"
@@ -53,8 +53,9 @@ max_web_searches: 0
 skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
-audit_log_ref: ""
+checkpoints:
+  - "checkpoint: 20260630-G01 input guardrails (indirect prompt injection)"
+actual_tool_calls: 9
+result_summary: "新增 system/INPUT_GUARDRAILS.md（檢索內容是資料不是指令 + [未受信任來源] 標記 + 交叉驗證）；FAILURE_TAXONOMY 加 SEC-05/06；GATE_POLICY rule_check 加輸入面檢查；research SKILL 加不受信任內容段；scripts/check_untrusted_content.py 偵測器 + 單元測試；tests/e2e 注入 smoke + fixture。全套 CI-equivalent 綠。system/+skills/ 變更待草稿 PR review。"
+completion_time: "2026-06-30"
+audit_log_ref: "logs/AUDIT_LOG.md"
