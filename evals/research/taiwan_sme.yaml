@@ -1,0 +1,54 @@
+# Eval case — research skill. Rubric mirrors skills/research/eval_examples.md
+# 判斷標準 (來源/分類/結論/誠實). gold_example/bad_example are the calibration
+# pair: run_evals.py asserts gold PASSES and bad FAILS the rubric.
+case_id: research-taiwan-sme
+skill: research
+prompt: "調查台灣 2026 年中小企業使用 AI 工具的現況"
+definition_of_done:
+  - "結論先行（第一段即結論摘要）"
+  - "每個事實主張有具體來源"
+  - "四區塊（已知事實/合理推論/待驗證/高風險假設）明確分開"
+  - "承認資料不足、標記待驗證"
+
+rubric:
+  - id: conclusion_first
+    kind: section_first
+    args: {heading: "結論"}
+  - id: has_sources
+    kind: section_nonempty
+    args: {heading: "來源"}
+  - id: four_blocks
+    kind: all_headings
+    args: {headings: ["已知事實", "合理推論", "待驗證", "高風險假設"]}
+  - id: marks_unverified
+    kind: contains_any
+    args: {needles: ["待驗證"]}
+
+gold_example: |
+  # 台灣中小企業 AI 工具採用現況（2026）
+
+  ## 結論
+  台灣中小企業 AI 採用率約 35-40%，集中在客服自動化與文件處理兩大場景。
+
+  ## 已知事實
+  - 經濟部 2026 Q1 調查：中小企業 AI 工具使用率 38%（來源：經濟部中小及新創企業署）
+
+  ## 合理推論
+  - 採用率成長主要來自消費級工具降低門檻，不是企業級導入
+
+  ## 待驗證
+  - 各產業別的差異（製造業 vs 服務業）
+
+  ## 高風險假設
+  - 無：本報告不做預測性結論
+
+  ## 來源
+  - 經濟部中小及新創企業署，2026 Q1 調查報告
+  - 數位時代，〈2026 台灣企業 AI 採用報告〉，2026.02
+
+bad_example: |
+  # 台灣中小企業 AI 工具現況
+
+  AI 正在改變全球商業格局。根據研究，AI 能幫助企業節省 30% 的時間成本。
+  主要工具包括 ChatGPT、Copilot、Gemini 等。
+  未來趨勢顯示，AI 將在 2027 年前覆蓋 80% 的中小企業。
