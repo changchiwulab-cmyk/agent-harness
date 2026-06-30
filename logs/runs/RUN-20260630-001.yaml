@@ -1,0 +1,56 @@
+# Execution Log — 專案三次測試 campaign
+# 依 EXECUTION_LOG_SCHEMA.yaml。本任務 risk=low、status=completed，依「窄範圍」原則
+# 原僅需 AUDIT_LOG，惟其為三次測試 campaign 的結構化紀錄且使用者明示「用專案規範」，故一併留存。
+
+execution_log:
+  run_id: "RUN-20260630-001"
+  task_id: "20260630-T01"
+  skill_type: "ops"
+  started_at: "2026-06-30 00:50"
+  ended_at: "2026-06-30 01:05"
+  status: "completed"
+
+  tools_used:
+    - tool: file_read
+      call_count: 12
+    - tool: run_tests
+      call_count: 6          # 套件 ×3 + 前端煙霧批次 + 計數擷取 + 再驗證
+    - tool: write_drafts
+      call_count: 1
+    - tool: write_logs
+      call_count: 2
+    - tool: git_commit_checkpoint
+      call_count: 2
+
+  checkpoints:
+    - commit: "326fdb7"
+      stage: "Task Card 20260630-T01 + frontend manifest regen"
+    - commit: "pending"
+      stage: "測試報告 + run log + audit + manifest 二次重生"
+
+  token_estimate:
+    input: 0
+    output: 0
+    total: 0
+    source: "not_recorded"
+
+  approvals:
+    - action: "建立 Task Card 20260630-T01（create_task_card 為 allow 級）"
+      status: "approved"
+      approved_by: "human"
+      timestamp: "2026-06-30"
+
+  output_path: "outputs/drafts/2026-06-30_project-test-run-report.md"
+  error_summary: ""
+  gate_results:
+    schema_check: "pass"
+    rule_check: "pass"
+    completion_check: "pass"
+    risk_check: "pass"
+
+  notes: >
+    spec-consistency.yml 12 步（拆 13 子步）×3 次 = 39/39 全綠；底層 63 測試案例
+    （Ruby 35 runs/103 assertions + Python 28 tests）三次皆 0 failures。前端開機煙霧
+    3/3 HTTP 200、伺服器即起即關無殘留。可重現性 100%、套件總時長 2247–2362ms。
+    rule_check 註記：前端煙霧之瞬時 http.server 觸及 spawn_background_process 邊界，
+    屬使用者明確授權且即起即關，已實證無殘留。報告留存 drafts/。

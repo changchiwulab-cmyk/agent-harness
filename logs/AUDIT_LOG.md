@@ -33,6 +33,31 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260630-T01"
+  date: "2026-06-30"
+  skill_type: "ops"
+  goal: "依專案規範連跑三次測試套件 + 前端開機煙霧測試，產出測試報告"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 12
+    - tool_name: "run_tests"
+      call_count: 6
+    - tool_name: "file_write"
+      call_count: 3
+  checkpoints: 2
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/2026-06-30_project-test-run-report.md"
+  error_summary: ""
+  estimated_tokens: "~18K"
+  notes: "spec-consistency.yml 12 步（拆 13 子步）×3 = 39/39 全綠；底層 63 測試案例（Ruby 35 runs/103 assertions + Python 28 tests）三次皆 0 failures。前端開機煙霧 3/3 HTTP 200、即起即關無殘留。四層 gate 全 pass、可重現性 100%。run log: RUN-20260630-001。設置階段新增 Task Card + 重生 data.json（避免步驟 07 漂移）。未改 system/。"
+```
+
+---
+
+```yaml
 - task_id: "20260529-011"
   date: "2026-05-29"
   skill_type: "ops"
