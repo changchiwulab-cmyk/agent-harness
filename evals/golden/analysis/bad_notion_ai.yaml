@@ -1,0 +1,17 @@
+case_id: analysis-bad-notion-ai
+skill: analysis
+expect: fail
+source: "skills/analysis/eval_examples.md 壞的輸出範例"
+output: |
+  # Notion AI 評估
+
+  Notion AI 是一個很好的工具，很多公司都在用。它可以幫助你更快完成工作。
+
+  優點：
+  - 節省時間
+  - 功能強大
+
+  缺點：
+  - 需要付費
+
+  綜合考慮，這是一個不錯的選擇。

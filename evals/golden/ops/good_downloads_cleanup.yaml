@@ -1,0 +1,24 @@
+case_id: ops-good-downloads-cleanup
+skill: ops
+expect: pass
+source: "skills/ops/eval_examples.md 好的輸出範例"
+output: |
+  # 檔案整理計畫 — Downloads 資料夾
+
+  ## 操作目標
+  將 ~/Downloads/ 下的檔案依副檔名分類到子資料夾。
+
+  ## 現狀盤點
+  - 總檔案數：47 個
+  - 圖片：18 個
+
+  ## 操作計畫（Dry-run）
+  | 動作 | 來源 | 目的地 | 數量 |
+  |------|------|--------|------|
+  | 移動 | *.jpg, *.png | Downloads/images/ | 18 |
+
+  ## 排除項目
+  - .DS_Store — macOS 系統檔，不搬移
+
+  ## 等待確認
+  以上計畫確認後才執行。執行前先 git checkpoint。

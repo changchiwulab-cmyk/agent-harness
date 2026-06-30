@@ -1,0 +1,35 @@
+# Review 評分量表 — 由 skills/review/eval_examples.md 判斷標準萃取
+skill: review
+pass_threshold: 0.7
+criteria:
+  - id: dod_check
+    description: "逐條比對 definition_of_done"
+    weight: 3
+    required: true
+    check:
+      type: present_any
+      patterns: ["Definition of Done", "definition_of_done", "逐條"]
+  - id: specific
+    description: "問題定位具體，無『有些地方/部分內容』模糊描述"
+    weight: 2
+    check:
+      type: absent
+      patterns: ["有些地方", "部分內容"]
+  - id: graded
+    description: "必須修改 vs 建議修改明確分級"
+    weight: 2
+    check:
+      type: present_all
+      patterns: ["必須修改", "建議修改"]
+  - id: balanced
+    description: "有通過項，不只挑毛病"
+    weight: 1
+    check:
+      type: present_any
+      patterns: ["通過項"]
+  - id: overall_assessment
+    description: "有總體評估"
+    weight: 1
+    check:
+      type: present_any
+      patterns: ["總體評估"]

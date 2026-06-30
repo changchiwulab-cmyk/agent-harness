@@ -1,0 +1,31 @@
+# Research 評分量表 — 由 skills/research/SKILL.md 輸出格式 + eval_examples.md 判斷標準萃取
+skill: research
+pass_threshold: 0.7
+criteria:
+  - id: four_categories
+    description: "四分類齊全：已知事實 / 合理推論 / 待驗證 / 高風險假設"
+    weight: 3
+    required: true
+    check:
+      type: headings_present
+      sections: ["已知事實", "合理推論", "待驗證", "高風險假設"]
+  - id: conclusion_first
+    description: "結論先行：結論段在已知事實之前"
+    weight: 2
+    check:
+      type: heading_order
+      before: "結論"
+      after: "已知事實"
+  - id: has_sources
+    description: "來源段存在且非空"
+    weight: 2
+    required: true
+    check:
+      type: heading_nonempty
+      section: "來源"
+  - id: no_vague_citation
+    description: "無『根據研究/據報導/據說』模糊引用"
+    weight: 2
+    check:
+      type: absent
+      patterns: ["根據研究", "據報導", "據說"]

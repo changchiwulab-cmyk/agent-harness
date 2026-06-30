@@ -1,0 +1,14 @@
+case_id: research-bad-taiwan-ai
+skill: research
+expect: fail
+source: "skills/research/eval_examples.md 壞的輸出範例"
+output: |
+  # 台灣中小企業 AI 工具現況
+
+  AI 正在改變全球商業格局。台灣中小企業也不例外，越來越多企業開始
+  使用各種 AI 工具來提升效率。根據研究，AI 能幫助企業節省 30% 的
+  時間成本，並提高客戶滿意度。
+
+  主要工具包括 ChatGPT、Copilot、Gemini 等。
+
+  未來趨勢顯示，AI 將在 2027 年前覆蓋 80% 的中小企業。

@@ -1,0 +1,36 @@
+# Analysis 評分量表 — 由 skills/analysis/eval_examples.md 判斷標準萃取
+skill: analysis
+pass_threshold: 0.7
+criteria:
+  - id: conclusion_first
+    description: "結論先行：有結論/建議標題段"
+    weight: 2
+    required: true
+    check:
+      type: headings_present
+      sections: ["結論"]
+  - id: options_complete
+    description: "選項完整：包含『不做/維持現狀』選項"
+    weight: 3
+    check:
+      type: present_any
+      patterns: ["維持現狀", "不做"]
+  - id: risk_assumptions
+    description: "明列高風險假設"
+    weight: 2
+    check:
+      type: headings_present
+      sections: ["高風險假設"]
+  - id: next_steps
+    description: "有可執行的下一步"
+    weight: 2
+    required: true
+    check:
+      type: present_any
+      patterns: ["下一步"]
+  - id: no_vague_recommendation
+    description: "無『不錯的選擇/你自己決定/歡迎進一步討論』模糊收尾"
+    weight: 1
+    check:
+      type: absent
+      patterns: ["不錯的選擇", "你自己決定", "歡迎進一步討論"]

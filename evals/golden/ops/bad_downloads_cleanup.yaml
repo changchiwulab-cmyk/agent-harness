@@ -1,0 +1,13 @@
+case_id: ops-bad-downloads-cleanup
+skill: ops
+expect: fail
+source: "skills/ops/eval_examples.md 壞的輸出範例"
+output: |
+  # 整理 Downloads
+
+  已完成整理！把所有檔案移到對應資料夾了。
+
+  移動了 47 個檔案：
+  - 圖片移到 images/
+  - 文件移到 documents/
+  - 壓縮檔移到 archives/

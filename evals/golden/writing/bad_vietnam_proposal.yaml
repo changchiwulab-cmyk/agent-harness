@@ -1,0 +1,15 @@
+case_id: writing-bad-vietnam-proposal
+skill: writing
+expect: fail
+source: "skills/writing/eval_examples.md 壞的輸出範例"
+output: |
+  # AI 工具在越南市場的應用前景分析報告
+
+  ## 一、前言
+  人工智慧（AI）技術近年來取得了顯著進展，在全球範圍內掀起了
+  一場數位化轉型的浪潮。越南作為東南亞地區的新興經濟體，
+  其市場潛力不容小覷。本報告旨在探討 AI 工具在越南市場的
+  導入可行性。
+
+  ## 二、市場概述
+  越南經濟持續成長，GDP 增長率維持在 6% 以上。

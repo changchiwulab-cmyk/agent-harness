@@ -1,0 +1,16 @@
+case_id: review-bad-vietnam-review
+skill: review
+expect: fail
+source: "skills/review/eval_examples.md 壞的輸出範例"
+output: |
+  # 審查報告
+
+  ## 評估
+  整體寫得不錯，內容豐富，結構清晰。建議可以再加強一些細節。
+
+  ## 問題
+  - 有些地方可以更具體
+  - 來源可以更多
+
+  ## 結論
+  通過。

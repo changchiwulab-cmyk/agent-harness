@@ -1,0 +1,23 @@
+case_id: review-good-vietnam-review
+skill: review
+expect: pass
+source: "skills/review/eval_examples.md 好的輸出範例"
+output: |
+  # 審查報告：vietnam-ai-tools-research.md
+
+  ## 總體評估
+  有條件通過 — 結構完整、結論有依據，但有 2 處事實待確認。
+
+  ## 通過項
+  - 四區塊分類清楚
+  - 結論先行
+
+  ## 必須修改
+  - 【已知事實第 3 點】「越南 AI 市場規模達 US$2B」— 來源為 2024 年報告。
+
+  ## 建議修改
+  - 【結論段】可加入一句話說明調查的限制。
+
+  ## Definition of Done 逐條確認
+  - [x] 涵蓋至少 5 個工具的市場數據 — 通過
+  - [ ] 推論與假設明確標記 — 部分通過

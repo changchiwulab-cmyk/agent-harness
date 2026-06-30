@@ -1,0 +1,36 @@
+# Writing 評分量表 — 由 skills/writing/eval_examples.md 判斷標準萃取
+skill: writing
+pass_threshold: 0.7
+criteria:
+  - id: conclusion_first
+    description: "結論先行：有建議標題段"
+    weight: 2
+    required: true
+    check:
+      type: headings_present
+      sections: ["建議"]
+  - id: has_recommendation
+    description: "有明確建議用語"
+    weight: 2
+    required: true
+    check:
+      type: present_any
+      patterns: ["建議"]
+  - id: no_translation_tone
+    description: "無翻譯腔/學術腔（不容小覷、旨在探討、數位化轉型的浪潮）"
+    weight: 2
+    check:
+      type: absent
+      patterns: ["不容小覷", "旨在探討", "數位化轉型的浪潮"]
+  - id: no_unrequested_preamble
+    description: "不自加未被要求的前言鋪陳"
+    weight: 1
+    check:
+      type: absent
+      patterns: ["前言"]
+  - id: has_next_steps
+    description: "有下一步"
+    weight: 1
+    check:
+      type: present_any
+      patterns: ["下一步"]
