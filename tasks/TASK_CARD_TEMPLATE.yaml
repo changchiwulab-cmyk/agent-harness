@@ -37,6 +37,13 @@ max_web_searches: 3            # web search 上限
 # === Skill 路由 ===
 skill_type: ""                 # research / writing / ops / review
 
+# === 子代理委派（選用，見 system/SUBAGENT_POLICY.md）===
+# 不需委派時整段省略 = 單代理執行（v2 預設）。僅用於 context 隔離的唯讀探索/檢索。
+# delegation:
+#   sub_scope: ""              # 委派給子代理的明確子範圍與停止條件
+#   return_format: ""          # 要求子代理回傳的格式（結論摘要 + 來源路徑）
+#   max_return_tokens: 2000    # 蒸餾回傳上限，避免污染主線 context
+
 # === 執行紀錄（由 agent 填寫）===
 checkpoints: []                # 每次 checkpoint 的 git commit hash + 描述
 actual_tool_calls: 0           # 實際工具呼叫次數

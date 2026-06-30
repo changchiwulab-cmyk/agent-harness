@@ -1,12 +1,16 @@
 # 路由規則 ROUTING_RULES
 
+> **單一真實來源**：路由關鍵字、token 預算、預設工具皆以 `skills/REGISTRY.yaml` 為準
+> （由 `scripts/validate_skill_registry.py` 驗證一致性）。下表為人類可讀的快照，
+> 若與 REGISTRY 不符，以 REGISTRY 為準。
+
 ## Skill 路由判斷
 
 根據任務性質路由到對應 skill：
 
 | 任務關鍵字 | Skill | 說明 |
 |-----------|-------|------|
-| 調查、研究、比較、事實查核 | research | 資料蒐集與分析 |
+| 調查、研究、比較、事實查核、盤點 | research | 資料蒐集與分析 |
 | 決策、評估、Go/No-Go、方案比較、可行性 | analysis | 決策支援與策略分析 |
 | 撰寫、草稿、提案、報告、文案、SOP | writing | 內容產出 |
 | 整理、清洗、轉換、排程、歸檔、組織 | ops | 營運操作 |

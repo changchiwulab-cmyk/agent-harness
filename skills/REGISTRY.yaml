@@ -1,0 +1,48 @@
+# Skill 註冊表 — 單一真實來源（SSOT）
+#
+# 彙整原本散落在 ROUTING_RULES.md（路由關鍵字）與 COST_POLICY.md（任務級預算/校準係數）
+# 的 skill 後設資料。新增/調整 skill 時改這裡一處。
+# 驗證：scripts/validate_skill_registry.py 確保 REGISTRY 與 skills/ 目錄雙向一致（CI --check）。
+
+version: 1
+
+skills:
+  research:
+    description: "資料調查、產業分析、競品研究、技術評估、事實查核（回答『事實是什麼』）"
+    path: "skills/research/"
+    trigger_keywords: ["調查", "研究", "比較", "事實查核", "盤點"]
+    token_budget: "32K"
+    calibration_factor: 1.43
+    default_allowed_tools: ["file_read", "file_search", "web_search"]
+
+  analysis:
+    description: "決策支援與策略分析（回答『該選什麼』）"
+    path: "skills/analysis/"
+    trigger_keywords: ["決策", "評估", "Go/No-Go", "方案比較", "可行性"]
+    token_budget: "20K"
+    calibration_factor: null   # 尚無實測，待累積
+    default_allowed_tools: ["file_read", "file_search"]
+
+  writing:
+    description: "提案、報告、文案、SOP 等內容產出"
+    path: "skills/writing/"
+    trigger_keywords: ["撰寫", "草稿", "提案", "報告", "文案", "SOP"]
+    token_budget: "30K"
+    calibration_factor: 2.00
+    default_allowed_tools: ["file_read", "file_search"]
+
+  ops:
+    description: "整理、清洗、轉換、排程、歸檔、組織等營運操作"
+    path: "skills/ops/"
+    trigger_keywords: ["整理", "清洗", "轉換", "排程", "歸檔", "組織"]
+    token_budget: "19K"
+    calibration_factor: 1.56
+    default_allowed_tools: ["file_read", "file_search", "file_write"]
+
+  review:
+    description: "品質審查、校對、邏輯檢查、風險評估、決策驗證"
+    path: "skills/review/"
+    trigger_keywords: ["審查", "校對", "檢查", "驗證", "回測"]
+    token_budget: "23K"
+    calibration_factor: 1.25
+    default_allowed_tools: ["file_read", "file_search"]
