@@ -33,6 +33,27 @@
 
 ---
 
+## 進場檢索（建卡前注入相關記憶）
+
+不論走 Fast-path 或 Intake，**草擬 Task Card 前**先做一次記憶檢索，把過去的經驗帶進來——
+這就是 2026「context playbook」自我改進迴圈在本框架的落點（見 `system/MEMORY_POLICY.md`）。
+
+```
+判斷出 skill_type + 抓 goal 關鍵字
+    ↓
+python3 scripts/memory_retrieve.py --skill <type> --keywords "關鍵字1,關鍵字2"
+    ↓
+撈出相關 playbook（該 skill 可重用啟發）+ episodes（類似任務怎麼做、踩過什麼坑）
+    ↓
+把摘要注入 context，再草擬 Task Card（避免重蹈覆轍、沿用已驗證做法）
+```
+
+- 屬純讀取（`read_memory_index`，allow-tier），免人工確認。
+- 無相關條目時略過，不阻塞建卡。
+- 索引由 `scripts/build_memory_index.py` 維護；寫入新 episode/playbook 是 RETRO 階段的事（ask-tier）。
+
+---
+
 ## Fallback：Intake 模式（需求不明時啟動）
 
 當 fast-path 三條件**任一不符**，啟動 Intake 模式。

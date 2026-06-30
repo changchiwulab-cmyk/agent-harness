@@ -1,0 +1,18 @@
+# Episode 模板（情節記憶）
+# 複製到 memory/episodes/，檔名格式：YYYYMMDD-E###_簡述.yaml
+# 寫入門檻見 system/MEMORY_POLICY.md：僅 failed/partial、risk≥high、或有可複用教訓時才寫。
+# 寫入需人工確認（ask）。寫完跑 scripts/build_memory_index.py 更新索引。
+
+episode_id: ""          # 格式：YYYYMMDD-E001
+date: ""                # YYYY-MM-DD
+task_id: ""             # 對應的 Task Card ID（如有）
+skill_type: ""          # research / analysis / writing / ops / review
+goal: ""                # 一句話：這次任務要做什麼
+outcome: ""             # success / partial / failed
+tags: []                # 檢索用標籤，例如 ["web-search", "rate-limit"]
+
+what_worked: []         # 哪些做法有效
+what_failed: []         # 哪裡卡住 / 失敗
+lessons: []             # 可複用的教訓（最重要；常會晉升成 playbook 條目）
+links: []               # 相關產出/log 路徑
+tokens: ""              # 約略 token 消耗（如有）

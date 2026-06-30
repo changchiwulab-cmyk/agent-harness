@@ -12,6 +12,7 @@ permissions:
     - git_commit_checkpoint    # git commit（僅 checkpoint 用途）
     - create_output_files      # 在 outputs/ 建立新檔案
     - read_memory              # 讀取 memory/ 下的內容
+    - read_memory_index        # 進場檢索 episodes/playbook 索引（純讀取，見 MEMORY_POLICY.md）
     - create_task_card         # 建立新的 Task Card（已驗證：8 筆歷史任務全部立即 approve → 升為 allow）
 
   # === 需要人工確認 ===

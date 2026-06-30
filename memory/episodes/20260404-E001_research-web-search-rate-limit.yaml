@@ -1,0 +1,19 @@
+episode_id: "20260404-E001"
+date: "2026-04-04"
+task_id: "20260404-S01"
+skill_type: "research"
+goal: "研究任務中連續呼叫 web search 觸發外部服務 rate limit"
+outcome: "partial"
+tags: ["web-search", "rate-limit", "external-service"]
+
+what_worked:
+  - "改以既有搜尋結果 + 自身知識補足缺口，不立即重試，任務仍產出可用筆記"
+what_failed:
+  - "短時間 3/3 連續呼叫 web search，第 3 輪觸發 rate limit"
+lessons:
+  - "web search 正常用至多 2/3 輪，保留 1 輪緩衝供遇阻補救"
+  - "觸發 rate limit 時不要立即重試，先用已有資料補洞"
+links:
+  - "logs/errors/2026-04-04_20260404-S01_error.md"
+  - "outputs/drafts/retro-2026-04-15.md"
+tokens: "~21K"

@@ -1,0 +1,20 @@
+episode_id: "20260529-E002"
+date: "2026-05-29"
+task_id: "20260529-003"
+skill_type: "review"
+goal: "R5 失敗演練：驗證『連續失敗 3 次就停下』的硬規則與 error log 路徑"
+outcome: "failed"
+tags: ["failure-drill", "stop-condition", "error-log", "recovery"]
+
+what_worked:
+  - "達 3 次連續失敗即停止，未自行硬修；error log 路徑與 schema 如預期可用"
+  - "RECOVERY_RUNBOOK 場景 A 還原 5ms、byte-identical"
+what_failed:
+  - "（刻意觸發）連續失敗以演練停止條件"
+lessons:
+  - "停止條件要被當成正常控制流，不是例外；停下並寫 error log 比硬修更安全"
+  - "失敗演練應定期做，確保 error/recovery 路徑沒有 bit-rot"
+links:
+  - "logs/errors/2026-05-29_20260529-003_error.md"
+  - "logs/runs/RUN-20260529-003.yaml"
+tokens: "not_recorded"

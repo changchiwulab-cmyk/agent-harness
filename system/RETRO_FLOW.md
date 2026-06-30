@@ -32,6 +32,7 @@
 | 權限 | 哪些 ask 每次都被 approve？ | PERMISSIONS.yaml（畢業候選） |
 | 品質 | definition_of_done 夠具體嗎？ | TASK_CARD_TEMPLATE.yaml |
 | 決策回看 | 有 decision 觸發 revisit 嗎？（跑 `scripts/check_decision_revisit.rb`） | 對應 Decision Log 的 status |
+| 記憶沉澱 | 這批 run 有沒有可複用的教訓/踩坑？ | `memory/episodes/`、`memory/playbook/`（見步驟 4b） |
 
 ### 3. 輸出
 
@@ -47,6 +48,17 @@ Retro 報告產出後：
 - 使用者確認哪些建議要採納
 - 修改對應的系統檔案（屬於 ask 權限）
 - 記錄到 audit log
+
+### 4b. 記憶沉澱（閉合學習迴圈）
+
+Retro 是把「這批 run 的教訓」沉澱成可檢索記憶的時機（見 `system/MEMORY_POLICY.md`）：
+
+- **寫 episode**：對 `failed/partial`、`risk≥high`、或有可複用教訓的任務，用
+  `memory/episodes/EPISODE_TEMPLATE.yaml` 寫一筆情節摘要（happy-path 小任務略過，呼應 D006）。
+- **寫 playbook**：當發現「跨任務反覆出現的有效做法或踩坑」，萃取成一條
+  `memory/playbook/<skill>.md` 條目（格式見 `PLAYBOOK_ENTRY_TEMPLATE.md`）。
+- 兩者皆 **ask 權限**：先提議內容與位置，等人工確認後才寫入。
+- 寫完跑 `python3 scripts/build_memory_index.py` 更新索引，下次任務進場即可檢索到。
 
 ### 5. 晉升至 reports/
 
