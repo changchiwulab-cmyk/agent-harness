@@ -137,22 +137,22 @@
     "task_risk": {
       "high": 1,
       "low": 30,
-      "medium": 14
+      "medium": 15
     },
     "task_skill": {
       "analysis": 4,
       "ops": 26,
-      "research": 5,
+      "research": 6,
       "review": 6,
       "writing": 4
     },
     "task_status": {
       "done": 22,
-      "in_progress": 2,
+      "in_progress": 3,
       "pending": 2,
       "review": 19
     },
-    "task_total": 45
+    "task_total": 46
   },
   "tasks": [
     {
@@ -604,6 +604,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-30",
+      "goal": "完整檢視 Agent Harness v2，核對前三輪架構補強（含 R1–R10）實際落地狀態，產出第四輪分析與研究優化計畫表（硬化優先、戰略殿後）",
+      "path": "tasks/2026-06-30_round4-analysis-and-optimization-plan.yaml",
+      "risk_level": "medium",
+      "skill_type": "research",
+      "status": "in_progress",
+      "task_id": "20260630-001"
     }
   ]
 }
