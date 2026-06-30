@@ -1,0 +1,49 @@
+task_id: "20260630-001"
+date: "2026-06-30"
+status: "done"
+
+# === 任務定義 ===
+goal: "補齊記憶層 v2：情節記憶 + 程序記憶(playbook) + 進場檢索，閉合學習迴圈"
+context: "見 Decision 20260630-D008。原 memory/ 只有人寫決策日誌、靠路徑手動載入；無可累積、可檢索的經驗/手冊。"
+input_data:
+  - "memory/README.md"
+  - "system/INTAKE_FLOW.md"
+  - "system/RETRO_FLOW.md"
+
+# === 完成標準（最重要的欄位）===
+definition_of_done:
+  - "memory/episodes/ 與 memory/playbook/ 結構建立，含 template 與 INDEX.yaml"
+  - "system/MEMORY_POLICY.md 定義四層記憶映射與 ask/allow 權限分界"
+  - "INTAKE_FLOW 新增進場檢索步驟；RETRO_FLOW 新增寫 playbook/episode 步驟"
+  - "scripts/memory_retrieve.py 與 build_memory_index.py 可執行，含 --check"
+  - "scripts/test_memory_retrieve.py 通過"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "system/"
+  filename: "MEMORY_POLICY.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "file_write"
+  - "git_commit"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: "記憶層 v2 落地；寫入維持 ask-tier、檢索 allow-tier。經 ExitPlanMode 計畫核准（ask-tier 人工確認）。"
+completion_time: "2026-06-30"
+audit_log_ref: "logs/AUDIT_LOG.md"

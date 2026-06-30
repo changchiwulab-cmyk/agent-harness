@@ -1,0 +1,48 @@
+task_id: "20260630-002"
+date: "2026-06-30"
+status: "done"
+
+# === 任務定義 ===
+goal: "建立輸出品質 eval harness：黃金任務 + 評分量表 + 啟發式評分器，自動化 gate 完成驗證"
+context: "見 Decision 20260630-D008。skills/*/eval_examples.md 只是 in-context 範例；CI 只驗結構不驗品質；GATE 第 3 層 completion_check 全靠人工。"
+input_data:
+  - "skills/research/eval_examples.md"
+  - "system/GATE_POLICY.yaml"
+
+# === 完成標準（最重要的欄位）===
+definition_of_done:
+  - "evals/ 結構建立：README + rubrics/<skill>.yaml + golden/<skill>/*.yaml"
+  - "5 個 skill 各有 rubric，準則由 eval_examples + SKILL.md 輸出格式萃取"
+  - "scripts/run_evals.py 提供啟發式（確定性）評分，支援 --check"
+  - "scripts/test_run_evals.py 通過"
+  - "至少由既有 good/bad 範例種出 research skill 的黃金集"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: "evals/"
+  filename: "README.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "file_write"
+  - "git_commit"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: "eval harness 落地；啟發式評分進 CI、LLM-as-judge 列 on-demand。經 ExitPlanMode 計畫核准。"
+completion_time: "2026-06-30"
+audit_log_ref: "logs/AUDIT_LOG.md"

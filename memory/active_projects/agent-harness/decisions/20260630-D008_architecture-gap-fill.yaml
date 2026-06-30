@@ -1,0 +1,40 @@
+decision_id: "20260630-D008"
+date: "2026-06-30"
+project: "agent-harness"
+
+# --- 決策內容 ---
+context: >
+  完整檢視專案後，對照 2026 公開 AI 架構發展（分層記憶、context engineering、
+  eval harness、可觀測性、guardrails）盤點缺口。框架治理層已成熟，但缺三項
+  「原生 Claude Code 不提供」的差異化能力：可累積/可檢索的記憶、輸出品質評測、
+  內容安全護欄。需決定補哪些、用什麼形態補，且不違反既有設計哲學。
+options_considered:
+  - option: "全量採用 2026 重型架構（向量記憶庫 + OTel per-run tracing + 多代理 orchestration）"
+    pros: "對標業界 SOTA；能力上限高"
+    cons: "違反『可控 > 能力』；引入外部依賴與不可稽核性；OTel 全量 trace 違反 D006；多代理違反 D003 延後決策"
+  - option: "只補規格文件（spec-only），不寫 executable"
+    pros: "最低風險、最快"
+    cons: "與既有『規格 + 薄執行護欄 + CI 測試』模式不一致；無法在 CI 攔截回歸"
+  - option: "沿用既有模式，補三核心缺口 + 兩結構項（規格 + schema + 薄 script + CI 測試）"
+    pros: "與專案 DNA 一致；可稽核、可 diff、零外部依賴；CI 可驗；增量小"
+    cons: "記憶檢索用關鍵字而非語意，召回率不如向量庫"
+decision: >
+  採第三案。補：(1) 記憶層 v2 — memory/episodes/(情節) + memory/playbook/(程序)
+  + 進場檢索；(2) 輸出品質 eval harness（evals/ + run_evals.py 啟發式評分）；
+  (3) 內容安全護欄（SAFETY_POLICY.md + output_scan.py）。結構加分：
+  (4) 子代理委派契約 SUBAGENT_POLICY.md（spec-only，用原生子代理）；
+  (5) skills/REGISTRY.yaml 單一真實來源 + validate_skill_registry.py。
+reasoning: >
+  三核心缺口都落在 NATIVE_OVERLAP 的『原生不提供』區，屬真差異化價值。
+  全部以既有模式落地（規格 + schema + 薄 script + CI 測試），維持可控與可稽核。
+  記憶寫入維持 ask-tier、檢索為 allow-tier，不破壞『不自動寫記憶』。
+  明確排除：向量庫（違反可稽核/簡單）、OTel 全量 trace（違反 D006）、
+  v3 specialists / v4 orchestration（既有 D003 延後，本案不提前觸發）。
+risk: >
+  記憶檢索召回率受限於關鍵字/標籤品質；eval 啟發式評分只能驗結構性品質，
+  深層品質仍需 LLM-as-judge（列為 on-demand，不進 CI）。屬可接受的 v2 取捨。
+revisit_trigger: >
+  記憶條目累積 > 30 筆且關鍵字召回明顯不足時，評估是否引入語意檢索；
+  或 Claude Code 原生推出對應能力時（依 NATIVE_OVERLAP 季度重評）。
+related_task: "20260630-001"
+status: "active"

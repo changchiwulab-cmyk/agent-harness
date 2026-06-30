@@ -1,0 +1,48 @@
+task_id: "20260630-004"
+date: "2026-06-30"
+status: "done"
+
+# === 任務定義 ===
+goal: "結構加分：子代理委派契約(spec) + Skill 註冊表單一真實來源 + 一致性驗證"
+context: "見 Decision 20260630-D008。子代理委派僅靠路徑串接、無 context 隔離契約；skill 路由與 token 預算散落 ROUTING_RULES/COST_POLICY，無單一來源。"
+input_data:
+  - "system/ROUTING_RULES.md"
+  - "system/COST_POLICY.md"
+  - "tasks/TASK_CARD_TEMPLATE.yaml"
+
+# === 完成標準（最重要的欄位）===
+definition_of_done:
+  - "system/SUBAGENT_POLICY.md 定義唯讀委派契約（用原生子代理、回傳蒸餾摘要）"
+  - "TASK_CARD_TEMPLATE.yaml 新增可選 delegation 區塊"
+  - "skills/REGISTRY.yaml 彙整 5 skill 的 description/關鍵字/token 預算/預設工具/路徑"
+  - "scripts/validate_skill_registry.py 確保 REGISTRY 與 skills/ 雙向一致並通過測試"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: "skills/"
+  filename: "REGISTRY.yaml"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "file_write"
+  - "git_commit"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: "子代理契約(spec-only) + skill 註冊表落地；非 v3 specialists，與 D003 不衝突。經 ExitPlanMode 計畫核准。"
+completion_time: "2026-06-30"
+audit_log_ref: "logs/AUDIT_LOG.md"

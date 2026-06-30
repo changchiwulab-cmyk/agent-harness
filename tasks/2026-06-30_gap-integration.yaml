@@ -1,0 +1,47 @@
+task_id: "20260630-005"
+date: "2026-06-30"
+status: "done"
+
+# === 任務定義 ===
+goal: "整合：新 script 接入 CI、回填 audit log、重生 frontend manifest、端到端驗證"
+context: "見 Decision 20260630-D008。Gap 1-5 的新 script 與資料需接入既有 CI/觀測管線並驗證不回歸。"
+input_data:
+  - ".github/workflows/spec-consistency.yml"
+  - "scripts/generate_frontend_manifest.py"
+
+# === 完成標準（最重要的欄位）===
+definition_of_done:
+  - "新 script 測試與 --check 接入 .github/workflows/spec-consistency.yml"
+  - "frontend/data.json 重生且通過 drift check"
+  - "logs/AUDIT_LOG.md 經 generate_audit_log.py 回填新任務"
+  - "check_spec_consistency.rb / check_context_budget.rb / 既有測試全綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: "outputs/drafts/"
+  filename: "2026-06-30_gap-fill-verification.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "shell_exec"
+  - "git_commit"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: "新能力接入 CI 與觀測管線並端到端驗證。經 ExitPlanMode 計畫核准。"
+completion_time: "2026-06-30"
+audit_log_ref: "logs/AUDIT_LOG.md"

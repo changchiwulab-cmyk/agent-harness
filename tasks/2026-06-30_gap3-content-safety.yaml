@@ -1,0 +1,47 @@
+task_id: "20260630-003"
+date: "2026-06-30"
+status: "done"
+
+# === 任務定義 ===
+goal: "建立內容安全護欄：不可信輸入(注入防護) + 輸出機密/個資掃描"
+context: "見 Decision 20260630-D008。permissions_guard.py 只有 Bash deny-list；框架吃 web/檔案內容、產對外草稿，但無注入防護與輸出掃描。"
+input_data:
+  - "scripts/permissions_guard.py"
+  - "system/FAILURE_TAXONOMY.yaml"
+
+# === 完成標準（最重要的欄位）===
+definition_of_done:
+  - "system/SAFETY_POLICY.md 定義不可信輸入處理與輸出機密/個資掃描規則"
+  - "scripts/output_scan.py 可掃描指定檔，命中機密/個資則 exit≠0"
+  - "scripts/test_output_scan.py 通過（含正例與負例）"
+  - "GATE_POLICY risk_check 引用 output_scan；GLOBAL_RULES 加一行指標（守 3K 預算）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "system/"
+  filename: "SAFETY_POLICY.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "file_write"
+  - "git_commit"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: "內容安全護欄落地；沿用 permissions_guard 的 deny-pattern 風格。經 ExitPlanMode 計畫核准。"
+completion_time: "2026-06-30"
+audit_log_ref: "logs/AUDIT_LOG.md"
