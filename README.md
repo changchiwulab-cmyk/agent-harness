@@ -51,6 +51,7 @@ agent-harness/
 │   ├── APPROVAL_POLICY.yaml        ← 批准流程規則（v2 新增）
 │   ├── FAILURE_TAXONOMY.yaml       ← 失敗模式分類獨立檔（v2 新增；G-A 補 SEC-05/06 間接注入）
 │   ├── INPUT_GUARDRAILS.md         ← 輸入側防護：不受信任內容當資料不當指令（G-A 新增）
+│   ├── CONTEXT_ENGINEERING.md      ← Context 工程紀律：組裝順序/JIT/scratchpad（G-C 新增）
 │   └── EXECUTION_LOG_SCHEMA.yaml   ← 執行紀錄結構定義（v2 新增）
 ├── tasks/
 │   ├── TASK_CARD_TEMPLATE.yaml
