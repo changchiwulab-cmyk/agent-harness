@@ -46,5 +46,6 @@ gates:
       - risk_level 與執行中實際動作的風險等級一致
       - high / critical 等級的輸出已存放在 outputs/drafts/
       - 對外動作（如有）已轉為草稿等待人工確認
-    on_fail: "輸出移至 outputs/drafts/，等待人工審閱後才可發布"
+      - 草稿晉升 reports/ 或對外送出前通過機密/個資掃描（python3 scripts/output_scan.py <檔案>；見 system/SAFETY_POLICY.md）
+    on_fail: "輸出移至 outputs/drafts/，等待人工審閱後才可發布；output_scan 命中則先移除機密再晉升"
     rollback: "所有產出鎖定在 drafts/；Audit Log 標記 risk_escalated: true"
