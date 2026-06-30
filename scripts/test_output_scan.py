@@ -28,6 +28,18 @@ class TestSecretDetection(unittest.TestCase):
         self.assertEqual(osn.scan_text("aws_key = AKIAIOSFODNN7EXAMPLE"), [])
         self.assertEqual(osn.scan_text('api_key = "your_api_key_here_xxxx"'), [])
 
+    def test_hyphenated_openai_project_key_is_flagged(self):
+        # Codex review: current sk-proj-/sk-svcacct- keys contain hyphens and
+        # were missed by the legacy sk-<alnum> rule.
+        s = "OPENAI_API_KEY=sk-proj-" + "a" * 40
+        rules = {f.rule_id for f in osn.scan_text(s)}
+        self.assertIn("openai_key", rules)
+
+    def test_word_on_line_does_not_suppress_real_secret(self):
+        # Codex review: 'tested token: ghp_...' must NOT be suppressed just
+        # because the line mentions "test" — only the matched value is checked.
+        self.assertTrue(osn.scan_text("tested token: ghp_" + "a" * 36))
+
     def test_luhn_filters_invalid_cards(self):
         self.assertTrue(osn.scan_text("card 4111 1111 1111 1111"))   # valid Luhn
         self.assertEqual(osn.scan_text("card 4111 1111 1111 1112"), [])  # invalid Luhn

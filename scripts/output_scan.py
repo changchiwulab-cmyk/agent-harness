@@ -28,10 +28,14 @@ DEFAULT_PATHS = ("outputs/drafts", "outputs/reports")
 # Lines containing one of these markers are skipped (intentional examples/fixtures).
 ALLOWLIST_MARKERS = ("scan-ignore", "pragma: allowlist secret")
 
-# Matches that look like obvious placeholders are not real secrets.
+# Matches whose *value* looks like an obvious placeholder are not real secrets.
+# Kept deliberately specific: broad words like "test" are excluded because they
+# would suppress real secrets sitting on a line that merely mentions them (e.g.
+# a run note "tested token: ghp_..."). For intentional examples, use a
+# [scan-ignore] marker on the line instead.
 PLACEHOLDER_HINTS = (
     "example", "redacted", "placeholder", "dummy", "fake", "changeme",
-    "your_", "your-", "xxxx", "<", ">", "...", "abc123", "test",
+    "your_", "your-", "xxxx", "<", ">", "...", "abc123",
 )
 
 
@@ -57,12 +61,14 @@ SECRET_RULES: tuple[SecretRule, ...] = (
                "Slack token"),
     SecretRule("anthropic_key", re.compile(r"\bsk-ant-[A-Za-z0-9_\-]{20,}\b"),
                "Anthropic API key"),
-    SecretRule("openai_key", re.compile(r"\bsk-[A-Za-z0-9]{20,}\b"),
-               "OpenAI-style secret key"),
+    SecretRule("openai_key", re.compile(r"\bsk-[A-Za-z0-9][A-Za-z0-9_-]{19,}\b"),
+               "OpenAI-style secret key (incl. hyphenated project keys)"),
     SecretRule("bearer_token", re.compile(r"\bBearer\s+[A-Za-z0-9._\-]{20,}\b"),
                "bearer token"),
+    # No leading \b: catches keywords embedded after a word char too, e.g.
+    # OPENAI_API_KEY=... (the trailing \b still guards against 'secretary=').
     SecretRule("generic_secret", re.compile(
-        r"(?i)\b(?:api[_-]?key|secret|token|passwd|password|access[_-]?key)\b"
+        r"(?i)(?:api[_-]?key|secret|token|passwd|password|access[_-]?key)\b"
         r"\s*[:=]\s*['\"]?(?P<val>[A-Za-z0-9/+_\-]{16,})"),
         "assigned secret/credential"),
     SecretRule("tw_national_id", re.compile(r"\b[A-Z][12]\d{8}\b"),
@@ -104,8 +110,10 @@ def luhn_valid(digits: str) -> bool:
     return total % 10 == 0
 
 
-def _looks_placeholder(text: str, line: str) -> bool:
-    low = (text + " " + line).lower()
+def _looks_placeholder(value: str) -> bool:
+    # Only the matched value is inspected — never the surrounding line — so an
+    # unrelated word elsewhere on the line cannot suppress a real secret.
+    low = value.lower()
     return any(h in low for h in PLACEHOLDER_HINTS)
 
 
@@ -126,7 +134,7 @@ def scan_text(text: str, path: str = "<text>") -> list[Finding]:
                 hit = m.group("val") if ("val" in (m.groupdict() or {})) else m.group(0)
                 if rule.luhn and not luhn_valid(hit):
                     continue
-                if _looks_placeholder(hit, line):
+                if _looks_placeholder(hit):
                     continue
                 findings.append(Finding(
                     path=path, line=lineno, rule_id=rule.rule_id,
