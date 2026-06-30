@@ -1,4 +1,4 @@
-# Agent Harness v2.0 — 一人公司 Decision Control Plane
+# Agent Harness v2.1 — 一人公司 Decision Control Plane
 
 ## 這是什麼
 
@@ -32,6 +32,30 @@
 ├── 14. Failure Taxonomy   system/FAILURE_TAXONOMY.yaml — 失敗分類學（v2 新增）
 ├── 15. Execution Log      system/EXECUTION_LOG_SCHEMA.yaml — 執行紀錄 schema（v2 新增）
 └── 16. Audit Log          logs/AUDIT_LOG.md — 稽核紀錄
+```
+
+### 增補（v2.1 架構補齊，對標 2026 公開架構）
+
+在不破壞「可控 > 能力」與最小化原生重疊的前提下，補三項原生不提供的差異化能力 + 兩項結構：
+
+```
+記憶（Memory，跨 run 可累積/可檢索）
+├── system/MEMORY_POLICY.md   — 四層記憶映射（working/episodic/procedural/decision）
+├── memory/episodes/          — 情節記憶（單次執行摘要 + 自動索引）
+├── memory/playbook/          — 程序記憶（每 skill 可重用啟發 + 自動索引）
+└── 進場檢索 memory_retrieve.py / build_memory_index.py（檢索 allow、寫入 ask）
+
+評測（Evals，輸出品質回歸防護）
+├── evals/rubrics/<skill>.yaml + golden/<skill>/  — 量表 + 黃金案例
+└── run_evals.py（啟發式評分進 CI；LLM-as-judge 列 on-demand）
+
+安全（Safety guardrails）
+├── system/SAFETY_POLICY.md   — 不可信輸入注入防護 + 輸出安全
+└── output_scan.py            — 機密/個資掃描（晉升/外發前把關）
+
+結構
+├── skills/REGISTRY.yaml      — skill 後設資料單一真實來源 + validate_skill_registry.py
+└── system/SUBAGENT_POLICY.md — 原生子代理唯讀委派契約（非 v3 specialists）
 ```
 
 ## 資料夾結構
@@ -165,7 +189,8 @@ python system/validate_task_card.py tasks/your-task.yaml
 |------|------|-------------|
 | **v1** | 單核心代理 + Task Card + Checkpoint + Verifier + Audit | — |
 | **v1.5** | + Gate Policy + Operating Context + Decision Log + Eval Examples + Weekly Review | 馬鞍工程原則導入：驗證集中化、系統自知、決策可追溯 |
-| **v2（現在）** | + Approval Policy + Failure Taxonomy + Execution Log Schema + Rollback Path + Ops Eval | 馬鞍工程落地：批准流程獨立化、失敗模式可引用、執行紀錄結構化 |
+| **v2** | + Approval Policy + Failure Taxonomy + Execution Log Schema + Rollback Path + Ops Eval | 馬鞍工程落地：批准流程獨立化、失敗模式可引用、執行紀錄結構化 |
+| **v2.1（現在）** | + Memory Layer（episodic/procedural + 進場檢索）+ Eval Harness + Safety Guardrails + Skill Registry + Subagent Policy | 對標 2026 公開架構：補原生不提供的可檢索記憶、輸出品質回歸防護、內容安全（見 Decision D008）|
 | **v3** | 拆分 bounded specialists（research/sales/content） | 單一代理的 context 經常超限；任務類型間的規則衝突頻繁 |
 | **v4** | Graph orchestration + 進階 checkpoint persistence | 任務間依賴複雜度超過線性拔分能處理的範圍 |
 

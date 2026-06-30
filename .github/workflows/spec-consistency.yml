@@ -57,6 +57,30 @@ jobs:
       - name: Audit log generator tests
         run: python3 scripts/test_generate_audit_log.py
 
+      - name: Memory layer tests
+        run: python3 scripts/test_memory_retrieve.py
+
+      - name: Memory index drift check
+        run: python3 scripts/build_memory_index.py --check
+
+      - name: Eval harness tests
+        run: python3 scripts/test_run_evals.py
+
+      - name: Eval golden check
+        run: python3 scripts/run_evals.py --check
+
+      - name: Output safety scanner tests
+        run: python3 scripts/test_output_scan.py
+
+      - name: Output safety scan (outputs/)
+        run: python3 scripts/output_scan.py outputs/
+
+      - name: Skill registry tests
+        run: python3 scripts/test_validate_skill_registry.py
+
+      - name: Skill registry consistency check
+        run: python3 scripts/validate_skill_registry.py --check
+
       - name: E2E dummy task smoke test
         run: python3 tests/e2e/test_dummy_task_smoke.py
 

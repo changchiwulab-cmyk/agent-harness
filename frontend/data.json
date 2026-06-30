@@ -76,6 +76,17 @@
       "related_task": "20260509-N06",
       "revisit_trigger": "v0.2.0 plugin 達到 agent-harness 全部 system/ 規格 round-trip 後評估轉 public；或下個 session 試行 bootstrap 後發現非預期問題",
       "status": "active"
+    },
+    {
+      "date": "2026-06-30",
+      "decision": "採第三案。補：(1) 記憶層 v2 — memory/episodes/(情節) + memory/playbook/(程序) + 進場檢索；(2) 輸出品質 eval harness（evals/ + run_evals.py 啟發式評分）； (3) 內容安全護欄（SAFETY_POLICY.md + output_scan.py）。結構加分： (4) 子代理委派契約 SUBAGENT_POLICY.md（spec-only，用原生子代理）； (5) skills/REGISTRY.yaml 單一真實來源 + validate_skill_registry.py。\n",
+      "decision_id": "20260630-D008",
+      "path": "memory/active_projects/agent-harness/decisions/20260630-D008_architecture-gap-fill.yaml",
+      "project": "agent-harness",
+      "reasoning": "三核心缺口都落在 NATIVE_OVERLAP 的『原生不提供』區，屬真差異化價值。 全部以既有模式落地（規格 + schema + 薄 script + CI 測試），維持可控與可稽核。 記憶寫入維持 ask-tier、檢索為 allow-tier，不破壞『不自動寫記憶』。 明確排除：向量庫（違反可稽核/簡單）、OTel 全量 trace（違反 D006）、 v3 specialists / v4 orchestration（既有 D003 延後，本案不提前觸發）。\n",
+      "related_task": "20260630-001",
+      "revisit_trigger": "記憶條目累積 > 30 筆且關鍵字召回明顯不足時，評估是否引入語意檢索； 或 Claude Code 原生推出對應能力時（依 NATIVE_OVERLAP 季度重評）。\n",
+      "status": "active"
     }
   ],
   "logs": [
@@ -137,22 +148,22 @@
     "task_risk": {
       "high": 1,
       "low": 30,
-      "medium": 14
+      "medium": 19
     },
     "task_skill": {
       "analysis": 4,
-      "ops": 26,
+      "ops": 31,
       "research": 5,
       "review": 6,
       "writing": 4
     },
     "task_status": {
-      "done": 22,
+      "done": 27,
       "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 45
+    "task_total": 50
   },
   "tasks": [
     {
@@ -604,6 +615,56 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-30",
+      "goal": "整合：新 script 接入 CI、回填 audit log、重生 frontend manifest、端到端驗證",
+      "path": "tasks/2026-06-30_gap-integration.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260630-005"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-30",
+      "goal": "補齊記憶層 v2：情節記憶 + 程序記憶(playbook) + 進場檢索，閉合學習迴圈",
+      "path": "tasks/2026-06-30_gap1-memory-layer-v2.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260630-001"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-30",
+      "goal": "建立輸出品質 eval harness：黃金任務 + 評分量表 + 啟發式評分器，自動化 gate 完成驗證",
+      "path": "tasks/2026-06-30_gap2-eval-harness.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260630-002"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-30",
+      "goal": "建立內容安全護欄：不可信輸入(注入防護) + 輸出機密/個資掃描",
+      "path": "tasks/2026-06-30_gap3-content-safety.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260630-003"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-30",
+      "goal": "結構加分：子代理委派契約(spec) + Skill 註冊表單一真實來源 + 一致性驗證",
+      "path": "tasks/2026-06-30_gap45-subagent-registry.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260630-004"
     }
   ]
 }

@@ -33,6 +33,111 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260630-005"
+  date: "2026-06-30"
+  skill_type: "ops"
+  goal: "整合：新 script 接入 CI、回填 audit log、重生 frontend manifest、端到端驗證"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "shell_exec"
+      call_count: 12
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/2026-06-30_gap-fill-verification.md"
+  error_summary: ""
+  estimated_tokens: "~18K"
+  notes: "9 個新測試套件 + 4 個 --check 接入 CI；data.json 重生（50 tasks/8 decisions）。AUDIT_LOG 維持手寫格式（generate_audit_log.py 對未遷移檔會重複，故手動補登）。"
+```
+
+```yaml
+- task_id: "20260630-004"
+  date: "2026-06-30"
+  skill_type: "ops"
+  goal: "結構加分：子代理委派契約(spec) + Skill 註冊表單一真實來源 + 一致性驗證"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "file_write"
+      call_count: 6
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "skills/REGISTRY.yaml"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "SUBAGENT_POLICY（唯讀委派、非 v3）+ REGISTRY.yaml SSOT + validate_skill_registry（5 tests）。"
+```
+
+```yaml
+- task_id: "20260630-003"
+  date: "2026-06-30"
+  skill_type: "ops"
+  goal: "建立內容安全護欄：不可信輸入(注入防護) + 輸出機密/個資掃描"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 5
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "system/SAFETY_POLICY.md"
+  error_summary: ""
+  estimated_tokens: "~16K"
+  notes: "output_scan.py 偵測金鑰/身分證/信用卡(Luhn)；既有 outputs/ 掃描零誤判（8 tests）。"
+```
+
+```yaml
+- task_id: "20260630-002"
+  date: "2026-06-30"
+  skill_type: "ops"
+  goal: "建立輸出品質 eval harness：黃金任務 + 評分量表 + 啟發式評分器"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 5
+    - tool_name: "file_write"
+      call_count: 18
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "evals/README.md"
+  error_summary: ""
+  estimated_tokens: "~22K"
+  notes: "5 rubric + 10 golden（good/bad 各一）；run_evals --check 0 mismatch（9 tests）。"
+```
+
+```yaml
+- task_id: "20260630-001"
+  date: "2026-06-30"
+  skill_type: "ops"
+  goal: "補齊記憶層 v2：情節記憶 + 程序記憶(playbook) + 進場檢索，閉合學習迴圈"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "file_write"
+      call_count: 14
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "system/MEMORY_POLICY.md"
+  error_summary: ""
+  estimated_tokens: "~20K"
+  notes: "memory/episodes + playbook(5 skill) + 自動索引；寫入 ask、檢索 allow；7 tests。對應 Decision D008。"
+```
+
+```yaml
 - task_id: "20260529-011"
   date: "2026-05-29"
   skill_type: "ops"
