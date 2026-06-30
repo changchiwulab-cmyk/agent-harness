@@ -124,3 +124,14 @@ class TestLogsSchemaLintConstants < Minitest::Test
     assert_equal 5, ALLOWED_ERROR_TYPE.length
   end
 end
+
+# ── 測試 G-D state/ resume schema 常數 ────────────────────────────────────────
+class TestStateSchemaConstants < Minitest::Test
+  def test_state_status_enum
+    assert_equal %w[active paused done], ALLOWED_STATE_STATUS
+  end
+
+  def test_required_state_fields
+    assert_equal %w[task_id updated_at status next_action checkpoint_commit], REQUIRED_STATE_FIELDS
+  end
+end

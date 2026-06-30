@@ -33,6 +33,10 @@ ALLOWED_APPROVAL_STATUS = %w[approved rejected superseded].freeze
 REQUIRED_APPROVAL_FIELDS = %w[approval_id task_id date action approval_method status approved_by].freeze
 ALLOWED_ERROR_TYPE = %w[tool_failure rule_violation schema_failure timeout unknown].freeze
 
+# --- state/ resume schema 常數（G-D: 20260630-G04）---
+ALLOWED_STATE_STATUS = %w[active paused done].freeze
+REQUIRED_STATE_FIELDS = %w[task_id updated_at status next_action checkpoint_commit].freeze
+
 def parse_iso_date(value)
   return value if value.is_a?(Date)
   return nil unless value.is_a?(String) && value.match?(DATE_PATTERN)
@@ -233,6 +237,28 @@ Dir.glob('logs/errors/*.md').sort.each do |err_file|
     errors << "#{err_file}: missing error_type"
   elsif !ALLOWED_ERROR_TYPE.include?(etype)
     errors << "#{err_file}: invalid error_type #{etype} (allowed: #{ALLOWED_ERROR_TYPE.join('/')})"
+  end
+end
+
+# 7) state/*.yaml — cross-session resume schema（G-D；跳過 SCHEMA/TEMPLATE）
+Dir.glob('state/*.yaml').sort.each do |state_file|
+  next if File.basename(state_file) =~ /SCHEMA|TEMPLATE/
+
+  doc = YAML.load_file(state_file)
+  unless doc.is_a?(Hash)
+    errors << "#{state_file}: root must be mapping"
+    next
+  end
+  REQUIRED_STATE_FIELDS.each do |field|
+    value = doc[field]
+    empty = value.nil? || (value.is_a?(String) && value.strip.empty?)
+    errors << "#{state_file}: missing required field #{field}" if empty
+  end
+  if doc.key?('status') && !ALLOWED_STATE_STATUS.include?(doc['status'])
+    errors << "#{state_file}: invalid state status #{doc['status']} (allowed: #{ALLOWED_STATE_STATUS.join('/')})"
+  end
+  if doc.key?('updated_at') && doc['updated_at'].is_a?(String) && parse_iso_date(doc['updated_at']).nil?
+    errors << "#{state_file}: invalid updated_at #{doc['updated_at']} (expected valid YYYY-MM-DD)"
   end
 end
 

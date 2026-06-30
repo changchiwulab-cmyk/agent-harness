@@ -1,0 +1,13 @@
+# 實際 resume point — 由 G-D 本身作為首個真實樣本（dogfood）。
+# 接續者：讀此檔 + RECOVERY_RUNBOOK 場景 C，從 next_action 接續，不從頭重做。
+task_id: "20260630-G04"
+updated_at: "2026-06-30"
+status: "active"
+next_action: "完成 G-D：擴 check_spec_consistency.rb 驗 state/*.yaml + 測試；改 RECOVERY_RUNBOOK 場景 C 交叉引用；接著做 G-C。"
+checkpoint_commit: "b015d86"
+open_questions:
+  - "G-C 的 scratchpad 慣例位置最終定 outputs/drafts/<task>/notes.md 還是 state/<task_id>.notes.md？"
+partial_outputs:
+  - "state/last_checkpoint.SCHEMA.yaml"
+  - "state/last_checkpoint.yaml"
+notes: "本效將 4 個架構缺口（G-A..G-D）以 4 張 Task Card 補齊，全程 system/ 變更走草稿 PR。G-A/G-B 已 checkpoint。"

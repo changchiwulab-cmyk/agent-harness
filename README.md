@@ -77,6 +77,10 @@ agent-harness/
 │   ├── README.md              ← 記憶使用規則
 │   ├── user_prefs.md          ← 使用者偏好
 │   └── active_projects/       ← 進行中專案 context
+├── state/                     ← 跨 session resume 接續點（G-D；主動寫，被 RECOVERY_RUNBOOK 場景 C 讀）
+│   ├── last_checkpoint.SCHEMA.yaml
+│   └── last_checkpoint.yaml
+├── evals/                     ← 可執行產出品質 eval（G-B；run_evals.py 跑）
 ├── logs/
 │   ├── AUDIT_LOG.md           ← 稽核紀錄
 │   ├── runs/                  ← 執行紀錄
