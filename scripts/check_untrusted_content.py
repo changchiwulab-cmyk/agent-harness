@@ -62,17 +62,28 @@ def is_quarantined(text: str) -> bool:
     return QUARANTINE_MARKER in (text or "")
 
 
-def audit_output(text: str) -> list[str]:
-    """Injection hits that are present WITHOUT any quarantine marker.
+def split_blocks(text: str) -> list[str]:
+    """Split into blank-line-separated blocks (paragraphs/excerpts)."""
+    return [b for b in re.split(r"\n\s*\n", text or "") if b.strip()]
 
-    If the author quarantined untrusted content (marker present), echoing the
-    injection text for analysis is fine — that's the intended workflow. Hits
-    are only flagged when nothing in the text signals the content is untrusted.
+
+def audit_output(text: str) -> list[str]:
+    """Injection hits that appear in a block lacking a quarantine marker.
+
+    The marker is tied to the *block* (blank-line-separated excerpt), not the
+    whole document: echoing injection text for analysis is fine only when that
+    same excerpt is marked ``[未受信任來源]``. This prevents one marker anywhere
+    from whitelisting a separate unmarked injection elsewhere in a multi-excerpt
+    report.
     """
-    hits = detect_injection(text)
-    if not hits:
-        return []
-    return [] if is_quarantined(text) else hits
+    unquarantined: list[str] = []
+    for block in split_blocks(text):
+        hits = detect_injection(block)
+        if hits and not is_quarantined(block):
+            for h in hits:
+                if h not in unquarantined:
+                    unquarantined.append(h)
+    return unquarantined
 
 
 def main(argv: list[str]) -> int:
