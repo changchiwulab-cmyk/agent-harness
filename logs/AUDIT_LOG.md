@@ -50,9 +50,9 @@
   approval_needed: false
   approval_given: false
   output_path: "outputs/drafts/2026-06-30_project-test-run-report.md"
-  error_summary: ""
-  estimated_tokens: "~18K"
-  notes: "spec-consistency.yml 12 步（拆 13 子步）×3 = 39/39 全綠；底層 63 測試案例（Ruby 35 runs/103 assertions + Python 28 tests）三次皆 0 failures。前端開機煙霧 3/3 HTTP 200、即起即關無殘留。四層 gate 全 pass、可重現性 100%。run log: RUN-20260630-001。設置階段新增 Task Card + 重生 data.json（避免步驟 07 漂移）。未改 system/。"
+  error_summary: "rule_check 升級記為 fail：前端煙霧之瞬時 http.server 觸及 deny 項 spawn_background_process（經人工授權、無殘留）；見 logs/errors/2026-06-30_20260630-T01_error.md"
+  estimated_tokens: "~20K"
+  notes: "測試 PASS：spec-consistency.yml 12 步（拆 13 子步）×3 = 39/39 全綠；底層 63 測試案例（Ruby 35 runs/103 assertions + Python 28 tests）三次皆 0 failures。前端開機煙霧 3/3 HTTP 200、即起即關無殘留。可重現性 100%。治理：四層 gate 中 schema/completion/risk pass，rule_check 經 PR #119 Codex review 後據實改記 fail 並升級（deny-boundary，人工授權）。run log: RUN-20260630-001；error log: ERR-20260630-001。設置階段新增 Task Card + 重生 data.json（避免步驟 07 漂移）。未改 system/。"
 ```
 
 ---

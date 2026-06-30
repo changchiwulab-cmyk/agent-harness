@@ -114,7 +114,7 @@
       "gate_results": {
         "completion_check": "pass",
         "risk_check": "pass",
-        "rule_check": "pass",
+        "rule_check": "fail",
         "schema_check": "pass"
       },
       "path": "logs/runs/RUN-20260630-001.yaml",
@@ -136,8 +136,9 @@
         "pass": 2
       },
       "rule_check": {
+        "fail": 1,
         "not_run": 1,
-        "pass": 2
+        "pass": 1
       },
       "schema_check": {
         "fail": 1,

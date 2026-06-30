@@ -47,10 +47,13 @@ skill_type: "ops"
 # === 執行紀錄（由 agent 填寫）===
 checkpoints:
   - "326fdb7 — Task Card + frontend manifest regen"
+  - "6878607 — 測試報告 + run log + audit + manifest 二次重生"
 actual_tool_calls: 23
 result_summary: >
-  PASS。spec-consistency.yml 12 步（拆 13 子步）×3 = 39/39 全綠；底層 63 測試案例
+  測試 PASS。spec-consistency.yml 12 步（拆 13 子步）×3 = 39/39 全綠；底層 63 測試案例
   （Ruby 35 runs/103 assertions + Python 28 tests）三次皆 0 failures。前端開機煙霧
-  3/3 HTTP 200 且即起即關無殘留。四層 gate 全 pass、可重現性 100%。
+  3/3 HTTP 200 且即起即關無殘留。可重現性 100%。治理：四層 gate 中 schema/completion/risk pass，
+  rule_check 據實記為 fail 並升級（前端煙霧之 spawn_background_process deny-boundary，經人工授權、
+  無殘留；見 logs/errors/2026-06-30_20260630-T01_error.md）。測試交付物不受影響。
 completion_time: "2026-06-30"
-audit_log_ref: "logs/AUDIT_LOG.md#20260630-T01; logs/runs/RUN-20260630-001.yaml"
+audit_log_ref: "logs/AUDIT_LOG.md#20260630-T01; logs/runs/RUN-20260630-001.yaml; logs/errors/2026-06-30_20260630-T01_error.md"

@@ -25,7 +25,7 @@ execution_log:
   checkpoints:
     - commit: "326fdb7"
       stage: "Task Card 20260630-T01 + frontend manifest regen"
-    - commit: "pending"
+    - commit: "6878607"
       stage: "測試報告 + run log + audit + manifest 二次重生"
 
   token_estimate:
@@ -41,16 +41,21 @@ execution_log:
       timestamp: "2026-06-30"
 
   output_path: "outputs/drafts/2026-06-30_project-test-run-report.md"
-  error_summary: ""
+  error_summary: >
+    rule_check 升級：前端開機煙霧啟動了瞬時 http.server，屬 PERMISSIONS.yaml deny 的
+    spawn_background_process；GATE_POLICY rule_check 要求「動作不在 deny 清單中」，故據實記為 fail
+    並升級。該動作經使用者於規劃階段明示授權且即起即關（已實證無殘留），run 仍完成交付。
+    詳見 logs/errors/2026-06-30_20260630-T01_error.md。
   gate_results:
     schema_check: "pass"
-    rule_check: "pass"
+    rule_check: "fail"          # 升級：deny-boundary（spawn_background_process）被觸及；見 error_summary
     completion_check: "pass"
     risk_check: "pass"
 
   notes: >
-    spec-consistency.yml 12 步（拆 13 子步）×3 次 = 39/39 全綠；底層 63 測試案例
+    測試結果本身：spec-consistency.yml 12 步（拆 13 子步）×3 次 = 39/39 全綠；底層 63 測試案例
     （Ruby 35 runs/103 assertions + Python 28 tests）三次皆 0 failures。前端開機煙霧
-    3/3 HTTP 200、伺服器即起即關無殘留。可重現性 100%、套件總時長 2247–2362ms。
-    rule_check 註記：前端煙霧之瞬時 http.server 觸及 spawn_background_process 邊界，
-    屬使用者明確授權且即起即關，已實證無殘留。報告留存 drafts/。
+    3/3 HTTP 200、伺服器即起即關無殘留。可重現性 100%、套件總時長 2247–2362ms。報告留存 drafts/。
+    治理：rule_check 據實記為 fail 並升級（非乾淨 pass）——前端煙霧之瞬時 http.server 觸及
+    deny 項 spawn_background_process。經使用者明示授權、即起即關、無殘留；依 GATE_POLICY on_fail
+    已寫 logs/errors/ 並通知使用者。此 run 在 dashboard/audit 不應被計為規則合規的乾淨 run。
