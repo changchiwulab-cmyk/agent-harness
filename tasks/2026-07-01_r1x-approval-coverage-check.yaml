@@ -59,6 +59,6 @@ skill_type: "ops"
 checkpoints:
   - "checkpoint: 20260701-003 R11 approval coverage cross-check"
 actual_tool_calls: 9
-result_summary: "check_spec_consistency.rb 新增 check_approval_coverage() 純函式 + APPROVAL_COVERAGE_CUTOFF=2026-07-01（理由寫在程式碼註解：10+ 筆歷史缺口無真實來源可回填，故不追溯）。main 邏輯的 section 2/5 順手蒐集 task_records/approval_task_ids，新增 section 7 呼叫該函式。test_check_spec_consistency.rb 新增 7 個測試，全綠（連同既有測試共 27 個）。對真實 repo 跑檢查：綠燈，且證實抓到真實缺口（R1 自己的 20260529-004、R2 的 20260529-005 等 10+ 筆歷史任務缺批准紀錄，因 cutoff 豁免不擋 CI）。變更影響 CI 行為，approval_needed=true（比照 R2），本卡自己的批准紀錄見 logs/approvals/2026-07-01_20260701-003_approval.yaml。"
+result_summary: "check_spec_consistency.rb 新增 check_approval_coverage() 純函式 + APPROVAL_COVERAGE_CUTOFF=2026-07-01（理由寫在程式碼註解：10+ 筆歷史缺口無真實來源可回填，故不追溯）。main 邏輯的 section 2/5 順手蒐集 task_records/approval_task_ids，新增 section 7 呼叫該函式。test_check_spec_consistency.rb 新增 7 個測試，全綠（連同既有測試共 27 個）。對真實 repo 跑檢查：綠燈，且證實抓到真實缺口（R1 自己的 20260529-004、R2 的 20260529-005 等 10+ 筆歷史任務缺批准紀錄，因 cutoff 豁免不擋 CI）。變更影響 CI 行為，approval_needed=true（比照 R2），本卡自己的批准紀錄見 logs/approvals/2026-07-01_20260701-003_approval.yaml。追記（PR #121 review, Codex P2）：原本收集 approval_task_ids 時未篩 status，rejected/superseded 紀錄也會被誤判為已覆蓋，覆蓋率檢查形同虛設；已新增 approved_task_ids() 純函式只採計 status=approved，並補 5 個測試（含 rejected-only 不覆蓋、approved 覆蓋、混合紀錄）。全套檢查仍綠。"
 completion_time: "2026-07-01"
 audit_log_ref: "logs/AUDIT_LOG.md"

@@ -40,8 +40,18 @@ ALLOWED_ERROR_TYPE = %w[tool_failure rule_violation schema_failure timeout unkno
 # 起強制——新任務不能再悄悄漏掉批准紀錄。
 APPROVAL_COVERAGE_CUTOFF = Date.new(2026, 7, 1)
 
+# 從 approval_entries 篩出真正「已核准」的 task_id（Codex review：rejected/superseded
+# 不該算數，否則一張從未真的被核准的任務，只要有任何一筆非 approved 紀錄就會被誤判為
+# 已覆蓋，覆蓋率檢查形同虛設）。
+# approval_entries: [[appr_file, index, record_hash], ...]
+def approved_task_ids(approval_entries)
+  approval_entries
+    .select { |_, _, rec| rec.is_a?(Hash) && rec['status'] == 'approved' }
+    .map { |_, _, rec| rec['task_id'] }
+end
+
 # 純函式，方便直接單元測試（不需真的讀檔）。
-# tasks: [[task_file, task_hash], ...]；approval_task_ids: 已被批准紀錄覆蓋的 task_id 陣列
+# tasks: [[task_file, task_hash], ...]；approval_task_ids: 已被核准紀錄覆蓋的 task_id 陣列（只含 status=approved）
 def check_approval_coverage(tasks, approval_task_ids, cutoff_date)
   errors = []
   tasks.each do |task_file, task|
@@ -244,7 +254,6 @@ Dir.glob('logs/runs/*.yaml').sort.each do |run_file|
 end
 
 # 5) logs/approvals/*.yaml — approval record schema（R2；跳過 TEMPLATE）
-approval_task_ids = []
 approval_entries = []
 Dir.glob('logs/approvals/*.yaml').sort.each do |appr_file|
   next if File.basename(appr_file).include?('TEMPLATE')
@@ -272,7 +281,6 @@ Dir.glob('logs/approvals/*.yaml').sort.each do |appr_file|
     if rec.key?('status') && !ALLOWED_APPROVAL_STATUS.include?(rec['status'])
       errors << "#{appr_file}: approval_records[#{i}] invalid status #{rec['status']}"
     end
-    approval_task_ids << rec['task_id']
     approval_entries << [appr_file, i, rec]
   end
 end
@@ -306,7 +314,7 @@ Dir.glob('logs/errors/*.md').sort.each do |err_file|
 end
 
 # 7) 批准覆蓋率交叉檢查（R11: 20260701-003；只適用 date >= APPROVAL_COVERAGE_CUTOFF）
-errors.concat(check_approval_coverage(task_records, approval_task_ids, APPROVAL_COVERAGE_CUTOFF))
+errors.concat(check_approval_coverage(task_records, approved_task_ids(approval_entries), APPROVAL_COVERAGE_CUTOFF))
 
 # 8) 跨檔案參照完整性（R12: 20260701-004）
 known_task_ids = task_records.map { |_, t| t['task_id'] }.compact

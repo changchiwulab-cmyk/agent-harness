@@ -185,6 +185,47 @@ class TestApprovalCoverage < Minitest::Test
     )
     assert_empty errors
   end
+
+  def test_end_to_end_rejected_only_record_does_not_cover_task
+    # Codex review: a task with only a rejected/superseded approval record
+    # must NOT be treated as covered — otherwise the gate is bypassable.
+    entries = [
+      ['a.yaml', 0, { 'task_id' => '20260701-999', 'status' => 'rejected' }],
+      ['a.yaml', 1, { 'task_id' => '20260701-999', 'status' => 'superseded' }],
+    ]
+    errors = check_approval_coverage([['t.yaml', task]], approved_task_ids(entries), CUTOFF)
+    assert_equal 1, errors.length
+  end
+
+  def test_end_to_end_approved_record_covers_task
+    entries = [['a.yaml', 0, { 'task_id' => '20260701-999', 'status' => 'approved' }]]
+    errors = check_approval_coverage([['t.yaml', task]], approved_task_ids(entries), CUTOFF)
+    assert_empty errors
+  end
+end
+
+# ── 測試 approved_task_ids 篩選（R12 review fix）───────────────────────────────
+class TestApprovedTaskIds < Minitest::Test
+  def test_only_approved_status_counts
+    entries = [
+      ['a.yaml', 0, { 'task_id' => 'X', 'status' => 'approved' }],
+      ['a.yaml', 1, { 'task_id' => 'Y', 'status' => 'rejected' }],
+      ['a.yaml', 2, { 'task_id' => 'Z', 'status' => 'superseded' }],
+    ]
+    assert_equal ['X'], approved_task_ids(entries)
+  end
+
+  def test_one_approved_among_multiple_records_for_same_task_still_counts
+    entries = [
+      ['a.yaml', 0, { 'task_id' => 'X', 'status' => 'rejected' }],
+      ['a.yaml', 1, { 'task_id' => 'X', 'status' => 'approved' }],
+    ]
+    assert_equal ['X'], approved_task_ids(entries)
+  end
+
+  def test_empty_entries_returns_empty
+    assert_empty approved_task_ids([])
+  end
 end
 
 # ── 測試 R12 跨檔案參照完整性 ──────────────────────────────────────────────────
