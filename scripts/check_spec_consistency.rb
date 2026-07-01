@@ -60,6 +60,40 @@ def check_approval_coverage(tasks, approval_task_ids, cutoff_date)
   errors
 end
 
+# --- 跨檔案參照完整性 lint（R12: 20260701-004）---
+# R1/R2 只驗證單一檔案內部欄位/枚舉是否合法，沒有人驗證「欄位指向的另一個檔案是否真的存在」。
+# 兩個純函式，皆可離線單元測試。
+
+# run_records: [[run_file, log_hash], ...]；known_task_ids: 所有現存 Task Card 的 task_id 陣列
+def check_run_task_references(run_records, known_task_ids)
+  errors = []
+  run_records.each do |run_file, log|
+    next unless log.is_a?(Hash)
+
+    task_id = log['task_id']
+    next if task_id.nil? || task_id.to_s.strip.empty?
+    unless known_task_ids.include?(task_id)
+      errors << "#{run_file}: task_id #{task_id} does not match any existing Task Card in tasks/"
+    end
+  end
+  errors
+end
+
+# approval_entries: [[appr_file, index, record_hash], ...]；known_run_ids: 所有現存 run_id 陣列
+def check_approval_run_references(approval_entries, known_run_ids)
+  errors = []
+  approval_entries.each do |appr_file, index, rec|
+    next unless rec.is_a?(Hash)
+
+    linked_run = rec['linked_run']
+    next if linked_run.nil? || linked_run.to_s.strip.empty?
+    unless known_run_ids.include?(linked_run)
+      errors << "#{appr_file}: approval_records[#{index}] linked_run #{linked_run} does not match any existing logs/runs/ run_id"
+    end
+  end
+  errors
+end
+
 def parse_iso_date(value)
   return value if value.is_a?(Date)
   return nil unless value.is_a?(String) && value.match?(DATE_PATTERN)
@@ -190,6 +224,7 @@ Dir.glob('tasks/examples/*.yaml').sort.each do |task_file|
 end
 
 # 4) logs/runs/*.yaml — execution log schema（R2: 20260529-005）
+run_records = []
 Dir.glob('logs/runs/*.yaml').sort.each do |run_file|
   doc = YAML.load_file(run_file)
   unless doc.is_a?(Hash)
@@ -205,10 +240,12 @@ Dir.glob('logs/runs/*.yaml').sort.each do |run_file|
   if log.key?('status') && !ALLOWED_RUN_STATUS.include?(log['status'])
     errors << "#{run_file}: invalid run status #{log['status']} (allowed: #{ALLOWED_RUN_STATUS.join('/')})"
   end
+  run_records << [run_file, log]
 end
 
 # 5) logs/approvals/*.yaml — approval record schema（R2；跳過 TEMPLATE）
 approval_task_ids = []
+approval_entries = []
 Dir.glob('logs/approvals/*.yaml').sort.each do |appr_file|
   next if File.basename(appr_file).include?('TEMPLATE')
 
@@ -235,7 +272,8 @@ Dir.glob('logs/approvals/*.yaml').sort.each do |appr_file|
     if rec.key?('status') && !ALLOWED_APPROVAL_STATUS.include?(rec['status'])
       errors << "#{appr_file}: approval_records[#{i}] invalid status #{rec['status']}"
     end
-    approval_task_ids << rec['task_id'] if rec.is_a?(Hash)
+    approval_task_ids << rec['task_id']
+    approval_entries << [appr_file, i, rec]
   end
 end
 
@@ -269,6 +307,12 @@ end
 
 # 7) 批准覆蓋率交叉檢查（R11: 20260701-003；只適用 date >= APPROVAL_COVERAGE_CUTOFF）
 errors.concat(check_approval_coverage(task_records, approval_task_ids, APPROVAL_COVERAGE_CUTOFF))
+
+# 8) 跨檔案參照完整性（R12: 20260701-004）
+known_task_ids = task_records.map { |_, t| t['task_id'] }.compact
+known_run_ids = run_records.map { |_, log| log['run_id'] }.compact
+errors.concat(check_run_task_references(run_records, known_task_ids))
+errors.concat(check_approval_run_references(approval_entries, known_run_ids))
 
 if errors.empty?
   puts 'OK: spec consistency checks passed'

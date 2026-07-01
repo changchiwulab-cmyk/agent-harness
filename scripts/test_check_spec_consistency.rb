@@ -186,3 +186,49 @@ class TestApprovalCoverage < Minitest::Test
     assert_empty errors
   end
 end
+
+# ── 測試 R12 跨檔案參照完整性 ──────────────────────────────────────────────────
+class TestReferentialIntegrity < Minitest::Test
+  def test_run_task_id_matches_known_task_passes
+    errors = check_run_task_references(
+      [['run.yaml', { 'task_id' => '20260701-001' }]], ['20260701-001']
+    )
+    assert_empty errors
+  end
+
+  def test_run_task_id_broken_link_fails
+    errors = check_run_task_references(
+      [['run.yaml', { 'task_id' => '99990101-999' }]], ['20260701-001']
+    )
+    assert_equal 1, errors.length
+    assert_includes errors.first, '99990101-999'
+  end
+
+  def test_run_without_task_id_is_skipped
+    errors = check_run_task_references([['run.yaml', {}]], [])
+    assert_empty errors
+  end
+
+  def test_approval_linked_run_matches_known_run_passes
+    rec = { 'linked_run' => 'RUN-20260701-001' }
+    errors = check_approval_run_references(
+      [['appr.yaml', 0, rec]], ['RUN-20260701-001']
+    )
+    assert_empty errors
+  end
+
+  def test_approval_linked_run_broken_link_fails
+    rec = { 'linked_run' => 'RUN-DOES-NOT-EXIST' }
+    errors = check_approval_run_references(
+      [['appr.yaml', 0, rec]], ['RUN-20260701-001']
+    )
+    assert_equal 1, errors.length
+    assert_includes errors.first, 'RUN-DOES-NOT-EXIST'
+  end
+
+  def test_approval_without_linked_run_is_skipped
+    rec = { 'linked_run' => '' }
+    errors = check_approval_run_references([['appr.yaml', 0, rec]], [])
+    assert_empty errors
+  end
+end

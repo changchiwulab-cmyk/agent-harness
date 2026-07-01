@@ -1,0 +1,61 @@
+# Task Card — R12（R2 補強）跨檔案參照完整性 lint
+# 來源：使用者請求 R1/R2/R5/R7 補強計畫 workflow；本卡對應計畫中的 R12
+# 修改 scripts/check_spec_consistency.rb（影響 CI 行為）— 比照 R2/R11 判斷 approval_needed: true。
+
+task_id: "20260701-004"
+date: "2026-07-01"
+status: "done"
+
+# === 任務定義 ===
+goal: "擴充 check_spec_consistency.rb：驗證 logs/approvals/*.yaml 的 linked_run 指向真實存在的 logs/runs/ run_id，以及 logs/runs/*.yaml 的 task_id 指向真實存在的 Task Card"
+context: |
+  R1 定義批准紀錄 schema、R2 把每個檔案「內部」欄位/枚舉納入 CI lint，但兩者都只驗證
+  單一檔案本身格式對不對，沒有人驗證「欄位裡的 ID 是否真的指向另一個存在的檔案」——
+  例如 approval_record.linked_run 打錯字、或 run log 的 task_id 對應到一張已被刪除/
+  改名的 Task Card，目前都不會被任何檢查抓到。
+  本卡新增雙向參照檢查，並用刻意斷鏈的資料驗證兩個方向都能真的抓到問題（見 DoD）。
+input_data:
+  - "scripts/check_spec_consistency.rb"
+  - "scripts/test_check_spec_consistency.rb"
+  - "logs/approvals/"
+  - "logs/runs/"
+  - "tasks/"
+
+# === 完成標準 ===
+definition_of_done:
+  - "check_spec_consistency.rb 新增 check_run_task_references()：run log 的 task_id 必須存在於某張 Task Card"
+  - "check_spec_consistency.rb 新增 check_approval_run_references()：approval_record 的 linked_run（非空時）必須存在於某筆 run log 的 run_id"
+  - "兩者皆為純函式，main 邏輯的 section 4/5 順手蒐集 run_records/approval_entries，新增 section 8 呼叫兩函式"
+  - "test_check_spec_consistency.rb 新增 TestReferentialIntegrity：各含一組『正常連結通過』與一組『刻意斷鏈失敗』案例，全綠"
+  - "對真實 repo 跑一次 check_spec_consistency.rb：確認現有 2 筆 run log 與 1 筆 approval 檔的既有參照皆合法、無誤報"
+  - "全套 CI-equivalent 綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "rb"
+  location: "scripts/"
+  filename: "check_spec_consistency.rb"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 12
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260701-004 R12 referential integrity lint"
+actual_tool_calls: 6
+result_summary: "check_spec_consistency.rb 新增 check_run_task_references() 與 check_approval_run_references() 兩個純函式，驗證 run log↔Task Card、approval↔run log 的雙向 ID 參照。main 邏輯 section 4/5 順手蒐集 run_records/approval_entries，新增 section 8 呼叫。test_check_spec_consistency.rb 新增 TestReferentialIntegrity（6 個測試，含正常/斷鏈各 2 組），全綠（連同既有測試共 33 個）。對真實 repo 跑檢查：綠燈，現有 2 筆 run log 與 1 筆 approval 檔的參照皆合法。變更影響 CI 行為，approval_needed=true（比照 R2/R11），本卡自己的批准紀錄見 logs/approvals/2026-07-01_20260701-004_approval.yaml。"
+completion_time: "2026-07-01"
+audit_log_ref: "logs/AUDIT_LOG.md"
