@@ -1,0 +1,64 @@
+# Task Card — R13（R5 補強）執行 Scenario C（任務中途 context reset 接續）演練
+# 來源：使用者請求 R1/R2/R5/R7 補強計畫 workflow；本卡對應計畫中的 R13
+# RECOVERY_RUNBOOK.md 附錄明確標註 Scenario C「建議在下次真實多階段任務中途實測」，
+# 本卡就是那次實測。低風險：純內部模擬，不碰生產資料，不動 system/。
+
+task_id: "20260701-002"
+date: "2026-07-01"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "實測 RECOVERY_RUNBOOK.md 場景 C：任務中途模擬 context 重置後，只靠 git log --grep + Task Card + 進度檔重建狀態並正確接續（不重做、不跳過），把恢復路徑從紙上設計變成有實證的機制"
+context: |
+  自我評估與 R5 演練都指出：Scenario A/B/D 已實測，唯獨 Scenario C（context 重置後
+  接續執行）從未真的跑過，只是 runbook 上的紙上程序。
+  設計：用一個 3-checkpoint 的模擬任務（tests/e2e/fixtures/scenario_c_progress.yaml
+  扮演 logs/runs/<RUN>.yaml 的角色，記錄 completed_steps/next_step）。做完 checkpoint
+  1、2 之後，「重置」步驟明確只讀 3 個來源：
+    (1) git log --oneline --grep="checkpoint: 20260701-002"
+    (2) 本 Task Card 的 goal / definition_of_done
+    (3) tests/e2e/fixtures/scenario_c_progress.yaml 的 completed_steps/next_step
+  不依賴任何本次對話記憶以外的假設，藉此驗證「接續執行」在只有這三個來源時是否
+  仍能正確判斷下一步、且不重做已完成的 step 1/2。
+input_data:
+  - "system/RECOVERY_RUNBOOK.md"
+  - "tests/e2e/fixtures/scenario_c_progress.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "tests/e2e/fixtures/scenario_c_progress.yaml 走完 3 個 checkpoint（step 1→2→3），checkpoint 2→3 之間明確模擬 context 重置"
+  - "重置後的接續步驟只引用 git log --grep 輸出、本 Task Card、進度檔三者，不依賴額外假設；步驟與輸出寫入 RECOVERY_RUNBOOK.md 附錄"
+  - "驗證 checkpoint 3 的 diff 只新增 step 3 相關內容，未修改/重做 step 1、2 已寫入的內容（避免『接續』變成『重做』）"
+  - "RECOVERY_RUNBOOK.md 附錄新增 Scenario C 實測紀錄（比照 Scenario A 表格格式：場景/checkpoint/指令/耗時/驗證/結論），並移除原本『建議下次實測』的待辦註記"
+  - "還原後一致性檢查（ruby scripts/check_spec_consistency.rb + python3 scripts/generate_frontend_manifest.py --check）全綠；未修改任何 system/ 檔以外的 RECOVERY_RUNBOOK.md"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "system/"
+  filename: "RECOVERY_RUNBOOK.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260701-002 R13 scenario C drill — step 1/3"
+  - "checkpoint: 20260701-002 R13 scenario C drill — step 2/3"
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
