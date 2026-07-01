@@ -1,0 +1,10 @@
+# Scenario C（RECOVERY_RUNBOOK.md）演練用進度檔 —— 非正式任務資料
+# 用途：模擬一個 3-checkpoint 任務的執行狀態，在 checkpoint 2 之後演練「context 重置」，
+#       驗證能否只靠 git log --grep + Task Card + 本檔（扮演 logs/runs/<RUN>.yaml 角色）
+#       正確接續到 step 3，而不是從頭重做。永久保留作為演練證據（比照 R5 保留 fixture 的做法）。
+
+drill_task_id: "20260701-002"
+step: 1
+completed_steps: [1]
+next_step: 2
+notes: "Step 1 完成：建立本進度檔，模擬多階段任務的第一個 checkpoint。"
