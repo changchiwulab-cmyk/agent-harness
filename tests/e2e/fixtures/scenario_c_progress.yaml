@@ -4,11 +4,20 @@
 #       正確接續到 step 3，而不是從頭重做。永久保留作為演練證據（比照 R5 保留 fixture 的做法）。
 
 drill_task_id: "20260701-002"
-step: 2
-completed_steps: [1, 2]
-next_step: 3
+step: 3
+completed_steps: [1, 2, 3]
+next_step: null
 notes: |
   Step 1 完成：建立本進度檔，模擬多階段任務的第一個 checkpoint。
   Step 2 完成：本行以下即將模擬 context 重置——下一個 agent session 不應
   依賴任何本次對話記憶，只能依 RECOVERY_RUNBOOK.md 場景 C 的步驟
   （git log --grep + Task Card + 本檔）重建狀態並接續 step 3。
+reconstruction_evidence:
+  last_checkpoint_commit: "0bc1a37"
+  last_checkpoint_message: "checkpoint: 20260701-002 R13 scenario C drill — step 2/3"
+  sources_used:
+    - "git log --oneline --grep=\"checkpoint: 20260701-002\""
+    - "tasks/2026-07-01_r5x-recovery-scenario-c-drill.yaml (goal + definition_of_done)"
+    - "tests/e2e/fixtures/scenario_c_progress.yaml (completed_steps/next_step at time of reset)"
+  step_3_completed_at: "2026-07-01"
+  note: "Step 3 只依上列三個來源重建下一步，未重做或修改 step 1/2 既有內容。"
