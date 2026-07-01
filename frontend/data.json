@@ -119,7 +119,7 @@
         "status": "ok"
       },
       {
-        "current": "39/41 = 95.1%",
+        "current": "39/42 = 92.9%",
         "id": "M3",
         "name": "audit log 覆蓋率（status ∈ {review, done, failed, partial}）",
         "status": "ok"
@@ -156,23 +156,23 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 30,
-      "medium": 14
+      "low": 31,
+      "medium": 15
     },
     "task_skill": {
       "analysis": 4,
-      "ops": 26,
+      "ops": 28,
       "research": 5,
       "review": 6,
       "writing": 4
     },
     "task_status": {
-      "done": 22,
-      "in_progress": 2,
+      "done": 23,
+      "in_progress": 3,
       "pending": 2,
       "review": 19
     },
-    "task_total": 45
+    "task_total": 47
   },
   "tasks": [
     {
@@ -624,6 +624,26 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-07-01",
+      "goal": "在前端看板新增 M2-M4 治理指標警示可視化，讓異常不再需要手動跑 governance_metrics.py 讀 markdown 才能發現",
+      "path": "tasks/2026-07-01_r14-governance-alert-ui.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260701-001"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-01",
+      "goal": "實測 RECOVERY_RUNBOOK.md 場景 C：任務中途模擬 context 重置後，只靠 git log --grep + Task Card + 進度檔重建狀態並正確接續（不重做、不跳過），把恢復路徑從紙上設計變成有實證的機制",
+      "path": "tasks/2026-07-01_r5x-recovery-scenario-c-drill.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "in_progress",
+      "task_id": "20260701-002"
     }
   ]
 }
