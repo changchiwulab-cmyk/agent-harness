@@ -1,0 +1,64 @@
+# Task Card — R11（R1 補強）批准覆蓋率交叉檢查
+# 來源：使用者請求 R1/R2/R5/R7 補強計畫 workflow；本卡對應計畫中的 R11
+# 修改 scripts/check_spec_consistency.rb（影響 CI 行為）— 比照 R2（20260529-005）
+# 判斷：approval_needed: true，非 system/ 但影響全庫 CI 通過與否。
+
+task_id: "20260701-003"
+date: "2026-07-01"
+status: "done"
+
+# === 任務定義 ===
+goal: "擴充 check_spec_consistency.rb：對 approval_needed=true 且 status=done/failed 的 Task Card，檢查 logs/approvals/ 是否存在對應 task_id 的批准紀錄，缺漏則 CI fail"
+context: |
+  R1 定義了 approval_record schema、R2 把它的欄位格式納入 CI lint，但兩者都只驗證
+  「格式對不對」，沒有人驗證「覆蓋率夠不夠」——該有批准紀錄的任務，是否真的留了紀錄。
+  執行中發現：本 repo 目前有 18 張 approval_needed=true 的 Task Card，其中 10+ 張
+  status=done 卻完全沒有對應的 logs/approvals/ 紀錄（R1 自己的 20260529-004、R2 自己的
+  20260529-005 都在內）——只有最早的 20260409-001 因為有 run log 內嵌資料可回填而有紀錄。
+  這些歷史缺口沒有真實來源可誠實回填（我不能捏造「當時是誰核准的」），所以不追溯，
+  只從 R11 落地當天（2026-07-01）起強制未來任務不能再悄悄漏掉——比照 R3 對 analysis
+  成本校準「樣本不足前不強制」的處理精神。
+input_data:
+  - "scripts/check_spec_consistency.rb"
+  - "scripts/test_check_spec_consistency.rb"
+  - "system/APPROVAL_POLICY.yaml"
+  - "logs/approvals/"
+
+# === 完成標準 ===
+definition_of_done:
+  - "check_spec_consistency.rb 新增 check_approval_coverage() 純函式（task 清單 + 已覆蓋 task_id 清單 + cutoff 日期 → 錯誤清單），可離線單元測試"
+  - "main 邏輯：對 tasks/*.yaml 蒐集 [file, task] 清單、對 logs/approvals/*.yaml 蒐集已覆蓋 task_id，呼叫上述函式並把結果併入 errors"
+  - "APPROVAL_COVERAGE_CUTOFF = 2026-07-01，且以程式碼註解記錄『為何不追溯』的理由"
+  - "test_check_spec_consistency.rb 新增 TestApprovalCoverage：涵蓋覆蓋通過／缺漏失敗／cutoff 前豁免／approval_needed=false 不檢查／非 done-failed 狀態不檢查／malformed date 不 crash，全綠"
+  - "對真實 repo 跑一次 check_spec_consistency.rb：確認歷史缺口（10+ 筆）被 cutoff 豁免、只有 2026-07-01 起的新任務（20260701-002）被納入檢查且已有對應批准紀錄"
+  - "全套 CI-equivalent 綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "rb"
+  location: "scripts/"
+  filename: "check_spec_consistency.rb"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260701-003 R11 approval coverage cross-check"
+actual_tool_calls: 9
+result_summary: "check_spec_consistency.rb 新增 check_approval_coverage() 純函式 + APPROVAL_COVERAGE_CUTOFF=2026-07-01（理由寫在程式碼註解：10+ 筆歷史缺口無真實來源可回填，故不追溯）。main 邏輯的 section 2/5 順手蒐集 task_records/approval_task_ids，新增 section 7 呼叫該函式。test_check_spec_consistency.rb 新增 7 個測試，全綠（連同既有測試共 27 個）。對真實 repo 跑檢查：綠燈，且證實抓到真實缺口（R1 自己的 20260529-004、R2 的 20260529-005 等 10+ 筆歷史任務缺批准紀錄，因 cutoff 豁免不擋 CI）。變更影響 CI 行為，approval_needed=true（比照 R2），本卡自己的批准紀錄見 logs/approvals/2026-07-01_20260701-003_approval.yaml。"
+completion_time: "2026-07-01"
+audit_log_ref: "logs/AUDIT_LOG.md"

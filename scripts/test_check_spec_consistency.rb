@@ -124,3 +124,65 @@ class TestLogsSchemaLintConstants < Minitest::Test
     assert_equal 5, ALLOWED_ERROR_TYPE.length
   end
 end
+
+# ── 測試 R11 批准覆蓋率交叉檢查 ────────────────────────────────────────────────
+class TestApprovalCoverage < Minitest::Test
+  CUTOFF = Date.new(2026, 7, 1)
+
+  def task(overrides = {})
+    {
+      'task_id' => '20260701-999',
+      'status' => 'done',
+      'date' => '2026-07-01',
+      'approval_needed' => true,
+    }.merge(overrides)
+  end
+
+  def test_covered_task_on_cutoff_passes
+    errors = check_approval_coverage([['t.yaml', task]], ['20260701-999'], CUTOFF)
+    assert_empty errors
+  end
+
+  def test_uncovered_task_on_cutoff_fails
+    errors = check_approval_coverage([['t.yaml', task]], [], CUTOFF)
+    assert_equal 1, errors.length
+    assert_includes errors.first, '20260701-999'
+  end
+
+  def test_uncovered_task_before_cutoff_is_grandfathered
+    errors = check_approval_coverage(
+      [['t.yaml', task('date' => '2026-06-30')]], [], CUTOFF
+    )
+    assert_empty errors
+  end
+
+  def test_approval_needed_false_is_never_checked
+    errors = check_approval_coverage(
+      [['t.yaml', task('approval_needed' => false)]], [], CUTOFF
+    )
+    assert_empty errors
+  end
+
+  def test_non_terminal_status_is_not_checked_yet
+    %w[pending in_progress checkpoint review].each do |status|
+      errors = check_approval_coverage(
+        [['t.yaml', task('status' => status)]], [], CUTOFF
+      )
+      assert_empty errors, "status=#{status} should not require approval coverage yet"
+    end
+  end
+
+  def test_failed_status_is_checked_like_done
+    errors = check_approval_coverage(
+      [['t.yaml', task('status' => 'failed')]], [], CUTOFF
+    )
+    assert_equal 1, errors.length
+  end
+
+  def test_malformed_date_does_not_crash_and_is_skipped
+    errors = check_approval_coverage(
+      [['t.yaml', task('date' => 'not-a-date')]], [], CUTOFF
+    )
+    assert_empty errors
+  end
+end

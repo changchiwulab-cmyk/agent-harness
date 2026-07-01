@@ -119,10 +119,10 @@
         "status": "ok"
       },
       {
-        "current": "39/42 = 92.9%",
+        "current": "39/44 = 88.6%",
         "id": "M3",
         "name": "audit log 覆蓋率（status ∈ {review, done, failed, partial}）",
-        "status": "ok"
+        "status": "warn"
       },
       {
         "current": "30% (reviewed 2026-05-09)",
@@ -156,23 +156,23 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 31,
+      "low": 32,
       "medium": 15
     },
     "task_skill": {
       "analysis": 4,
-      "ops": 28,
+      "ops": 29,
       "research": 5,
       "review": 6,
       "writing": 4
     },
     "task_status": {
-      "done": 23,
-      "in_progress": 3,
+      "done": 25,
+      "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 47
+    "task_total": 48
   },
   "tasks": [
     {
@@ -638,11 +638,21 @@
     {
       "approval_needed": true,
       "date": "2026-07-01",
+      "goal": "擴充 check_spec_consistency.rb：對 approval_needed=true 且 status=done/failed 的 Task Card，檢查 logs/approvals/ 是否存在對應 task_id 的批准紀錄，缺漏則 CI fail",
+      "path": "tasks/2026-07-01_r1x-approval-coverage-check.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260701-003"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-01",
       "goal": "實測 RECOVERY_RUNBOOK.md 場景 C：任務中途模擬 context 重置後，只靠 git log --grep + Task Card + 進度檔重建狀態並正確接續（不重做、不跳過），把恢復路徑從紙上設計變成有實證的機制",
       "path": "tasks/2026-07-01_r5x-recovery-scenario-c-drill.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "in_progress",
+      "status": "done",
       "task_id": "20260701-002"
     }
   ]

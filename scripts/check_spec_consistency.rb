@@ -33,6 +33,33 @@ ALLOWED_APPROVAL_STATUS = %w[approved rejected superseded].freeze
 REQUIRED_APPROVAL_FIELDS = %w[approval_id task_id date action approval_method status approved_by].freeze
 ALLOWED_ERROR_TYPE = %w[tool_failure rule_violation schema_failure timeout unknown].freeze
 
+# --- 批准覆蓋率交叉檢查常數（R11: 20260701-003）---
+# 只對 date >= 此日期的 Task Card 強制要求覆蓋：R1 只回填了 1 筆歷史批准樣本
+# （20260409-001），但實際上有 10+ 筆更早的 approval_needed=true/status=done 任務
+# 從未有對應紀錄。沒有真實來源可以誠實回填這些歷史批准，所以不追溯，只從此日期
+# 起強制——新任務不能再悄悄漏掉批准紀錄。
+APPROVAL_COVERAGE_CUTOFF = Date.new(2026, 7, 1)
+
+# 純函式，方便直接單元測試（不需真的讀檔）。
+# tasks: [[task_file, task_hash], ...]；approval_task_ids: 已被批准紀錄覆蓋的 task_id 陣列
+def check_approval_coverage(tasks, approval_task_ids, cutoff_date)
+  errors = []
+  tasks.each do |task_file, task|
+    next unless task.is_a?(Hash)
+    next unless task['approval_needed'] == true
+    next unless %w[done failed].include?(task['status'])
+
+    task_date = parse_iso_date(task['date'])
+    next if task_date.nil? || task_date < cutoff_date
+
+    task_id = task['task_id']
+    unless approval_task_ids.include?(task_id)
+      errors << "#{task_file}: approval_needed task (status=#{task['status']}, date=#{task['date']}) has no matching logs/approvals/ record for task_id #{task_id}"
+    end
+  end
+  errors
+end
+
 def parse_iso_date(value)
   return value if value.is_a?(Date)
   return nil unless value.is_a?(String) && value.match?(DATE_PATTERN)
@@ -60,6 +87,7 @@ required_dirs.each do |dir|
 end
 
 # 2) Task Card schema 驗證（排除模板）
+task_records = []
 Dir.glob('tasks/**/*.yaml').sort.each do |task_file|
   next if File.basename(task_file).include?('TEMPLATE')
 
@@ -68,6 +96,7 @@ Dir.glob('tasks/**/*.yaml').sort.each do |task_file|
     errors << "#{task_file}: root must be mapping"
     next
   end
+  task_records << [task_file, task]
 
   REQUIRED_FIELDS.each do |field|
     value = task[field]
@@ -179,6 +208,7 @@ Dir.glob('logs/runs/*.yaml').sort.each do |run_file|
 end
 
 # 5) logs/approvals/*.yaml — approval record schema（R2；跳過 TEMPLATE）
+approval_task_ids = []
 Dir.glob('logs/approvals/*.yaml').sort.each do |appr_file|
   next if File.basename(appr_file).include?('TEMPLATE')
 
@@ -205,6 +235,7 @@ Dir.glob('logs/approvals/*.yaml').sort.each do |appr_file|
     if rec.key?('status') && !ALLOWED_APPROVAL_STATUS.include?(rec['status'])
       errors << "#{appr_file}: approval_records[#{i}] invalid status #{rec['status']}"
     end
+    approval_task_ids << rec['task_id'] if rec.is_a?(Hash)
   end
 end
 
@@ -235,6 +266,9 @@ Dir.glob('logs/errors/*.md').sort.each do |err_file|
     errors << "#{err_file}: invalid error_type #{etype} (allowed: #{ALLOWED_ERROR_TYPE.join('/')})"
   end
 end
+
+# 7) 批准覆蓋率交叉檢查（R11: 20260701-003；只適用 date >= APPROVAL_COVERAGE_CUTOFF）
+errors.concat(check_approval_coverage(task_records, approval_task_ids, APPROVAL_COVERAGE_CUTOFF))
 
 if errors.empty?
   puts 'OK: spec consistency checks passed'
