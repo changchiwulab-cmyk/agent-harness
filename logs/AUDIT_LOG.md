@@ -33,6 +33,106 @@
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260701-004"
+  date: "2026-07-01"
+  skill_type: "ops"
+  goal: "R12（R2 補強）：跨檔案參照完整性 lint（run↔Task Card、approval↔run）"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 2
+    - tool_name: "bash"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "scripts/check_spec_consistency.rb"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "R1/R2/R5/R7 補強計畫 R12。新增 check_run_task_references()/check_approval_run_references() 雙向 ID 參照檢查（純函式）。test_check_spec_consistency.rb 新增 6 個測試（正常/斷鏈各半），全綠（共 33）。真實 repo 現有參照皆合法、無誤報。修改 scripts/ 影響 CI 行為，比照 R2/R11 approval_needed=true，批准紀錄見 logs/approvals/2026-07-01_20260701-004_approval.yaml（本次會話 plan-mode 核准）。"
+```
+
+---
+
+```yaml
+- task_id: "20260701-003"
+  date: "2026-07-01"
+  skill_type: "ops"
+  goal: "R11（R1 補強）：批准覆蓋率交叉檢查"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "file_write"
+      call_count: 2
+    - tool_name: "bash"
+      call_count: 5
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "scripts/check_spec_consistency.rb"
+  error_summary: ""
+  estimated_tokens: "~16K"
+  notes: "R1/R2/R5/R7 補強計畫 R11。新增 check_approval_coverage() 純函式，檢查 approval_needed=true 且 status=done/failed 的 Task Card 是否有對應 logs/approvals/ 紀錄。發現真實缺口：10+ 筆歷史任務（含 R1/R2 自己）從未有批准紀錄，因無真實來源可誠實回填，改用 cutoff=2026-07-01 只管未來、不追溯歷史。test 新增 7 個，全綠（共 27）。approval_needed=true（比照 R2），批准紀錄見 logs/approvals/2026-07-01_20260701-003_approval.yaml。"
+```
+
+---
+
+```yaml
+- task_id: "20260701-002"
+  date: "2026-07-01"
+  skill_type: "ops"
+  goal: "R13（R5 補強）：執行 Scenario C（context 重置接續）恢復演練"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 5
+    - tool_name: "file_write"
+      call_count: 4
+    - tool_name: "bash"
+      call_count: 6
+  checkpoints: 3
+  approval_needed: true
+  approval_given: true
+  output_path: "system/RECOVERY_RUNBOOK.md"
+  error_summary: ""
+  estimated_tokens: "~15K"
+  notes: "R1/R2/R5/R7 補強計畫 R13。RECOVERY_RUNBOOK.md 附錄明確標註 Scenario C 從未實測，本卡補上：以 tests/e2e/fixtures/scenario_c_progress.yaml 模擬 3-checkpoint 任務，checkpoint 2 後模擬 context 重置，僅靠 git log --grep + Task Card + 進度檔三個來源重建狀態並正確接續（diff 驗證為純新增，未重做 step 1/2）。四個恢復場景（A/B/D 既有、C 本次）皆已有實測證據。修改 system/，approval_needed=true，批准紀錄見 logs/approvals/2026-07-01_20260701-002_approval.yaml（本次會話 plan-mode 核准）。"
+```
+
+---
+
+```yaml
+- task_id: "20260701-001"
+  date: "2026-07-01"
+  skill_type: "ops"
+  goal: "R14（R7 補強）：前端 M2-M4 治理警示可視化"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "file_write"
+      call_count: 6
+    - tool_name: "bash"
+      call_count: 5
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "frontend/app.js"
+  error_summary: ""
+  estimated_tokens: "~18K"
+  notes: "R1/R2/R5/R7 補強計畫 R14。governance_metrics.py 的 load_audit_task_ids/load_native_overlap 加可選 root 參數（向下相容）；generate_frontend_manifest.py 新增 build_governance_alerts() 重用 M2/M3/M4（M1 因日期相依性明確排除，理由見程式碼註解，避免破壞 data.json 的 CI drift-check 決定性）。前端新增治理警示 section + 顏色 badge，Playwright 截圖確認正確渲染。新增/更新測試全綠。未動 system/。"
+```
+
+---
+
+```yaml
 - task_id: "20260529-011"
   date: "2026-05-29"
   skill_type: "ops"

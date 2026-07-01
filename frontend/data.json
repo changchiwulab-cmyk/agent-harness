@@ -119,10 +119,10 @@
         "status": "ok"
       },
       {
-        "current": "39/45 = 86.7%",
+        "current": "43/45 = 95.6%",
         "id": "M3",
         "name": "audit log 覆蓋率（status ∈ {review, done, failed, partial}）",
-        "status": "warn"
+        "status": "ok"
       },
       {
         "current": "30% (reviewed 2026-05-09)",
