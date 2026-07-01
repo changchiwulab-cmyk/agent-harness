@@ -85,15 +85,20 @@ def load_task_cards() -> list[dict]:
     return cards
 
 
-def load_audit_task_ids() -> set[str]:
+def load_audit_task_ids(root: Path | None = None) -> set[str]:
     """Return set of task_ids that have an entry in AUDIT_LOG.md (excluding empty format example).
 
     Parses ```yaml fenced blocks the same way validators/check_audit_format.py does,
     so any valid YAML quoting style is recognised (double, single, unquoted).
+
+    `root`, when given, overrides the module-level AUDIT_LOG path — used by
+    generate_frontend_manifest.py to compute this against an arbitrary root
+    without disturbing the ROOT-global-based tests in this file.
     """
-    if not AUDIT_LOG.exists():
+    audit_log = (root / "logs" / "AUDIT_LOG.md") if root is not None else AUDIT_LOG
+    if not audit_log.exists():
         return set()
-    text = AUDIT_LOG.read_text(encoding="utf-8")
+    text = audit_log.read_text(encoding="utf-8")
     ids: set[str] = set()
     for block in re.findall(r"```yaml\n(.*?)\n```", text, re.DOTALL):
         try:
@@ -118,10 +123,11 @@ def count_dir_md_files(d: Path) -> int:
     return sum(1 for p in d.glob("*.md") if p.is_file())
 
 
-def load_native_overlap() -> dict:
-    if not NATIVE_OVERLAP.exists():
+def load_native_overlap(root: Path | None = None) -> dict:
+    native_overlap = (root / "system" / "NATIVE_OVERLAP.yaml") if root is not None else NATIVE_OVERLAP
+    if not native_overlap.exists():
         return {}
-    return yaml.safe_load(NATIVE_OVERLAP.read_text(encoding="utf-8")) or {}
+    return yaml.safe_load(native_overlap.read_text(encoding="utf-8")) or {}
 
 
 # --- Metric calculators ----------------------------------------------------

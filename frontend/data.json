@@ -111,6 +111,26 @@
     }
   ],
   "overview": {
+    "alerts": [
+      {
+        "current": "26/3 = 8.67",
+        "id": "M2",
+        "name": "outputs/drafts:reports 比例",
+        "status": "ok"
+      },
+      {
+        "current": "39/41 = 95.1%",
+        "id": "M3",
+        "name": "audit log 覆蓋率（status ∈ {review, done, failed, partial}）",
+        "status": "ok"
+      },
+      {
+        "current": "30% (reviewed 2026-05-09)",
+        "id": "M4",
+        "name": "Claude Code 原生功能重疊度（人工評估）",
+        "status": "ok"
+      }
+    ],
     "gate_results": {
       "completion_check": {
         "not_run": 1,
