@@ -1,0 +1,52 @@
+task_id: "20260702-R03"
+date: "2026-07-02"
+status: "in_progress"
+
+goal: "CLAUDE.md 第 8 步對齊 D006 執行紀錄使用範圍；補完 4 個 skill 的原生註冊（frontmatter + symlink）"
+context: |
+  2026-07 文件 vs 實作稽核發現 #6 #10：
+  - #6 CLAUDE.md 執行流程第 8 步無條件寫 logs/runs/，與 D006 決議（僅 failed/partial/risk≥high/checkpoints≥3 四種情境）矛盾
+  - #10 .claude/skills/ 只註冊 research（N3 PoC），其餘 analysis/ops/review/writing 4 個 skill 無 frontmatter、無 symlink
+  方向已由使用者於 2026-07-02 plan 核准（補完 PoC 而非只補文件註記）。
+
+input_data:
+  - "CLAUDE.md"
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+  - "memory/active_projects/agent-harness/decisions/20260424-D006_execution-log-scope.yaml"
+  - "skills/"
+  - ".claude/skills/"
+  - "system/NATIVE_OVERLAP.yaml"
+
+definition_of_done:
+  - "CLAUDE.md 第 8 步含 D006 條件（failed / partial / risk≥high / checkpoints≥3 才寫 logs/runs/）"
+  - "ruby scripts/check_context_budget.rb 修改後仍 exit 0（CLAUDE.md + GLOBAL_RULES ≤ 3,000 tokens）"
+  - "skills/{analysis,ops,review,writing}/SKILL.md 都有 name + description frontmatter，格式仿 research"
+  - ".claude/skills/ 有 5 個 symlink（ls .claude/skills/ | wc -l = 5）"
+  - "system/NATIVE_OVERLAP.yaml evidence 更新為 5/5 已註冊"
+  - "每個 SKILL.md 加 frontmatter 後仍 ≤ 1,500 tokens（由 R02 新增的預算檢查驗證）"
+
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260702-R03_docs-skill-registration-summary.md"
+
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+  - "bash"
+
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 0
+
+skill_type: "ops"
+
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"

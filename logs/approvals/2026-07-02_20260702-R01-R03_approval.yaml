@@ -1,0 +1,36 @@
+# 批准紀錄 — 2026-07-02 文件 vs 實作對齊批次（20260702-R01/R02/R03）
+# 批准方式：使用者於 2026-07-02 Claude Code plan mode 審閱並核准修復計畫
+# （含三個方向定案：#2 放寬文件敘述、#5 補 settings.json permissions、依領域拆 3 張卡）。
+# schema 見 system/APPROVAL_POLICY.yaml 的 approval_record 段。
+
+approval_records:
+  - approval_id: "APR-20260702-001"
+    task_id: "20260702-R01"
+    date: "2026-07-02"
+    action: "修改 system/PERMISSIONS.yaml、scripts/permissions_guard.py、.claude/settings.json（deny 清單同步、docstring 誠實化、Edit/Write ask 層落地）"
+    approval_method: "human_confirm"
+    risk_level: "medium"
+    status: "approved"
+    approved_by: "human"
+    rationale: "system/ 規則變更屬 ask 等級；plan mode 逐項列出改動與驗證指令後核准"
+    linked_run: ""
+  - approval_id: "APR-20260702-002"
+    task_id: "20260702-R02"
+    date: "2026-07-02"
+    action: "修改 .github/workflows/spec-consistency.yml、system/GATE_POLICY.yaml、system/validate_task_card.py、scripts/check_spec_consistency.rb、scripts/check_context_budget.rb（CI 補漂移檢查、驗證器收斂）"
+    approval_method: "human_confirm"
+    risk_level: "medium"
+    status: "approved"
+    approved_by: "human"
+    rationale: "system/ 規則與 CI 變更屬 ask 等級；plan mode 核准，含 fetch-depth 與 commit 順序約束"
+    linked_run: ""
+  - approval_id: "APR-20260702-003"
+    task_id: "20260702-R03"
+    date: "2026-07-02"
+    action: "修改 CLAUDE.md 第 8 步、skills/*/SKILL.md frontmatter、.claude/skills/ symlink、system/NATIVE_OVERLAP.yaml"
+    approval_method: "human_confirm"
+    risk_level: "medium"
+    status: "approved"
+    approved_by: "human"
+    rationale: "modify_claude_md 與 modify_skills 屬 ask 等級；plan mode 核准補完 N3 PoC 的 skill 註冊"
+    linked_run: ""
