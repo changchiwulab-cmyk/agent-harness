@@ -25,7 +25,7 @@ permissions:
 
   # === 禁止 ===
   deny:
-    - shell_delete             # rm / rmdir / 任何刪除操作
+    - shell_delete             # rm -r/-f、rmdir、shred、find -delete 等高破壞性刪除（單檔 rm 由模型層自律）
     - send_email               # 直接發送 email
     - send_message_external    # 直接發送外部訊息（LINE/Telegram/Slack）
     - publish_content          # 直接發布內容到任何平台
@@ -33,6 +33,23 @@ permissions:
     - execute_payment          # 任何金流操作
     - auto_write_memory        # 自動寫入長期記憶（未經確認）
     - spawn_background_process # 啟動背景程序
+    - git_force_push           # git push --force（保護遠端歷史與正式資料）
+
+# === deny 執法層級 ===
+# runtime = scripts/permissions_guard.py（PreToolUse hook）有對應攔截規則
+# model   = 無可靠 shell 簽名，靠模型自律 + 人工審核把關
+# 三方同步（本清單 ↔ 本區段 ↔ guard DENY_RULES）由 scripts/test_permissions_guard.py
+# 的 sync 測試在 CI 保證。
+deny_enforcement:
+  shell_delete: runtime
+  send_email: runtime
+  send_message_external: runtime
+  publish_content: runtime
+  modify_production_data: model
+  execute_payment: runtime
+  auto_write_memory: runtime
+  spawn_background_process: runtime
+  git_force_push: runtime
 
 # === 風險等級對應 ===
 risk_levels:

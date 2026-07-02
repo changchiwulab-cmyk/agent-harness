@@ -3,8 +3,15 @@
 
 Claude Code invokes this script before each Bash tool call. It receives the
 tool input on stdin as JSON ({"tool_name": "Bash", "tool_input": {"command": "..."}}),
-matches the command against deny patterns derived from system/PERMISSIONS.yaml,
-and emits a decision on stdout.
+matches the command against the hand-maintained DENY_RULES below, and emits a
+decision on stdout.
+
+DENY_RULES are a manual mapping of system/PERMISSIONS.yaml deny entries to
+shell-level signatures — the guard itself never parses the YAML (it must stay
+dependency-free as a hook). Sync between the two is enforced by the sync test
+in scripts/test_permissions_guard.py (run in CI): every deny entry marked
+`runtime` in PERMISSIONS.yaml `deny_enforcement` must have a rule here, and
+every rule here must exist in the deny list.
 
 Output format (JSON):
     {"decision": "allow"}
@@ -100,7 +107,47 @@ DENY_RULES: tuple[DenyRule, ...] = (
             git\s+push\s+.*(--force\b|-f\b)
             """
         ),
-        description="git force-push blocked (production-data protection)",
+        description="git force-push blocked (PERMISSIONS deny: git_force_push)",
+    ),
+    DenyRule(
+        rule_id="spawn_background_process",
+        pattern=re.compile(
+            r"""(?x)
+            (
+              (^|[\s;&|`]) (nohup|setsid) \s
+              | \bdisown\b
+              | (?<!&) & \s* $          # trailing & (not &&)
+            )
+            """
+        ),
+        description="background process launch blocked (PERMISSIONS deny: spawn_background_process)",
+    ),
+    DenyRule(
+        rule_id="auto_write_memory",
+        pattern=re.compile(
+            r"""(?x)
+            (
+              >{1,2} \s* (\./)? memory/                     # redirect into memory/
+              | (^|[\s;&|`]) tee \s+ (-a\s+)? (\./)? memory/  # tee into memory/
+              | (^|[\s;&|`]) (cp|mv) \s [^;|&]* \s (\./)? memory/
+            )
+            """
+        ),
+        description="shell write into memory/ blocked (PERMISSIONS deny: auto_write_memory)",
+    ),
+    DenyRule(
+        rule_id="publish_content",
+        pattern=re.compile(
+            r"""(?x)
+            curl\s+.*
+            (
+              \b( api\.twitter\.com | api\.x\.com | graph\.facebook\.com
+                | api\.linkedin\.com | api\.medium\.com )\b
+              | /wp-json/
+            )
+            """
+        ),
+        description="content-publishing API call blocked (PERMISSIONS deny: publish_content)",
     ),
 )
 
@@ -135,7 +182,8 @@ def main() -> int:
     if isinstance(tool_input, dict):
         command = tool_input.get("command") or tool_input.get("cmd") or ""
 
-    # Only evaluate Bash-style commands. Edit/Write are guarded by other layers.
+    # Only evaluate Bash-style commands. Edit/Write on ask-level paths are
+    # gated by the permissions.ask rules in .claude/settings.json.
     if tool_name not in ("Bash", "bash", ""):
         print(json.dumps({"decision": "allow"}))
         return 0

@@ -63,12 +63,81 @@ class TestEvaluate(unittest.TestCase):
         self.assertIn("send_email", reason)
 
     def test_rm_without_destructive_flags_allowed(self):
-        # `rm filename` (no -r/-f) is technically still destructive but rare in
-        # the harness; the current rule set deliberately limits scope to the
-        # high-blast-radius -r/-f variants. This test pins that scoping.
+        # PERMISSIONS.yaml shell_delete deliberately scopes runtime blocking to
+        # the high-blast-radius -r/-f variants; single-file `rm` is left to
+        # model-level judgement. This test pins that scoping.
         decision, reason = guard.evaluate("rm tempfile.txt")
         self.assertEqual(decision, "allow")
         self.assertIsNone(reason)
+
+    def test_nohup_blocked(self):
+        decision, reason = guard.evaluate("nohup python3 worker.py")
+        self.assertEqual(decision, "block")
+        self.assertIn("spawn_background_process", reason)
+
+    def test_trailing_ampersand_blocked(self):
+        decision, reason = guard.evaluate("python3 server.py &")
+        self.assertEqual(decision, "block")
+        self.assertIn("spawn_background_process", reason)
+
+    def test_double_ampersand_allowed(self):
+        decision, reason = guard.evaluate("make build && make test")
+        self.assertEqual(decision, "allow")
+        self.assertIsNone(reason)
+
+    def test_tee_into_memory_blocked(self):
+        decision, reason = guard.evaluate("echo note | tee memory/notes.md")
+        self.assertEqual(decision, "block")
+        self.assertIn("auto_write_memory", reason)
+
+    def test_redirect_into_memory_blocked(self):
+        decision, reason = guard.evaluate("echo fact >> memory/long_term.md")
+        self.assertEqual(decision, "block")
+        self.assertIn("auto_write_memory", reason)
+
+    def test_read_from_memory_allowed(self):
+        decision, reason = guard.evaluate("grep -rn topic memory/")
+        self.assertEqual(decision, "allow")
+        self.assertIsNone(reason)
+
+    def test_curl_publish_api_blocked(self):
+        decision, reason = guard.evaluate(
+            "curl -X POST https://api.twitter.com/2/tweets -d '{}'"
+        )
+        self.assertEqual(decision, "block")
+        self.assertIn("publish_content", reason)
+
+
+class TestPermissionsSync(unittest.TestCase):
+    """DENY_RULES must stay in lockstep with system/PERMISSIONS.yaml.
+
+    The guard cannot parse YAML at hook time (no dependencies), so this test
+    is the enforcement point for the docstring's sync claim: deny list ↔
+    deny_enforcement ↔ DENY_RULES must agree three ways.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        import yaml  # available in CI (pip install pyyaml); not needed by the hook itself
+
+        doc = yaml.safe_load(guard.PERMISSIONS_PATH.read_text(encoding="utf-8"))
+        cls.deny = set(doc["permissions"]["deny"])
+        cls.enforcement = dict(doc["deny_enforcement"])
+        cls.rule_ids = {rule.rule_id for rule in guard.DENY_RULES}
+
+    def test_enforcement_covers_exactly_the_deny_list(self):
+        self.assertEqual(self.deny, set(self.enforcement.keys()))
+
+    def test_every_runtime_entry_has_a_guard_rule(self):
+        runtime_ids = {k for k, v in self.enforcement.items() if v == "runtime"}
+        self.assertEqual(runtime_ids, self.rule_ids)
+
+    def test_every_guard_rule_is_a_declared_deny(self):
+        self.assertTrue(self.rule_ids <= self.deny,
+                        f"guard rules not in PERMISSIONS deny list: {self.rule_ids - self.deny}")
+
+    def test_enforcement_values_are_valid(self):
+        self.assertTrue(set(self.enforcement.values()) <= {"runtime", "model"})
 
 
 class TestMainEntrypoint(unittest.TestCase):
