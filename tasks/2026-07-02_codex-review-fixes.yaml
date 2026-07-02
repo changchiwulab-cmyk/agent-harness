@@ -1,6 +1,6 @@
 task_id: "20260702-R04"
 date: "2026-07-02"
-status: "in_progress"
+status: "done"
 
 goal: "修復 PR #122 Codex review 三項發現：audit generator 對 squash merge 的決定論、guard 的 & 分隔符與引號路徑繞過"
 context: |
@@ -45,8 +45,14 @@ max_web_searches: 0
 
 skill_type: "ops"
 
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - commit: "dc87573"
+    stage: "任務卡 + 批准紀錄"
+  - commit: "319077a"
+    stage: "guard 補 ampersand 分隔符與引號 memory 路徑"
+  - commit: "b65b81e"
+    stage: "audit generator 改卡片優先"
+actual_tool_calls: 12
+result_summary: "DoD 6/6 通過。Codex 三項發現全修：generator 卡片優先（squash 模擬下 --check 綠）、guard 擋分隔符 ampersand 與引號 memory 路徑；guard 26 測試、generator 8 測試全綠，12 個 smoke case 全對。"
+completion_time: "2026-07-02"
 audit_log_ref: "logs/AUDIT_LOG.md"
