@@ -6,14 +6,22 @@ git history, leaving operator-authored fields (notes, error_summary) intact.
 
 Why:
     The hand-written AUDIT_LOG has self-reporting bias — the agent grades
-    itself. By deriving task_id / date / skill_type / goal / status / output_path
-    from the Task Card itself and `checkpoints` from `git log --grep="checkpoint:
-    [task_id]"`, the audit becomes machine-checkable against the artifacts
-    that actually exist on disk and in git.
+    itself. Deriving task_id / date / skill_type / goal / status / output_path
+    from the Task Card itself makes the audit machine-checkable against the
+    artifacts that exist on disk.
+
+Checkpoints:
+    The card's own `checkpoints:` field is authoritative when non-empty — it
+    lives in the same reviewed diff as the card, and unlike `git log --grep`
+    it survives squash merges (branch checkpoint commits become unreachable
+    on main after a squash, which would otherwise make `--check` fail every
+    CI run). Cards without recorded checkpoints fall back to
+    `git log --grep="checkpoint: [task_id]"`.
 
 Behavior:
     - Reads tasks/20*.yaml.
-    - For each task, looks up matching `checkpoint: [task_id]` commits via git.
+    - For each task, uses the card's recorded checkpoints, falling back to
+      matching `checkpoint: [task_id]` commits via git.
     - Renders a YAML record per task and emits AUDIT_LOG.md with a stable header.
     - If --check is passed, compares generated body against the existing file's
       auto-section and fails non-zero on drift.
@@ -88,6 +96,14 @@ def find_checkpoints(task_id: str, root: Path) -> list[dict[str, str]]:
     return rows
 
 
+def resolve_checkpoints(task: dict[str, Any], root: Path) -> list[dict[str, str]]:
+    """Card-recorded checkpoints when present, else git-derived (see docstring)."""
+    recorded = task.get("checkpoints")
+    if isinstance(recorded, list) and recorded:
+        return [dict(item) for item in recorded if isinstance(item, dict)]
+    return find_checkpoints(str(task.get("task_id", "")), root)
+
+
 def derive_record(task: dict[str, Any], root: Path) -> dict[str, Any]:
     task_id = str(task.get("task_id", ""))
     output = task.get("expected_output") or {}
@@ -107,7 +123,7 @@ def derive_record(task: dict[str, Any], root: Path) -> dict[str, Any]:
         "risk_level": str(task.get("risk_level", "")),
         "approval_needed": bool(task.get("approval_needed", False)),
         "output_path": output_path,
-        "checkpoints": find_checkpoints(task_id, root),
+        "checkpoints": resolve_checkpoints(task, root),
         "actual_tool_calls": task.get("actual_tool_calls"),
         "result_summary": str(task.get("result_summary", "")),
         "completion_time": str(task.get("completion_time", "")),
