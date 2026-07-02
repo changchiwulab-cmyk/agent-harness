@@ -97,10 +97,15 @@ def find_checkpoints(task_id: str, root: Path) -> list[dict[str, str]]:
 
 
 def resolve_checkpoints(task: dict[str, Any], root: Path) -> list[dict[str, str]]:
-    """Card-recorded checkpoints when present, else git-derived (see docstring)."""
+    """Card-recorded checkpoints when present, else git-derived (see docstring).
+
+    Old cards record checkpoints as free-form strings; keep them as
+    {"note": ...} rather than dropping them.
+    """
     recorded = task.get("checkpoints")
     if isinstance(recorded, list) and recorded:
-        return [dict(item) for item in recorded if isinstance(item, dict)]
+        return [dict(item) if isinstance(item, dict) else {"note": str(item)}
+                for item in recorded]
     return find_checkpoints(str(task.get("task_id", "")), root)
 
 
