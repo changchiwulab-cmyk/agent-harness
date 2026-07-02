@@ -1,6 +1,6 @@
 task_id: "20260702-R03"
 date: "2026-07-02"
-status: "in_progress"
+status: "done"
 
 goal: "CLAUDE.md 第 8 步對齊 D006 執行紀錄使用範圍；補完 4 個 skill 的原生註冊（frontmatter + symlink）"
 context: |
@@ -45,8 +45,10 @@ max_web_searches: 0
 
 skill_type: "ops"
 
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - commit: "2c1701e"
+    stage: "CLAUDE.md 第 8 步對齊 D006 + 4 skill frontmatter + symlink + NATIVE_OVERLAP"
+actual_tool_calls: 8
+result_summary: "DoD 6/6 通過。CLAUDE.md 第 8 步加 D006 條件（預算 ~1216/3000）；4 個 SKILL.md frontmatter + symlink，5/5 註冊；新 skill 立即出現在 session 可用清單，原生載入驗證成功。"
+completion_time: "2026-07-02"
 audit_log_ref: "logs/AUDIT_LOG.md"

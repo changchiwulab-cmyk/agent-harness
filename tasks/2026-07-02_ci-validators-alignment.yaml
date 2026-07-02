@@ -1,6 +1,6 @@
 task_id: "20260702-R02"
 date: "2026-07-02"
-status: "in_progress"
+status: "done"
 
 goal: "把 AUDIT_LOG 漂移檢查接進 CI、修正 GATE_POLICY 失真敘述、收斂雙驗證器欄位、補 skill token 預算守門"
 context: |
@@ -49,8 +49,12 @@ max_web_searches: 0
 
 skill_type: "ops"
 
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - commit: "3d83ddd"
+    stage: "驗證器欄位收斂 + allowed_tools 守門 + parity 測試 + skill 預算檢查"
+  - commit: "faca132"
+    stage: "CI 加 AUDIT_LOG 漂移檢查 + fetch-depth: 0"
+actual_tool_calls: 14
+result_summary: "DoD 8/8 通過。REQUIRED_FIELDS 雙驗證器收斂為 10 欄 + parity 測試；allowed_tools 47 卡全過；GATE_POLICY 敘述對齊；skill 預算逐檔守門；CI 補 drift check（含 fetch-depth: 0）。AUDIT_LOG 於收尾統一重生。"
+completion_time: "2026-07-02"
 audit_log_ref: "logs/AUDIT_LOG.md"

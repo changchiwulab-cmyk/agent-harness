@@ -1,6 +1,6 @@
 task_id: "20260702-R01"
 date: "2026-07-02"
-status: "in_progress"
+status: "done"
 
 goal: "對齊 PERMISSIONS.yaml 與 permissions_guard.py：deny 清單雙向同步、docstring 誠實化、Edit/Write ask 層落地到 settings.json"
 context: |
@@ -46,8 +46,12 @@ max_web_searches: 0
 
 skill_type: "ops"
 
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
+checkpoints:
+  - commit: "91277ad"
+    stage: "deny 清單雙向同步 + guard docstring 誠實化 + 三方 sync 測試"
+  - commit: "9055c77"
+    stage: "settings.json 補 permissions.ask（延後至 system/skills 編輯完成後）"
+actual_tool_calls: 12
+result_summary: "DoD 7/7 通過。PERMISSIONS.yaml 敘述對齊 + git_force_push + deny_enforcement 區段；guard 新增 3 條 runtime 規則；22 測試綠、10 smoke case 全對；settings.json permissions.ask 落地。"
+completion_time: "2026-07-02"
 audit_log_ref: "logs/AUDIT_LOG.md"
