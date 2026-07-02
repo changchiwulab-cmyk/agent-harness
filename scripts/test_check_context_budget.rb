@@ -80,4 +80,27 @@ class TestConstants < Minitest::Test
   def test_ascii_chars_per_token_is_rough_estimate
     assert_equal 4, ASCII_CHARS_PER_TOKEN
   end
+
+  def test_skill_budget_matches_claude_md_rule
+    # CLAUDE.md「單一 skill prompt ≤ 1,500 tokens」
+    assert_equal 1_500, SKILL_TOKEN_BUDGET
+  end
+
+  def test_skill_glob_targets_skill_prompts
+    assert_equal 'skills/*/SKILL.md', SKILL_GLOB
+  end
+end
+
+class TestSkillBudgets < Minitest::Test
+  def test_all_current_skill_prompts_within_budget
+    Dir.chdir(File.join(__dir__, '..')) do
+      files = Dir.glob(SKILL_GLOB)
+      refute_empty files, 'skills/*/SKILL.md 不應為空'
+      files.each do |path|
+        est = estimate_tokens(path)
+        assert est <= SKILL_TOKEN_BUDGET,
+               "#{path} 超出 skill prompt 預算（~#{est} > #{SKILL_TOKEN_BUDGET}）"
+      end
+    end
+  end
 end

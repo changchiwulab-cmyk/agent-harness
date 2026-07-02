@@ -8,7 +8,7 @@ gates:
   schema_check:
     description: "Task Card 欄位完整性與格式正確性"
     checks:
-      - task_id 非空且格式為 YYYYMMDD-###
+      - task_id 非空且格式為 YYYYMMDD-NNN 或 YYYYMMDD-XNNN（字母前綴選用，同 TASK_ID_PATTERN）
       - goal 非空
       - definition_of_done 至少 1 條
       - skill_type 為有效值（research / writing / ops / review / analysis）

@@ -94,6 +94,26 @@ class TestTaskIdPattern < Minitest::Test
   end
 end
 
+# ── 測試雙驗證器 REQUIRED_FIELDS parity ──────────────────────────────────────
+# D-O01 決議保留雙驗證器（Ruby CI 全量 + Python 單卡 CLI），欄位清單必須一致。
+# 從 system/validate_task_card.py 原始碼抽出 REQUIRED_FIELDS 清單直接比對，
+# 任一邊單獨改動都會在 CI 現形。
+class TestValidatorParity < Minitest::Test
+  PYTHON_VALIDATOR = File.join(__dir__, '..', 'system', 'validate_task_card.py')
+
+  def python_required_fields
+    src = File.read(PYTHON_VALIDATOR, encoding: 'UTF-8')
+    m = src.match(/REQUIRED_FIELDS\s*=\s*\[(.*?)\]/m)
+    refute_nil m, 'validate_task_card.py 找不到 REQUIRED_FIELDS 定義'
+    m[1].scan(/"([^"]+)"/).flatten
+  end
+
+  def test_required_fields_match_python_validator
+    assert_equal REQUIRED_FIELDS.sort, python_required_fields.sort,
+                 'Ruby 與 Python 驗證器的 REQUIRED_FIELDS 不同步'
+  end
+end
+
 # ── 測試 R2 logs schema lint 常數 ─────────────────────────────────────────────
 class TestLogsSchemaLintConstants < Minitest::Test
   def test_run_status_enum
