@@ -137,22 +137,22 @@
     "task_risk": {
       "high": 1,
       "low": 30,
-      "medium": 14
+      "medium": 17
     },
     "task_skill": {
       "analysis": 4,
-      "ops": 26,
+      "ops": 29,
       "research": 5,
       "review": 6,
       "writing": 4
     },
     "task_status": {
-      "done": 22,
+      "done": 25,
       "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 45
+    "task_total": 48
   },
   "tasks": [
     {
@@ -604,6 +604,36 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-02",
+      "goal": "把 AUDIT_LOG 漂移檢查接進 CI、修正 GATE_POLICY 失真敘述、收斂雙驗證器欄位、補 skill token 預算守門",
+      "path": "tasks/2026-07-02_ci-validators-alignment.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260702-R02"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-02",
+      "goal": "CLAUDE.md 第 8 步對齊 D006 執行紀錄使用範圍；補完 4 個 skill 的原生註冊（frontmatter + symlink）",
+      "path": "tasks/2026-07-02_docs-skill-registration.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260702-R03"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-02",
+      "goal": "對齊 PERMISSIONS.yaml 與 permissions_guard.py：deny 清單雙向同步、docstring 誠實化、Edit/Write ask 層落地到 settings.json",
+      "path": "tasks/2026-07-02_guard-permissions-alignment.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260702-R01"
     }
   ]
 }
