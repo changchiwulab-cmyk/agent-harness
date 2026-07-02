@@ -1,0 +1,52 @@
+task_id: "20260702-R04"
+date: "2026-07-02"
+status: "in_progress"
+
+goal: "修復 PR #122 Codex review 三項發現：audit generator 對 squash merge 的決定論、guard 的 & 分隔符與引號路徑繞過"
+context: |
+  PR #122 的 Codex 自動 review 留下 3 條 inline 建議，本地實測全部屬實：
+  - P1：generate_audit_log.py checkpoints 靠 git log --grep 推導，squash merge 後
+    branch 的 checkpoint commit 在 main 不可達 → CI 的 audit drift check 讓 main 永久紅
+  - P2：spawn_background_process 只擋行尾 &，`cmd & echo ok` 分隔符用法繞過
+  - P3：auto_write_memory 不含引號變體，`>> "memory/f"`、`tee "memory/f"`、`cp a "memory/a"` 繞過
+  P1 修向經使用者定案：卡片優先（checkpoints 欄位非空直接用，空的 fallback git grep）。
+
+input_data:
+  - "scripts/generate_audit_log.py"
+  - "scripts/test_generate_audit_log.py"
+  - "scripts/permissions_guard.py"
+  - "scripts/test_permissions_guard.py"
+
+definition_of_done:
+  - "generator 改卡片優先後，模擬 squash merge（detached checkout + git merge --squash）下 generate_audit_log.py --check exit 0"
+  - "guard 擋 `python3 server.py & echo ok`（分隔符 &）且不誤擋 `2>&1`、`&&`、URL 內的 &"
+  - "guard 擋三種引號 memory 寫入（>> \"memory/f\"、tee \"memory/f\"、cp a \"memory/a\"）"
+  - "python3 scripts/test_permissions_guard.py 與 python3 scripts/test_generate_audit_log.py 全綠（含新測試）"
+  - "AUDIT_LOG 與 frontend manifest 重生後兩個 --check 均 exit 0"
+  - "push 後 Spec Consistency workflow 綠"
+
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260702-R04_codex-review-fixes-summary.md"
+
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+  - "bash"
+
+max_tool_calls: 25
+max_retries: 3
+max_web_searches: 0
+
+skill_type: "ops"
+
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
