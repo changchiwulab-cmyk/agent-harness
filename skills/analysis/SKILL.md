@@ -1,3 +1,8 @@
+---
+name: analysis
+description: 一人公司的決策分析 skill — 方案評估、Go/No-Go 判斷、策略分析、可行性評估。回答「該怎麼選」（research 回答「事實是什麼」）。觸發場景：使用者要做決策/評估/選型，或 Task Card 的 skill_type 為 analysis。行為：列選項（含「不做」）→ 六維評估 → 區分事實/推論/待驗證/高風險假設 → 建議排序與理由。
+---
+
 # Analysis Skill
 
 ## 用途

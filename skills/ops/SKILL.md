@@ -1,3 +1,8 @@
+---
+name: ops
+description: 一人公司的營運操作 skill — 表格整理、資料清洗、排程規劃、流程文件化、檔案組織。觸發場景：使用者要整理/清洗/組織資料或檔案，或 Task Card 的 skill_type 為 ops。行為：先輸出操作計畫，確認後逐步執行，每個修改步驟 checkpoint，最後輸出變更摘要。
+---
+
 # Ops Skill
 
 ## 用途
