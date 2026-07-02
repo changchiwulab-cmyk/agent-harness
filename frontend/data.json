@@ -137,22 +137,22 @@
     "task_risk": {
       "high": 1,
       "low": 30,
-      "medium": 17
+      "medium": 18
     },
     "task_skill": {
       "analysis": 4,
-      "ops": 29,
+      "ops": 30,
       "research": 5,
       "review": 6,
       "writing": 4
     },
     "task_status": {
-      "done": 25,
+      "done": 26,
       "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 48
+    "task_total": 49
   },
   "tasks": [
     {
@@ -614,6 +614,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260702-R02"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-02",
+      "goal": "修復 PR #122 Codex review 三項發現：audit generator 對 squash merge 的決定論、guard 的 & 分隔符與引號路徑繞過",
+      "path": "tasks/2026-07-02_codex-review-fixes.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260702-R04"
     },
     {
       "approval_needed": true,

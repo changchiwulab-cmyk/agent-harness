@@ -7,6 +7,29 @@
 
 <!-- AUTO_AUDIT_BEGIN -->
 ```yaml
+task_id: 20260702-R04
+date: '2026-07-02'
+skill_type: ops
+goal: '修復 PR #122 Codex review 三項發現：audit generator 對 squash merge 的決定論、guard 的 &
+  分隔符與引號路徑繞過'
+status: done
+risk_level: medium
+approval_needed: true
+output_path: outputs/drafts/20260702-R04_codex-review-fixes-summary.md
+checkpoints:
+- commit: dc87573
+  stage: 任務卡 + 批准紀錄
+- commit: 319077a
+  stage: guard 補 ampersand 分隔符與引號 memory 路徑
+- commit: b65b81e
+  stage: audit generator 改卡片優先
+actual_tool_calls: 12
+result_summary: DoD 6/6 通過。Codex 三項發現全修：generator 卡片優先（squash 模擬下 --check 綠）、guard
+  擋分隔符 ampersand 與引號 memory 路徑；guard 26 測試、generator 8 測試全綠，12 個 smoke case 全對。
+completion_time: '2026-07-02'
+```
+
+```yaml
 task_id: 20260702-R03
 date: '2026-07-02'
 skill_type: ops
@@ -16,10 +39,8 @@ risk_level: medium
 approval_needed: true
 output_path: outputs/drafts/20260702-R03_docs-skill-registration-summary.md
 checkpoints:
-- commit: 3cd7748
-  subject: 'checkpoint: [20260702-R03] 三張卡標 done + 摘要草稿'
 - commit: 2c1701e
-  subject: 'checkpoint: [20260702-R03] CLAUDE.md 第 8 步對齊 D006 + 補完 skill 原生註冊'
+  stage: CLAUDE.md 第 8 步對齊 D006 + 4 skill frontmatter + symlink + NATIVE_OVERLAP
 actual_tool_calls: 8
 result_summary: DoD 6/6 通過。CLAUDE.md 第 8 步加 D006 條件（預算 ~1216/3000）；4 個 SKILL.md frontmatter
   + symlink，5/5 註冊；新 skill 立即出現在 session 可用清單，原生載入驗證成功。
@@ -36,10 +57,10 @@ risk_level: medium
 approval_needed: true
 output_path: outputs/drafts/20260702-R02_ci-validators-alignment-summary.md
 checkpoints:
-- commit: faca132
-  subject: 'checkpoint: [20260702-R02] CI 加 AUDIT_LOG 漂移檢查 + fetch-depth: 0'
 - commit: 3d83ddd
-  subject: 'checkpoint: [20260702-R02] 驗證器欄位收斂 + allowed_tools 守門 + skill 預算檢查'
+  stage: 驗證器欄位收斂 + allowed_tools 守門 + parity 測試 + skill 預算檢查
+- commit: faca132
+  stage: 'CI 加 AUDIT_LOG 漂移檢查 + fetch-depth: 0'
 actual_tool_calls: 14
 result_summary: 'DoD 8/8 通過。REQUIRED_FIELDS 雙驗證器收斂為 10 欄 + parity 測試；allowed_tools
   47 卡全過；GATE_POLICY 敘述對齊；skill 預算逐檔守門；CI 補 drift check（含 fetch-depth: 0）。AUDIT_LOG
@@ -58,13 +79,10 @@ risk_level: medium
 approval_needed: true
 output_path: outputs/drafts/20260702-R01_guard-permissions-alignment-summary.md
 checkpoints:
-- commit: 9055c77
-  subject: 'checkpoint: [20260702-R01] settings.json 補 permissions.ask 鏡射 PERMISSIONS.yaml
-    ask 清單'
 - commit: 91277ad
-  subject: 'checkpoint: [20260702-R01] deny 清單雙向同步 + guard docstring 誠實化'
-- commit: ea91662
-  subject: 'checkpoint: [20260702-R01] 建立三張對齊任務卡 + 批准紀錄'
+  stage: deny 清單雙向同步 + guard docstring 誠實化 + 三方 sync 測試
+- commit: 9055c77
+  stage: settings.json 補 permissions.ask（延後至 system/skills 編輯完成後）
 actual_tool_calls: 12
 result_summary: DoD 7/7 通過。PERMISSIONS.yaml 敘述對齊 + git_force_push + deny_enforcement
   區段；guard 新增 3 條 runtime 規則；22 測試綠、10 smoke case 全對；settings.json permissions.ask
@@ -81,7 +99,8 @@ status: done
 risk_level: low
 approval_needed: false
 output_path: frontend/app.js
-checkpoints: []
+checkpoints:
+- note: 'checkpoint: 20260529-011 R7 frontend governance overview panel'
 actual_tool_calls: 9
 result_summary: 前端新增『治理總覽』面板：manifest build_overview（由既有 tasks+logs 計算，root-parameterized）→
   data.json overview 鍵；test_empty_repo 同步更新；index.html + app.js renderOverview 以既有
@@ -99,7 +118,8 @@ status: done
 risk_level: medium
 approval_needed: true
 output_path: system/RECOVERY_RUNBOOK.md
-checkpoints: []
+checkpoints:
+- note: 'checkpoint: 20260529-010 R8 recovery runbook + restore drill'
 actual_tool_calls: 8
 result_summary: 新增 system/RECOVERY_RUNBOOK.md（4 場景 + 資料來源 + 一致性檢查 + GATE_POLICY rollback
   對應）。實測場景 A：破壞工作副本→git checkout 還原，~5ms、byte-identical、工作樹還原乾淨（附錄記錄）。GATE_POLICY
@@ -116,7 +136,8 @@ status: done
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-05-29_observability-metrics.md
-checkpoints: []
+checkpoints:
+- note: 'checkpoint: 20260529-009 R7 observability metrics engine'
 actual_tool_calls: 9
 result_summary: governance_metrics.py 補三層可觀測性（工作流/業務/失敗）+ --observability flag + 7
   個新測試（含 --json 仍為 M1–M4 的回歸守門）。產出觀測報告草稿。未改 system/、未動 CI。前端『治理成熟度』面板刻意延後：接入需改 data.json
@@ -135,7 +156,8 @@ status: done
 risk_level: medium
 approval_needed: true
 output_path: system/EXECUTION_LOG_SCHEMA.yaml
-checkpoints: []
+checkpoints:
+- note: 'checkpoint: 20260529-008 R6 execution-log token source field'
 actual_tool_calls: 5
 result_summary: EXECUTION_LOG_SCHEMA token_estimate 新增 source 欄（dashboard_measured/rule_estimated/not_recorded）；RUN-20260529-003
   示範 source=rule_estimated。system/ 變更待草稿 PR review。
@@ -151,7 +173,8 @@ status: done
 risk_level: low
 approval_needed: true
 output_path: scripts/check_decision_revisit.rb
-checkpoints: []
+checkpoints:
+- note: 'checkpoint: 20260529-007 R4 decision revisit tracker'
 actual_tool_calls: 7
 result_summary: 新增 check_decision_revisit.rb（唯讀，量化觸發比對 + DUE/OK/MANUAL + --json）+
   單元測試（接入 CI）+ RETRO_FLOW 加決策回看列。本機跑：7 筆全列，D001/D006 量化評為 OK、其餘 MANUAL、DUE=0。RETRO_FLOW
@@ -168,7 +191,8 @@ status: done
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-05-29_governance-data-analysis.md
-checkpoints: []
+checkpoints:
+- note: 'checkpoint: 20260529-006 R3 analysis cost sample (governance data analysis)'
 actual_tool_calls: 7
 result_summary: '產出治理數據分析草稿（39 task cards、audit 覆蓋 94.3%、draft:report≈8:1、logs runs2/appr1/err2、7
   決策 0 revisit）。貢獻 analysis 成本樣本 #1（~16K）。建議 RETRO 重算 analysis 校準（現有 3 張 analysis
@@ -186,7 +210,8 @@ status: done
 risk_level: low
 approval_needed: true
 output_path: scripts/check_spec_consistency.rb
-checkpoints: []
+checkpoints:
+- note: 'checkpoint: 20260529-005 R2 logs schema lint + unit tests'
 actual_tool_calls: 8
 result_summary: check_spec_consistency.rb 新增 3 段 logs schema lint（runs/approvals/errors，含枚舉與必填欄位、跳過
   TEMPLATE）+ test_check_spec_consistency.rb 新增枚舉常數測試。現有 logs 全通過。變更影響 CI 行為，待草稿 PR
@@ -203,7 +228,8 @@ status: done
 risk_level: medium
 approval_needed: true
 output_path: logs/approvals/2026-04-09_20260409-001_approval.yaml
-checkpoints: []
+checkpoints:
+- note: 'checkpoint: 20260529-004 R1 approval record schema + backfill'
 actual_tool_calls: 8
 result_summary: approval_record schema 寫入 APPROVAL_POLICY.yaml；APPROVAL_LOG_TEMPLATE.yaml
   + 首筆回填樣本（RUN-20260409-001 的 2 筆批准）建立；RETRO_FLOW 註記 schema 位置。system/ 變更待草稿 PR review/merge（approval_given
@@ -221,7 +247,8 @@ status: done
 risk_level: low
 approval_needed: false
 output_path: logs/runs/RUN-20260529-003.yaml
-checkpoints: []
+checkpoints:
+- note: 'checkpoint: 20260529-003 R5 failure drill (errors/runs paths + e2e regression)'
 actual_tool_calls: 9
 result_summary: 首次坐實失敗路徑：broken fixture 經 validate_task_card 確實觸發 schema_failure→重試
   1 次→停；產出即時 error log（logs/errors/）+ status=failed 的 run log（logs/runs/，gate_results.schema_check=fail）；新增
@@ -238,7 +265,8 @@ status: done
 risk_level: low
 approval_needed: true
 output_path: outputs/reports/harness-self-assessment-v1.md
-checkpoints: []
+checkpoints:
+- note: 'checkpoint: 20260529-002 promote self-assessment to reports/'
 actual_tool_calls: 6
 result_summary: 依 RETRO_FLOW §5 晉升完成：outputs/reports/harness-self-assessment-v1.md（檔頭加晉升標記＋採納清單）；原草稿加回指保留。內容與
   draft 一致，未修改任何 system/ 檔。
@@ -254,7 +282,9 @@ status: done
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-05-29_harness-self-assessment.md
-checkpoints: []
+checkpoints:
+- note: 'checkpoint: 20260529-001 harness self-assessment (eval + optimization roadmap)
+    draft'
 actual_tool_calls: 14
 result_summary: 綜合 ≈7/10，成熟度等級 3（生產前）。業界十維平均 7.2（安全 9 / 治理 9 為招牌，可觀測 6 / 耐久 6 為短板）；馬鞍工程六原則平均
   7.0（驗證集中化 9 最高，執行紀錄結構化 5 最低）。校正 3 項原始誤判。產出 R1–R10 roadmap，單一最高槓桿＝R5 故障演練。產出：outputs/drafts/2026-05-29_harness-self-assessment.md。未修改任何
@@ -271,7 +301,8 @@ status: review
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-05-09_methodology_outline.md
-checkpoints: []
+checkpoints:
+- note: '419ebaf checkpoint: 20260509-W01 methodology outline draft + audit'
 actual_tool_calls: 6
 result_summary: DoD 7/7 通過。主軸命題 3 候選 + 推薦 T1（用契約取代信任）；12 章大綱（~40K 字），每章帶 Harness 實證；三形態取捨推薦先部落格→課程→書；與
   LangChain / Chip Huyen / Anthropic best practice 差異化定位；2 個讀者反對意見已預備回應。
@@ -336,7 +367,9 @@ status: review
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-05-09_n08_w01-chapter-one-draft.md
-checkpoints: []
+checkpoints:
+- note: '562a31b checkpoint: N6/N7/N8 task cards created'
+- note: 'bff62c1 checkpoint: 20260509-N08 W01 elevator pitch + chapter 1 draft'
 actual_tool_calls: 5
 result_summary: DoD 7/7 通過。Elevator pitch ~180 字 + 第 1 章草稿 ~3,650 字（≥3,200 ✅）。實證引用
   20260404-S01（DoD 6/6 通過 + error_summary 第 3 次 web search rate limit），來源 logs/AUDIT_LOG.md
@@ -354,7 +387,9 @@ status: review
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-05-09_n07_native-memory-evaluation.md
-checkpoints: []
+checkpoints:
+- note: '562a31b checkpoint: N6/N7/N8 task cards created'
+- note: '7b79480 checkpoint: 20260509-N07 native memory evaluation -> Conditional-Go'
 actual_tool_calls: 6
 result_summary: DoD 7/7 通過。建議 Conditional-Go：4 條啟用條件（C1 寫入仍須人工確認；C2 namespace 限定；C3
   不走雲同步；C4 與 N6 plugin 相容）。比照 N3 Skills symlink 模式可避免雙寫漂移。後續候補 M1（PoC：symlink + namespace
@@ -372,7 +407,8 @@ status: review
 risk_level: high
 approval_needed: true
 output_path: outputs/drafts/2026-05-09_n06_v3-plugin-bootstrap.md
-checkpoints: []
+checkpoints:
+- note: '562a31b checkpoint: N6/N7/N8 task cards created'
 actual_tool_calls: 18
 result_summary: "使用者明示核准 + D007 完成 4 子題決策。\n本 session 完成 DoD #1/#2/#3/#4/#5/#7（檔案在\
   \ outputs/drafts/agent-governance-bootstrap/）：\n  - plugin.json manifest（5 commands\
@@ -398,7 +434,8 @@ status: review
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/governance-metrics-2026-05.md
-checkpoints: []
+checkpoints:
+- note: '04d9ce8 checkpoint: 20260509-N05 governance metrics automation'
 actual_tool_calls: 6
 result_summary: DoD 8/8 通過。scripts/governance_metrics.py（M1-M4 採集 + markdown/JSON
   雙輸出 + warn/alert 分級退出碼）+ scripts/test_governance_metrics.py（15 個測試全綠）+ system/NATIVE_OVERLAP.yaml（M4
@@ -417,7 +454,8 @@ status: review
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-05-09_n04_governance-plugin-skeleton.md
-checkpoints: []
+checkpoints:
+- note: '4900614 checkpoint: 20260509-N04 governance plugin skeleton'
 actual_tool_calls: 5
 result_summary: DoD 8/8 通過。skeleton 含：plugin.json manifest、5 slash command 介面契約、4
   schema 草案、2 hook 行為、2 standalone validator、README outline、v2→plugin 對照表、暫不做清單。確認
@@ -436,7 +474,8 @@ status: review
 risk_level: medium
 approval_needed: true
 output_path: outputs/drafts/2026-05-09_n03_skills-native-poc.md
-checkpoints: []
+checkpoints:
+- note: '4c65a40 checkpoint: 20260509-N03 skills native registration PoC'
 actual_tool_calls: 7
 result_summary: DoD 7/7 通過。skills/research/SKILL.md 加 frontmatter（name + description
   151 字），原內容不刪改；.claude/skills/research → ../../skills/research symlink 建立（避免雙寫漂移）；H1
@@ -454,7 +493,8 @@ status: review
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-05-09_n02_audit-count-fix.md
-checkpoints: []
+checkpoints:
+- note: 'c7d64a6 checkpoint: 20260509-N02 audit count fix'
 actual_tool_calls: 4
 result_summary: DoD 6/6 通過。事實核對：README 從無『30+』字樣（grep 證明），真正出處為 plan §Context + 兩張
   task card context 欄位。實際計數本 PR 前 18 筆 audit / 12 drafts / 2 reports / 6 decisions；本
@@ -474,7 +514,8 @@ status: review
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-05-09_n01_plan-alignment.md
-checkpoints: []
+checkpoints:
+- note: 'a245f1e checkpoint: 20260509-N01 plan alignment'
 actual_tool_calls: 6
 result_summary: DoD 7/7 通過。Plan 已歸檔 repo（memory/active_projects/agent-harness/plans/ai-bubbly-mountain.md）；A01/W01
   與 plan §8.1 Task A/B 各 5/5 草案 DoD pass + 各 2 條 over-deliver；命名漂移（_ vs -）+ allowed_tools
@@ -509,7 +550,8 @@ status: review
 risk_level: medium
 approval_needed: true
 output_path: outputs/drafts/2026-05-09_v3_extraction_plan.md
-checkpoints: []
+checkpoints:
+- note: 'e95a425 checkpoint: 20260509-A01 v3 extraction plan draft + audit'
 actual_tool_calls: 12
 result_summary: DoD 7/7 通過。16 模組裁決：保留 0 / 砍除 5 / 抽出 6 / 重構 5。治理層 plugin 邊界、發布形態取捨（Plugin
   → CLI → MCP）、v2 → v2.5 → v3.x 階段切換、4 個風險已列。Plan 檔此 session 不可讀，相關推論標 [待驗證]。risk=medium
@@ -666,7 +708,8 @@ status: done
 risk_level: medium
 approval_needed: true
 output_path: system/, tasks/見 DoD
-checkpoints: []
+checkpoints:
+- note: 'stage3-complete: COST_POLICY 校準係數與 WEEKLY_REVIEW deprecated 標記全部完成'
 actual_tool_calls: 4
 result_summary: 'DoD 7/7 通過。
 
@@ -691,7 +734,8 @@ status: done
 risk_level: medium
 approval_needed: true
 output_path: outputs/reports/, memory/archived_projects/, system/, memory/見 DoD
-checkpoints: []
+checkpoints:
+- note: 'stage2-complete: retro 晉升、vietnam 封存、RETRO_FLOW 更新，consistency 通過'
 actual_tool_calls: 7
 result_summary: 'DoD 7/7 通過。主要產出：
 
@@ -721,7 +765,8 @@ risk_level: low
 approval_needed: false
 output_path: logs/errors/, memory/active_projects/agent-harness/decisions/, outputs/drafts/見
   DoD
-checkpoints: []
+checkpoints:
+- note: 'stage1-complete: 三檔案產出完成，spec consistency 通過'
 actual_tool_calls: 4
 result_summary: '三份檔案全部產出，DoD 5/5 通過。
 
@@ -760,7 +805,10 @@ status: done
 risk_level: low
 approval_needed: false
 output_path: logs/runs/20260409-001_system-validation.yaml
-checkpoints: []
+checkpoints:
+- note: Batch 4 完成（3 新檔 + 2 修改）
+- note: Batch 5 完成（1 新檔 + 2 修改）
+- note: 'Gate 驗證通過，DoD #3 修正完成'
 actual_tool_calls: 9
 result_summary: 7/7 DoD 通過。初次驗證發現 FAILURE_TAXONOMY 漏 SEC-04，已補正。四層 Gate 全部 pass。
 completion_time: '2026-04-09'
@@ -776,8 +824,7 @@ risk_level: low
 approval_needed: false
 output_path: outputs/drafts/ai-era-solo-business-proposal.md
 checkpoints:
-- commit: bbaa82b
-  subject: 'feat: Initialize Agent Harness v1 task system with research-review pipeline'
+- note: 'checkpoint: [20260404-W01] AI 策略提案草稿完成'
 actual_tool_calls: 4
 result_summary: 完整策略提案草稿完成。定位宣言、服務菜單（4項）、台越雙市場 ICP、三方競爭對比、12 個月月度計畫、4 個風險對策、本週執行起點。DoD
   7/7 通過。
@@ -794,8 +841,7 @@ risk_level: low
 approval_needed: false
 output_path: outputs/drafts/ai-era-solo-business-strategy.md
 checkpoints:
-- commit: bbaa82b
-  subject: 'feat: Initialize Agent Harness v1 task system with research-review pipeline'
+- note: 'checkpoint: [20260404-S01] AI 策略研究完成'
 actual_tool_calls: 6
 result_summary: 識別前 5 商業模式，最推薦 AI 顧問×產品化服務。台灣+越南市場機會、管理顧問差異化優勢、12 個月執行路徑均已輸出至草稿。
 completion_time: '2026-04-04'
@@ -811,8 +857,7 @@ risk_level: low
 approval_needed: false
 output_path: outputs/drafts/ai-era-solo-business-proposal-review.md
 checkpoints:
-- commit: bbaa82b
-  subject: 'feat: Initialize Agent Harness v1 task system with research-review pipeline'
+- note: 'checkpoint: [20260404-RV01] 提案審查報告完成'
 actual_tool_calls: 3
 result_summary: 有條件通過。3 個必須修改（數字矛盾 × 2、Retainer 交付差異未說明），6 個建議修改。修正 M1-M3 後可升格正式版本。
 completion_time: '2026-04-04'
@@ -828,8 +873,8 @@ risk_level: low
 approval_needed: false
 output_path: outputs/drafts/tools-inventory-review-report.md
 checkpoints:
-- commit: bbaa82b
-  subject: 'feat: Initialize Agent Harness v1 task system with research-review pipeline'
+- note: '65b3c8a: Task Card 建立'
+- note: '（此 commit）: review 完成'
 actual_tool_calls: 2
 result_summary: 有條件通過。DoD 5 條中 3 通過、2 部分通過。發現 2 個必須修改（知識管理類別缺失、採用狀態不一致），3 個建議修改。
 completion_time: '2026-04-04'
@@ -845,8 +890,8 @@ risk_level: low
 approval_needed: false
 output_path: outputs/drafts/solo-company-tools-inventory.md
 checkpoints:
-- commit: bbaa82b
-  subject: 'feat: Initialize Agent Harness v1 task system with research-review pipeline'
+- note: '65b3c8a: Task Card 建立'
+- note: '（下一個 commit hash）: research 完成'
 actual_tool_calls: 3
 result_summary: 整理 6 大工具類別（AI/專案管理/通訊/財務行政/行銷/自動化），共 20+ 工具，依採用狀態分類。已知事實 6 項，合理推論
   4 項，待驗證 6 項。
@@ -863,8 +908,7 @@ risk_level: low
 approval_needed: false
 output_path: outputs/drafts/ai-era-solo-business-proposal-v2.md
 checkpoints:
-- commit: bbaa82b
-  subject: 'feat: Initialize Agent Harness v1 task system with research-review pipeline'
+- note: 'checkpoint: [20260404-O02] 提案 v2 修正完成'
 actual_tool_calls: 3
 result_summary: M1/M2/M3 全部修正，S1 採納，另補強台灣 ICP 主次分離、越南渠道語言策略、風險 3 品牌時間成本、競爭優勢描述精準化。v2
   輸出完成。
@@ -881,8 +925,7 @@ risk_level: low
 approval_needed: false
 output_path: outputs/drafts/solo-company-tools-inventory-v2.md
 checkpoints:
-- commit: bbaa82b
-  subject: 'feat: Initialize Agent Harness v1 task system with research-review pipeline'
+- note: '（此 commit）: Task Card 建立 + v2 報告輸出完成'
 actual_tool_calls: 4
 result_summary: '修改項目清單：
 
