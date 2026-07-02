@@ -85,6 +85,27 @@ class TestEvaluate(unittest.TestCase):
         self.assertEqual(decision, "allow")
         self.assertIsNone(reason)
 
+    def test_ampersand_separator_blocked(self):
+        # `cmd & cmd2` backgrounds cmd just like a trailing & (codex P2)
+        decision, reason = guard.evaluate("python3 server.py & echo ok")
+        self.assertEqual(decision, "block")
+        self.assertIn("spawn_background_process", reason)
+
+    def test_stderr_redirect_allowed(self):
+        # 2>&1 / >&2 are redirections, not background separators
+        decision, reason = guard.evaluate("make build 2>&1")
+        self.assertEqual(decision, "allow")
+        self.assertIsNone(reason)
+
+    def test_ampersand_in_url_allowed(self):
+        # Quote-free heuristic: & without surrounding whitespace (query strings)
+        # must not trip the background rule. Known trade-off: a quoted string
+        # containing " & " (e.g. echo "a & b") will false-positive — the guard
+        # does not parse shell quoting.
+        decision, reason = guard.evaluate('curl "http://example.com/?a=1&b=2"')
+        self.assertEqual(decision, "allow")
+        self.assertIsNone(reason)
+
     def test_tee_into_memory_blocked(self):
         decision, reason = guard.evaluate("echo note | tee memory/notes.md")
         self.assertEqual(decision, "block")
@@ -99,6 +120,17 @@ class TestEvaluate(unittest.TestCase):
         decision, reason = guard.evaluate("grep -rn topic memory/")
         self.assertEqual(decision, "allow")
         self.assertIsNone(reason)
+
+    def test_quoted_memory_writes_blocked(self):
+        # Quoted paths must not bypass the rule (codex P2)
+        for cmd in (
+            'echo fact >> "memory/long_term.md"',
+            "echo x | tee 'memory/notes.md'",
+            'cp a "memory/a"',
+        ):
+            decision, reason = guard.evaluate(cmd)
+            self.assertEqual(decision, "block", cmd)
+            self.assertIn("auto_write_memory", reason)
 
     def test_curl_publish_api_blocked(self):
         decision, reason = guard.evaluate(

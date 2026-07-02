@@ -116,7 +116,8 @@ DENY_RULES: tuple[DenyRule, ...] = (
             (
               (^|[\s;&|`]) (nohup|setsid) \s
               | \bdisown\b
-              | (?<!&) & \s* $          # trailing & (not &&)
+              | (?<=\s) & (?=\s|$)      # standalone & separator (cmd & cmd2 / cmd &)
+              | (?<![&><]) & \s* $      # trailing & without space (cmd&); excludes 2>&1, &&
             )
             """
         ),
@@ -127,9 +128,9 @@ DENY_RULES: tuple[DenyRule, ...] = (
         pattern=re.compile(
             r"""(?x)
             (
-              >{1,2} \s* (\./)? memory/                     # redirect into memory/
-              | (^|[\s;&|`]) tee \s+ (-a\s+)? (\./)? memory/  # tee into memory/
-              | (^|[\s;&|`]) (cp|mv) \s [^;|&]* \s (\./)? memory/
+              >{1,2} \s* ["']? (\./)? memory/                     # redirect into memory/
+              | (^|[\s;&|`]) tee \s+ (-a\s+)? ["']? (\./)? memory/  # tee into memory/
+              | (^|[\s;&|`]) (cp|mv) \s [^;|&]* \s ["']? (\./)? memory/
             )
             """
         ),
