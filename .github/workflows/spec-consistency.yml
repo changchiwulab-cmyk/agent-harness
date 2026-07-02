@@ -14,6 +14,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          # 完整歷史：audit log drift check 靠 git log --grep 推導 checkpoint，
+          # shallow clone 會令 checkpoint 全空造成假 DRIFT
+          fetch-depth: 0
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@0cb964fd540e0a24c900370abf38a33466142735 # v1.305.0
@@ -56,6 +60,9 @@ jobs:
 
       - name: Audit log generator tests
         run: python3 scripts/test_generate_audit_log.py
+
+      - name: Audit log drift check
+        run: python3 scripts/generate_audit_log.py --check
 
       - name: E2E dummy task smoke test
         run: python3 tests/e2e/test_dummy_task_smoke.py
