@@ -8,7 +8,7 @@
 
 ### 1a. 可自行改（不需問使用者，但要 git commit 留痕）
 
-- `logs/`、`outputs/` 下的任何紀錄與產出（本來就是 allow）。
+- `logs/` 與 `outputs/drafts/` 下的紀錄與產出（allow）。注意：寫 `outputs/reports/` 屬 ask（PERMISSIONS.yaml），已晉升的 reports 見 1c。
 - 各制度檔尾「**教訓紀錄（append-only）**」段：只能**追加**，不能改寫或刪除既有條目。
 - `system/COST_POLICY.md` 校準表的**數字**（實測值、樣本數）——但係數樣本 < 5 筆前，表格必須保留「參考值，不得作為調參依據」的標註。
 - 修正客觀錯誤：失效的檔案路徑、錯字、已改名的工具名。修正時 commit message 要寫明「修正失效引用：舊 → 新」。
@@ -81,7 +81,8 @@
 - [ ] `system/GLOBAL_RULES.md` 成本意識段 vs COST_POLICY.md（成本副本）
 - [ ] `system/GLOBAL_RULES.md` 記憶規則段 vs memory/README.md
 - [ ] `system/ROUTING_RULES.md` 表格 vs skills 各檔的 description（原生 skill 路由已可承擔，NATIVE_OVERLAP 評 70%）
-- [ ] COST_POLICY「模型路由規則（v2 準備）」段——已被 DELEGATION_PLAYBOOK 取代，應改為指標
+- [x] COST_POLICY「模型路由規則（v2 準備）」段——已被 DELEGATION_PLAYBOOK 取代（✓ 2026-07-03 已改為指標）
+- [ ] `logs/AUDIT_LOG.md` 手寫機制 vs `scripts/generate_audit_log.py` 推導機制並存且已 drift（`--check` fail、檔內無 MANUAL_NOTES 標記）→ 請使用者裁決哪個是權威，另一個改為指標；裁決前照 AUDIT_LOG.md 檔頭手動附加
 
 ## 教訓紀錄（append-only）
 

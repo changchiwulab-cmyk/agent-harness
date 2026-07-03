@@ -30,6 +30,7 @@
 | 執行某類 skill 任務 | `skills/[type]/SKILL.md`（路由表：`system/ROUTING_RULES.md`） |
 | 成本、token 預算問題 | `system/COST_POLICY.md` |
 | 寫執行紀錄 | `system/EXECUTION_LOG_SCHEMA.yaml` |
+| 更新 audit log | `logs/AUDIT_LOG.md` 檔頭格式手動附加（兩機制收斂中：`system/MAINTENANCE_PROTOCOL.md` §6） |
 | 要修改 CLAUDE.md 或 system/ 任何制度檔 | 先讀 `system/MAINTENANCE_PROTOCOL.md` |
 | 任務失敗要分類記錄 | `system/FAILURE_TAXONOMY.yaml` |
 | 新 session 開始、或想了解這個環境的已知坑 | `system/LETTER_TO_FUTURE_SESSIONS.md` |

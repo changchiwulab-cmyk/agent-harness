@@ -4,7 +4,7 @@
 
 task_id: "20260703-001"
 date: "2026-07-03"
-status: "in_progress"
+status: "done"
 
 # === 任務定義 ===
 goal: "把 Fable 5 等級的判斷力外化成弱模型可長期沿用的制度檔（診斷、CLAUDE.md 重寫、調度守則、判斷 rubric、派工模板、維護協議、交接信）"
@@ -52,8 +52,18 @@ max_web_searches: 3
 skill_type: "writing"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
-audit_log_ref: ""
+checkpoints:
+  - "529237c A 診斷報告 + Task Card + 備份"
+  - "a6c5aa4 B CLAUDE.md 重寫"
+  - "aa70cfd C 模型調度守則"
+  - "54d7200 D 判斷力 rubric"
+  - "b546ebd E 派工模板"
+  - "a1b1743 F 維護協議"
+  - "ea354c7 G 交接信"
+  - "e5e9a4b H 既有檔最小修改"
+  - "325c3c9 frontend manifest 重生"
+  - "（收尾）對抗審查 9 項修正 + run/audit log"
+actual_tool_calls: 45
+result_summary: "A–G 七項制度檔全數落檔；對抗審查（fresh-context subagent）找出 9 項發現全數修正；本地 CI 等價檢查全綠。詳見 logs/runs/RUN-20260703-001.yaml。"
+completion_time: "2026-07-03"
+audit_log_ref: "logs/AUDIT_LOG.md"

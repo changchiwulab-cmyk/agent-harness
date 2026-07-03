@@ -16,7 +16,7 @@
 
 ### 2. 優先用原生功能，不要再自建平行機制
 
-這個 harness 誕生時，Claude Code 還沒有現在這些原生能力。現在 `system/NATIVE_OVERLAP.yaml` 自估整體重疊 30%（Skill 路由 85%、權限 75%），而且只會越來越高。所以：想加任何新機制前，先查 Claude Code 原生（skills、hooks、settings permissions、subagents、記憶機制）是不是已經有了——**用原生的，harness 只保留原生給不了的**：Task Card 的 DoD 紀律、審計鏈、校準資料、判斷 rubric。aggregate 超過 50% 就觸發 v3 重構（既定決策，見 NATIVE_OVERLAP），到時候該刪的模組不要捨不得。
+這個 harness 誕生時，Claude Code 還沒有現在這些原生能力。現在 `system/NATIVE_OVERLAP.yaml` 自估整體重疊 30%（Skill 執行 85%、路由 70%、權限 75%），而且只會越來越高。所以：想加任何新機制前，先查 Claude Code 原生（skills、hooks、settings permissions、subagents、記憶機制）是不是已經有了——**用原生的，harness 只保留原生給不了的**：Task Card 的 DoD 紀律、審計鏈、校準資料、判斷 rubric。aggregate 超過 50% 就觸發 v3 重構（既定決策，見 NATIVE_OVERLAP），到時候該刪的模組不要捨不得。
 
 ### 3. 量測數據幾乎是空的——別把儀式當數據
 
@@ -41,9 +41,7 @@
 
 ## 交接區
 
-2026-07-03 制度建設 session：A–G 全數落檔。收尾狀態見本段末行（若中斷，未勾的就是沒做完的）：
-- [ ] fresh-context 對抗審查完成且發現已修正
-- [ ] 全檔 read-back + 本地 CI 檢查全綠
+2026-07-03 制度建設 session 交付完整，無未完成項目遺留：A–G 全數落檔；fresh-context 對抗審查找出 9 項（1 高 4 中 4 低，含 COST_POLICY 校準係數誤用風險、重試次數三處不一致、audit log 雙機制並存）全數修正；全檔 read-back 與本地 CI 檢查全綠。執行紀錄：`logs/runs/RUN-20260703-001.yaml`。
 後續待辦不在本信範圍：見 `system/MAINTENANCE_PROTOCOL.md` §6 收斂 backlog、`outputs/reports/harness-self-assessment-v1.md` 的 R 系列 roadmap。
 
 祝穩定。

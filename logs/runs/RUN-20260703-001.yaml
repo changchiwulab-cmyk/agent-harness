@@ -1,0 +1,65 @@
+# Execution Log — Fable 5 制度建設（judgment externalization）
+# 觸發條件符合 EXECUTION_LOG_SCHEMA 使用範圍：checkpoints >= 3（多階段複雜任務）
+
+execution_log:
+  run_id: "RUN-20260703-001"
+  task_id: "20260703-001"
+  skill_type: "writing"
+  started_at: "2026-07-03 06:20"
+  ended_at: "2026-07-03 07:20"
+  status: "completed"
+
+  tools_used:
+    - tool: file_read
+      call_count: 14
+    - tool: file_write
+      call_count: 22
+    - tool: subagent_dispatch
+      call_count: 2        # (1) claude-code-guide 查證模型/effort 參數 (2) general-purpose fresh-context 對抗審查
+    - tool: git_checkpoint
+      call_count: 10
+    - tool: ci_local_check
+      call_count: 3
+
+  checkpoints:
+    - commit: "529237c"
+      stage: "A 診斷報告 + Task Card + 修改前備份"
+    - commit: "a6c5aa4"
+      stage: "B CLAUDE.md 重寫為載入地圖+路由"
+    - commit: "aa70cfd"
+      stage: "C 模型調度守則"
+    - commit: "54d7200"
+      stage: "D 判斷力外化 rubric"
+    - commit: "b546ebd"
+      stage: "E 派工 prompt 模板"
+    - commit: "a1b1743"
+      stage: "F 制度維護協議"
+    - commit: "ea354c7"
+      stage: "G 給未來 session 的信"
+    - commit: "e5e9a4b"
+      stage: "H 既有檔最小修改"
+    - commit: "325c3c9"
+      stage: "frontend manifest 重生"
+
+  token_estimate:
+    input: 0
+    output: 0
+    total: 0
+    source: "not_recorded"   # 遠端 session 無 dashboard 存取；subagent 部分實測：查證 73K、對抗審查 393K tokens
+
+  approvals:
+    - action: "modify_claude_md + modify_system_rules + write_reports（本任務全部產出）"
+      status: "approved"
+      approved_by: "human"
+      timestamp: "2026-07-03"
+      # 使用者以完整規格指令直接委託本任務，指令即授權；最終產出另以 draft PR 交人工審閱
+
+  output_path: "system/（5 新檔）+ CLAUDE.md + outputs/reports/2026-07-03_harness-diagnosis.md"
+  error_summary: ""
+  gate_results:
+    schema_check: "pass"       # check_spec_consistency.rb + validate_task_card.py 通過
+    rule_check: "pass"         # ask 動作有使用者指令授權；備份先行；無 deny 動作
+    completion_check: "pass"   # DoD 9 條由 fresh-context 對抗審查 agent 逐項驗證（9 項發現全數修正後）
+    risk_check: "pass"         # medium 風險；產出走 draft PR 人工審閱
+
+  notes: "對抗審查（fresh-context general-purpose agent）發現 9 項（1 高 4 中 4 低）：COST_POLICY 校準係數 n<5 仍可被當調參依據（高）、MAINTENANCE 1a 與 write_reports=ask 矛盾、重試上限三處不一致（2 輪/3 次/max_retries:3）、NATIVE_OVERLAP 百分比引用錯誤、遠端 model 參數只收別名、R3 範圍門檻不可計算、deny/ask 混寫、audit log 雙機制並存 drift、交接區 checkbox 未回填。全數修正。audit log 雙機制裁決列入 MAINTENANCE_PROTOCOL §6 backlog 待使用者決定。"

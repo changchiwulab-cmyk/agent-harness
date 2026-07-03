@@ -125,6 +125,31 @@
 ---
 
 ```yaml
+- task_id: "20260703-001"
+  date: "2026-07-03"
+  skill_type: "writing"
+  goal: "把 Fable 5 等級的判斷力外化成弱模型可長期沿用的制度檔（診斷/CLAUDE.md 重寫/調度守則/判斷 rubric/派工模板/維護協議/交接信）"
+  status: "done"
+  model_used: "Fable 5（一次性制度建設 session）"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 14
+    - tool_name: "file_write"
+      call_count: 22
+    - tool_name: "subagent_dispatch"
+      call_count: 2
+  checkpoints: 10
+  approval_needed: true
+  approval_given: true
+  output_path: "system/DELEGATION_PLAYBOOK.md 等 5 新檔 + CLAUDE.md + outputs/reports/2026-07-03_harness-diagnosis.md"
+  error_summary: ""
+  estimated_tokens: "主對話 not_recorded；subagent 實測 查證 ~73K + 對抗審查 ~393K"
+  notes: "使用者指令即 ask 授權；產出走 draft PR 人工審閱。對抗審查 9 項發現全數修正。詳見 logs/runs/RUN-20260703-001.yaml。"
+```
+
+---
+
+```yaml
 - task_id: "20260529-007"
   date: "2026-05-29"
   skill_type: "ops"
