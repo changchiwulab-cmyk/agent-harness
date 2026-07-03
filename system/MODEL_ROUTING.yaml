@@ -1,0 +1,56 @@
+# 模型路由表 MODEL_ROUTING
+#
+# 正式實裝 COST_POLICY.md「模型路由規則（v2 準備）」。
+# 與 ROUTING_RULES.md（skill 路由）平行：此檔決定「用哪個模型」，ROUTING_RULES 決定「用哪個 skill」。
+#
+# 設計原則：
+# - 路由判斷本身用便宜模型（不需 LLM 複雜推理；沿用 ROUTING_RULES.md 規則 5）。
+# - phase 優先於 skill_type：同一張 Task Card 的不同階段可用不同模型
+#   （例：research 的讀取/搜尋階段用 Haiku，統整結論階段用 Opus）。
+# - reasoning_effort 為「意圖宣告」，非程式強制。本框架無自有 API 程式碼；
+#   實際推理強度由執行時（Claude Code sub-agent / CLI）決定。
+
+version: 1
+default_model: claude-opus-4-8          # 未匹配時保守預設（統整/規劃級）
+
+# --- 模型定義（標準 id + 推理強度 + 對應子代理）---
+models:
+  fast:                                 # 快速讀取 / 搜尋
+    id: claude-haiku-4-5-20251001
+    reasoning_effort: null              # Haiku 不設 reasoning effort
+    agent: fast-reader                  # .claude/agents/fast-reader.md
+    use_for: "機械性讀取、檔案/網頁搜尋、抽取、格式檢查、路由判斷本身"
+  test:                                 # 測試
+    id: claude-sonnet-4-6
+    reasoning_effort: high
+    agent: tester                       # .claude/agents/tester.md
+    use_for: "跑測試、回測、逐條驗證、品質審查"
+  strategy:                             # 統整 / 策略規劃
+    id: claude-opus-4-8
+    reasoning_effort: max
+    agent: synthesizer                  # .claude/agents/synthesizer.md
+    use_for: "策略分析、決策、整合、報告統整、規劃"
+
+# --- 路由規則：phase × skill_type → model tier ---
+routing:
+  by_phase:                             # 執行階段（跨 skill 通用，優先於 skill 預設）
+    explore: fast                       # 讀取 / 蒐集
+    retrieve: fast                      # 搜尋 / 抓取
+    test: test                          # 跑測試
+    review: test                        # 驗證 / 審查 / 回測
+    synthesize: strategy                # 統整 / 結論
+    plan: strategy                      # 規劃 / 策略
+  by_skill_default:                     # 未標 phase 時，用 skill_type 的預設 tier
+    research: fast                      # 主體偏蒐集；統整段請用 phase_overrides 或拆 analysis/writing 卡
+    ops: fast
+    review: test
+    analysis: strategy
+    writing: strategy
+
+# --- 路由優先序（給 agent / 未來腳本查表用）---
+resolution_order:
+  - "Task Card model_routing.override（釘死 model id，最高優先）"
+  - "Task Card model_routing.tier（顯式指定 tier）"
+  - "當前 phase → routing.by_phase"
+  - "skill_type → routing.by_skill_default"
+  - "default_model"

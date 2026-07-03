@@ -1,0 +1,53 @@
+task_id: "20260530-O03"
+date: "2026-05-30"
+status: "done"
+
+# === 任務定義 ===
+goal: "前端對齊：dashboard 新增模型分佈面板，後端 manifest 帶 model 資訊進 data.json"
+context: >
+  使用者要求「前端平台跟後端平台建置對齊」。沿用 R7 治理總覽（renderOverview）模式，
+  讓 model_routing.tier 與 logs 的 model_used 流進 data.json，並在治理總覽顯示
+  「Task 模型分佈 / Run 模型」兩張卡。保持 manifest 確定性輸出與 CI 漂移檢查。
+input_data:
+  - "scripts/generate_frontend_manifest.py"
+  - "frontend/app.js"
+  - "scripts/test_generate_frontend_manifest.py"
+
+# === 完成標準 ===
+definition_of_done:
+  - "generate_frontend_manifest.py 衍生 model_tier；LOG_FIELDS 加 model_used；build_overview 加 task_model 與 run_model 分佈"
+  - "frontend/app.js renderOverview 顯示『Task 模型分佈』與『Run 模型』兩張卡"
+  - "frontend/data.json 重新產生並一併提交（generate_frontend_manifest.py --check 漂移為 0）"
+  - "test_generate_frontend_manifest.py 的 empty-repo 結構斷言同步更新，另新增 2 個 model tally 測試，全綠"
+  - "既有測試（idempotent、multi-project）不回歸"
+
+# === 輸出定義 ===
+expected_output:
+  format: "json"
+  location: "frontend/"
+  filename: "data.json"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄 ===
+checkpoints:
+  - "7fc5075: 前端對齊：模型分佈面板"
+actual_tool_calls: 0
+result_summary: "manifest 衍生 model_tier（單一真相來源 MODEL_ROUTING.yaml）+ LOG_FIELDS 加 model_used + build_overview 加 task_model/run_model；app.js 治理總覽 2 卡 + 清單顯示 tier；data.json 重生（task_model=fast34/strategy9/test7）；6 測試全綠、--check 漂移 0。"
+completion_time: "2026-05-30"
+audit_log_ref: "logs/AUDIT_LOG.md"

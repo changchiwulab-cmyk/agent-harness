@@ -1,0 +1,41 @@
+decision_id: "20260530-D008"
+date: "2026-05-30"
+project: "agent-harness"
+
+# --- 決策內容 ---
+context: |
+  scripts/generate_audit_log.py --check 對現有手寫 logs/AUDIT_LOG.md 持續回報 drift，
+  在 PR #90（模型路由）期間被視為「待收斂的技術債」。經查證：
+  (1) .github/workflows/spec-consistency.yml 只執行 test_generate_audit_log.py 單元測試，
+      從不對真實 AUDIT_LOG.md 跑 --check → 此 drift 永不破壞 CI。
+  (2) 生成器（derive_record）刻意只輸出 12 個可從 Task Card + git 機器衍生的客觀欄位，
+      會丟棄 model_used / tools_called / estimated_tokens / notes 等自報欄位。
+  (3) system/COST_POLICY.md 的 token 校準流程需讀取 AUDIT_LOG 的 estimated_tokens。
+  即手寫檔承載生成器無法產出、且下游有依賴的價值。需判斷三檔案的關係定位。
+
+options_considered:
+  - option: "A. 釐清為良性 drift：手寫 AUDIT_LOG 為正典，生成器為輔助視圖；註解 + Decision Log 收斂"
+    pros: "零行為變更、零資料損失；保留 COST_POLICY 依賴的 estimated_tokens；最小風險；對齊「可控 > 能力」"
+    cons: "生成器與真實檔長期不一致（但已釐清為設計上的良性差異，非錯誤）"
+  - option: "B. 增強生成器無損合併：保留自報欄位回生成輸出，遷移檔案並把 --check 納入 CI"
+    pros: "單一事實來源；--check 可進 CI 防未來漂移"
+    cons: "需改腳本 + 測試 + 遷移整檔；PR diff 龐大；超出本次模型路由範圍；自報欄位仍是自評偏誤來源"
+  - option: "C. 直接套用生成器（lossy）：AUDIT_LOG 改為純機器衍生 + 納入 CI"
+    pros: "最簡；生成器與檔案天然一致"
+    cons: "丟失 model_used/notes/estimated_tokens → 破壞 COST_POLICY 校準；56 筆歷史自報資料蒸發；不可接受"
+
+decision: "選 A（釐清為良性 drift）"
+reasoning: |
+  生成器的設計初衷是「對抗自評偏誤、產出可機器查核的客觀視圖」，而非取代手寫檔。
+  手寫 AUDIT_LOG 與生成器是「兩種互補視圖」，非「來源與副本」：
+  前者含自報脈絡（成本、工具、教訓），後者保證客觀欄位可溯源。
+  既然 CI 從不對真實檔跑 --check，drift 無實際危害；
+  在生成器 docstring 與本 Decision Log 明確標注「手寫為正典、drift 為良性」即完成收斂，
+  避免未來再被誤判為待修技術債或被 lossy 覆寫。
+  若日後確需單一事實來源，再走 option B（已記錄路徑）。
+
+# --- 追蹤 ---
+risk: "low — 純文件釐清，無行為變更。殘餘風險：未來貢獻者誤跑生成器覆寫 AUDIT_LOG。緩解：docstring 顯著警示 + 本決策。"
+revisit_trigger: "若 AUDIT_LOG 自報欄位不再被任何流程（COST_POLICY 校準等）依賴，或團隊決定強制單一事實來源 → 升級為 option B（無損合併 + --check 納入 CI）"
+related_task: "20260530-O04"
+status: "active"

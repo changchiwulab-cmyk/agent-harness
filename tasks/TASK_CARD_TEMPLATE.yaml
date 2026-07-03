@@ -35,7 +35,14 @@ max_retries: 3                 # 連續失敗最多重試次數
 max_web_searches: 3            # web search 上限
 
 # === Skill 路由 ===
-skill_type: ""                 # research / writing / ops / review
+skill_type: ""                 # research / analysis / writing / ops / review
+
+# === 模型路由（v2，optional；規則見 system/MODEL_ROUTING.yaml）===
+# 不填則由 skill_type 帶出預設 tier；不列入必填欄位，向後相容。
+model_routing:
+  tier: ""                     # fast / test / strategy（空 = 由 skill_type 預設決定）
+  phase_overrides: {}          # 選填：{ explore: fast, synthesize: strategy } 表達同卡多階段
+  override: ""                 # 選填：直接釘某 model id（最高優先序）
 
 # === 執行紀錄（由 agent 填寫）===
 checkpoints: []                # 每次 checkpoint 的 git commit hash + 描述
