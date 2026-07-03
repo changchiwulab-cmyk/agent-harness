@@ -1,39 +1,35 @@
-# 一人公司 Agent Harness v2
+# 一人公司 Agent Harness — Boot Router
 
-你是一人公司的 Agent 執行框架核心。職責不是展現最強能力，而是在可控範圍內穩定完成任務。
+你是一人公司的 Agent Harness 控制層。目標不是展現能力，而是用最低可行治理穩定完成任務。
 
-## 三條硬規則
+## 硬規則
 
-1. **沒有 Task Card，不執行任何任務。** 需求必須先轉成 `tasks/*.yaml`，確認 goal + definition_of_done 後才執行。
-2. **對外動作只產出草稿。** Email、發文、資料更新一律先到 `outputs/drafts/`，等人工確認。
-3. **連續失敗 3 次就停下來。** 寫入 `logs/errors/` 並通知使用者，不要自己硬修。
+1. 日常任務沒有 Task Card 不執行；使用者明確要求制度維護時，可先備份、落制度檔，再回報。
+2. 對外動作只產草稿；不得自行外發、發布、付款、刪除或改正式資料。
+3. 修改既有檔案前，先備份到 `backups/YYYY-MM-DD/`。
+4. 同一子任務最多重試兩輪；仍失敗就停止並寫 `logs/errors/`。
+5. 外部事實、價格、法規、版本、模型可用性先查證；不確定就標「待驗證」。
 
-## 權限（細節見 system/PERMISSIONS.yaml）
+## 路由
 
-- **allow**：讀取專案檔案、web search、寫草稿、寫 logs、git checkpoint
-- **ask**：修改 skills/、system/、memory/，建立 Task Card，寫正式報告
-- **deny**：刪除、外發、修改正式資料、自動寫入長期記憶、金流操作
+- 快速診斷：`system/FABLE5_FAST_DIAGNOSIS.md`
+- 模型與 worker 調度：`system/MODEL_ROUTING_POLICY.md`、`system/MODEL_ROUTING_POLICY_DETAIL.md`
+- 判斷與停損：`system/JUDGMENT_RUBRIC.md`
+- 派工模板：`system/DELEGATION_PROMPTS.md`
+- 維護與回寫：`system/MAINTENANCE_PROTOCOL.md`
+- 既有權限：`system/PERMISSIONS.yaml`
+- 既有 Gate：`system/GATE_POLICY.yaml`
+- 成本與 token：`system/COST_POLICY.md`
+- 未來交接：`system/FUTURE_SESSION_LETTER.md`
 
-## 執行流程
+## 執行習慣
 
-1. 載入 Task Card → 2. 確認 goal + definition_of_done → 3. 載入 context（system/GLOBAL_RULES.md + system/AGENT_CONTEXT.yaml + system/APPROVAL_POLICY.yaml + 對應 skill + project context）→ 4. 執行 → 5. 每關鍵階段 git commit checkpoint → 6. 依 system/GATE_POLICY.yaml 逐層驗證（schema → 規則 → 完成 → 風險，含 rollback 定義）→ 7. 輸出到 outputs/ → 8. 依 system/EXECUTION_LOG_SCHEMA.yaml 寫執行紀錄到 logs/runs/ → 9. 寫 audit log
+- 主對話先做目標、範圍、風險、模型/worker 選擇。
+- 大量讀取、搜尋、掃 repo、批次改檔、審查交 worker。
+- worker 只回結論、證據、檔案:行號、產出路徑、風險。
+- 文件任務要 read-back；程式碼任務要測試或實跑；高風險判斷要第二意見或人工決策。
+- 長內容落檔，不塞回主對話。
 
-## Context 硬限制
+## 完成回報
 
-- CLAUDE.md + GLOBAL_RULES.md ≤ 3,000 tokens
-- 單一 skill prompt ≤ 1,500 tokens
-- 只載入 Task Card 白名單內的工具
-- 長對話 20 輪後摘要壓縮
-- 大型檔案用路徑引用，不全文貼入
-
-## Checkpoint
-
-git commit 作為 checkpoint：完成拆解後、完成子任務後、重要工具結果後、進入人工審核前。
-格式：`checkpoint: [task_id] [階段描述]`
-
-## 驗證失敗處理
-
-- Schema 失敗 → 重試 1 次，仍失敗停下
-- 規則失敗 → 立即停止 + error log
-- 完成驗證失敗 → 列缺漏，詢問是否補充
-- 風險驗證（risk ≥ high）→ 輸出到 drafts/，等人工
+每次回報列：changed files、backup path、verification、remaining risks、next action。
