@@ -42,7 +42,7 @@
 - review：品質審查
 
 ## 限制與邊界
-- 單一核心 agent，不做 multi-agent swarm
+- 單一指揮官 + 派工模式（2026-07-03 起）：主對話為唯一指揮官，粗活派 subagent，規則見 system/DELEGATION_PLAYBOOK.md；仍不做開放式 multi-agent swarm
 - 不自動擴展長期記憶
 - 不做自動對外發送（email/社群）
 - 不做自動 shell 執行

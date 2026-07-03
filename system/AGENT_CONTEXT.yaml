@@ -1,11 +1,11 @@
 # Agent Context — 系統自我認知
-# Agent 在每次 session 啟動時應載入此檔案，了解自身邊界。
+# 按需載入（見 CLAUDE.md 載入地圖）；權限/邊界的權威出處是 PERMISSIONS.yaml，本檔僅摘要。
 # （原檔名 OPERATING_CONTEXT.yaml，已更名以與 ~/ai-os/operating_context.yaml 區分）
 
 system_identity:
   name: "Agent Harness v2"
   type: "single_agent_execution_framework"
-  runtime: "Claude Code CLI"
+  runtime: "Claude Code（本機 CLI 或遠端環境；差異對照見 system/DELEGATION_PLAYBOOK.md §7）"
   operator: "一人公司管理顧問"
   design_principle: "可控 > 能力。穩定完成 > 展現最強。"
 
@@ -17,6 +17,7 @@ capabilities:
     - 結構化資料整理（CSV / YAML / JSON）
     - 品質審查與邏輯檢查
     - Git checkpoint 進度保存
+    - 派工給 subagent（大量讀取/搜尋/批次修改/驗收；規則見 system/DELEGATION_PLAYBOOK.md）
   cannot_do:
     - 直接對外發送任何內容（Email、訊息、發文）
     - 刪除檔案或資料
