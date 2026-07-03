@@ -10,7 +10,6 @@
 
 - `logs/` 與 `outputs/drafts/` 下的紀錄與產出（allow）。注意：寫 `outputs/reports/` 屬 ask（PERMISSIONS.yaml），已晉升的 reports 見 1c。
 - 各制度檔尾「**教訓紀錄（append-only）**」段：只能**追加**，不能改寫或刪除既有條目。
-- `system/COST_POLICY.md` 校準表的**數字**（實測值、樣本數）——但係數樣本 < 5 筆前，表格必須保留「參考值，不得作為調參依據」的標註。
 - 修正客觀錯誤：失效的檔案路徑、錯字、已改名的工具名。修正時 commit message 要寫明「修正失效引用：舊 → 新」。
 
 ### 1b. 先問使用者（列出 diff，取得同意才改）
@@ -20,6 +19,7 @@
 - `system/DELEGATION_PLAYBOOK.md` 的升降級路徑與量化門檻、`system/JUDGMENT_RUBRICS.md` 的判準本身、`system/DELEGATION_TEMPLATES.md` 的模板結構（驗收條件/回報格式兩塊）。
 - 新增任何制度檔、或把規則從一個檔搬到另一個檔。
 - skills/ 下的 SKILL.md（既有 ask 權限）。
+- `system/COST_POLICY.md` 校準表的數字更新（實測值、樣本數）——屬 `modify_system_rules`（ask）。附帶規則：係數樣本 n < 5 前，表格必須保留「參考值，不得作為調參依據」標註。若此類更新每次都被同意，依 RETRO_FLOW 權限畢業機制提案降為 allow。
 
 ### 1c. 絕不自改
 
