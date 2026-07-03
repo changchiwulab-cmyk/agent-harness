@@ -1,0 +1,59 @@
+# Task Card — Fable 5 制度建設（judgment externalization）
+# 特殊性質：本任務由使用者直接以完整規格委託，指令本身即為 ask 權限
+# （modify_claude_md / modify_system_rules / write_reports）的明確授權。
+
+task_id: "20260703-001"
+date: "2026-07-03"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "把 Fable 5 等級的判斷力外化成弱模型可長期沿用的制度檔（診斷、CLAUDE.md 重寫、調度守則、判斷 rubric、派工模板、維護協議、交接信）"
+context: "使用者僅此一次 Fable 5 session，之後環境由 Opus/Sonnet/Haiku 長期運作。本任務不執行日常工作，只立制度。"
+input_data:
+  - "CLAUDE.md"
+  - "system/（全部治理檔）"
+  - "outputs/reports/harness-self-assessment-v1.md"
+  - "使用者本次指令（交付清單 A–G + 收尾四步 + 誠實條款）"
+
+# === 完成標準 ===
+definition_of_done:
+  - "A 診斷報告落地：outputs/reports/2026-07-03_harness-diagnosis.md（前三名問題各附具體修法）"
+  - "B CLAUDE.md 重寫為載入地圖 + 路由，通過 scripts/check_context_budget.rb"
+  - "C system/DELEGATION_PLAYBOOK.md：模型現實表（查證後撰寫）、指揮官不下場、派工三件套、升降級路徑、回報合約、驗證不自驗、環境差異對照"
+  - "D system/JUDGMENT_RUBRICS.md：至少 5 條判準，每條附正例與反例，含誠實條款"
+  - "E system/DELEGATION_TEMPLATES.md：搜尋/實作/重構/研究/審查五份填空模板"
+  - "F system/MAINTENANCE_PROTOCOL.md：可自改/需問清單、教訓格式、精簡觸發、與 RETRO_FLOW 銜接"
+  - "G system/LETTER_TO_FUTURE_SESSIONS.md：三件最重要的事 + 退化方式與預防"
+  - "既有檔修改前已留備份於 system/_archive/2026-07-03_pre-fable5/"
+  - "收尾：fresh-context subagent 對抗審查完成且發現已修正、全檔 read-back、本地 CI 檢查全綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "system/ + outputs/reports/ + CLAUDE.md"
+  filename: "見 definition_of_done 各條"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true   # 產出以 draft PR 形式交人工審閱後合併
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "git_checkpoint"
+  - "subagent_dispatch"   # 查證與對抗審查用
+  - "web_fetch"           # 官方文件查證用
+
+# === 成本控制 ===
+max_tool_calls: 60        # 制度建設任務量級遠大於一般任務，經使用者指令授權
+max_retries: 2
+max_web_searches: 3
+
+# === Skill 路由 ===
+skill_type: "writing"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
