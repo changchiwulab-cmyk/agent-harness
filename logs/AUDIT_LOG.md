@@ -612,6 +612,94 @@ completion_time: '2026-04-24'
 ```
 
 ```yaml
+task_id: 20260417-O06
+date: '2026-04-17'
+skill_type: ops
+goal: 將 AUDIT_LOG.md 中三處 file_edit 工具名稱統一改為 file_write，與 Task Card allowed_tools 白名單一致
+status: done
+risk_level: low
+approval_needed: false
+output_path: logs/AUDIT_LOG.md
+checkpoints: []
+actual_tool_calls: 3
+result_summary: 'DoD 4/4 通過。
+
+  - logs/AUDIT_LOG.md 3 處 tool_name: "file_edit" 全數改為 tool_name: "file_write"（影響 O04、O03、O02
+  條目）
+
+  - grep -c file_edit logs/AUDIT_LOG.md: 0 ✅
+
+  - ruby scripts/check_spec_consistency.rb ✅
+
+  - python scripts/check_task_card_skill_type.py ✅（19 cards）
+
+  '
+completion_time: '2026-04-17'
+```
+
+```yaml
+task_id: 20260417-O05
+date: '2026-04-17'
+skill_type: ops
+goal: 為 spec-consistency.yml 補入 workflow_dispatch 觸發器，使 CI 可在 Actions 啟用後手動觸發
+status: done
+risk_level: low
+approval_needed: false
+output_path: .github/workflows/spec-consistency.yml
+checkpoints: []
+actual_tool_calls: 4
+result_summary: 'DoD 5/5 通過。
+
+  - .github/workflows/spec-consistency.yml on: 區塊補入 workflow_dispatch
+
+  - 兩支 workflow 觸發器對齊（pull_request + workflow_dispatch）
+
+  - ruby scripts/check_spec_consistency.rb ✅
+
+  - python scripts/check_task_card_skill_type.py ✅（18 cards）
+
+  '
+completion_time: '2026-04-17'
+```
+
+```yaml
+task_id: 20260417-O04
+date: '2026-04-17'
+skill_type: ops
+goal: '回應 PR #26 的兩則 Codex P2 review 評論：修 vietnam-expansion frontmatter 檔頭順序、補 evidence-gap-filling
+  任務卡的 bash 工具白名單'
+status: done
+risk_level: low
+approval_needed: false
+output_path: memory/archived_projects/vietnam-expansion/, tasks/, logs/見 DoD
+checkpoints:
+- commit: 64fc836
+  subject: 'checkpoint: [20260417-O04] open task card for PR #26 review fixes'
+actual_tool_calls: 9
+result_summary: 'DoD 7/7 通過。
+
+  - memory/archived_projects/vietnam-expansion/context.md：frontmatter 移至 line 1，`#
+  越南市場拓展專案 Context` heading 移至 frontmatter 後；Ruby YAML.safe_load 可正確解析 status / archived_date
+  / revive_trigger
+
+  - tasks/2026-04-17_evidence-gap-filling.yaml：allowed_tools 加入 `bash`，與該卡 actual_tool_calls
+  記錄一致
+
+  - ruby scripts/check_spec_consistency.rb ✅
+
+  - python system/validate_task_card.py ✅（兩張卡皆通過）
+
+  - python scripts/check_task_card_skill_type.py ✅（17 張卡）
+
+  - ruby scripts/test_check_spec_consistency.rb ✅（14 runs, 0 failures）
+
+  - python scripts/test_check_task_card_skill_type.py ✅（13 tests）
+
+  '
+completion_time: '2026-04-17'
+```
+
+```yaml
 task_id: 20260417-O03
 date: '2026-04-17'
 skill_type: ops
