@@ -34,6 +34,18 @@ DRAFTS_DIR = ROOT / "outputs" / "drafts"
 REPORTS_DIR = ROOT / "outputs" / "reports"
 NATIVE_OVERLAP = ROOT / "system" / "NATIVE_OVERLAP.yaml"
 
+# generate_audit_log.py 的 AUTO 區標記；「人工備註」區封存的舊紀錄仍是 yaml fence，
+# 不隔離會讓同一 task 被重複計數。
+AUTO_AUDIT_BEGIN = "<!-- AUTO_AUDIT_BEGIN -->"
+AUTO_AUDIT_END = "<!-- AUTO_AUDIT_END -->"
+
+
+def machine_readable_audit_section(text: str) -> str:
+    """有 AUTO 標記時只回傳標記內的機器可讀區段，否則回傳全文（舊格式相容）。"""
+    if AUTO_AUDIT_BEGIN in text and AUTO_AUDIT_END in text:
+        return text.split(AUTO_AUDIT_BEGIN, 1)[1].split(AUTO_AUDIT_END, 1)[0]
+    return text
+
 # Status values that should have a corresponding audit entry.
 COMPLETED_STATUSES = {"review", "done", "failed", "partial"}
 
@@ -93,7 +105,7 @@ def load_audit_task_ids() -> set[str]:
     """
     if not AUDIT_LOG.exists():
         return set()
-    text = AUDIT_LOG.read_text(encoding="utf-8")
+    text = machine_readable_audit_section(AUDIT_LOG.read_text(encoding="utf-8"))
     ids: set[str] = set()
     for block in re.findall(r"```yaml\n(.*?)\n```", text, re.DOTALL):
         try:
@@ -312,7 +324,7 @@ def load_audit_entries() -> list[dict]:
     """Return full audit entries (skill_type, status, estimated_tokens, tools_called)."""
     if not AUDIT_LOG.exists():
         return []
-    text = AUDIT_LOG.read_text(encoding="utf-8")
+    text = machine_readable_audit_section(AUDIT_LOG.read_text(encoding="utf-8"))
     entries: list[dict] = []
     for block in re.findall(r"```yaml\n(.*?)\n```", text, re.DOTALL):
         try:

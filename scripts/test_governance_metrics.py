@@ -251,6 +251,68 @@ class TestLoadAuditTaskIds(unittest.TestCase):
         self.assertEqual(ids, {"20260501-001"})
 
 
+class TestAutoSectionScoping(unittest.TestCase):
+    """Regression（Codex P2, PR #126）：AUTO 標記存在時，人工備註區封存的
+    yaml fence 不得被當成 live 資料——否則同一 task 會被重複計數。"""
+
+    AUDIT_WITH_MARKERS = (
+        "# Audit Log\n"
+        "<!-- AUTO_AUDIT_BEGIN -->\n"
+        "```yaml\n"
+        "task_id: 20260529-011\n"
+        "skill_type: ops\n"
+        "status: done\n"
+        "```\n"
+        "<!-- AUTO_AUDIT_END -->\n"
+        "\n"
+        "## 人工備註\n"
+        "```yaml\n"
+        "- task_id: \"20260529-011\"\n"
+        "  skill_type: \"ops\"\n"
+        "  status: \"done\"\n"
+        "  estimated_tokens: \"9000\"\n"
+        "```\n"
+        "```yaml\n"
+        "- task_id: \"20260401-OLD\"\n"
+        "  skill_type: \"research\"\n"
+        "  status: \"done\"\n"
+        "```\n"
+    )
+
+    def _with_audit(self, audit_text: str, fn):
+        import tempfile
+        original = gm.AUDIT_LOG
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                audit_file = Path(tmp) / "AUDIT_LOG.md"
+                audit_file.write_text(audit_text, encoding="utf-8")
+                gm.AUDIT_LOG = audit_file
+                return fn()
+        finally:
+            gm.AUDIT_LOG = original
+
+    def test_load_audit_entries_ignores_manual_section(self):
+        entries = self._with_audit(self.AUDIT_WITH_MARKERS, gm.load_audit_entries)
+        self.assertEqual(len(entries), 1)
+        self.assertEqual(entries[0]["task_id"], "20260529-011")
+
+    def test_load_audit_task_ids_ignores_manual_section(self):
+        ids = self._with_audit(self.AUDIT_WITH_MARKERS, gm.load_audit_task_ids)
+        self.assertEqual(ids, {"20260529-011"})
+
+    def test_fallback_without_markers_scans_whole_file(self):
+        audit = (
+            "# Audit Log\n"
+            "```yaml\n"
+            "- task_id: \"20260501-001\"\n"
+            "  skill_type: \"ops\"\n"
+            "  status: done\n"
+            "```\n"
+        )
+        entries = self._with_audit(audit, gm.load_audit_entries)
+        self.assertEqual(len(entries), 1)
+
+
 class TestMainExitCode(unittest.TestCase):
     def test_main_runs_against_real_repo(self):
         # Smoke test: should not crash on the actual repo layout.
