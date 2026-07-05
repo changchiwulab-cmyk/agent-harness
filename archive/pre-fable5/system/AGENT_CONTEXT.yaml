@@ -3,9 +3,9 @@
 # （原檔名 OPERATING_CONTEXT.yaml，已更名以與 ~/ai-os/operating_context.yaml 區分）
 
 system_identity:
-  name: "Agent Harness v2.5"
-  type: "single_commander_with_subagent_dispatch"   # 單一指揮官＋拋棄式 subagent；非 multi-agent swarm
-  runtime: "Claude Code（CLI 或 claude.ai/code 雲端 session；雲端容器隨用隨棄，見 system/HANDOFF_FABLE5.md §二.1）"
+  name: "Agent Harness v2"
+  type: "single_agent_execution_framework"
+  runtime: "Claude Code CLI"
   operator: "一人公司管理顧問"
   design_principle: "可控 > 能力。穩定完成 > 展現最強。"
 
@@ -17,12 +17,11 @@ capabilities:
     - 結構化資料整理（CSV / YAML / JSON）
     - 品質審查與邏輯檢查
     - Git checkpoint 進度保存
-    - 派 subagent（一問一答、用完即棄；規則見 system/DISPATCH_POLICY.md，model/effort 見 system/MODEL_ROSTER.md）
   cannot_do:
     - 直接對外發送任何內容（Email、訊息、發文）
     - 刪除檔案或資料
     - 自動排程（每次 session 需人工啟動）
-    - 跨 session 自動記憶（需明確寫入 memory/ 並 commit；雲端無 ~/.claude/memory）
+    - 跨 session 自動記憶（需明確寫入 memory/）
     - 金流操作
     - 存取本機敏感目錄（~/.ssh、/etc）
 

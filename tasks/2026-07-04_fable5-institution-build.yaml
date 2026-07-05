@@ -1,0 +1,72 @@
+task_id: "20260704-F01"
+date: "2026-07-04"
+status: "done"
+
+goal: "把 Fable 5 session 的判斷力外化成長期制度檔案：診斷、CLAUDE.md 路由化重寫、模型調度守則、判斷 rubric、派工模板、維護協議、交接信"
+context: |
+  使用者僅此一次 Fable 5 session，之後環境由較小模型（指揮官預設 Opus 4.8）長期運作。
+  本任務不執行日常工作，而是建立讓未來每個 session 變強的制度層。
+  計畫已經使用者於 plan mode 核准（2026-07-04），核准即視為 modify_system_rules /
+  modify_claude_md / write_reports 的人工確認。
+  補既有自評（outputs/reports/harness-self-assessment-v1.md）未覆蓋的三個層面：
+  模型調度層空白、驗證自驗、CLAUDE.md 與 system/ 重複載入。
+
+input_data:
+  - "CLAUDE.md"
+  - "system/"
+  - "outputs/drafts/2026-05-29_harness-self-assessment.md"
+  - "https://code.claude.com/docs/en/sub-agents"
+  - "https://code.claude.com/docs/en/model-config"
+
+definition_of_done:
+  - "outputs/reports/2026-07-04_fable5-diagnosis.md：前三名問題各附具體修法與誠實條款"
+  - "CLAUDE.md 重寫為精簡路由（與 GLOBAL_RULES 合計 ≤3000 tokens，過 check_context_budget.rb）"
+  - "system/MODEL_ROSTER.md：查證過的 model/effort 語法與型號表"
+  - "system/DISPATCH_POLICY.md：六節調度守則（不下場/三件套/對照表/回報合約/升降級/驗證不自驗）"
+  - "system/JUDGMENT_RUBRICS.md：5 組 rubric 各附正例與反例"
+  - "system/DELEGATION_TEMPLATES.md：搜尋/實作/重構/研究/審查 5 份填空模板"
+  - ".claude/agents/verifier.md：fresh-context 驗收員 agent 定義"
+  - "system/MAINTENANCE_PROTOCOL.md + memory/lessons.md：維護分級、教訓格式、壓縮觸發"
+  - "system/HANDOFF_FABLE5.md：三件未問之事 + 制度退化模式與預防"
+  - "既有檔一致性補丁（AGENT_CONTEXT/ROUTING_RULES/COST_POLICY/GLOBAL_RULES/README/settings.json；對抗審查後追加 GATE_POLICY/APPROVAL_POLICY/PERMISSIONS/TASK_CARD_TEMPLATE），改前備份至 archive/pre-fable5/"
+  - "fresh-context sonnet agent 對抗審查全部產出，發現問題已修正"
+  - "read-back 驗證每檔完整；CI 同組腳本本地全綠"
+  - "push 分支 claude/fable5-system-design-yexnes 並開 draft PR"
+
+expected_output:
+  format: "md"
+  location: "outputs/reports/"
+  filename: "2026-07-04_fable5-diagnosis.md"
+
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "write_reports"
+  - "git_commit_checkpoint"
+  - "bash"
+  - "subagent_dispatch"
+
+max_tool_calls: 60
+max_retries: 3
+max_web_searches: 3
+
+skill_type: "ops"
+
+checkpoints:
+  - "67f380a 開卡＋備份"
+  - "b35724e 交付A 診斷"
+  - "eeee48c 交付B CLAUDE.md 路由化"
+  - "c99d395 交付C ROSTER+DISPATCH"
+  - "a719252 交付D RUBRICS"
+  - "7a9437a 交付E 模板+verifier"
+  - "0aa84ca 交付F 維護協議+lessons"
+  - "8cd42a1 交付G 交接信"
+  - "3f0d21f 交付H 一致性補丁"
+  - "3e6790f 對抗審查修正 11 項"
+actual_tool_calls: 60
+result_summary: "13 個 DoD 全數完成。新增 6 個 system/ 制度檔+verifier agent+2 個 memory 種子檔+診斷報告；CLAUDE.md 路由化（budget 1478/3000）；10 個既有檔補丁（各留備份）。fresh-context sonnet 對抗審查發現 11 項問題（3 P1）全數修正，其中官方文件核實 [1m] 別名不可用於派工。CI 全綠（spec/budget/YAML/manifest/hooks/audit/e2e×2/revisit）。session 中斷 2 次靠 checkpoint 無損接續，教訓已記 lessons.md L-20260705-01。"
+completion_time: "2026-07-05"
+audit_log_ref: "logs/AUDIT_LOG.md"
