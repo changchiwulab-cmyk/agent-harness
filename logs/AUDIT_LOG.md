@@ -15,7 +15,32 @@ status: done
 risk_level: medium
 approval_needed: true
 output_path: outputs/reports/2026-07-04_fable5-diagnosis.md
-checkpoints: []
+checkpoints:
+- commit: 6b2edc8
+  subject: 'checkpoint: 20260704-F01 收卡：Task Card done + audit log 全量重生成（46 筆，補既有
+    drift）+ manifest 同步'
+- commit: 3e6790f
+  subject: 'checkpoint: 20260704-F01 對抗審查修正（11 項：APPROVAL carve-out、AGENT_CONTEXT
+    入路由、[1m]派工不合法、計數器區分、GATE銜接verifier、analysis枚舉補齊等）'
+- commit: 3f0d21f
+  subject: 'checkpoint: 20260704-F01 交付H 一致性補丁（AGENT_CONTEXT/ROUTING/COST/GLOBAL_RULES/README/settings
+    釘 opus）'
+- commit: 8cd42a1
+  subject: 'checkpoint: 20260704-F01 交付G 交接信 + 待強模型問題清單'
+- commit: 0aa84ca
+  subject: 'checkpoint: 20260704-F01 交付F 維護協議 + lessons 教訓帳本（含首筆真實教訓）'
+- commit: 7a9437a
+  subject: 'checkpoint: 20260704-F01 交付E 派工模板×5 + verifier agent 定義'
+- commit: a719252
+  subject: 'checkpoint: 20260704-F01 交付D 判斷力外化rubric（5組判準各附正反例）'
+- commit: c99d395
+  subject: 'checkpoint: 20260704-F01 交付C 模型調度守則（MODEL_ROSTER + DISPATCH_POLICY）'
+- commit: eeee48c
+  subject: 'checkpoint: 20260704-F01 交付B CLAUDE.md 路由化重寫（單一事實來源）'
+- commit: b35724e
+  subject: 'checkpoint: 20260704-F01 交付A 診斷報告（token洩漏/失焦/易錯 前三名+修法）'
+- commit: 67f380a
+  subject: 'checkpoint: 20260704-F01 開卡＋既有檔備份至 archive/pre-fable5/'
 actual_tool_calls: 60
 result_summary: 13 個 DoD 全數完成。新增 6 個 system/ 制度檔+verifier agent+2 個 memory 種子檔+診斷報告；CLAUDE.md
   路由化（budget 1478/3000）；10 個既有檔補丁（各留備份）。fresh-context sonnet 對抗審查發現 11 項問題（3 P1）全數修正，其中官方文件核實
@@ -33,7 +58,9 @@ status: done
 risk_level: low
 approval_needed: false
 output_path: frontend/app.js
-checkpoints: []
+checkpoints:
+- commit: 0c56e72
+  subject: 'checkpoint: 20260529-011 R7 frontend governance overview panel'
 actual_tool_calls: 9
 result_summary: 前端新增『治理總覽』面板：manifest build_overview（由既有 tasks+logs 計算，root-parameterized）→
   data.json overview 鍵；test_empty_repo 同步更新；index.html + app.js renderOverview 以既有
@@ -51,7 +78,10 @@ status: done
 risk_level: medium
 approval_needed: true
 output_path: system/RECOVERY_RUNBOOK.md
-checkpoints: []
+checkpoints:
+- commit: f64c87e
+  subject: 'checkpoint: 20260529-010 R8 disaster-recovery runbook + checkpoint-restore
+    drill'
 actual_tool_calls: 8
 result_summary: 新增 system/RECOVERY_RUNBOOK.md（4 場景 + 資料來源 + 一致性檢查 + GATE_POLICY rollback
   對應）。實測場景 A：破壞工作副本→git checkout 還原，~5ms、byte-identical、工作樹還原乾淨（附錄記錄）。GATE_POLICY
@@ -68,7 +98,9 @@ status: done
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-05-29_observability-metrics.md
-checkpoints: []
+checkpoints:
+- commit: 5e54eec
+  subject: 'checkpoint: 20260529-009 R7 observability metrics engine (workflow/business/failure)'
 actual_tool_calls: 9
 result_summary: governance_metrics.py 補三層可觀測性（工作流/業務/失敗）+ --observability flag + 7
   個新測試（含 --json 仍為 M1–M4 的回歸守門）。產出觀測報告草稿。未改 system/、未動 CI。前端『治理成熟度』面板刻意延後：接入需改 data.json
@@ -87,7 +119,9 @@ status: done
 risk_level: medium
 approval_needed: true
 output_path: system/EXECUTION_LOG_SCHEMA.yaml
-checkpoints: []
+checkpoints:
+- commit: a56f0ce
+  subject: 'checkpoint: 20260529-008 R6 execution-log token source field'
 actual_tool_calls: 5
 result_summary: EXECUTION_LOG_SCHEMA token_estimate 新增 source 欄（dashboard_measured/rule_estimated/not_recorded）；RUN-20260529-003
   示範 source=rule_estimated。system/ 變更待草稿 PR review。
@@ -120,7 +154,10 @@ status: done
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-05-29_governance-data-analysis.md
-checkpoints: []
+checkpoints:
+- commit: f7052bf
+  subject: 'checkpoint: 20260529-006/007 R3 analysis cost sample + R4 decision revisit
+    tracker'
 actual_tool_calls: 7
 result_summary: '產出治理數據分析草稿（39 task cards、audit 覆蓋 94.3%、draft:report≈8:1、logs runs2/appr1/err2、7
   決策 0 revisit）。貢獻 analysis 成本樣本 #1（~16K）。建議 RETRO 重算 analysis 校準（現有 3 張 analysis
@@ -155,7 +192,10 @@ status: done
 risk_level: medium
 approval_needed: true
 output_path: logs/approvals/2026-04-09_20260409-001_approval.yaml
-checkpoints: []
+checkpoints:
+- commit: 1972b14
+  subject: 'checkpoint: 20260529-004/005 R1 approval-record schema + R2 logs schema
+    lint'
 actual_tool_calls: 8
 result_summary: approval_record schema 寫入 APPROVAL_POLICY.yaml；APPROVAL_LOG_TEMPLATE.yaml
   + 首筆回填樣本（RUN-20260409-001 的 2 筆批准）建立；RETRO_FLOW 註記 schema 位置。system/ 變更待草稿 PR review/merge（approval_given
@@ -173,7 +213,10 @@ status: done
 risk_level: low
 approval_needed: false
 output_path: logs/runs/RUN-20260529-003.yaml
-checkpoints: []
+checkpoints:
+- commit: f567db9
+  subject: 'checkpoint: 20260529-003 R5 failure drill - exercise failure-recovery
+    record paths'
 actual_tool_calls: 9
 result_summary: 首次坐實失敗路徑：broken fixture 經 validate_task_card 確實觸發 schema_failure→重試
   1 次→停；產出即時 error log（logs/errors/）+ status=failed 的 run log（logs/runs/，gate_results.schema_check=fail）；新增
@@ -190,7 +233,9 @@ status: done
 risk_level: low
 approval_needed: true
 output_path: outputs/reports/harness-self-assessment-v1.md
-checkpoints: []
+checkpoints:
+- commit: fde726b
+  subject: 'checkpoint: 20260529-002 promote self-assessment to outputs/reports/'
 actual_tool_calls: 6
 result_summary: 依 RETRO_FLOW §5 晉升完成：outputs/reports/harness-self-assessment-v1.md（檔頭加晉升標記＋採納清單）；原草稿加回指保留。內容與
   draft 一致，未修改任何 system/ 檔。
@@ -206,7 +251,10 @@ status: done
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-05-29_harness-self-assessment.md
-checkpoints: []
+checkpoints:
+- commit: 35a7559
+  subject: 'checkpoint: 20260529-001 harness self-assessment (eval + optimization
+    roadmap)'
 actual_tool_calls: 14
 result_summary: 綜合 ≈7/10，成熟度等級 3（生產前）。業界十維平均 7.2（安全 9 / 治理 9 為招牌，可觀測 6 / 耐久 6 為短板）；馬鞍工程六原則平均
   7.0（驗證集中化 9 最高，執行紀錄結構化 5 最低）。校正 3 項原始誤判。產出 R1–R10 roadmap，單一最高槓桿＝R5 故障演練。產出：outputs/drafts/2026-05-29_harness-self-assessment.md。未修改任何
@@ -223,7 +271,9 @@ status: review
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-05-09_methodology_outline.md
-checkpoints: []
+checkpoints:
+- commit: 419ebaf
+  subject: 'checkpoint: 20260509-W01 methodology outline draft + audit'
 actual_tool_calls: 6
 result_summary: DoD 7/7 通過。主軸命題 3 候選 + 推薦 T1（用契約取代信任）；12 章大綱（~40K 字），每章帶 Harness 實證；三形態取捨推薦先部落格→課程→書；與
   LangChain / Chip Huyen / Anthropic best practice 差異化定位；2 個讀者反對意見已預備回應。
@@ -350,7 +400,9 @@ status: review
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/governance-metrics-2026-05.md
-checkpoints: []
+checkpoints:
+- commit: 04d9ce8
+  subject: 'checkpoint: 20260509-N05 governance metrics automation'
 actual_tool_calls: 6
 result_summary: DoD 8/8 通過。scripts/governance_metrics.py（M1-M4 採集 + markdown/JSON
   雙輸出 + warn/alert 分級退出碼）+ scripts/test_governance_metrics.py（15 個測試全綠）+ system/NATIVE_OVERLAP.yaml（M4
@@ -369,7 +421,9 @@ status: review
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-05-09_n04_governance-plugin-skeleton.md
-checkpoints: []
+checkpoints:
+- commit: '4900614'
+  subject: 'checkpoint: 20260509-N04 governance plugin skeleton'
 actual_tool_calls: 5
 result_summary: DoD 8/8 通過。skeleton 含：plugin.json manifest、5 slash command 介面契約、4
   schema 草案、2 hook 行為、2 standalone validator、README outline、v2→plugin 對照表、暫不做清單。確認
@@ -388,7 +442,9 @@ status: review
 risk_level: medium
 approval_needed: true
 output_path: outputs/drafts/2026-05-09_n03_skills-native-poc.md
-checkpoints: []
+checkpoints:
+- commit: 4c65a40
+  subject: 'checkpoint: 20260509-N03 skills native registration PoC'
 actual_tool_calls: 7
 result_summary: DoD 7/7 通過。skills/research/SKILL.md 加 frontmatter（name + description
   151 字），原內容不刪改；.claude/skills/research → ../../skills/research symlink 建立（避免雙寫漂移）；H1
@@ -406,7 +462,9 @@ status: review
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-05-09_n02_audit-count-fix.md
-checkpoints: []
+checkpoints:
+- commit: c7d64a6
+  subject: 'checkpoint: 20260509-N02 audit count fix + attribution correction'
 actual_tool_calls: 4
 result_summary: DoD 6/6 通過。事實核對：README 從無『30+』字樣（grep 證明），真正出處為 plan §Context + 兩張
   task card context 欄位。實際計數本 PR 前 18 筆 audit / 12 drafts / 2 reports / 6 decisions；本
@@ -426,7 +484,9 @@ status: review
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-05-09_n01_plan-alignment.md
-checkpoints: []
+checkpoints:
+- commit: a245f1e
+  subject: 'checkpoint: 20260509-N01 plan alignment + plan archived to repo'
 actual_tool_calls: 6
 result_summary: DoD 7/7 通過。Plan 已歸檔 repo（memory/active_projects/agent-harness/plans/ai-bubbly-mountain.md）；A01/W01
   與 plan §8.1 Task A/B 各 5/5 草案 DoD pass + 各 2 條 over-deliver；命名漂移（_ vs -）+ allowed_tools
@@ -461,7 +521,9 @@ status: review
 risk_level: medium
 approval_needed: true
 output_path: outputs/drafts/2026-05-09_v3_extraction_plan.md
-checkpoints: []
+checkpoints:
+- commit: e95a425
+  subject: 'checkpoint: 20260509-A01 v3 extraction plan draft + audit'
 actual_tool_calls: 12
 result_summary: DoD 7/7 通過。16 模組裁決：保留 0 / 砍除 5 / 抽出 6 / 重構 5。治理層 plugin 邊界、發布形態取捨（Plugin
   → CLI → MCP）、v2 → v2.5 → v3.x 階段切換、4 個風險已列。Plan 檔此 session 不可讀，相關推論標 [待驗證]。risk=medium

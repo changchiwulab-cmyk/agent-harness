@@ -10,7 +10,7 @@
 ## T1 搜尋／定位
 
 ```
-subagent_type: Explore ｜ model: 不指定（Explore 內建）｜ prompt 開頭註明搜索廣度：medium 或 very thorough
+subagent_type: Explore ｜ model: "sonnet"（必帶——內建 agent 未覆寫會繼承主對話的 opus）｜ prompt 開頭註明搜索廣度：medium 或 very thorough
 ```
 
 ```text

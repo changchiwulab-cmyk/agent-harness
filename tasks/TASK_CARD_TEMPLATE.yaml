@@ -28,6 +28,7 @@ approval_needed: false         # true = 輸出後需人工確認才算完成
 allowed_tools:                 # 白名單，只列出這個任務需要的工具
   - "file_read"
   - "web_search"
+  - "subagent_dispatch"        # 派 subagent（見 system/DISPATCH_POLICY.md；DoD 驗收 verifier 不受本白名單限制）
 
 # === 成本控制 ===
 max_tool_calls: 5              # 單一任務最多工具呼叫次數

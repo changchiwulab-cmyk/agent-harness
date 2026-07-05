@@ -64,15 +64,17 @@ class TestCheckpointDetection(unittest.TestCase):
         with mock.patch("subprocess.run") as patched:
             patched.return_value = mock.Mock(
                 stdout="abc1234\tcheckpoint: [20260501-X01] stage 1\n"
-                       "def5678\tcheckpoint: [20260501-X01] stage 2\n",
+                       "def5678\tcheckpoint: 20260501-X01 stage 2\n",
                 returncode=0,
             )
             checkpoints = gen.find_checkpoints("20260501-X01", Path("/tmp"))
 
-        # Verify the subprocess was invoked with the right grep pattern.
+        # Verify the subprocess was invoked with the right grep pattern
+        # (brackets optional: historical commits mostly omit them).
         args, kwargs = patched.call_args
         cmd = args[0]
-        self.assertIn("--grep=checkpoint: \\[20260501-X01\\]", cmd)
+        self.assertIn("--extended-regexp", cmd)
+        self.assertIn("--grep=checkpoint: \\[?20260501-X01\\]?", cmd)
         self.assertEqual(len(checkpoints), 2)
         self.assertEqual(checkpoints[0]["commit"], "abc1234")
         self.assertTrue(all("20260501-X01" in c["subject"] for c in checkpoints))

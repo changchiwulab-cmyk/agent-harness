@@ -43,6 +43,8 @@
 `Explore`（唯讀搜索，回結論不回原文）、`Plan`（架構規劃）、`general-purpose`（全工具）、
 `claude`（泛用）、`claude-code-guide`（查 Claude Code/API 官方文件）。
 自訂：`verifier`（本 repo `.claude/agents/verifier.md`，fresh-context 驗收員）。
+內建 agent 呼叫時**未帶 `model` 參數就繼承主對話模型**（本 repo settings 已釘 opus）——
+依 DISPATCH_POLICY 原則一律顯式指定，別讓 opus 跑便宜活。
 
 > 注意：內建清單可能隨平台版本變動。開新 session 時以系統提示裡實際列出的
 > agent types 為準；發現與本表不符→依 MAINTENANCE_PROTOCOL 更新本檔。

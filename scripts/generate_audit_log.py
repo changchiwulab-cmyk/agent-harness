@@ -68,10 +68,21 @@ def collect_tasks(root: Path) -> list[dict[str, Any]]:
 
 
 def find_checkpoints(task_id: str, root: Path) -> list[dict[str, str]]:
-    """Return list of {commit, subject} for `checkpoint: [task_id]` commits."""
+    """Return list of {commit, subject} for checkpoint commits of a task.
+
+    Matches both `checkpoint: [task_id] stage` and `checkpoint: task_id stage`:
+    the CLAUDE.md convention writes brackets, but most historical commits omit
+    them, so the ERE keeps the brackets optional.
+    """
     try:
         out = subprocess.run(
-            ["git", "log", f"--grep=checkpoint: \\[{task_id}\\]", "--pretty=%h%x09%s"],
+            [
+                "git",
+                "log",
+                "--extended-regexp",
+                f"--grep=checkpoint: \\[?{task_id}\\]?",
+                "--pretty=%h%x09%s",
+            ],
             cwd=root,
             check=True,
             capture_output=True,
