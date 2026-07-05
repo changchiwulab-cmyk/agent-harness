@@ -28,7 +28,7 @@ definition_of_done:
   - ".claude/agents/verifier.md：fresh-context 驗收員 agent 定義"
   - "system/MAINTENANCE_PROTOCOL.md + memory/lessons.md：維護分級、教訓格式、壓縮觸發"
   - "system/HANDOFF_FABLE5.md：三件未問之事 + 制度退化模式與預防"
-  - "既有檔一致性補丁（AGENT_CONTEXT/ROUTING_RULES/COST_POLICY/README/settings.json），改前備份至 archive/pre-fable5/"
+  - "既有檔一致性補丁（AGENT_CONTEXT/ROUTING_RULES/COST_POLICY/GLOBAL_RULES/README/settings.json；對抗審查後追加 GATE_POLICY/APPROVAL_POLICY/PERMISSIONS/TASK_CARD_TEMPLATE），改前備份至 archive/pre-fable5/"
   - "fresh-context sonnet agent 對抗審查全部產出，發現問題已修正"
   - "read-back 驗證每檔完整；CI 同組腳本本地全綠"
   - "push 分支 claude/fable5-system-design-yexnes 並開 draft PR"

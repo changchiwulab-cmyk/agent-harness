@@ -35,7 +35,7 @@ max_retries: 3                 # 連續失敗最多重試次數
 max_web_searches: 3            # web search 上限
 
 # === Skill 路由 ===
-skill_type: ""                 # research / writing / ops / review / analysis
+skill_type: ""                 # research / writing / ops / review
 
 # === 執行紀錄（由 agent 填寫）===
 checkpoints: []                # 每次 checkpoint 的 git commit hash + 描述

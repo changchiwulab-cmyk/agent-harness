@@ -31,12 +31,12 @@ gates:
 
   # --- 第三層：完成驗證 ---
   completion_check:
-    description: "definition_of_done 逐條比對（由 fresh-context verifier 執行，不自驗；見 system/DISPATCH_POLICY.md §6）"
+    description: "definition_of_done 逐條比對"
     checks:
       - 逐條列出 definition_of_done
       - 每條標記 pass 或 fail
       - fail 的條目說明缺什麼
-    on_fail: "verifier 列出缺漏清單 → 依 DISPATCH_POLICY §5 修產出，或經使用者同意修 DoD；使用者亦可裁決接受現狀（產出標 partial）"
+    on_fail: "列出缺漏清單，詢問使用者是否補充或接受現狀"
     rollback: "產出標記為 partial，存入 outputs/drafts/ 而非 reports/"
 
   # --- 第四層：風險驗證 ---

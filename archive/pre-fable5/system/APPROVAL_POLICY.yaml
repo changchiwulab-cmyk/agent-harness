@@ -15,7 +15,6 @@ triggers:
   - condition: "修改 system/ 目錄下任何檔案"
     action: "列出變更差異，等待確認"
     method: human_confirm
-    note: "例外 carve-out（2026-07-04 經核准）：MAINTENANCE_PROTOCOL.md §1「可自行改」四類（lessons 新增條目、MODEL_ROSTER 型號表更新附查證來源、斷鏈修復、錯字格式修正）不需事前確認，但仍須走該檔 §2 六步程序並 commit 留痕"
 
   - condition: "修改 skills/ 目錄下任何檔案"
     action: "列出變更差異，等待確認"

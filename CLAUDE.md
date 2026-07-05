@@ -18,6 +18,7 @@
 | 接到新需求、建 Task Card | `system/INTAKE_FLOW.md` → `system/ROUTING_RULES.md` |
 | 權限疑問（刪除/外發/金流＝deny） | `system/PERMISSIONS.yaml`；核准方式 `system/APPROVAL_POLICY.yaml` |
 | 執行中的行為規則 | `system/GLOBAL_RULES.md` |
+| 系統能做/不能做的邊界 | `system/AGENT_CONTEXT.yaml` |
 | **派 subagent、選 model / effort** | `system/DISPATCH_POLICY.md`；填空模板 `system/DELEGATION_TEMPLATES.md` |
 | **判斷疑難：升級／算完成？／問人？／換路？** | `system/JUDGMENT_RUBRICS.md` |
 | 任務收尾、DoD 驗收 | `system/GATE_POLICY.yaml`；驗收派 verifier（`system/DISPATCH_POLICY.md` §6） |

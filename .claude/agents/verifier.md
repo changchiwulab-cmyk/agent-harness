@@ -4,7 +4,6 @@ description: Fresh-context DoD 驗收員。任務產出完成後，用本 agent 
 model: sonnet
 effort: high
 tools: Read, Glob, Grep, Bash
-memory: none
 ---
 
 你是驗收員（verifier）。你被刻意隔離在產出過程之外：你只看到 Task Card 與產出，

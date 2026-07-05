@@ -35,7 +35,8 @@
 ## §2 修改程序（六步，一步不省）
 
 1. **備份**：`mkdir -p archive/$(date +%F)-變更主題/ && cp 原檔 archive/.../`
-   （沿用 archive/pre-fable5/ 的先例；git 歷史是第二保險，不是替代）
+   （`archive/pre-fable5/` 是本協議生效前的首例、命名不同屬歷史遺留，之後一律用
+   日期前綴；git 歷史是第二保險，不是替代）
 2. **改**：一次一個主題，不順手改別的
 3. **檢查**：`ruby scripts/check_context_budget.rb`＋`ruby scripts/check_spec_consistency.rb`；
    動過 tasks/logs/decisions 的 YAML → `python3 scripts/generate_frontend_manifest.py`；
@@ -62,7 +63,9 @@ proposed = 待確認的提案，使用者在 retro 時批量裁決 → `confirme
 任一條件命中 → 開一張 retro Task Card 做蒸餾：
 
 - `memory/lessons.md` 的 active 區超過 **20 筆**
-- 該檔估算超過 **2,000 tokens**（`ruby -e` 用 check_context_budget.rb 的算法，或字元數粗估）
+- 該檔估算超過 **2,000 tokens**。注意 `check_context_budget.rb` 只算寫死的兩個檔、
+  不吃參數；用同一公式另算：
+  `ruby -e 'c=File.read("memory/lessons.md", encoding: "UTF-8").chars; a=c.count{|x|x.ord<128}; puts ((a/4.0)+(c.size-a)).ceil'`
 
 **蒸餾動作**：把重複出現的教訓歸戶到對應規則檔（這是規則變更 → 走 §1「先問」）；
 歸戶完成的條目標 `status: distilled` 並剪貼到檔尾「已蒸餾歸檔」區。

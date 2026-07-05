@@ -14,8 +14,10 @@
 | `fable` | Fable 5 | Mythos 級，通常不可用 | 不要在守則裡依賴它；可用時見 HANDOFF_FABLE5 的待強模型清單 |
 | `inherit` | 跟隨主對話 | — | 不指定時的預設；**守則要求顯式指定，不要用 inherit** |
 
-其他合法值：完整 model ID（如 `claude-opus-4-8`、`claude-sonnet-5`）、`sonnet[1m]` /
-`opus[1m]`（1M context，超大量讀取時用）、`best`（有 fable 用 fable，否則最新 opus）。
+派工時的其他合法值：完整 model ID（如 `claude-opus-4-8`、`claude-sonnet-5`）。
+**注意**：`sonnet[1m]` / `opus[1m]` / `best` / `opusplan` 是 **session 層**別名
+（`/model` 指令與 settings.json 用），**不是** Agent tool `model` 參數的合法值，
+派工時不要用（2026-07-05 對抗審查時對照官方 sub-agents 文件與本環境參數 enum 核實）。
 
 ## effort（推理力度）
 
