@@ -1,0 +1,70 @@
+# Task Card — 外部評估：評分 + 缺點 + 改善計畫（含 P0 修復）
+# 來源：使用者請求「評分我這個專案、抓出缺點、給我改善計畫」
+# 範圍：評估報告（進 drafts/）+ P0 級快速修復（使用者於本 session 核准計畫，含修改 system/ 與 CLAUDE.md）
+
+task_id: "20260705-001"
+date: "2026-07-05"
+status: "done"
+
+# === 任務定義 ===
+goal: "以外部視角對 Agent Harness v2 做 1-10 評分、抓出缺點（附 file:line 證據）、產出 P0/P1/P2 改善計畫，並完成 P0 級快速修復"
+context: |
+  使用者要求對專案評分、抓缺點、給改善計畫。
+  研究方法：3 個並行探索 agent（治理文件層／程式碼與 CI 層／運行資料層），
+  並與 2026-05-29 自我評估（≈7/10、成熟度 3、R1-R8 已執行）對照。
+  使用者於本 session 明確選擇「報告 + P0 修復」範圍：
+  修 CI 紅燈（frontend/data.json 漂移）、CLAUDE.md 與 D004/D006 脫節、
+  status:blocked 枚舉矛盾、validate_task_card.py crash bug、
+  SECURITY.md 佔位模板、CI 守門補洞（audit --check + governance metrics tests）。
+  修改 system/ 與 CLAUDE.md 屬 ask，批准紀錄見 logs/approvals/2026-07-05_20260705-001_approval.yaml。
+input_data:
+  - "CLAUDE.md"
+  - "README.md"
+  - "system/"
+  - "scripts/"
+  - "logs/AUDIT_LOG.md"
+  - "outputs/reports/harness-self-assessment-v1.md"
+
+# === 完成標準（最重要的欄位）===
+definition_of_done:
+  - "評估報告產出至 outputs/drafts/：10 維評分卡 + 總分、缺點清單（附 file:line 證據）、與 5/29 自評差異分析、P0/P1/P2 改善計畫"
+  - "P0-a CLAUDE.md 同步 D004（create_task_card 已升 allow）與 D006（run log 縮限範圍），context budget 檢查仍通過"
+  - "P0-b status 枚舉加入 blocked（check_spec_consistency.rb + validate_task_card.py + 測試），消除 GATE_POLICY rollback 指示與 CI 的矛盾"
+  - "P0-c validate_task_card.py 回移植 None/mapping guard，空 YAML 不再 AttributeError"
+  - "P0-d SECURITY.md 由 GitHub 預設模板替換為真實安全政策"
+  - "P0-e CI 增加 generate_audit_log.py --check 與 test_governance_metrics.py 兩道關卡（checkout 改 fetch-depth: 0）"
+  - "P0-f frontend/data.json 與 logs/AUDIT_LOG.md 重生，兩個 --check 均 exit 0，本地全套 gate 綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-07-05_fable5-external-assessment.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "modify_system_rules"
+  - "modify_claude_md"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 40
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "review"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "e60ab94 checkpoint: [20260705-001] external assessment report + P0 fixes"
+actual_tool_calls: 26
+result_summary: "總分 ≈6.8/10、成熟度維持 3。設計面 ~9 / 執行面 ~5，落差即最大缺點：CLAUDE.md 與 D004/D006 脫節、enforcement 榮譽制（hook 只掛 Bash、4/8 deny）、HEAD 上 CI 紅燈（data.json 漂移）、~17 張卡狀態凍結、驗證器三份分歧。P0 六項全數修復（CLAUDE.md 同步、blocked 枚舉、crash bug、SECURITY.md、CI 補洞、衍生檔重生）；P1/P2 留待各自 Task Card。產出：outputs/drafts/2026-07-05_fable5-external-assessment.md"
+completion_time: "2026-07-05"
+audit_log_ref: "logs/AUDIT_LOG.md"

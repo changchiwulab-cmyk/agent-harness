@@ -10,13 +10,13 @@
 
 ## 權限（細節見 system/PERMISSIONS.yaml）
 
-- **allow**：讀取專案檔案、web search、寫草稿、寫 logs、git checkpoint
-- **ask**：修改 skills/、system/、memory/，建立 Task Card，寫正式報告
+- **allow**：讀取專案檔案、web search、寫草稿、寫 logs、git checkpoint、建立 Task Card（D004）
+- **ask**：修改 skills/、system/、memory/，寫正式報告
 - **deny**：刪除、外發、修改正式資料、自動寫入長期記憶、金流操作
 
 ## 執行流程
 
-1. 載入 Task Card → 2. 確認 goal + definition_of_done → 3. 載入 context（system/GLOBAL_RULES.md + system/AGENT_CONTEXT.yaml + system/APPROVAL_POLICY.yaml + 對應 skill + project context）→ 4. 執行 → 5. 每關鍵階段 git commit checkpoint → 6. 依 system/GATE_POLICY.yaml 逐層驗證（schema → 規則 → 完成 → 風險，含 rollback 定義）→ 7. 輸出到 outputs/ → 8. 依 system/EXECUTION_LOG_SCHEMA.yaml 寫執行紀錄到 logs/runs/ → 9. 寫 audit log
+1. 載入 Task Card → 2. 確認 goal + definition_of_done → 3. 載入 context（system/GLOBAL_RULES.md + system/AGENT_CONTEXT.yaml + system/APPROVAL_POLICY.yaml + 對應 skill + project context）→ 4. 執行 → 5. 每關鍵階段 git commit checkpoint → 6. 依 system/GATE_POLICY.yaml 逐層驗證（schema → 規則 → 完成 → 風險，含 rollback 定義）→ 7. 輸出到 outputs/ → 8. 依 system/EXECUTION_LOG_SCHEMA.yaml 寫執行紀錄到 logs/runs/（僅 failed/partial/risk≥high/checkpoints≥3 必寫，見 D006）→ 9. 寫 audit log
 
 ## Context 硬限制
 

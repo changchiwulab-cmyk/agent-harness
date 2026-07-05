@@ -80,6 +80,8 @@ class TestConstants < Minitest::Test
     assert_includes ALLOWED_STATUS, 'in_progress'
     assert_includes ALLOWED_STATUS, 'checkpoint'
     assert_includes ALLOWED_STATUS, 'review'
+    # GATE_POLICY.yaml schema-gate rollback 指定 status: blocked，枚舉必須接受
+    assert_includes ALLOWED_STATUS, 'blocked'
   end
 end
 

@@ -136,23 +136,23 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 30,
-      "medium": 14
+      "low": 34,
+      "medium": 15
     },
     "task_skill": {
       "analysis": 4,
-      "ops": 26,
+      "ops": 30,
       "research": 5,
-      "review": 6,
+      "review": 7,
       "writing": 4
     },
     "task_status": {
-      "done": 22,
+      "done": 27,
       "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 45
+    "task_total": 50
   },
   "tasks": [
     {
@@ -237,6 +237,16 @@
     },
     {
       "approval_needed": false,
+      "date": "2026-04-12",
+      "goal": "重建 2026-04-04 因 .gitignore 遺失的 4 份草稿檔案，依原始 Task Card 及 Audit Log 紀錄忠實還原內容",
+      "path": "tasks/2026-04-12_drafts-rebuild.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260412-001"
+    },
+    {
+      "approval_needed": false,
       "date": "2026-04-15",
       "goal": "評估是否應將 create_task_card 從 ask 升為 allow，給出有依據的建議排序",
       "path": "tasks/2026-04-15_create-task-card-permission-analysis.yaml",
@@ -248,12 +258,42 @@
     {
       "approval_needed": false,
       "date": "2026-04-17",
+      "goal": "為 spec-consistency.yml 補入 workflow_dispatch 觸發器，使 CI 可在 Actions 啟用後手動觸發",
+      "path": "tasks/2026-04-17_add-workflow-dispatch-to-spec-ci.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260417-O05"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-04-17",
       "goal": "填補 retro-2026-04-15 發現的三項證據空白：Error Log 範例、Decision Log D005、Token 校準資料表",
       "path": "tasks/2026-04-17_evidence-gap-filling.yaml",
       "risk_level": "low",
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260417-O01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-04-17",
+      "goal": "將 AUDIT_LOG.md 中三處 file_edit 工具名稱統一改為 file_write，與 Task Card allowed_tools 白名單一致",
+      "path": "tasks/2026-04-17_normalize-audit-log-tool-names.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260417-O06"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-04-17",
+      "goal": "回應 PR #26 的兩則 Codex P2 review 評論：修 vietnam-expansion frontmatter 檔頭順序、補 evidence-gap-filling 任務卡的 bash 工具白名單",
+      "path": "tasks/2026-04-17_pr26-review-fixes.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260417-O04"
     },
     {
       "approval_needed": true,
@@ -604,6 +644,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260529-010"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-05",
+      "goal": "以外部視角對 Agent Harness v2 做 1-10 評分、抓出缺點（附 file:line 證據）、產出 P0/P1/P2 改善計畫，並完成 P0 級快速修復",
+      "path": "tasks/2026-07-05_fable5-external-assessment.yaml",
+      "risk_level": "medium",
+      "skill_type": "review",
+      "status": "done",
+      "task_id": "20260705-001"
     }
   ]
 }

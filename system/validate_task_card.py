@@ -10,7 +10,7 @@ import yaml
 REQUIRED_FIELDS = ["task_id", "date", "goal", "definition_of_done", "skill_type", "risk_level"]
 VALID_SKILLS = {"research", "analysis", "writing", "ops", "review"}
 VALID_RISK = {"low", "medium", "high", "critical"}
-VALID_STATUS = {"pending", "in_progress", "checkpoint", "review", "done", "failed"}
+VALID_STATUS = {"pending", "in_progress", "checkpoint", "review", "done", "failed", "blocked"}
 
 
 def validate(path: str) -> list[str]:
@@ -20,6 +20,9 @@ def validate(path: str) -> list[str]:
             card = yaml.safe_load(f)
     except Exception as e:
         return [f"YAML 解析失敗：{e}"]
+
+    if not isinstance(card, dict):
+        return ["Task Card 不是 YAML mapping"]
 
     # 必填欄位
     for field in REQUIRED_FIELDS:
@@ -52,10 +55,13 @@ def validate(path: str) -> list[str]:
 
     # expected_output 結構
     output = card.get("expected_output", {})
-    if not output.get("format"):
-        errors.append("expected_output.format 不能為空")
-    if not output.get("filename"):
-        errors.append("expected_output.filename 不能為空")
+    if not isinstance(output, dict):
+        errors.append("expected_output 必須是 mapping")
+    else:
+        if not output.get("format"):
+            errors.append("expected_output.format 不能為空")
+        if not output.get("filename"):
+            errors.append("expected_output.filename 不能為空")
 
     return errors
 
