@@ -4,7 +4,7 @@
 
 task_id: "20260705-001"
 date: "2026-07-05"
-status: "in_progress"
+status: "done"
 
 # === 任務定義 ===
 goal: "以外部視角對 Agent Harness v2 做 1-10 評分、抓出缺點（附 file:line 證據）、產出 P0/P1/P2 改善計畫，並完成 P0 級快速修復"
@@ -62,8 +62,9 @@ max_web_searches: 0
 skill_type: "review"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
-audit_log_ref: ""
+checkpoints:
+  - "e60ab94 checkpoint: [20260705-001] external assessment report + P0 fixes"
+actual_tool_calls: 26
+result_summary: "總分 ≈6.8/10、成熟度維持 3。設計面 ~9 / 執行面 ~5，落差即最大缺點：CLAUDE.md 與 D004/D006 脫節、enforcement 榮譽制（hook 只掛 Bash、4/8 deny）、HEAD 上 CI 紅燈（data.json 漂移）、~17 張卡狀態凍結、驗證器三份分歧。P0 六項全數修復（CLAUDE.md 同步、blocked 枚舉、crash bug、SECURITY.md、CI 補洞、衍生檔重生）；P1/P2 留待各自 Task Card。產出：outputs/drafts/2026-07-05_fable5-external-assessment.md"
+completion_time: "2026-07-05"
+audit_log_ref: "logs/AUDIT_LOG.md"
