@@ -136,23 +136,23 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 30,
+      "low": 31,
       "medium": 14
     },
     "task_skill": {
       "analysis": 4,
-      "ops": 26,
+      "ops": 27,
       "research": 5,
       "review": 6,
       "writing": 4
     },
     "task_status": {
-      "done": 22,
+      "done": 23,
       "in_progress": 2,
       "pending": 2,
       "review": 19
     },
-    "task_total": 45
+    "task_total": 46
   },
   "tasks": [
     {
@@ -234,6 +234,16 @@
       "skill_type": "review",
       "status": "done",
       "task_id": "20260409-001"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-04-12",
+      "goal": "重建 2026-04-04 因 .gitignore 遺失的 4 份草稿檔案，依原始 Task Card 及 Audit Log 紀錄忠實還原內容",
+      "path": "tasks/2026-04-12_drafts-rebuild.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260412-001"
     },
     {
       "approval_needed": false,
