@@ -38,12 +38,10 @@ v1 階段採用「粗略護欄 + 事後量測」策略：
 | CLAUDE.md + GLOBAL_RULES | 控制在 3K 以內 | 硬限制 |
 | 單一 skill prompt | 控制在 1.5K 以內 | 硬限制 |
 
-## 模型路由規則（v2 準備）
+## 模型路由（2026-07-04 已升級為獨立守則，本段只留指標）
 
-v1 先用單一模型（Claude）。未來如需降本：
-- 分類、抽取、格式檢查 → 便宜模型（Haiku 等級）
-- 規劃、推理、整合分析 → 強模型（Sonnet/Opus 等級）
-- 路由判斷本身 → 便宜模型
+模型與 effort 選擇、subagent 派工、升降級路徑 → `system/DISPATCH_POLICY.md`；
+型號事實 → `system/MODEL_ROSTER.md`。本檔只管預算、上限與事後量測。
 
 ## 事後量測流程（每週）
 

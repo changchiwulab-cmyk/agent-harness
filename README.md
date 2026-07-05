@@ -50,7 +50,13 @@ agent-harness/
 │   ├── AGENT_CONTEXT.yaml          ← 系統自我認知與邊界（v1.5 新增）
 │   ├── APPROVAL_POLICY.yaml        ← 批准流程規則（v2 新增）
 │   ├── FAILURE_TAXONOMY.yaml       ← 14 種失敗模式獨立檔（v2 新增）
-│   └── EXECUTION_LOG_SCHEMA.yaml   ← 執行紀錄結構定義（v2 新增）
+│   ├── EXECUTION_LOG_SCHEMA.yaml   ← 執行紀錄結構定義（v2 新增）
+│   ├── DISPATCH_POLICY.md          ← 模型調度守則（v2.5 新增）
+│   ├── MODEL_ROSTER.md             ← 現役模型名冊，型號更迭只改此檔（v2.5 新增）
+│   ├── JUDGMENT_RUBRICS.md         ← 判斷力外化判準（v2.5 新增）
+│   ├── DELEGATION_TEMPLATES.md     ← 派工 prompt 模板 ×5（v2.5 新增）
+│   ├── MAINTENANCE_PROTOCOL.md     ← 制度檔維護協議（v2.5 新增）
+│   └── HANDOFF_FABLE5.md           ← Fable 5 交接信：來歷與退化風險（v2.5 新增）
 ├── tasks/
 │   ├── TASK_CARD_TEMPLATE.yaml
 │   ├── DECISION_LOG_TEMPLATE.yaml  ← 決策紀錄模板（v1.5 新增）
@@ -165,7 +171,8 @@ python system/validate_task_card.py tasks/your-task.yaml
 |------|------|-------------|
 | **v1** | 單核心代理 + Task Card + Checkpoint + Verifier + Audit | — |
 | **v1.5** | + Gate Policy + Operating Context + Decision Log + Eval Examples + Weekly Review | 馬鞍工程原則導入：驗證集中化、系統自知、決策可追溯 |
-| **v2（現在）** | + Approval Policy + Failure Taxonomy + Execution Log Schema + Rollback Path + Ops Eval | 馬鞍工程落地：批准流程獨立化、失敗模式可引用、執行紀錄結構化 |
+| **v2** | + Approval Policy + Failure Taxonomy + Execution Log Schema + Rollback Path + Ops Eval | 馬鞍工程落地：批准流程獨立化、失敗模式可引用、執行紀錄結構化 |
+| **v2.5（現在）** | + Dispatch Policy + Model Roster + Judgment Rubrics + Delegation Templates + Maintenance Protocol + verifier agent + CLAUDE.md 路由化 | Fable 5 制度化 session（2026-07）：補模型調度層、驗證不自驗、單一事實來源；診斷見 `outputs/reports/2026-07-04_fable5-diagnosis.md` |
 | **v3** | 拆分 bounded specialists（research/sales/content） | 單一代理的 context 經常超限；任務類型間的規則衝突頻繁 |
 | **v4** | Graph orchestration + 進階 checkpoint persistence | 任務間依賴複雜度超過線性拔分能處理的範圍 |
 

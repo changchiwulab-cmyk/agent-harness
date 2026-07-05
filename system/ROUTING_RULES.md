@@ -17,8 +17,16 @@
 1. 如果任務明確對應單一 skill → 直接路由
 2. 如果任務跨兩個 skill（例如「研究後撰寫報告」）→ 拆成兩張 Task Card，依序執行
 3. 如果無法判斷 skill 類型 → 詢問使用者，不要猜
-4. 不做開放式的 agent-to-agent 對話路由
+4. 不做開放式的 agent-to-agent 對話路由（多個常駐 agent 互相對話協商——這仍然禁止。
+   注意：派拋棄式 subagent 做子工作**不在此限**，那由 `system/DISPATCH_POLICY.md` 管）
 5. 路由判斷本身不應消耗大量 token（不需要 LLM 做複雜推理）
+
+## 兩層路由的分工
+
+- **本檔（skill 路由）**：整個任務 → 用哪種 skill 的規範與輸出格式。建 Task Card 時決定。
+- **DISPATCH_POLICY（模型調度）**：執行中的子工作 → 自己做還是派 subagent、派給哪個
+  model、用什麼 effort。執行過程中隨時適用。
+- 順序：先 skill 路由（定任務形狀）→ 後模型調度（定誰來做每一塊）。
 
 ## 複合任務拆分原則
 
