@@ -4,7 +4,7 @@
 
 task_id: ""                    # 格式：YYYYMMDD-001 或 YYYYMMDD-R01（字母前綴選用）
 date: ""                       # 建立日期
-status: "pending"              # pending → in_progress → checkpoint → review → done / failed
+status: "pending"              # pending → in_progress → checkpoint → review → done / failed / blocked（schema gate rollback，見 GATE_POLICY）
 
 # === 任務定義 ===
 goal: ""                       # 一句話描述要完成什麼

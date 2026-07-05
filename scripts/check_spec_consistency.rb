@@ -6,7 +6,7 @@ require 'date'
 
 errors = []
 
-ALLOWED_STATUS = %w[pending in_progress checkpoint review done failed].freeze
+ALLOWED_STATUS = %w[pending in_progress checkpoint review done failed blocked].freeze
 ALLOWED_RISK = %w[low medium high critical].freeze
 ALLOWED_SKILL = %w[research writing ops review analysis].freeze
 REQUIRED_FIELDS = %w[

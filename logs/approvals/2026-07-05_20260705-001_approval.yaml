@@ -1,0 +1,14 @@
+# 批准紀錄 — 20260705-001 外部評估 + P0 修復
+# schema 定義見 system/APPROVAL_POLICY.yaml 的 approval_record 段。
+
+approval_records:
+  - approval_id: "APR-20260705-001"
+    task_id: "20260705-001"
+    date: "2026-07-05"
+    action: "核准「評估報告 + P0 修復」計畫，含修改 system/（validate_task_card.py）、CLAUDE.md、scripts/、.github/workflows/（均屬 ask 級動作）"
+    approval_method: "human_confirm"
+    risk_level: "medium"
+    status: "approved"
+    approved_by: "human"
+    rationale: "使用者於 session 中先選定範圍（報告 + P0 修復），再逐項審閱計畫（plan-mode approval）後核准"
+    linked_run: ""
