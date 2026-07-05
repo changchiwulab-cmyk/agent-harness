@@ -1,0 +1,57 @@
+task_id: "20260417-O06"
+date: "2026-04-17"
+status: "done"
+
+# === 任務定義 ===
+goal: "將 AUDIT_LOG.md 中三處 file_edit 工具名稱統一改為 file_write，與 Task Card allowed_tools 白名單一致"
+context: |
+  Codex 於 PR #27 指出 AUDIT_LOG.md 的三筆任務紀錄（O04、O03、O02）使用 tool_name: "file_edit"，
+  但 Task Card allowed_tools 白名單與其他 AUDIT_LOG 條目均使用 "file_write"。
+  命名不一致會使：
+  1. GATE_POLICY 審計重播時誤報工具不在白名單
+  2. per-tool usage 統計出現 file_edit 與 file_write 兩條分離計量
+  修正範圍僅 AUDIT_LOG.md 的三個 tool_name 欄位值，不變更 call_count 或其他邏輯。
+input_data:
+  - "logs/AUDIT_LOG.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "logs/AUDIT_LOG.md 中所有 tool_name: \"file_edit\" 改為 tool_name: \"file_write\"（共 3 處）"
+  - "grep -c file_edit logs/AUDIT_LOG.md 結果為 0"
+  - "ruby scripts/check_spec_consistency.rb 通過"
+  - "logs/AUDIT_LOG.md 追加本任務執行紀錄"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: "logs/"
+  filename: "AUDIT_LOG.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 5
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄 ===
+checkpoints:
+  - "audit-log-normalized: 3 處 file_edit 改為 file_write，grep -c 結果 0，Gate checker 通過"
+actual_tool_calls: 3
+result_summary: |
+  DoD 4/4 通過。
+  - logs/AUDIT_LOG.md 3 處 tool_name: "file_edit" 全數改為 tool_name: "file_write"（影響 O04、O03、O02 條目）
+  - grep -c file_edit logs/AUDIT_LOG.md: 0 ✅
+  - ruby scripts/check_spec_consistency.rb ✅
+  - python scripts/check_task_card_skill_type.py ✅（19 cards）
+completion_time: "2026-04-17"
+audit_log_ref: "logs/AUDIT_LOG.md"
