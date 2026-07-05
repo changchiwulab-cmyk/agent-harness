@@ -1,0 +1,63 @@
+task_id: "20260417-O04"
+date: "2026-04-17"
+status: "done"
+
+# === 任務定義 ===
+goal: "回應 PR #26 的兩則 Codex P2 review 評論：修 vietnam-expansion frontmatter 檔頭順序、補 evidence-gap-filling 任務卡的 bash 工具白名單"
+context: |
+  Codex bot 於 PR #26（SHA 830c696）留下兩則 P2 review comment，指出 v2 優化階段產出的一致性瑕疵：
+  1. memory/archived_projects/vietnam-expansion/context.md：現況 line 1 為 Markdown heading、line 3 才開始 YAML frontmatter；違反 memory/README.md:15 「檔頭需含 YAML frontmatter」的規範，多數 parser 只認 line 1 的 `---`，會漏讀 status/archived_date/revive_trigger。
+  2. tasks/2026-04-17_evidence-gap-filling.yaml：allowed_tools 只列 file_read + file_write，但 actual_tool_calls 自述 bash ×1；違反 Task Card 白名單原則，audit/replay 一致性破功。
+  兩項都在 allow 權限範圍內，純內部修正不影響對外輸出，風險低。
+input_data:
+  - "memory/archived_projects/vietnam-expansion/context.md"
+  - "memory/README.md"
+  - "tasks/2026-04-17_evidence-gap-filling.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "memory/archived_projects/vietnam-expansion/context.md line 1 為 `---`，YAML frontmatter 完整移到檔頭，原有 Markdown heading 移至 frontmatter 之後"
+  - "frontmatter 欄位不變：status / archived_date / archived_by / archive_reason / revive_trigger 全部保留"
+  - "tasks/2026-04-17_evidence-gap-filling.yaml 的 allowed_tools 加入 `bash`，其他欄位不變"
+  - "ruby scripts/check_spec_consistency.rb 通過"
+  - "python system/validate_task_card.py tasks/2026-04-17_evidence-gap-filling.yaml 通過"
+  - "python scripts/check_task_card_skill_type.py 通過"
+  - "logs/AUDIT_LOG.md 追加本任務執行紀錄，含兩則 review comment 的處理結果"
+
+# === 輸出定義 ===
+expected_output:
+  format: "multi"
+  location: "memory/archived_projects/vietnam-expansion/, tasks/, logs/"
+  filename: "見 DoD"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄 ===
+checkpoints:
+  - "pr26-review-fixes-complete: frontmatter 與 allowed_tools 修正完成，全數 Gate checker 通過"
+actual_tool_calls: 9
+result_summary: |
+  DoD 7/7 通過。
+  - memory/archived_projects/vietnam-expansion/context.md：frontmatter 移至 line 1，`# 越南市場拓展專案 Context` heading 移至 frontmatter 後；Ruby YAML.safe_load 可正確解析 status / archived_date / revive_trigger
+  - tasks/2026-04-17_evidence-gap-filling.yaml：allowed_tools 加入 `bash`，與該卡 actual_tool_calls 記錄一致
+  - ruby scripts/check_spec_consistency.rb ✅
+  - python system/validate_task_card.py ✅（兩張卡皆通過）
+  - python scripts/check_task_card_skill_type.py ✅（17 張卡）
+  - ruby scripts/test_check_spec_consistency.rb ✅（14 runs, 0 failures）
+  - python scripts/test_check_task_card_skill_type.py ✅（13 tests）
+completion_time: "2026-04-17"
+audit_log_ref: "logs/AUDIT_LOG.md"
