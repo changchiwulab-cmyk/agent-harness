@@ -136,23 +136,23 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 34,
-      "medium": 14
+      "low": 44,
+      "medium": 15
     },
     "task_skill": {
-      "analysis": 4,
-      "ops": 30,
-      "research": 5,
-      "review": 6,
-      "writing": 4
+      "analysis": 6,
+      "ops": 33,
+      "research": 7,
+      "review": 7,
+      "writing": 7
     },
     "task_status": {
-      "done": 26,
+      "done": 37,
       "in_progress": 2,
-      "pending": 2,
-      "review": 19
+      "pending": 6,
+      "review": 15
     },
-    "task_total": 49
+    "task_total": 60
   },
   "tasks": [
     {
@@ -162,7 +162,7 @@
       "path": "tasks/2026-04-04_ai-era-solo-business-proposal-review.yaml",
       "risk_level": "low",
       "skill_type": "review",
-      "status": "review",
+      "status": "done",
       "task_id": "20260404-RV01"
     },
     {
@@ -172,7 +172,7 @@
       "path": "tasks/2026-04-04_ai-era-solo-business-proposal.yaml",
       "risk_level": "low",
       "skill_type": "writing",
-      "status": "review",
+      "status": "done",
       "task_id": "20260404-W01"
     },
     {
@@ -182,7 +182,7 @@
       "path": "tasks/2026-04-04_ai-era-solo-business-strategy.yaml",
       "risk_level": "low",
       "skill_type": "research",
-      "status": "review",
+      "status": "done",
       "task_id": "20260404-S01"
     },
     {
@@ -192,7 +192,7 @@
       "path": "tasks/2026-04-04_proposal-fix-v2.yaml",
       "risk_level": "low",
       "skill_type": "ops",
-      "status": "review",
+      "status": "done",
       "task_id": "20260404-O02"
     },
     {
@@ -268,6 +268,36 @@
     {
       "approval_needed": false,
       "date": "2026-04-17",
+      "goal": "補寫 2026-04-04 組 7 個 expected_output markdown，使 outputs/drafts/ 與 7 張 status: done task card 一致",
+      "path": "tasks/2026-04-17_backfill-2026-04-04-artifacts.yaml",
+      "risk_level": "low",
+      "skill_type": "writing",
+      "status": "pending",
+      "task_id": "20260417-W01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-04-17",
+      "goal": "將 2026-04-04 四張已完成但停留 review 狀態的任務卡 status 推進到 done，使之與同日 tools-inventory × 3 的終態一致",
+      "path": "tasks/2026-04-17_close-stale-review-tasks.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260417-O01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-04-17",
+      "goal": "修補完整度檢查揭露的兩類缺口：AUDIT_LOG 缺漏 2 筆、AUDIT_LOG 含事實錯誤註記；validate_task_card.py 不檢 Gate 2 引用的 allowed_tools / max_tool_calls / expected_output.location 三欄位",
+      "path": "tasks/2026-04-17_completeness-sweep.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260417-O02"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-04-17",
       "goal": "填補 retro-2026-04-15 發現的三項證據空白：Error Log 範例、Decision Log D005、Token 校準資料表",
       "path": "tasks/2026-04-17_evidence-gap-filling.yaml",
       "risk_level": "low",
@@ -316,6 +346,56 @@
       "task_id": "20260417-O03"
     },
     {
+      "approval_needed": false,
+      "date": "2026-04-21",
+      "goal": "撰寫一份面向新使用者的 AI Agent 使用說明文件草稿（約 600 字）",
+      "path": "tasks/2026-04-21_ai-agent-usage-guide.yaml",
+      "risk_level": "low",
+      "skill_type": "writing",
+      "status": "done",
+      "task_id": "20260421-W01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-04-21",
+      "goal": "調查一人公司（顧問型）常見的客戶開發方法與工具，整理可立即行動的策略清單",
+      "path": "tasks/2026-04-21_client-development-research.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "done",
+      "task_id": "20260421-R01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-04-21",
+      "goal": "審查 system/GLOBAL_RULES.md 的完整性、一致性，找出潛在缺漏、矛盾或需強化的規則",
+      "path": "tasks/2026-04-21_global-rules-review.yaml",
+      "risk_level": "low",
+      "skill_type": "review",
+      "status": "done",
+      "task_id": "20260421-V01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-04-21",
+      "goal": "掃描 tasks/ 目錄下所有 Task Cards，產出結構化的任務狀態摘要表",
+      "path": "tasks/2026-04-21_tasks-status-summary.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260421-O01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-04-21",
+      "goal": "分析一人顧問公司從台灣進入越南市場的可行性，產出 Go / No-Go 建議與關鍵決策依據",
+      "path": "tasks/2026-04-21_vietnam-market-analysis.yaml",
+      "risk_level": "low",
+      "skill_type": "analysis",
+      "status": "done",
+      "task_id": "20260421-A01"
+    },
+    {
       "approval_needed": true,
       "date": "2026-04-24",
       "goal": "收斂重複的 task card 驗證器為單一事實來源，補 SECURITY 發現性，清理重複 CI",
@@ -324,6 +404,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260424-O01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-04-24",
+      "goal": "研究台灣與越南電商產業現況與 AI 應用機會，識別一人顧問公司可切入的高價值服務缺口",
+      "path": "tasks/2026-04-24_ecommerce-market-research.yaml",
+      "risk_level": "low",
+      "skill_type": "research",
+      "status": "pending",
+      "task_id": "20260424-E01"
     },
     {
       "approval_needed": true,
@@ -338,12 +428,32 @@
     {
       "approval_needed": true,
       "date": "2026-04-24",
+      "goal": "撰寫針對台灣中小型金融機構（信用合作社、保險代理、P2P 借貸平台）的 AI 顧問服務提案書",
+      "path": "tasks/2026-04-24_fintech-service-proposal.yaml",
+      "risk_level": "medium",
+      "skill_type": "writing",
+      "status": "pending",
+      "task_id": "20260424-F01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-04-24",
       "goal": "將 token-calibration-table 晉升為治理 artifact，調整 INTAKE_FLOW 主路為快速路徑，正式歸檔 WEEKLY_REVIEW_TEMPLATE",
       "path": "tasks/2026-04-24_governance-docs-restructure.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260424-O02"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-04-24",
+      "goal": "評估台灣醫療健康產業 AI 顧問服務的可行性，比較診所、醫美、長照三個子市場的進入機會",
+      "path": "tasks/2026-04-24_healthcare-ai-feasibility.yaml",
+      "risk_level": "low",
+      "skill_type": "analysis",
+      "status": "pending",
+      "task_id": "20260424-H01"
     },
     {
       "approval_needed": true,
