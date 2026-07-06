@@ -23,6 +23,8 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
+import yaml
+
 ROOT = Path(__file__).resolve().parents[1]
 PERMISSIONS_PATH = ROOT / "system" / "PERMISSIONS.yaml"
 
@@ -30,18 +32,19 @@ PERMISSIONS_PATH = ROOT / "system" / "PERMISSIONS.yaml"
 @dataclass(frozen=True)
 class DenyRule:
     rule_id: str            # e.g. "shell_delete"
+    permission_key: str     # the PERMISSIONS.yaml deny entry that activates this pattern
     pattern: re.Pattern     # compiled regex matched against the full command
     description: str        # human-readable reason
 
 
-# Deny rules map PERMISSIONS.yaml deny entries to runtime command patterns.
-# Each rule lists shell-level signatures that clearly fall under the named deny.
-# Patterns are deliberately conservative: false positives (blocking benign work)
-# are worse than false negatives (a sneakier command slipping through), because
-# the harness itself is the second line of defence.
+# Pattern catalogue. A rule is only enforced at runtime if its `permission_key`
+# appears in PERMISSIONS.yaml's deny list (see `load_deny_list`). Patterns stay
+# deliberately conservative: false positives (blocking benign work) are worse
+# than false negatives, because the harness itself is the second line of defence.
 DENY_RULES: tuple[DenyRule, ...] = (
     DenyRule(
         rule_id="shell_delete",
+        permission_key="shell_delete",
         pattern=re.compile(
             r"""(?x)
             (^|[\s;&|`])              # boundary
@@ -57,6 +60,7 @@ DENY_RULES: tuple[DenyRule, ...] = (
     ),
     DenyRule(
         rule_id="send_email",
+        permission_key="send_email",
         pattern=re.compile(
             r"""(?x)
             (^|[\s;&|`])
@@ -72,6 +76,7 @@ DENY_RULES: tuple[DenyRule, ...] = (
     ),
     DenyRule(
         rule_id="send_message_external",
+        permission_key="send_message_external",
         pattern=re.compile(
             r"""(?x)
             curl\s+.*\b(
@@ -86,6 +91,7 @@ DENY_RULES: tuple[DenyRule, ...] = (
     ),
     DenyRule(
         rule_id="execute_payment",
+        permission_key="execute_payment",
         pattern=re.compile(
             r"""(?x)
             curl\s+.*\b(api\.stripe\.com|api-m\.paypal\.com|api\.square)\b
@@ -95,21 +101,55 @@ DENY_RULES: tuple[DenyRule, ...] = (
     ),
     DenyRule(
         rule_id="git_force_push",
+        permission_key="modify_production_data",
         pattern=re.compile(
             r"""(?x)
             git\s+push\s+.*(--force\b|-f\b)
             """
         ),
-        description="git force-push blocked (production-data protection)",
+        description="git force-push blocked (PERMISSIONS deny: modify_production_data)",
     ),
 )
+
+
+def load_deny_list(path: Path = PERMISSIONS_PATH) -> set[str] | None:
+    """Read PERMISSIONS.yaml and return the set of deny-rule IDs.
+
+    Returns ``None`` if the file is unreadable or malformed. A ``None`` result
+    is the fail-safe signal: callers should treat it as "keep all rules active"
+    so a corrupt policy file cannot accidentally disable the guard.
+    """
+    try:
+        with path.open("r", encoding="utf-8") as f:
+            data = yaml.safe_load(f)
+    except (OSError, yaml.YAMLError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    deny = data.get("permissions", {}).get("deny")
+    if not isinstance(deny, list):
+        return None
+    return {item for item in deny if isinstance(item, str)}
+
+
+def active_rules(deny_set: set[str] | None) -> tuple[DenyRule, ...]:
+    """Return the subset of DENY_RULES whose permission_key is in ``deny_set``.
+
+    If ``deny_set`` is ``None`` (failed load), return all rules — fail-safe.
+    """
+    if deny_set is None:
+        return DENY_RULES
+    return tuple(r for r in DENY_RULES if r.permission_key in deny_set)
+
+
+_ACTIVE_RULES: tuple[DenyRule, ...] = active_rules(load_deny_list())
 
 
 def evaluate(command: str) -> tuple[str, str | None]:
     """Return ('allow', None) or ('block', reason)."""
     if not command:
         return "allow", None
-    for rule in DENY_RULES:
+    for rule in _ACTIVE_RULES:
         if rule.pattern.search(command):
             return "block", f"{rule.rule_id}: {rule.description}"
     return "allow", None

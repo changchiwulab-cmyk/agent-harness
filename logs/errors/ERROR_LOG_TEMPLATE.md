@@ -1,7 +1,9 @@
 # Error Log 格式
 
 當任務連續失敗 3 次或遭遇規則違反時，在此目錄建立 error log。
-命名規則：`YYYY-MM-DD_[task_id]_error.md`
+命名規則：`[task_id]_error.md`（task_id 已含日期 YYYYMMDD-###，避免重複日期前綴）
+
+> 註：`2026-04-04_20260404-S01_error.md` 為早期格式之歷史檔，保留原名以維持外部引用。
 
 ---
 
@@ -12,7 +14,7 @@ error_id: ""                    # 格式：ERR-YYYYMMDD-001
 task_id: ""                     # 對應的 Task Card ID
 date: ""                        # 發生日期
 time: ""                        # 發生時間（約略即可）
-skill_type: ""                  # research / writing / ops / review
+skill_type: ""                  # research / analysis / writing / ops / review
 
 # === 錯誤描述 ===
 error_type: ""                  # tool_failure / rule_violation / schema_failure / timeout / unknown

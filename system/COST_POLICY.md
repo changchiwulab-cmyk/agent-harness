@@ -35,8 +35,8 @@ v1 階段採用「粗略護欄 + 事後量測」策略：
 | 工具定義（按需載入） | 省 ~85% | Tool Search 模式 |
 | 子代理 context 隔離 | 省 ~67% | vs 單一代理塞所有 context |
 | Programmatic Tool Calling | 省 ~37% | 中間結果不進 context |
-| CLAUDE.md + GLOBAL_RULES | 控制在 3K 以內 | 硬限制 |
-| 單一 skill prompt | 控制在 1.5K 以內 | 硬限制 |
+| CLAUDE.md + GLOBAL_RULES | 控制在 3K 以內 | 軟性上限；實測 baseline ~400 tokens |
+| 單一 skill prompt | 控制在 1.5K 以內 | 軟性上限；含 eval_examples，實測 baseline 200-600 tokens |
 
 ## 模型路由規則（v2 準備）
 

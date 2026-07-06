@@ -1,6 +1,11 @@
 # Decision Log 模板
 # 當做出重要決策時，複製此模板到 memory/active_projects/[project]/decisions/
 # 檔名格式：YYYYMMDD-D###_決策簡述.yaml
+#
+# === 欄位填寫指引 ===
+# 必填：decision_id, date, project, context, decision, reasoning, status
+# 選填：options_considered（若只有一個合理選項可省略）、risk、revisit_trigger、related_task
+# 棄用：v1 的 outcome / impact 欄位已併入 reasoning（不再另列）
 
 decision_id: ""              # 格式：YYYYMMDD-D001
 date: ""                     # YYYY-MM-DD
