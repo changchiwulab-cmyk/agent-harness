@@ -9,6 +9,9 @@ on:
       - work
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   validate-spec:
     runs-on: ubuntu-latest
