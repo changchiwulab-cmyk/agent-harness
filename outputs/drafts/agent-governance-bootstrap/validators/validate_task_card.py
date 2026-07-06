@@ -48,7 +48,9 @@ def validate(path: Path) -> list[str]:
         errors.append("definition_of_done 必須包含至少一條可驗證條件")
     else:
         for i, item in enumerate(dod):
-            if not item or not str(item).strip():
+            if not isinstance(item, str):
+                errors.append(f"definition_of_done[{i}] 必須是字串（got {type(item).__name__}）")
+            elif not item.strip():
                 errors.append(f"definition_of_done[{i}] 不能為空字串")
 
     skill = card.get("skill_type", "")

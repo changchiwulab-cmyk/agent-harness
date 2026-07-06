@@ -188,6 +188,16 @@ class TestMetricM4(unittest.TestCase):
         self.assertEqual(result.status, "alert")
         self.assertIn("error", result.details)
 
+    def test_alert_on_string_pct(self):
+        result = gm.metric_m4({"aggregate_estimate_pct": "45", "reviewed_on": "2026-05-09"})
+        self.assertEqual(result.status, "alert")
+        self.assertIn("error", result.details)
+
+    def test_alert_on_bool_pct(self):
+        result = gm.metric_m4({"aggregate_estimate_pct": True, "reviewed_on": "2026-05-09"})
+        self.assertEqual(result.status, "alert")
+        self.assertIn("error", result.details)
+
 
 class TestLoadAuditTaskIds(unittest.TestCase):
     """Regression: load_audit_task_ids must accept any YAML quoting style.
