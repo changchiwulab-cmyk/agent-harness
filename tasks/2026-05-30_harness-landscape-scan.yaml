@@ -1,0 +1,57 @@
+# Task Card — discover-then-compare workflow Stage 1（發現 / Haiku）
+# 來源：使用者需求「做一個 workflow 用 haiku 找到所有公開相關 Harness engineering，再用 opus4.8 分析比對自己的專案」
+# 兩段式 workflow 第 1 卡；第 2 卡為 20260530-H02（analysis / Opus 4.8）
+
+task_id: "20260530-H01"
+date: "2026-05-30"
+status: "done"
+
+# === 任務定義 ===
+goal: "用 Haiku 廣度掃描所有公開的 agent harness / agent 執行框架工程資料，產出結構化清單"
+context: |
+  兩段式 discover-then-compare workflow 的第 1 階段（發現）。刻意用便宜模型做廣度蒐集：
+  執行 agent 會 spawn 多個 Haiku 子代理（Claude Code Agent tool, model: haiku）分頭做 web
+  發現，再由主執行緒彙整去重。對應 COST_POLICY v2 模型路由提案（分類/抽取用 Haiku）。
+  下一卡 20260530-H02 會用 Opus 4.8 深入分析並比對本專案。本卡模型：claude-haiku-4-5。
+input_data: []
+
+# === 完成標準 ===
+definition_of_done:
+  - "涵蓋至少 4 大類來源：Anthropic/Claude 生態(Claude Code, Claude Agent SDK, context engineering)、其他主流框架(OpenAI Agents SDK, LangGraph, CrewAI, AutoGen, smolagents 等)、跨領域最佳實踐(context engineering, guardrails/permissions, 失敗分類, 12-factor agents)、eval/agent benchmark harness(SWE-bench, terminal-bench 等)"
+  - "每筆條目含：名稱、類別、來源URL、一句話定位、關鍵設計理念、與『控制優先的一人公司 harness』的相關度"
+  - "依 research skill 格式輸出：結論 → 已知事實 → 合理推論 → 待驗證 → 高風險假設 → 來源"
+  - "無法即時連網時，明確標記知識來源為 [待驗證] 並說明回退方式"
+  - "輸出存到 outputs/drafts/，不直接進 reports/"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260530-H01_harness-landscape-scan.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: true   # web search 上限(9) > COST_POLICY 單卡 3 輪：依「超限行為」，重跑/複製此卡需人工核准 fan-out 預算
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "web_search"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 9   # 超過 COST_POLICY 單卡 3 輪上限（多代理 fan-out：~3 Haiku 子代理 × ~3）→ 故 approval_needed: true
+
+# === Skill 路由 ===
+skill_type: "research"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260530-H01/H02 建立兩張 Task Card"
+  - "checkpoint: 20260530-H01 fan-out 完成（Haiku 三 lane 發現 → 掃描草稿）"
+actual_tool_calls: 11
+result_summary: "3 個 Haiku 子代理（model: haiku）分三 lane（Anthropic生態/其他框架/最佳實踐+eval）web fan-out 共 ~9 次搜尋，Opus 4.8 彙整為 research 格式掃描，涵蓋 4 大類 ~30 條目；量化/未來版本/付費牆宣稱標 [待驗證]。"
+completion_time: "2026-05-30"
+audit_log_ref: "logs/AUDIT_LOG.md"

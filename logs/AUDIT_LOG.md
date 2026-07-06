@@ -674,6 +674,52 @@ completion_time: '2026-04-04'
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+- task_id: "20260530-H02"
+  date: "2026-05-30"
+  skill_type: "analysis"
+  goal: "用 Opus 4.8 分析 H01 掃描結果並逐維度比對本專案，產出優勢/缺口/可採納建議"
+  status: "done"
+  model_used: "claude-opus-4-8"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "create_output_files"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260530-H02_harness-comparison-analysis.md"
+  error_summary: ""
+  estimated_tokens: "~20K"
+  notes: "discover-then-compare workflow Stage 2。9 維度比較表 + 6 條檔案對應建議（P0×2/P1×2/P2×2）。最大缺口：observability/eval harness（completion/risk gate 無客觀量測）、模型路由未落地。建議 P0：模型路由正式化 + DoD 轉可跑 eval。未改 system/（建議屬 ask 層待核准）。"
+```
+
+---
+
+```yaml
+- task_id: "20260530-H01"
+  date: "2026-05-30"
+  skill_type: "research"
+  goal: "用 Haiku 廣度掃描所有公開的 agent harness / agent 執行框架工程資料，產出結構化清單"
+  status: "done"
+  model_used: "claude-haiku-4-5"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 9
+    - tool_name: "create_output_files"
+      call_count: 1
+  checkpoints: 2
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/20260530-H01_harness-landscape-scan.md"
+  error_summary: ""
+  estimated_tokens: "~100K（3 Haiku 子代理 ~99K + 主執行緒彙整）"
+  notes: "discover-then-compare workflow Stage 1。3 個 Haiku 子代理（model: haiku）三 lane web fan-out（~9 搜尋），Opus 彙整 research 格式掃描，4 大類 ~30 條目。首次真實 Haiku→Opus 模型路由案例。量化/未來版本宣稱標 [待驗證]。web search 9>3 超 COST_POLICY 單卡上限 → 卡片已設 approval_needed:true；本次 fan-out 預算於計畫核准(ExitPlanMode)時批准。"
+```
+
+---
+
+```yaml
 - task_id: "20260529-011"
   date: "2026-05-29"
   skill_type: "ops"
