@@ -1,0 +1,15 @@
+# 批准紀錄 — Task Card 20260706-R01（claudian 專案分析）
+# schema 見 system/APPROVAL_POLICY.yaml 的 approval_record 段。
+# 核准依據：2026-07-06 使用者於 plan mode 核准執行計畫，計畫中明列
+# memory/ 寫入目標與內容結構（write_long_term_memory，ask 層級）。
+
+approval_records:
+  - approval_id: "APR-20260706-001"
+    task_id: "20260706-R01"
+    date: "2026-07-06"
+    action: "寫入長期記憶 memory/active_projects/agent-harness/references/claudian.md（claudian 專案分析精煉條目，新建 references/ 目錄）"
+    approval_method: "human_confirm"
+    risk_level: "low"
+    status: "approved"
+    approved_by: "human"
+    rationale: "使用者明確要求「分析後加進專案知識庫」，並於 plan mode 核准含 memory/ 寫入路徑與內容結構的執行計畫；依 APPROVAL_POLICY 補紀錄"
