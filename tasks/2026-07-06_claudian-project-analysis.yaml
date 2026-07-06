@@ -1,0 +1,61 @@
+task_id: "20260706-R01"
+date: "2026-07-06"
+status: "review"
+
+# === 任務定義 ===
+goal: "分析 GitHub 開源專案 yishentu/claudian（Obsidian AI coding agent 外掛），優化整理後收進專案知識庫 memory/"
+
+context: |
+  使用者要求：「幫我分析這個專案，優化後加進去我的專案知識庫」。
+  claudian 與 agent-harness 同屬 Claude agent 執行框架領域（前者是 GUI 外掛、
+  後者是治理框架），其 provider adapter、plan mode、skill 系統等設計對本專案
+  有借鑑價值。產出分兩層：完整研究草稿（outputs/drafts/）+ 優化精煉版知識庫
+  條目（memory/active_projects/agent-harness/references/）。
+  memory/ 寫入屬 ask 層級，已於 2026-07-06 由使用者核准執行計畫
+  （plan mode 核准 = human_confirm），另補 approval record。
+  research SKILL.md 規範：每個事實主張要有來源；四態分離；不硬湊結論。
+
+input_data:
+  - "memory/active_projects/agent-harness/context.md"
+  - "https://github.com/yishentu/claudian"
+
+# === 完成標準 ===
+definition_of_done:
+  - "涵蓋：專案定位/核心功能、技術架構（src/ 分層、provider adapter 模式）、生態數據（stars/license/release/活躍度）、優勢與限制"
+  - "獨立段落：對 agent-harness 可借鑑的設計 ≥ 3 點（純列舉分析，不直接改本專案）"
+  - "每個事實主張可追溯到具名來源；事實/合理推論/待驗證/高風險假設四態分開"
+  - "輸出符合 skills/research/SKILL.md 格式（結論→已知事實→合理推論→待驗證→高風險假設→來源）"
+  - "知識庫條目 ≤ ~800 字，回連完整草稿路徑，含更新日期"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260706-R01_claudian-analysis.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: true   # 含 memory/ 寫入（write_long_term_memory，ask 層級）
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "web_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "write_long_term_memory"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 8
+max_retries: 3
+max_web_searches: 3
+
+# === Skill 路由 ===
+skill_type: "research"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 9
+result_summary: "DoD 5/5 通過。3 web queries（2 輪）完成 claudian 分析：定位/功能/架構/生態/優劣勢 + 6 項可借鑑設計（含 🔍 待評估標記）。草稿落 outputs/drafts/，精煉條目寫入 memory/.../references/claudian.md（新建 references/），approval record 補於 logs/approvals/。後續依 PR #127 Codex review 加查 2 次（src/core 樹）：claudian 實有 core/security/ApprovalManager.ts，已修正草稿與記憶條目中「無細粒度治理」過強結論。"
+completion_time: "2026-07-06"
+audit_log_ref: "logs/AUDIT_LOG.md"
