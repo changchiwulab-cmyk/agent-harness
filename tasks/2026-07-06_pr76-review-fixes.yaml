@@ -1,0 +1,60 @@
+task_id: "20260706-F01"
+date: "2026-07-06"
+status: "review"
+
+# === 任務定義 ===
+goal: "修復 PR #76 兩條 Codex review 指出、且仍存在於 main 的缺陷：metric_m4 型別防護與 validate_task_card DoD 字串型別檢查"
+
+context: |
+  PR #76 有兩條未 resolve 的 Codex review（P1/P2）。先前回覆聲稱修復在
+  PR #75（commit 8ea5259），但 #75 擱置近兩個月未落地，main 上兩個缺陷
+  仍在。依 PR 監看守則（小而明確的修復直接做）重新實作：
+  1) scripts/governance_metrics.py metric_m4 對非數值 aggregate_estimate_pct
+     （含 bool、帶引號字串）會 TypeError 使整個月度收集中斷 → 改回傳
+     結構化 alert MetricResult。
+  2) outputs/drafts/agent-governance-bootstrap/validators/validate_task_card.py
+     DoD 項目用 str(item).strip() 強制轉型，整數等非字串可通過 schema_check
+     → 改 isinstance(item, str) 並回報實際型別。
+
+input_data:
+  - "scripts/governance_metrics.py"
+  - "outputs/drafts/agent-governance-bootstrap/validators/validate_task_card.py"
+  - "https://github.com/changchiwulab-cmyk/agent-harness/pull/76"
+
+# === 完成標準 ===
+definition_of_done:
+  - "metric_m4 對非數值（含 bool）的 aggregate_estimate_pct 回傳 status=alert 的 MetricResult（details 含 error），不再 raise TypeError"
+  - "validate_task_card 的 DoD 項目檢查改用 isinstance(item, str)，非字串項目回報含實際型別的錯誤訊息"
+  - "新增回歸測試：M4 string/bool 輸入 ×2、DoD int/list 項目 ×1，全數通過"
+  - "本地 CI 全套（spec consistency / rubocop 兩檔 / 各 python 測試 / e2e）全綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "py"
+  location: "scripts/"
+  filename: "governance_metrics.py"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 6
+result_summary: "DoD 4/4 通過。metric_m4 增型別防護（bool/非數值 → 結構化 alert，不再 TypeError）；validate_task_card DoD 項目改 isinstance(item, str) 並回報實際型別。回歸測試 +3（governance 29 全綠、plugin validators 15 全綠），本地 CI 全套通過。取代擱置的 PR #75 中對應修復。"
+completion_time: "2026-07-06"
+audit_log_ref: "logs/AUDIT_LOG.md"
