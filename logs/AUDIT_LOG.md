@@ -16,6 +16,8 @@ risk_level: low
 approval_needed: true
 output_path: outputs/drafts/20260706-R01_claudian-analysis.md
 checkpoints:
+- commit: 314dd25
+  subject: 'checkpoint: [20260706-R01] merge main 解衝突 + 生成檔重生'
 - commit: 64696fa
   subject: 'checkpoint: [20260706-R01] 修正安全層描述：claudian 具 core/security/ApprovalManager'
 - commit: b7a3b15
