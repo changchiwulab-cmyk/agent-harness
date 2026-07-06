@@ -136,12 +136,12 @@
     "run_total": 2,
     "task_risk": {
       "high": 1,
-      "low": 47,
+      "low": 48,
       "medium": 15
     },
     "task_skill": {
       "analysis": 7,
-      "ops": 33,
+      "ops": 34,
       "research": 9,
       "review": 7,
       "writing": 7
@@ -150,9 +150,9 @@
       "done": 39,
       "in_progress": 2,
       "pending": 6,
-      "review": 16
+      "review": 17
     },
-    "task_total": 63
+    "task_total": 64
   },
   "tasks": [
     {
@@ -784,6 +784,16 @@
       "skill_type": "research",
       "status": "review",
       "task_id": "20260706-R01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-07-06",
+      "goal": "修復 PR #76 兩條 Codex review 指出、且仍存在於 main 的缺陷：metric_m4 型別防護與 validate_task_card DoD 字串型別檢查",
+      "path": "tasks/2026-07-06_pr76-review-fixes.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260706-F01"
     }
   ]
 }
