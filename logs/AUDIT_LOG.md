@@ -16,16 +16,19 @@ risk_level: low
 approval_needed: true
 output_path: outputs/drafts/20260706-R01_claudian-analysis.md
 checkpoints:
+- commit: b7a3b15
+  subject: 'checkpoint: [20260706-R01] 執行紀錄回填 + audit log / manifest 重生成'
 - commit: a876c3b
   subject: 'checkpoint: [20260706-R01] 知識庫條目與核准紀錄寫入'
 - commit: c368642
   subject: 'checkpoint: [20260706-R01] 研究草稿完成'
 - commit: b091a60
   subject: 'checkpoint: [20260706-R01] 任務卡建立'
-actual_tool_calls: 7
-result_summary: DoD 5/5 通過。3 web queries（2 輪，3/3 上限內）完成 claudian 分析：定位/功能/架構/生態/優劣勢
-  + 6 項可借鑑設計（含 🔍 待評估標記）。草稿落 outputs/drafts/，精煉條目（~750 字）寫入 memory/.../references/claudian.md（新建
-  references/），approval record 補於 logs/approvals/。
+actual_tool_calls: 9
+result_summary: 'DoD 5/5 通過。3 web queries（2 輪）完成 claudian 分析：定位/功能/架構/生態/優劣勢 + 6 項可借鑑設計（含
+  🔍 待評估標記）。草稿落 outputs/drafts/，精煉條目寫入 memory/.../references/claudian.md（新建 references/），approval
+  record 補於 logs/approvals/。後續依 PR #127 Codex review 加查 2 次（src/core 樹）：claudian 實有
+  core/security/ApprovalManager.ts，已修正草稿與記憶條目中「無細粒度治理」過強結論。'
 completion_time: '2026-07-06'
 ```
 
