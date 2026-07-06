@@ -3,7 +3,7 @@
 - Task ID：20260706-R01
 - 日期：2026-07-06
 - Skill：research
-- 投入：3 web queries（2 輪）/ ~1900 字
+- 投入：3 web queries（2 輪）/ ~1600 字
 - 狀態：草稿
 
 ## 結論
