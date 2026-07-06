@@ -16,6 +16,8 @@ risk_level: low
 approval_needed: true
 output_path: outputs/drafts/20260706-R01_claudian-analysis.md
 checkpoints:
+- commit: 64696fa
+  subject: 'checkpoint: [20260706-R01] 修正安全層描述：claudian 具 core/security/ApprovalManager'
 - commit: b7a3b15
   subject: 'checkpoint: [20260706-R01] 執行紀錄回填 + audit log / manifest 重生成'
 - commit: a876c3b
@@ -30,6 +32,38 @@ result_summary: 'DoD 5/5 通過。3 web queries（2 輪）完成 claudian 分析
   record 補於 logs/approvals/。後續依 PR #127 Codex review 加查 2 次（src/core 樹）：claudian 實有
   core/security/ApprovalManager.ts，已修正草稿與記憶條目中「無細粒度治理」過強結論。'
 completion_time: '2026-07-06'
+```
+
+```yaml
+task_id: 20260530-H02
+date: '2026-05-30'
+skill_type: analysis
+goal: 用 Opus 4.8 分析 H01 掃描結果並逐維度比對本專案，產出優勢/缺口/可採納建議
+status: done
+risk_level: low
+approval_needed: false
+output_path: outputs/drafts/20260530-H02_harness-comparison-analysis.md
+checkpoints: []
+actual_tool_calls: 7
+result_summary: Opus 4.8 讀 H01 掃描 + 本 repo 設計面，產出 9 維度比較表（任務閘控/權限/gates/模型路由/記憶/可觀測性/eval失敗/context預算/多代理）+
+  優勢/缺口/可採納，6 條檔案對應建議（P0×2,P1×2,P2×2）。最大缺口：observability/eval。
+completion_time: '2026-05-30'
+```
+
+```yaml
+task_id: 20260530-H01
+date: '2026-05-30'
+skill_type: research
+goal: 用 Haiku 廣度掃描所有公開的 agent harness / agent 執行框架工程資料，產出結構化清單
+status: done
+risk_level: low
+approval_needed: true
+output_path: outputs/drafts/20260530-H01_harness-landscape-scan.md
+checkpoints: []
+actual_tool_calls: 11
+result_summary: '3 個 Haiku 子代理（model: haiku）分三 lane（Anthropic生態/其他框架/最佳實踐+eval）web
+  fan-out 共 ~9 次搜尋，Opus 4.8 彙整為 research 格式掃描，涵蓋 4 大類 ~30 條目；量化/未來版本/付費牆宣稱標 [待驗證]。'
+completion_time: '2026-05-30'
 ```
 
 ```yaml
@@ -618,6 +652,147 @@ completion_time: '2026-04-24'
 ```
 
 ```yaml
+task_id: 20260424-H01
+date: '2026-04-24'
+skill_type: analysis
+goal: 評估台灣醫療健康產業 AI 顧問服務的可行性，比較診所、醫美、長照三個子市場的進入機會
+status: pending
+risk_level: low
+approval_needed: false
+output_path: outputs/drafts/20260424-O05_healthcare-ai-feasibility.md
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ''
+completion_time: ''
+```
+
+```yaml
+task_id: 20260424-F01
+date: '2026-04-24'
+skill_type: writing
+goal: 撰寫針對台灣中小型金融機構（信用合作社、保險代理、P2P 借貸平台）的 AI 顧問服務提案書
+status: pending
+risk_level: medium
+approval_needed: true
+output_path: outputs/drafts/20260424-O06_fintech-service-proposal.md
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ''
+completion_time: ''
+```
+
+```yaml
+task_id: 20260424-E01
+date: '2026-04-24'
+skill_type: research
+goal: 研究台灣與越南電商產業現況與 AI 應用機會，識別一人顧問公司可切入的高價值服務缺口
+status: pending
+risk_level: low
+approval_needed: false
+output_path: outputs/drafts/20260424-O04_ecommerce-market-research.md
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ''
+completion_time: ''
+```
+
+```yaml
+task_id: 20260421-W01
+date: '2026-04-21'
+skill_type: writing
+goal: 撰寫一份面向新使用者的 AI Agent 使用說明文件草稿（約 600 字）
+status: done
+risk_level: low
+approval_needed: false
+output_path: outputs/drafts/ai-agent-usage-guide.md
+checkpoints: []
+actual_tool_calls: 3
+result_summary: 產出約 650 字的使用說明文件，含前言/快速開始/常見錯誤（3 項）/注意事項（4 項）四節，台灣商業顧問語氣，所有術語有說明。DoD
+  4/4 通過。
+completion_time: '2026-04-21'
+```
+
+```yaml
+task_id: 20260421-V01
+date: '2026-04-21'
+skill_type: review
+goal: 審查 system/GLOBAL_RULES.md 的完整性、一致性，找出潛在缺漏、矛盾或需強化的規則
+status: done
+risk_level: low
+approval_needed: false
+output_path: outputs/drafts/global-rules-review-report.md
+checkpoints: []
+actual_tool_calls: 4
+result_summary: 有條件通過。必須修改 2 項（M1 輸出路徑未區分 drafts/reports、M2 Checkpoint 格式分散），建議修改
+  4 項（S1 Skill 路由引用、S2 記憶路徑、S3 高風險假設定義、S4 COST_POLICY 引用）。DoD 5/5 通過。
+completion_time: '2026-04-21'
+```
+
+```yaml
+task_id: 20260421-R01
+date: '2026-04-21'
+skill_type: research
+goal: 調查一人公司（顧問型）常見的客戶開發方法與工具，整理可立即行動的策略清單
+status: done
+risk_level: low
+approval_needed: false
+output_path: outputs/drafts/client-development-strategies.md
+checkpoints: []
+actual_tool_calls: 1
+result_summary: 整理 4 大客戶開發管道（轉介紹/內容行銷/直接開發/策略合作），每管道含描述、適用場景、2-3 步驟、預期效果。已知事實/推論/待驗證三層標記。含優先行動建議。DoD
+  4/4 通過。
+completion_time: '2026-04-21'
+```
+
+```yaml
+task_id: 20260421-O01
+date: '2026-04-21'
+skill_type: ops
+goal: 掃描 tasks/ 目錄下所有 Task Cards，產出結構化的任務狀態摘要表
+status: done
+risk_level: low
+approval_needed: false
+output_path: outputs/drafts/tasks-status-summary.md
+checkpoints: []
+actual_tool_calls: 2
+result_summary: 掃描 tasks/ 下 14 張 Task Cards（排除 2 個模板），產出 Markdown 表格含 task_id/date/status/skill_type/goal，依日期倒序，附統計摘要（狀態分佈/skill
+  分佈/時間分佈）。DoD 4/4 通過。
+completion_time: '2026-04-21'
+```
+
+```yaml
+task_id: 20260421-A01
+date: '2026-04-21'
+skill_type: analysis
+goal: 分析一人顧問公司從台灣進入越南市場的可行性，產出 Go / No-Go 建議與關鍵決策依據
+status: done
+risk_level: low
+approval_needed: false
+output_path: outputs/drafts/vietnam-market-analysis.md
+checkpoints: []
+actual_tool_calls: 2
+result_summary: Conditional Go 建議，3 選項六維評估完整（含「不做」選項），3 項支持依據、3 項反對依據，2 項高風險假設含條件變化說明，3
+  項待驗證含驗證方式。DoD 5/5 通過。
+completion_time: '2026-04-21'
+```
+
+```yaml
+task_id: 20260417-W01
+date: '2026-04-17'
+skill_type: writing
+goal: '補寫 2026-04-04 組 7 個 expected_output markdown，使 outputs/drafts/ 與 7 張 status:
+  done task card 一致'
+status: pending
+risk_level: low
+approval_needed: false
+output_path: outputs/drafts/[7 files; see definition_of_done]
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ''
+completion_time: ''
+```
+
+```yaml
 task_id: 20260417-O06
 date: '2026-04-17'
 skill_type: ops
@@ -734,6 +909,29 @@ completion_time: '2026-04-17'
 task_id: 20260417-O02
 date: '2026-04-17'
 skill_type: ops
+goal: 修補完整度檢查揭露的兩類缺口：AUDIT_LOG 缺漏 2 筆、AUDIT_LOG 含事實錯誤註記；validate_task_card.py 不檢 Gate
+  2 引用的 allowed_tools / max_tool_calls / expected_output.location 三欄位
+status: done
+risk_level: low
+approval_needed: false
+output_path: outputs/drafts/investigation-2026-04-04-missing-artifacts.md
+checkpoints: []
+actual_tool_calls: 13
+result_summary: 'A1：確認 2026-04-04 組 7 個 expected_output 從未進 git 也不在本機；.gitignore 不實註記已查明。
+  報告 outputs/drafts/investigation-2026-04-04-missing-artifacts.md。7 張卡 status 是否降級留待使用者決策。
+  A2：AUDIT_LOG 追加 20260409-001 + 20260415-A01 兩筆補登。 A3：AUDIT_LOG 末尾新增 correction_note，不改寫舊
+  entry。 B1：validate_task_card.py 增加 allowed_tools（list 非空）、max_tool_calls（正整數）、expected_output.location（非空）三項檢查。
+  B2：11 張現存 task card 全部通過新版 validator（含本卡）；TEMPLATE 如預期因空欄位失敗，檢查有效。 後續待辦：7 張卡 status
+  決策 + 補寫 7 個 artifact（另開 task card）。
+
+  '
+completion_time: '2026-04-17'
+```
+
+```yaml
+task_id: 20260417-O02
+date: '2026-04-17'
+skill_type: ops
 goal: 將 retro-2026-04-15 晉升為正式 report，並封存 vietnam-expansion 專案
 status: done
 risk_level: medium
@@ -756,6 +954,23 @@ result_summary: 'DoD 7/7 通過。主要產出：
   附帶修正：tasks/examples/ 兩個 example Task Card 的 input_data 路徑更新為 archived_projects/
 
   '
+completion_time: '2026-04-17'
+```
+
+```yaml
+task_id: 20260417-O01
+date: '2026-04-17'
+skill_type: ops
+goal: 將 2026-04-04 四張已完成但停留 review 狀態的任務卡 status 推進到 done，使之與同日 tools-inventory ×
+  3 的終態一致
+status: done
+risk_level: low
+approval_needed: false
+output_path: tasks/2026-04-04_*.yaml (4 files modified)
+checkpoints: []
+actual_tool_calls: 8
+result_summary: 四張 2026-04-04 卡（S01/W01/RV01/O02）status 由 review 翻轉為 done。validator
+  對四張皆通過，其他欄位未動。現 2026-04-04 共 7 張卡全部 done，狀態一致。
 completion_time: '2026-04-17'
 ```
 
@@ -848,7 +1063,7 @@ task_id: 20260404-W01
 date: '2026-04-04'
 skill_type: writing
 goal: 根據研究結果（20260404-S01），產出一份完整的一人公司 AI 時代策略提案，可直接用於自我規劃或向潛在合作方展示
-status: review
+status: done
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/ai-era-solo-business-proposal.md
@@ -866,7 +1081,7 @@ task_id: 20260404-S01
 date: '2026-04-04'
 skill_type: research
 goal: 分析 AI 時代一人公司最具長遠獲利潛力的商業項目，結合用戶背景（管理顧問、台灣+越南市場）提供可執行策略建議
-status: review
+status: done
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/ai-era-solo-business-strategy.md
@@ -883,7 +1098,7 @@ task_id: 20260404-RV01
 date: '2026-04-04'
 skill_type: review
 goal: 審查 ai-era-solo-business-proposal.md 的邏輯一致性、事實正確性、風險完整性，確認可作為正式使用的策略文件
-status: review
+status: done
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/ai-era-solo-business-proposal-review.md
@@ -935,7 +1150,7 @@ task_id: 20260404-O02
 date: '2026-04-04'
 skill_type: ops
 goal: 根據審查報告 RV01 的 3 個必須修改項，修正提案數字矛盾並補充 Retainer 交付差異，產出 v2 正式版
-status: review
+status: done
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/ai-era-solo-business-proposal-v2.md
@@ -1005,6 +1220,52 @@ completion_time: '2026-04-04'
 ## 紀錄（依時間倒序）
 
 <!-- 新紀錄加在這裡 -->
+
+```yaml
+- task_id: "20260530-H02"
+  date: "2026-05-30"
+  skill_type: "analysis"
+  goal: "用 Opus 4.8 分析 H01 掃描結果並逐維度比對本專案，產出優勢/缺口/可採納建議"
+  status: "done"
+  model_used: "claude-opus-4-8"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "create_output_files"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/20260530-H02_harness-comparison-analysis.md"
+  error_summary: ""
+  estimated_tokens: "~20K"
+  notes: "discover-then-compare workflow Stage 2。9 維度比較表 + 6 條檔案對應建議（P0×2/P1×2/P2×2）。最大缺口：observability/eval harness（completion/risk gate 無客觀量測）、模型路由未落地。建議 P0：模型路由正式化 + DoD 轉可跑 eval。未改 system/（建議屬 ask 層待核准）。"
+```
+
+---
+
+```yaml
+- task_id: "20260530-H01"
+  date: "2026-05-30"
+  skill_type: "research"
+  goal: "用 Haiku 廣度掃描所有公開的 agent harness / agent 執行框架工程資料，產出結構化清單"
+  status: "done"
+  model_used: "claude-haiku-4-5"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 9
+    - tool_name: "create_output_files"
+      call_count: 1
+  checkpoints: 2
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/20260530-H01_harness-landscape-scan.md"
+  error_summary: ""
+  estimated_tokens: "~100K（3 Haiku 子代理 ~99K + 主執行緒彙整）"
+  notes: "discover-then-compare workflow Stage 1。3 個 Haiku 子代理（model: haiku）三 lane web fan-out（~9 搜尋），Opus 彙整 research 格式掃描，4 大類 ~30 條目。首次真實 Haiku→Opus 模型路由案例。量化/未來版本宣稱標 [待驗證]。web search 9>3 超 COST_POLICY 單卡上限 → 卡片已設 approval_needed:true；本次 fan-out 預算於計畫核准(ExitPlanMode)時批准。"
+```
+
+---
 
 ```yaml
 - task_id: "20260529-011"
@@ -1637,7 +1898,7 @@ completion_time: '2026-04-04'
   output_path: "outputs/drafts/2026-05-02_project-completeness-analysis.md; outputs/drafts/20260502-A01_phase-a-summary.md; tasks/2026-05-02_phase-a-enforcement-and-observability.yaml; .claude/settings.json; scripts/permissions_guard.py; scripts/test_permissions_guard.py; scripts/generate_audit_log.py; scripts/test_generate_audit_log.py; tests/e2e/test_dummy_task_smoke.py; .github/workflows/spec-consistency.yml; frontend/data.json"
   error_summary: ""
   estimated_tokens: "~28K"
-  notes: "Phase A of post-v2 第一性原理改善計畫。3 件事落地：(A1) PreToolUse hook 把 PERMISSIONS deny 改 runtime 攔截、(A2) audit log generator opt-in（不接管現有手寫紀錄，等待後續遷移卡）、(A3) e2e dummy task 跑 4 gate contract pinning。Local CI 全綠。Phase B/C 另開 task card。"
+  notes: "Phase A 三件套：(A1) .claude/settings.json + scripts/permissions_guard.py（11 unit tests，deny rm -rf / git push --force / 對外 webhook，非匹配預設 allow）；(A2) scripts/generate_audit_log.py（5 tests，從 Task Card + git log 推導，人工備註區段不覆蓋；現有 13 筆手寫紀錄保留雙軌，未強制遷移）；(A3) tests/e2e/test_dummy_task_smoke.py（3 cases，4 gate 純 Python 化身做 contract pinning，不呼叫 LLM）。.github/workflows/spec-consistency.yml 新增 3 step。PR #63 (a75e826) 已 merge 到 main。DoD 10/10：第 9 條 audit_log entry 即本筆；第 10 條 CI 隨 merge 變綠。觀察首週：permissions_guard 攔截事件數、e2e CI 紅燈率；若 4 週零攔截考慮縮為 warning。後續候選卡：phase-a2-audit-log-migration（Task Card schema 擴 model_used/tools_called + 舊紀錄遷移）、phase-b-metric-loop、phase-b-failure-taxonomy-instrumentation。"
 ```
 
 ---
@@ -1928,6 +2189,113 @@ completion_time: '2026-04-04'
 ---
 
 ```yaml
+- task_id: "20260421-O01"
+  date: "2026-04-21"
+  skill_type: "ops"
+  goal: "掃描 tasks/ 目錄下所有 Task Cards，產出結構化的任務狀態摘要表"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+    - tool_name: "bash"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/tasks-status-summary.md"
+  error_summary: ""
+  estimated_tokens: "~8K"
+  notes: "掃描 14 張 Task Cards（排除 2 個模板），Markdown 表格含 5 個欄位，依日期倒序，附狀態/skill/時間三維統計。DoD 4/4 通過。"
+```
+
+---
+
+```yaml
+- task_id: "20260421-V01"
+  date: "2026-04-21"
+  skill_type: "review"
+  goal: "審查 system/GLOBAL_RULES.md 的完整性、一致性，找出潛在缺漏、矛盾或需強化的規則"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/global-rules-review-report.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "有條件通過。必須修改 2 項（M1 輸出路徑區分、M2 Checkpoint 格式定義），建議修改 4 項（Skill 路由引用/記憶路徑/高風險假設範圍/COST_POLICY 引用）。DoD 5/5 通過。"
+```
+
+---
+
+```yaml
+- task_id: "20260421-A01"
+  date: "2026-04-21"
+  skill_type: "analysis"
+  goal: "分析一人顧問公司從台灣進入越南市場的可行性，產出 Go / No-Go 建議與關鍵決策依據"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 2
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/vietnam-market-analysis.md"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "Conditional Go 建議。3 個選項完整六維評估（含不做選項），3 項支持/3 項反對依據，2 項高風險假設含結論變化說明，3 項待驗證含驗證方式，建議下一步 3 項。DoD 5/5 通過。"
+```
+
+---
+
+```yaml
+- task_id: "20260421-W01"
+  date: "2026-04-21"
+  skill_type: "writing"
+  goal: "撰寫一份面向新使用者的 AI Agent 使用說明文件草稿（約 600 字）"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/ai-agent-usage-guide.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "約 650 字，含前言/快速開始（3 步驟）/常見錯誤（3 項）/注意事項（4 項）四節，台灣商業顧問語氣，所有術語有說明。DoD 4/4 通過。"
+```
+
+---
+
+```yaml
+- task_id: "20260421-R01"
+  date: "2026-04-21"
+  skill_type: "research"
+  goal: "調查一人公司（顧問型）常見的客戶開發方法與工具，整理可立即行動的策略清單"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 1
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/client-development-strategies.md"
+  error_summary: ""
+  estimated_tokens: "~12K"
+  notes: "4 大客戶開發管道（轉介紹/內容行銷/直接開發/策略合作），每管道含描述/適用場景/2-3 步驟/預期效果。三層標記完整，含優先行動建議。DoD 4/4 通過。"
+```
+
+---
+
+```yaml
 - task_id: "20260404-O02"
   date: "2026-04-04"
   skill_type: "ops"
@@ -2080,4 +2448,94 @@ completion_time: '2026-04-04'
   error_summary: ""
   estimated_tokens: "~18K"
   notes: "6 大類別 20+ 工具。web search 3 輪全部用完。outputs/drafts/ 因 .gitignore 不入版控，Task Card 狀態記錄在 YAML。"
+
+- task_id: "20260417-O01"
+  date: "2026-04-17"
+  skill_type: "ops"
+  goal: "將 2026-04-04 四張滯留 review 狀態的任務卡 status 推進到 done"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 5
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "tasks/2026-04-04_*.yaml"
+  error_summary: ""
+  estimated_tokens: "~8K"
+  notes: "四張卡（20260404-S01/W01/RV01/O02）status review→done。validator 四張皆通過，其他欄位未動。選 Path A 因 TASK_CARD_TEMPLATE.yaml:7 明定 review 為過渡、done/failed 為終態，同日 tools-inventory × 3 也走到 done。"
+
+# --- 以下兩筆由 20260417-O02（completeness-sweep）回補 ---
+# 來源：tasks/2026-04-09_system-validation.yaml、logs/runs/20260409-001_system-validation.yaml
+# 來源：tasks/2026-04-15_create-task-card-permission-analysis.yaml
+# 兩張 task card 已 done 但 AUDIT_LOG 未紀錄，本次補登以修復審計連續性
+
+- task_id: "20260409-001"
+  date: "2026-04-09"
+  skill_type: "review"
+  goal: "驗證 Agent Harness v2.0 所有新增組件的可用性與流程完整性"
+  status: "done"
+  model_used: "claude-opus-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 9
+  checkpoints: 3
+  approval_needed: false
+  approval_given: true
+  output_path: "logs/runs/20260409-001_system-validation.yaml"
+  error_summary: ""
+  estimated_tokens: "~15K"
+  notes: "7/7 DoD 通過。Gate 四層 pass。DoD #3 初次驗證發現 FAILURE_TAXONOMY 漏 SEC-04（幻覺驅動行動），已補正至 14 種。本筆由 20260417-O02 回補。"
+
+- task_id: "20260415-A01"
+  date: "2026-04-15"
+  skill_type: "analysis"
+  goal: "評估是否應將 create_task_card 從 ask 升為 allow，給出有依據的建議排序"
+  status: "done"
+  model_used: "claude-opus-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+  checkpoints: 0
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/analysis-create-task-card-permission.md"
+  error_summary: ""
+  estimated_tokens: "~10K"
+  notes: "建議升為 allow（條件：已驗證 8 筆全 approve）。後續已執行：PERMISSIONS.yaml + APPROVAL_POLICY.yaml 更新，D004 Decision Log 補建。本筆由 20260417-O02 回補。"
+
+# --- 更正聲明 ---
+# correction_note
+# 日期：2026-04-17
+# 由 task_id: "20260417-O02" 發起
+# 更正目標：task_id: "20260404-R01" 的 notes 欄末句「outputs/drafts/ 因 .gitignore 不入版控，Task Card 狀態記錄在 YAML。」
+# 更正內容：此陳述為事實錯誤。實際 .gitignore 僅排除 .DS_Store、*.env、*.key、*.pem、*.credentials、scripts/__pycache__/，並未排除 outputs/drafts/。
+#           經 git log --all --diff-filter=A -- outputs/drafts/ 檢查，20260404-R01 的宣稱輸出檔 solo-company-tools-inventory.md 從未被 git 追蹤過，同日其餘 6 個 expected_output 亦同。
+#           推論：該 7 個 artifacts 從未實際寫入檔案系統。
+# 處置：本次不改寫舊 entry（維持審計不可篡改原則），追加此更正聲明。7 張卡 status 是否需降級由使用者決定。
+# 詳情：outputs/drafts/investigation-2026-04-04-missing-artifacts.md
+
+- task_id: "20260417-O02"
+  date: "2026-04-17"
+  skill_type: "ops"
+  goal: "完整度掃描：A+B 合併修補 AUDIT_LOG 缺漏、.gitignore 不實註記、validator 欄位覆蓋"
+  status: "done"
+  model_used: "claude-opus-4-7"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 5
+    - tool_name: "file_write"
+      call_count: 5
+    - tool_name: "bash"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/investigation-2026-04-04-missing-artifacts.md"
+  error_summary: ""
+  estimated_tokens: "~20K"
+  notes: "A1 調查報告完成（7 檔從未進 git，亦不在本機）；A2 回補 20260409-001 + 20260415-A01；A3 追加 correction_note 不改寫歷史；B1 validator 增 allowed_tools/max_tool_calls/expected_output.location 三檢查；B2 11 張卡全通過新版 validator。7 張卡 status 降級與 artifact 補寫留給使用者決策。"
 ```

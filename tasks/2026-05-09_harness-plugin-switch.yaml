@@ -3,7 +3,12 @@
 
 task_id: "20260509-N09"
 date: "2026-05-09"
-status: "pending"   # 等使用者完成 N06 bootstrap runbook（agent-governance v0.1.0 push 完成）後核准本卡
+status: "pending"   # 保持 pending：valid_status 字典無 "approved"；approval 用下方 approval 區塊記錄。等使用者完成 v0.1.0 bootstrap 後本卡進入 in_progress
+approval:
+  approved: true
+  approved_by: "user"
+  approved_at: "2026-05-10"
+  note: "使用者於 batch merge session（PR #69/#70/#72/#71 squash-merged）後口頭核准本卡。runbook §1-§4 + agent-governance v0.1.0 push 屬使用者本機帶外步驟；待使用者回報 v0.1.0 tag 落地後本卡才進入 in_progress 開始實作切換。"
 
 # === 任務定義 ===
 goal: "把 agent-harness 的 CLAUDE.md / .claude/settings.json 切換為引用 agent-governance plugin v0.1.0，同時保證 agent-harness 自身 CI 在 plugin 缺席時仍綠（fallback 路徑）"

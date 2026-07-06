@@ -8,6 +8,7 @@
 reviewed_on: "2026-05-09"
 reviewer: "agent-harness owner"
 revisit_trigger: "每季度；或 Claude Code 主版本升級時"
+stale_after_days: 90    # 超過此天數視為過期；手動檢查：`python3 scripts/check_native_overlap_freshness.py`
 
 aggregate_estimate_pct: 30   # plan §Context 的 baseline；A01 §4.1 表 A 9 模組逐項評估後仍與此 baseline 同量級
 

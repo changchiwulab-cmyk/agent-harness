@@ -6,6 +6,7 @@ from __future__ import annotations
 import io
 import json
 import sys
+import tempfile
 import unittest
 from contextlib import redirect_stdout, redirect_stderr
 from pathlib import Path
@@ -104,6 +105,44 @@ class TestMainEntrypoint(unittest.TestCase):
             sys.stdin = sys.__stdin__
         self.assertEqual(code, 0)
         self.assertEqual(json.loads(out.getvalue())["decision"], "allow")
+
+
+class TestPermissionsYamlIntegration(unittest.TestCase):
+    """H1: guard is driven by PERMISSIONS.yaml, not hardcoded."""
+
+    def test_load_deny_list_from_real_permissions(self):
+        deny = guard.load_deny_list()
+        self.assertIsNotNone(deny, "real PERMISSIONS.yaml should parse")
+        self.assertIn("shell_delete", deny)
+        self.assertIn("send_email", deny)
+        self.assertIn("modify_production_data", deny)
+
+    def test_active_rules_filters_by_deny_set(self):
+        # If shell_delete is absent, the rm -rf pattern should be inactive.
+        no_delete = {"send_email", "send_message_external"}
+        active = guard.active_rules(no_delete)
+        rule_ids = {r.rule_id for r in active}
+        self.assertNotIn("shell_delete", rule_ids)
+        self.assertIn("send_email", rule_ids)
+
+    def test_failsafe_returns_all_rules_when_load_fails(self):
+        # None signals a failed load → all rules stay active.
+        active = guard.active_rules(None)
+        self.assertEqual(len(active), len(guard.DENY_RULES))
+
+    def test_load_deny_list_missing_file_returns_none(self):
+        deny = guard.load_deny_list(Path("/nonexistent/PERMISSIONS.yaml"))
+        self.assertIsNone(deny)
+
+    def test_load_deny_list_malformed_yaml_returns_none(self):
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
+            f.write("permissions: [not, a, dict]\n  bad indent\n")
+            tmp_path = Path(f.name)
+        try:
+            deny = guard.load_deny_list(tmp_path)
+            self.assertIsNone(deny)
+        finally:
+            tmp_path.unlink()
 
 
 if __name__ == "__main__":

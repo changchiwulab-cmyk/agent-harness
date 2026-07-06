@@ -34,6 +34,13 @@
 └── 16. Audit Log          logs/AUDIT_LOG.md — 稽核紀錄
 ```
 
+### 輔助檔（非編號模組，依附於上述平面）
+
+- `system/INTAKE_FLOW.md` — Fast-path / Intake 流程（依附 #3 Planner/Router）
+- `system/NATIVE_OVERLAP.yaml` — Claude Code 原生功能重疊度量（依附 #10 Agent Context，v3 規劃輸入）
+- `system/RETRO_FLOW.md` — RETRO 流程（已歸檔；近期回顧見 `outputs/reports/retro-*.md`）
+- `system/validate_task_card.py` — Task Card schema 驗證工具（依附 #8 Gate Verifier）
+
 ## 資料夾結構
 
 ```
@@ -49,8 +56,12 @@ agent-harness/
 │   ├── GATE_POLICY.yaml            ← 四層驗證 checklist + rollback（v1.5+v2）
 │   ├── AGENT_CONTEXT.yaml          ← 系統自我認知與邊界（v1.5 新增）
 │   ├── APPROVAL_POLICY.yaml        ← 批准流程規則（v2 新增）
-│   ├── FAILURE_TAXONOMY.yaml       ← 14 種失敗模式獨立檔（v2 新增）
-│   └── EXECUTION_LOG_SCHEMA.yaml   ← 執行紀錄結構定義（v2 新增）
+│   ├── FAILURE_TAXONOMY.yaml       ← 15 種失敗模式獨立檔（v2 新增）
+│   ├── EXECUTION_LOG_SCHEMA.yaml   ← 執行紀錄結構定義（v2 新增）
+│   ├── INTAKE_FLOW.md              ← Fast-path / Intake 釐清流程
+│   ├── NATIVE_OVERLAP.yaml         ← Claude Code 原生功能重疊度（v3 規劃輸入）
+│   ├── RETRO_FLOW.md               ← RETRO 流程（已歸檔）
+│   └── validate_task_card.py       ← Task Card schema 驗證工具
 ├── tasks/
 │   ├── TASK_CARD_TEMPLATE.yaml
 │   ├── DECISION_LOG_TEMPLATE.yaml  ← 決策紀錄模板（v1.5 新增）
@@ -93,7 +104,7 @@ agent-harness/
 cp tasks/TASK_CARD_TEMPLATE.yaml tasks/2026-04-03_你的任務.yaml
 ```
 填入 `goal`、`definition_of_done`、`skill_type`。  
-`skill_type` 請使用：`research` / `writing` / `ops` / `review`。參考 `tasks/examples/` 下的範例。
+`skill_type` 請使用：`research` / `analysis` / `writing` / `ops` / `review`。參考 `tasks/examples/` 下的範例。
 
 ### 2. 執行
 在 Claude Code CLI 中 `cd <agent-harness 專案路徑>`，Claude 會自動讀取 CLAUDE.md。
@@ -111,6 +122,17 @@ cp tasks/TASK_CARD_TEMPLATE.yaml tasks/2026-04-03_你的任務.yaml
 ```bash
 scripts/check_spec_consistency.rb
 ```
+
+若在 dual-path 比對流程中，建議再執行：
+
+```bash
+scripts/check_dual_path_categories.rb
+```
+
+此檢查會驗證 `diff_category` 僅能是 A/B/C/D，且當 run status=completed 時，不可仍有 pending 結果。  
+此檢查已有 `scripts/test_check_dual_path_categories.rb` 單元測試，並已接入 spec-consistency CI。
+另含 RuboCop lint（dual-path scripts 範圍）。
+如需只檢查單一檔案，可加上路徑參數（例：`scripts/check_dual_path_categories.rb logs/runs/RUN-20260502-DUAL01.yaml`）。
 
 此檢查已包含：目錄存在性、Task Card 必填欄位 schema、`task_id`/`date` 格式與一致性驗證、`completion_time` 日期驗證（且 `status=done/failed` 時必填）、範例 `input_data` / `expected_output.location` 路徑驗證。
 
