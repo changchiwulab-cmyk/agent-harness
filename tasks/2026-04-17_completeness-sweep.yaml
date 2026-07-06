@@ -1,0 +1,73 @@
+# Task Card: 完整度掃描（資料完整性 + 驗證器強化）
+# 建立日期：2026-04-17
+
+task_id: "20260417-O02"
+date: "2026-04-17"
+status: "done"
+
+# === 任務定義 ===
+goal: "修補完整度檢查揭露的兩類缺口：AUDIT_LOG 缺漏 2 筆、AUDIT_LOG 含事實錯誤註記；validate_task_card.py 不檢 Gate 2 引用的 allowed_tools / max_tool_calls / expected_output.location 三欄位"
+context: >
+  完整度檢查（2026-04-17 Explore × 3）揭露：
+  (A) 資料完整性 — AUDIT_LOG 8 筆 vs 10 張 done 卡，缺 20260409-001 + 20260415-A01；
+      outputs/drafts/ 只有 2 檔但 2026-04-04 組 7 個 expected_output 從未進版控；
+      AUDIT_LOG 20260404-R01 notes 稱「.gitignore 不入版控」，實為錯誤（.gitignore 僅排敏感檔）。
+  (B) 驗證器覆蓋 — GATE_POLICY.yaml:20-29 要求 allowed_tools 白名單檢查，但 validate_task_card.py 未覆蓋；
+      max_tool_calls、expected_output.location 同樣缺檢。
+  本任務合併處理 A+B，但不降級 2026-04-04 卡 status、不補 7 張缺失 drafts（交回使用者決策，scope discipline）。
+input_data:
+  - "tasks/2026-04-09_system-validation.yaml"
+  - "tasks/2026-04-15_create-task-card-permission-analysis.yaml"
+  - "logs/runs/20260409-001_system-validation.yaml"
+  - "logs/AUDIT_LOG.md"
+  - "system/validate_task_card.py"
+  - "system/GATE_POLICY.yaml"
+  - ".gitignore"
+
+# === 完成標準 ===
+definition_of_done:
+  - "A1 調查報告 outputs/drafts/investigation-2026-04-04-missing-artifacts.md 寫入，含事實/推論/待驗證分層"
+  - "A2 AUDIT_LOG 追加 20260409-001 + 20260415-A01 兩筆，格式與既有 entry 一致"
+  - "A3 AUDIT_LOG 末尾有 dated correction_note 區塊，指出 .gitignore 註記不實並附正確 .gitignore 內容"
+  - "B1 validate_task_card.py 增加 allowed_tools（list 非空）、max_tool_calls（正整數）、expected_output.location（非空字串）三項檢查"
+  - "B2 對所有既有 task card 跑新版 validator，pass/fail 清單收錄於本卡 result_summary"
+  - "本卡自身通過新版 validator"
+  - "AUDIT_LOG 追加 20260417-O02 紀錄"
+  - "Single commit push 到 claude/clear-review-tasks-IBMzj，PR CI 綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "investigation-2026-04-04-missing-artifacts.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: [20260417-O02] A1 調查報告完成、A2+A3 AUDIT_LOG 補登 + 更正、B1 validator 擴充 3 檢查、B2 11 張 task card 全通過新版 validator"
+actual_tool_calls: 13
+result_summary: >
+  A1：確認 2026-04-04 組 7 個 expected_output 從未進 git 也不在本機；.gitignore 不實註記已查明。
+  報告 outputs/drafts/investigation-2026-04-04-missing-artifacts.md。7 張卡 status 是否降級留待使用者決策。
+  A2：AUDIT_LOG 追加 20260409-001 + 20260415-A01 兩筆補登。
+  A3：AUDIT_LOG 末尾新增 correction_note，不改寫舊 entry。
+  B1：validate_task_card.py 增加 allowed_tools（list 非空）、max_tool_calls（正整數）、expected_output.location（非空）三項檢查。
+  B2：11 張現存 task card 全部通過新版 validator（含本卡）；TEMPLATE 如預期因空欄位失敗，檢查有效。
+  後續待辦：7 張卡 status 決策 + 補寫 7 個 artifact（另開 task card）。
+completion_time: "2026-04-17"
+audit_log_ref: "logs/AUDIT_LOG.md"
