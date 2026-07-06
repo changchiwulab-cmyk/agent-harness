@@ -3,7 +3,7 @@
 
 task_id: "20260404-O02"
 date: "2026-04-04"
-status: "review"
+status: "done"
 
 goal: "根據審查報告 RV01 的 3 個必須修改項，修正提案數字矛盾並補充 Retainer 交付差異，產出 v2 正式版"
 context: >
