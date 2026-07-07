@@ -1,0 +1,86 @@
+# Verification Loop — 任務內驗證閉環
+#
+# 目的：把 system/GATE_POLICY.yaml 的四層驗證（schema → rule → completion → risk）
+# 從「一次性線性管線」收斂成「有界、會終止、可稽核」的閉環：驗證 → 分類 → 處置 → 再驗證。
+#
+# 四層的判定內容與 rollback 操作程序仍以 GATE_POLICY.yaml + RECOVERY_RUNBOOK.md 為準；
+# 本檔只定義「如何把它跑成一個會終止的迴圈」與「每一輪如何被記錄稽核」。
+# 可執行驅動器：scripts/verification_loop.py（fix 由 agent 在兩輪之間執行）。
+
+verification_loop:
+
+  # === 迭代演算法 ===
+  algorithm: |
+    iteration = 1
+    while True:
+      results = run_gates(card, run_log, completion)   # schema→rule→completion→risk，遇首個 fail 即短路
+      first_fail = 首個非 pass 的 gate（not_run 不算 fail）
+      if first_fail is None: outcome = "pass"; break
+      disp = disposition[first_fail]
+      if disp == "hard_stop":  outcome = "hard_stop";  break   # rule 違規，不重試
+      if disp == "escalate":   outcome = "escalated";  break   # risk 升級，不修
+      # disp ∈ {retry_fixable, human_gated}
+      if iteration >= attempts_allowed(first_fail): outcome = "exhausted"; break
+      記帳本(iteration, results, first_fail, disp, action)
+      <agent 修正>                                              # 兩輪之間由 agent 執行
+      iteration += 1
+    記帳本(最終輪) ; 寫 logs/runs/ ; 必要時寫 logs/errors/
+
+  # === 各 gate 的處置（沿用 GATE_POLICY.yaml 的 on_fail 語意）===
+  dispositions:
+    schema_check:
+      disposition: "retry_fixable"
+      retry_cap: 1            # GATE_POLICY：「重試 1 次修正格式，仍失敗 → 停下」
+      note: "格式可由 agent 修正後再驗，最多 1 次"
+    rule_check:
+      disposition: "hard_stop"
+      retry_cap: 0            # GATE_POLICY：「立即停止 + 寫入 logs/errors/ + 通知使用者」
+      note: "違反 PERMISSIONS/GLOBAL_RULES，不重試"
+    completion_check:
+      disposition: "human_gated"
+      retry_cap: "global"     # 受全域上限約束；補齊 definition_of_done 缺漏需人工/agent 決定
+      note: "列缺漏 → 人工決定補充或接受現狀後才續迴圈"
+    risk_check:
+      disposition: "escalate"
+      retry_cap: 0            # GATE_POLICY：輸出移至 drafts/ 等人工，不在迴圈內修
+      note: "risk 與動作不一致 → 鎖進 outputs/drafts/ 等人工審閱"
+
+  # === 迭代預算（與既有硬規則對齊，不可繞過）===
+  budget:
+    global_hard_cap: 3        # CLAUDE.md：「連續失敗 3 次就停下來」
+    max_iterations: "min(Task Card.max_retries, 3)"
+    attempts_allowed: |
+      schema_check     → min(1 + retry_cap=1, max_iterations) = 2
+      completion_check → max_iterations（受 global_hard_cap=3 約束）
+      rule_check / risk_check → 1（首輪即終止，非重試）
+
+  # === 終止保證：閉環必落在四個終態之一 ===
+  terminal_outcomes:
+    pass:       "四層全 pass。輸出可依 risk 等級發布/送審。"
+    hard_stop:  "rule_check 違規或預算耗盡於不可修項。寫 logs/errors/ + 通知，Task Card status: blocked。"
+    escalated:  "risk_check 升級。所有產出鎖進 outputs/drafts/，Audit Log 標記 risk_escalated: true。"
+    exhausted:  "可修/human_gated 項達迭代上限仍未通過。寫 logs/errors/（error_type: schema_failure / unknown）+ 通知。"
+  non_terminal:
+    continue:   "可修/human_gated 失敗且預算未盡 → agent 修正後以 iteration+1 重新驗證。"
+
+  # === 驗證帳本（可稽核核心；寫進 logs/runs/RUN-*.yaml 的 verification_loop 區塊）===
+  ledger_schema:
+    outcome: "pass | hard_stop | escalated | exhausted"
+    iterations:
+      - iteration: 1
+        gate_results:
+          schema_check: "pass | fail | not_run"
+          rule_check: "pass | fail | not_run"
+          completion_check: "pass | fail | not_run"
+          risk_check: "pass | fail | not_run"
+        first_fail: "schema_check | rule_check | completion_check | risk_check | null"
+        disposition: "retry_fixable | hard_stop | human_gated | escalate | null"
+        action: "本輪採取的修正/處置（一句話）"
+
+  # === 交叉引用 ===
+  references:
+    gate_definitions: "system/GATE_POLICY.yaml"
+    rollback_procedures: "system/RECOVERY_RUNBOOK.md"
+    failure_classification: "system/FAILURE_TAXONOMY.yaml"
+    ledger_landing: "system/EXECUTION_LOG_SCHEMA.yaml（verification_loop 區塊）"
+    runnable_driver: "scripts/verification_loop.py"

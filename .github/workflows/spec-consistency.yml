@@ -101,6 +101,12 @@ jobs:
       - name: E2E failure-drill regression
         run: python3 tests/e2e/test_failure_drill.py
 
+      - name: Verification loop unit tests
+        run: python3 scripts/test_verification_loop.py
+
+      - name: E2E verification-loop drill
+        run: python3 tests/e2e/test_verification_loop_drill.py
+
       - name: Decision revisit tracker tests
         run: ruby scripts/test_check_decision_revisit.rb
 

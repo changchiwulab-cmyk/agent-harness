@@ -1,6 +1,7 @@
 # Gate Policy — 四層驗證 Checklist
 # 每次任務完成後，依此順序逐層執行。任一層失敗則依 on_fail 處理。
 # 各層 rollback 的「操作程序」（用什麼指令還原）見 system/RECOVERY_RUNBOOK.md（R8 交叉引用）。
+# 把這四層跑成「驗證→修正→再驗證」的有界閉環（迭代、終態、帳本）見 system/VERIFICATION_LOOP.yaml。
 
 gates:
 

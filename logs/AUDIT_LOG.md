@@ -141,6 +141,21 @@ completion_time: '2026-07-02'
 ```
 
 ```yaml
+task_id: 20260620-001
+date: '2026-06-20'
+skill_type: ops
+goal: 把線性的四層 GATE_POLICY 收斂成有界、會終止、可稽核的任務內驗證閉環，並提供可執行驗證驅動器與測試
+status: in_progress
+risk_level: medium
+approval_needed: true
+output_path: outputs/drafts/20260620-001_verification-loop-summary.md
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ''
+completion_time: ''
+```
+
+```yaml
 task_id: 20260609-001
 date: '2026-06-09'
 skill_type: ops

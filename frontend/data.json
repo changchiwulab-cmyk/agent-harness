@@ -148,22 +148,22 @@
     "task_risk": {
       "high": 1,
       "low": 48,
-      "medium": 20
+      "medium": 21
     },
     "task_skill": {
       "analysis": 7,
-      "ops": 39,
+      "ops": 40,
       "research": 9,
       "review": 7,
       "writing": 7
     },
     "task_status": {
       "done": 44,
-      "in_progress": 2,
+      "in_progress": 3,
       "pending": 6,
       "review": 17
     },
-    "task_total": 69
+    "task_total": 70
   },
   "tasks": [
     {
@@ -795,6 +795,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260609-001"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-20",
+      "goal": "把線性的四層 GATE_POLICY 收斂成有界、會終止、可稽核的任務內驗證閉環，並提供可執行驗證驅動器與測試",
+      "path": "tasks/2026-06-20_verification-loop.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "in_progress",
+      "task_id": "20260620-001"
     },
     {
       "approval_needed": true,
