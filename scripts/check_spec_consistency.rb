@@ -9,6 +9,8 @@ errors = []
 ALLOWED_STATUS = %w[pending in_progress checkpoint review done failed].freeze
 ALLOWED_RISK = %w[low medium high critical].freeze
 ALLOWED_SKILL = %w[research writing ops review analysis].freeze
+# 與 system/validate_task_card.py 的 REQUIRED_FIELDS 同步；
+# parity 由 scripts/test_check_spec_consistency.rb 在 CI 保證。
 REQUIRED_FIELDS = %w[
   task_id
   date
@@ -19,6 +21,7 @@ REQUIRED_FIELDS = %w[
   risk_level
   approval_needed
   skill_type
+  allowed_tools
 ].freeze
 REQUIRED_OUTPUT_FIELDS = %w[format location filename].freeze
 
@@ -127,6 +130,10 @@ Dir.glob('tasks/**/*.yaml').sort.each do |task_file|
 
   if task.key?('approval_needed') && ![true, false].include?(task['approval_needed'])
     errors << "#{task_file}: approval_needed must be boolean"
+  end
+
+  if task.key?('allowed_tools') && !task['allowed_tools'].is_a?(Array)
+    errors << "#{task_file}: allowed_tools must be an array"
   end
 
   if task['definition_of_done'].is_a?(Array)

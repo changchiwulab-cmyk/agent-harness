@@ -148,22 +148,22 @@
     "task_risk": {
       "high": 1,
       "low": 48,
-      "medium": 16
+      "medium": 20
     },
     "task_skill": {
       "analysis": 7,
-      "ops": 35,
+      "ops": 39,
       "research": 9,
       "review": 7,
       "writing": 7
     },
     "task_status": {
-      "done": 40,
+      "done": 44,
       "in_progress": 2,
       "pending": 6,
       "review": 17
     },
-    "task_total": 65
+    "task_total": 69
   },
   "tasks": [
     {
@@ -795,6 +795,46 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260609-001"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-02",
+      "goal": "把 AUDIT_LOG 漂移檢查接進 CI、修正 GATE_POLICY 失真敘述、收斂雙驗證器欄位、補 skill token 預算守門",
+      "path": "tasks/2026-07-02_ci-validators-alignment.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260702-R02"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-02",
+      "goal": "修復 PR #122 Codex review 三項發現：audit generator 對 squash merge 的決定論、guard 的 & 分隔符與引號路徑繞過",
+      "path": "tasks/2026-07-02_codex-review-fixes.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260702-R04"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-02",
+      "goal": "CLAUDE.md 第 8 步對齊 D006 執行紀錄使用範圍；補完 4 個 skill 的原生註冊（frontmatter + symlink）",
+      "path": "tasks/2026-07-02_docs-skill-registration.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260702-R03"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-02",
+      "goal": "對齊 PERMISSIONS.yaml 與 permissions_guard.py：deny 清單雙向同步、docstring 誠實化、Edit/Write ask 層落地到 settings.json",
+      "path": "tasks/2026-07-02_guard-permissions-alignment.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260702-R01"
     },
     {
       "approval_needed": true,

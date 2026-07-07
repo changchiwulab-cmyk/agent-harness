@@ -17,7 +17,7 @@ modules:
   - name: "Skill Executor (skills/)"
     overlap_pct: 85
     native: "Claude Code Skills（/skill、自動載入）"
-    evidence: "本 session Skill tool + skills 列表自動列出；N3 PoC 已建立 .claude/skills/research symlink"
+    evidence: "本 session Skill tool + skills 列表自動列出；N3 PoC 起步，2026-07-02（20260702-R03）已補完 5/5 skill 的 frontmatter + .claude/skills/ symlink 註冊"
   - name: "Planner/Router (ROUTING_RULES.md)"
     overlap_pct: 70
     native: "Skill 自動路由 + 子代理"

@@ -40,6 +40,7 @@
 | Fable 5 制度化 | #124（待確認） | #123 | 都重寫 CLAUDE.md，取新棄舊 |
 | R9/R10 | #106 | #98 #107 | #106 = 兩者合集 |
 | 模型路由 | 視 #124 決定 | #90（若 #124 合入） | DISPATCH_POLICY 取代 workflow 路由 |
+| **硬規則 runtime 強制化（整合階段新發現）** | **#96** | #105 | 兩者並行實作同一目標：#96 = gate_check / failure_counter / task_card_guard；#105 = gate_runner / failure_tracker / write_guard。#96 已整合、測試綠、乾淨重用 validate_task_card；#105 視為被取代，其獨有的 `20260620-D008` 決策記錄 + R14 enforcement 文件可 salvage。**此重複在原 triage（個別對舊 main 測）未顯現，是整合階段才暴露的 in-flight 分支發散案例。** |
 
 ### D. 報告/測試類（15 個）— cherry-pick 報告檔進彙整、關閉原 PR
 `#92 #93 #94 #95 #97 #99 #101 #102 #104 #108 #109 #110 #111 #119 #120`
