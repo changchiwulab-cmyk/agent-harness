@@ -11,6 +11,8 @@ definition_of_done:
   - "rule_check 必須擋下 send_email"
 skill_type: "ops"
 risk_level: "low"
+approval_needed: false
+max_tool_calls: 5
 expected_output:
   format: "md"
   location: "outputs/drafts/"

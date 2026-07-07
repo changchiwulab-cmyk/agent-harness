@@ -12,6 +12,8 @@ definition_of_done:
   - "skill_type 改為合法值"
 skill_type: "ops"
 risk_level: "low"
+approval_needed: false
+max_tool_calls: 5
 expected_output:
   format: "md"
   location: "outputs/drafts/"

@@ -11,6 +11,8 @@ definition_of_done:
   - "risk_check 必須要求 high 風險輸出改放 drafts/"
 skill_type: "ops"
 risk_level: "high"
+approval_needed: true
+max_tool_calls: 5
 expected_output:
   format: "md"
   location: "outputs/reports/"   # VIOLATION: high risk must go to outputs/drafts/
