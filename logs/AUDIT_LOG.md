@@ -15,7 +15,19 @@ status: review
 risk_level: low
 approval_needed: true
 output_path: outputs/drafts/20260706-R01_claudian-analysis.md
-checkpoints: []
+checkpoints:
+- commit: 314dd25
+  subject: 'checkpoint: [20260706-R01] merge main 解衝突 + 生成檔重生'
+- commit: 64696fa
+  subject: 'checkpoint: [20260706-R01] 修正安全層描述：claudian 具 core/security/ApprovalManager'
+- commit: b7a3b15
+  subject: 'checkpoint: [20260706-R01] 執行紀錄回填 + audit log / manifest 重生成'
+- commit: a876c3b
+  subject: 'checkpoint: [20260706-R01] 知識庫條目與核准紀錄寫入'
+- commit: c368642
+  subject: 'checkpoint: [20260706-R01] 研究草稿完成'
+- commit: b091a60
+  subject: 'checkpoint: [20260706-R01] 任務卡建立'
 actual_tool_calls: 9
 result_summary: 'DoD 5/5 通過。3 web queries（2 輪）完成 claudian 分析：定位/功能/架構/生態/優劣勢 + 6 項可借鑑設計（含
   🔍 待評估標記）。草稿落 outputs/drafts/，精煉條目寫入 memory/.../references/claudian.md（新建 references/），approval
@@ -34,7 +46,9 @@ status: review
 risk_level: low
 approval_needed: false
 output_path: scripts/governance_metrics.py
-checkpoints: []
+checkpoints:
+- commit: 227e2da
+  subject: 'checkpoint: [20260706-F01] 修復 PR #76 review 指出的 M4 型別防護與 DoD 字串檢查'
 actual_tool_calls: 6
 result_summary: 'DoD 4/4 通過。metric_m4 增型別防護（bool/非數值 → 結構化 alert，不再 TypeError）；validate_task_card
   DoD 項目改 isinstance(item, str) 並回報實際型別。回歸測試 +3（governance 29 全綠、plugin validators
