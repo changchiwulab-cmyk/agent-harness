@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Keep backend-derived frontend artifacts aligned at commit time.
+#
+# Regenerates frontend/data.json and logs/AUDIT_LOG.md from the YAML / git
+# sources and stages them, so a commit can never leave the dashboard stale.
+# If regeneration fails, the commit is aborted (drift is not let through).
+#
+# Enable once per clone:  scripts/install_hooks.sh
+#
+# Note: logs/AUDIT_LOG.md derives `checkpoints` from git history. If THIS
+# commit is itself a `checkpoint:` commit, its entry is filled in on the next
+# commit / CI run (the commit does not exist in history yet). frontend/data.json
+# has no such dependency. CI (.github/workflows/spec-consistency.yml) performs
+# the authoritative reconcile.
+set -euo pipefail
+
+ROOT_DIR="$(git rev-parse --show-toplevel)"
+cd "$ROOT_DIR"
+
+# The generators read the working tree. If any derived-artifact SOURCE input has
+# unstaged or untracked changes, regenerating now would stage artifacts that
+# reflect content not in this commit (the partial-staging trap). Abort and let
+# the developer stage or stash first, so committed artifacts always match the
+# committed sources. CI remains the authoritative reconcile.
+SRC_PATHSPECS=(
+  ':(glob)tasks/20*.yaml'
+  ':(glob)logs/runs/*.yaml'
+  ':(glob)memory/active_projects/*/decisions/*.yaml'
+)
+unstaged="$(git diff --name-only -- "${SRC_PATHSPECS[@]}")"
+untracked="$(git ls-files --others --exclude-standard -- "${SRC_PATHSPECS[@]}")"
+if [ -n "${unstaged}${untracked}" ]; then
+  {
+    echo "pre-commit: derived-artifact sources have unstaged/untracked changes:"
+    printf '  %s\n' ${unstaged} ${untracked}
+    echo "Stage them (git add) or stash before committing so frontend/data.json"
+    echo "and logs/AUDIT_LOG.md match the commit."
+  } >&2
+  exit 1
+fi
+
+bash scripts/sync_derived.sh
+git add frontend/data.json logs/AUDIT_LOG.md
