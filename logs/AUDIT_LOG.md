@@ -7,6 +7,42 @@
 
 <!-- AUTO_AUDIT_BEGIN -->
 ```yaml
+task_id: 20260706-R01
+date: '2026-07-06'
+skill_type: research
+goal: 分析 GitHub 開源專案 yishentu/claudian（Obsidian AI coding agent 外掛），優化整理後收進專案知識庫 memory/
+status: review
+risk_level: low
+approval_needed: true
+output_path: outputs/drafts/20260706-R01_claudian-analysis.md
+checkpoints: []
+actual_tool_calls: 9
+result_summary: 'DoD 5/5 通過。3 web queries（2 輪）完成 claudian 分析：定位/功能/架構/生態/優劣勢 + 6 項可借鑑設計（含
+  🔍 待評估標記）。草稿落 outputs/drafts/，精煉條目寫入 memory/.../references/claudian.md（新建 references/），approval
+  record 補於 logs/approvals/。後續依 PR #127 Codex review 加查 2 次（src/core 樹）：claudian 實有
+  core/security/ApprovalManager.ts，已修正草稿與記憶條目中「無細粒度治理」過強結論。'
+completion_time: '2026-07-06'
+```
+
+```yaml
+task_id: 20260706-F01
+date: '2026-07-06'
+skill_type: ops
+goal: '修復 PR #76 兩條 Codex review 指出、且仍存在於 main 的缺陷：metric_m4 型別防護與 validate_task_card
+  DoD 字串型別檢查'
+status: review
+risk_level: low
+approval_needed: false
+output_path: scripts/governance_metrics.py
+checkpoints: []
+actual_tool_calls: 6
+result_summary: 'DoD 4/4 通過。metric_m4 增型別防護（bool/非數值 → 結構化 alert，不再 TypeError）；validate_task_card
+  DoD 項目改 isinstance(item, str) 並回報實際型別。回歸測試 +3（governance 29 全綠、plugin validators
+  15 全綠），本地 CI 全套通過。取代擱置的 PR #75 中對應修復。'
+completion_time: '2026-07-06'
+```
+
+```yaml
 task_id: 20260530-H02
 date: '2026-05-30'
 skill_type: analysis
