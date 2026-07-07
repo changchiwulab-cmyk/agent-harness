@@ -28,6 +28,10 @@ REQUIRED_OUTPUT_FIELDS = %w[format location filename].freeze
 TASK_ID_PATTERN = /\A\d{8}-[A-Za-z]*\d+\z/
 DATE_PATTERN = /\A\d{4}-\d{2}-\d{2}\z/
 
+# --- state/ resume schema 常數（G-D: 20260630-G04）---
+ALLOWED_STATE_STATUS = %w[active paused done].freeze
+REQUIRED_STATE_FIELDS = %w[task_id updated_at status next_action checkpoint_commit].freeze
+
 # --- logs/ schema lint 常數（R2: 20260529-005）---
 ALLOWED_RUN_STATUS = %w[completed failed partial cancelled].freeze
 REQUIRED_RUN_FIELDS = %w[run_id task_id status gate_results].freeze
@@ -305,6 +309,28 @@ Dir.glob('.claude/skills/*').sort.each do |link|
   next unless File.symlink?(link)
 
   errors << "#{link}: dangling symlink (target missing)" unless File.exist?(link)
+end
+
+# 10) state/*.yaml — cross-session resume schema（G-D；跳過 SCHEMA/TEMPLATE）
+Dir.glob('state/*.yaml').sort.each do |state_file|
+  next if File.basename(state_file) =~ /SCHEMA|TEMPLATE/
+
+  doc = YAML.load_file(state_file)
+  unless doc.is_a?(Hash)
+    errors << "#{state_file}: root must be mapping"
+    next
+  end
+  REQUIRED_STATE_FIELDS.each do |field|
+    value = doc[field]
+    empty = value.nil? || (value.is_a?(String) && value.strip.empty?)
+    errors << "#{state_file}: missing required field #{field}" if empty
+  end
+  if doc.key?('status') && !ALLOWED_STATE_STATUS.include?(doc['status'])
+    errors << "#{state_file}: invalid state status #{doc['status']} (allowed: #{ALLOWED_STATE_STATUS.join('/')})"
+  end
+  if doc.key?('updated_at') && doc['updated_at'].is_a?(String) && parse_iso_date(doc['updated_at']).nil?
+    errors << "#{state_file}: invalid updated_at #{doc['updated_at']} (expected valid YYYY-MM-DD)"
+  end
 end
 
 if errors.empty?

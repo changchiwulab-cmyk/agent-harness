@@ -1,0 +1,27 @@
+# state/ — 結構化跨 session resume / handoff（G-D）
+#
+# 為什麼存在：
+#   system/RECOVERY_RUNBOOK.md 解的是「崩潰後被動復原」；本檔解的是「正常跨 session 主動接續」。
+#   過去長/多階段任務跨 session 只能靠 git log 回想「上次停在哪、下一步做什麼」（弱點⑩）。
+#   state/ 提供結構化 resume point，session 結束前對 active 多階段任務寫入。
+#
+# 與長期記憶的區隔（不違反 deny auto_write_memory）：
+#   state/ 是「任務範圍的執行狀態」（暫時、可丟棄、隨任務完成失效），不是經人工確認的長期知識。
+#   長期知識仍走 memory/（需人工確認）。state/ 屬 allow（write_logs 同級的執行紀錄）。
+#
+# 慣例：
+#   - state/last_checkpoint.yaml ：最近一次 session 的接續點（單一焦點；單代理 harness 一次一主線）。
+#   - state/<task_id>.yaml        ：可選，個別多階段任務各自的接續點。
+#   - 任務 done 後，把對應 state 檔的 status 設 done 或移除（避免過期 resume point 誤導）。
+#
+# lint：scripts/check_spec_consistency.rb 驗 state/*.yaml 必填欄位與 status 枚舉（本 SCHEMA 檔被跳過）。
+# 本檔為 schema 範本，非實際紀錄。
+
+task_id: "YYYYMMDD-XXX"            # 必填：對應的 Task Card
+updated_at: "YYYY-MM-DD"          # 必填：此 resume point 更新日期
+status: "active"                  # 必填：active / paused / done
+next_action: ""                   # 必填：下一步要做的具體動作（接續者照此繼續，不從頭重做）
+checkpoint_commit: ""             # 必填：最後一次 git checkpoint 的 commit hash（接續基準）
+open_questions: []                # 選填：尚未解決、需澄清的問題
+partial_outputs: []               # 選填：已產出但未完成的檔案路徑
+notes: ""                         # 選填：補充說明

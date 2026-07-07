@@ -116,6 +116,18 @@ jobs:
       - name: Decision revisit tracker tests
         run: ruby scripts/test_check_decision_revisit.rb
 
+      - name: Input-guardrail detector tests (G-A)
+        run: python3 scripts/test_check_untrusted_content.py
+
+      - name: E2E input-guardrails regression (G-A)
+        run: python3 tests/e2e/test_input_guardrails.py
+
+      - name: Eval runner tests (G-B)
+        run: python3 scripts/test_run_evals.py
+
+      - name: Eval calibration — gold passes / bad fails (G-B)
+        run: python3 scripts/run_evals.py
+
       # Auto-align the backend-derived frontend artifacts (frontend/data.json,
       # logs/AUDIT_LOG.md) with their YAML / git sources. On same-repo events we
       # regenerate and commit any drift back to the branch; on fork PRs (no write

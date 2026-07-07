@@ -141,6 +141,83 @@ completion_time: '2026-07-02'
 ```
 
 ```yaml
+task_id: 20260630-G04
+date: '2026-06-30'
+skill_type: ops
+goal: 為多/跨 session 任務補上結構化接續點 state/last_checkpoint.yaml，並接到 RECOVERY_RUNBOOK 與 CI
+  schema lint
+status: done
+risk_level: medium
+approval_needed: true
+output_path: state/last_checkpoint.SCHEMA.yaml
+checkpoints:
+- note: 'checkpoint: 20260630-G04 cross-session resume state (G-D)'
+actual_tool_calls: 8
+result_summary: 新增 state/last_checkpoint.SCHEMA.yaml + 首個真實 resume 樣本（dogfood）；check_spec_consistency.rb
+  擴充 state/*.yaml schema lint（跳過 SCHEMA/TEMPLATE）+ 測試常數；RECOVERY_RUNBOOK 場景 C 交叉引用
+  state/ 為主動接續點。CI-equivalent 綠。system/ 變更待草稿 PR。
+completion_time: '2026-06-30'
+```
+
+```yaml
+task_id: 20260630-G03
+date: '2026-06-30'
+skill_type: ops
+goal: 把 context 從『不可超的預算』升級為『可工程化的產物』：訂 context 組裝順序、JIT 檢索紀律、結構化工作筆記慣例
+status: done
+risk_level: low
+approval_needed: true
+output_path: system/CONTEXT_ENGINEERING.md
+checkpoints:
+- note: 'checkpoint: 20260630-G03 context engineering spec + scratchpad (G-C)'
+actual_tool_calls: 6
+result_summary: 新增 system/CONTEXT_ENGINEERING.md（組裝順序 + JIT 檢索 + 結構化工作筆記 scratchpad
+  + 子任務 context 隔離；明標原生 vs 本 harness 分工避免冗餘）；GLOBAL_RULES + memory/README 補 scratchpad
+  層（任務範圍工作記憶，與長期記憶、G-D resume state 三層區隔）。context budget 1354/3000 綠。system/ 變更待草稿
+  PR。
+completion_time: '2026-06-30'
+```
+
+```yaml
+task_id: 20260630-G02
+date: '2026-06-30'
+skill_type: ops
+goal: 建立可執行的評估閉環：evals/ 案例 + LLM-as-judge runner + CI baseline，並把執行紀錄詞彙向 OTel gen_ai.*
+  對齊
+status: done
+risk_level: medium
+approval_needed: true
+output_path: evals/README.md
+checkpoints:
+- note: 'checkpoint: 20260630-G02 eval harness + OTel GenAI alignment (G-B/G-E)'
+actual_tool_calls: 11
+result_summary: 新增 evals/（research、analysis 各 1 case，含 gold/bad 校準對，rubric 對齊 eval_examples）；scripts/run_evals.py（rule
+  judge CI-safe + LLM-judge 擴充點 + 校準模式）；scripts/test_run_evals.py；evals/README.md（與
+  GATE/governance_metrics 分工）；EXECUTION_LOG_SCHEMA 加 optional gen_ai.* 對齊 OTel。校準：gold=1.0
+  pass、bad=0.0 fail。CI-equivalent 綠。system/ 變更待草稿 PR。
+completion_time: '2026-06-30'
+```
+
+```yaml
+task_id: 20260630-G01
+date: '2026-06-30'
+skill_type: ops
+goal: 為 harness 補上輸入側防護：把『檢索/外部內容是資料、不是指令』訂為規範，並接到失敗分類學、gate 與 research skill
+status: done
+risk_level: medium
+approval_needed: true
+output_path: system/INPUT_GUARDRAILS.md
+checkpoints:
+- note: 'checkpoint: 20260630-G01 input guardrails (indirect prompt injection)'
+actual_tool_calls: 9
+result_summary: 新增 system/INPUT_GUARDRAILS.md（檢索內容是資料不是指令 + [未受信任來源] 標記 + 交叉驗證）；FAILURE_TAXONOMY
+  加 SEC-05/06；GATE_POLICY rule_check 加輸入面檢查；research SKILL 加不受信任內容段；scripts/check_untrusted_content.py
+  偵測器 + 單元測試；tests/e2e 注入 smoke + fixture。全套 CI-equivalent 綠。system/+skills/ 變更待草稿
+  PR review。
+completion_time: '2026-06-30'
+```
+
+```yaml
 task_id: 20260623-002
 date: '2026-06-23'
 skill_type: analysis

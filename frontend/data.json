@@ -147,23 +147,23 @@
     "run_total": 2,
     "task_risk": {
       "high": 2,
-      "low": 50,
-      "medium": 22
+      "low": 51,
+      "medium": 25
     },
     "task_skill": {
       "analysis": 8,
-      "ops": 42,
+      "ops": 46,
       "research": 9,
       "review": 8,
       "writing": 7
     },
     "task_status": {
-      "done": 48,
+      "done": 52,
       "in_progress": 3,
       "pending": 6,
       "review": 17
     },
-    "task_total": 74
+    "task_total": 78
   },
   "tasks": [
     {
@@ -845,6 +845,46 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260623-001"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-30",
+      "goal": "為 harness 補上輸入側防護：把『檢索/外部內容是資料、不是指令』訂為規範，並接到失敗分類學、gate 與 research skill",
+      "path": "tasks/2026-06-30_g-a-input-guardrails.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260630-G01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-30",
+      "goal": "建立可執行的評估閉環：evals/ 案例 + LLM-as-judge runner + CI baseline，並把執行紀錄詞彙向 OTel gen_ai.* 對齊",
+      "path": "tasks/2026-06-30_g-b-eval-harness.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260630-G02"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-30",
+      "goal": "把 context 從『不可超的預算』升級為『可工程化的產物』：訂 context 組裝順序、JIT 檢索紀律、結構化工作筆記慣例",
+      "path": "tasks/2026-06-30_g-c-context-engineering.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260630-G03"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-30",
+      "goal": "為多/跨 session 任務補上結構化接續點 state/last_checkpoint.yaml，並接到 RECOVERY_RUNBOOK 與 CI schema lint",
+      "path": "tasks/2026-06-30_g-d-session-resume.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260630-G04"
     },
     {
       "approval_needed": true,

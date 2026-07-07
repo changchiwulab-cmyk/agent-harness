@@ -40,11 +40,17 @@ git checkout <commit> -- <file>                    # 取該版本到工作樹
 ```
 
 ### 場景 C — Context / session 在任務中途重置
-1. 找最後 checkpoint：`git log --oneline --grep="checkpoint: <task_id>"`
-2. 讀 Task Card：確認 goal / definition_of_done / 已完成到第幾個 checkpoint
-3. 讀 `logs/runs/<RUN>.yaml`（若有）：確認 gate_results 與最後階段
-4. 讀 `logs/approvals/`：確認是否有待處理批准（避免重複請求人工）
-5. 從「最後 checkpoint 之後、尚未完成的子任務」**接續**執行——不要從頭重做。
+1. **先讀 `state/last_checkpoint.yaml`（或 `state/<task_id>.yaml`）**：直接取得 `next_action` /
+   `open_questions` / `partial_outputs` / `checkpoint_commit`——這是**主動**寫下的接續點（G-D），
+   比從 git log 回想更快、更不易漏。若無此檔（舊任務未寫），退回以下 git-based 步驟。
+2. 找最後 checkpoint：`git log --oneline --grep="checkpoint: <task_id>"`（或直接用上面的 `checkpoint_commit`）
+3. 讀 Task Card：確認 goal / definition_of_done / 已完成到第幾個 checkpoint
+4. 讀 `logs/runs/<RUN>.yaml`（若有）：確認 gate_results 與最後階段
+5. 讀 `logs/approvals/`：確認是否有待處理批准（避免重複請求人工）
+6. 從 `next_action`（或「最後 checkpoint 之後、尚未完成的子任務」）**接續**執行——不要從頭重做。
+
+> `state/` 是**主動**接續點（session 結束前寫），本 runbook 其餘場景是**被動**崩潰復原；兩者互補。
+> schema 與慣例見 `state/last_checkpoint.SCHEMA.yaml`，由 `check_spec_consistency.rb` 驗。
 
 ### 場景 D — 整批變更要回滾（已 commit、未 push 或可重置）
 ```bash
