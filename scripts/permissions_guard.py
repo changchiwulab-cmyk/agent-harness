@@ -118,6 +118,7 @@ DENY_RULES: tuple[DenyRule, ...] = (
     ),
     DenyRule(
         rule_id="spawn_background_process",
+        permission_key="spawn_background_process",
         pattern=re.compile(
             r"""(?x)
             (
@@ -132,6 +133,7 @@ DENY_RULES: tuple[DenyRule, ...] = (
     ),
     DenyRule(
         rule_id="auto_write_memory",
+        permission_key="auto_write_memory",
         pattern=re.compile(
             r"""(?x)
             (
@@ -145,6 +147,7 @@ DENY_RULES: tuple[DenyRule, ...] = (
     ),
     DenyRule(
         rule_id="publish_content",
+        permission_key="publish_content",
         pattern=re.compile(
             r"""(?x)
             curl\s+.*
