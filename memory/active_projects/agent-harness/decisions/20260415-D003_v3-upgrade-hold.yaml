@@ -18,6 +18,9 @@ options_considered:
     cons: "目前無實際需求；過早優化；增加維護成本"
 
 decision: "維持 v2，下次 retro（累積 5 筆後）再評估"
+# 2026-06-23 R10 複查（task 20260623-002）：T-A 四項觸發條件仍全未達標，hold 不變。
+# 釐清：D003 管的是「規模/多代理」觸發（T-A）；治理層抽出（A01/plugin）由 NATIVE_OVERLAP >50% 觸發（T-B），
+# 兩條獨立。T-B 現 30%，已由 R9 governance_metrics M4 自動偵測，不再依賴人工記得回看。
 reasoning: >
   四項觸發條件均未達標：context 未超限、無規則衝突、
   token 雖超預估但未超 dashboard 上限、錯誤率僅 1/8（非阻斷性）。

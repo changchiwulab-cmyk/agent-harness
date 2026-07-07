@@ -241,8 +241,26 @@ def metric_m3(cards: list[dict], audit_ids: set[str]) -> MetricResult:
     )
 
 
-def metric_m4(overlap_data: dict) -> MetricResult:
-    """M4 — Claude Code 原生功能重疊度 (manual input)."""
+# R9: 季度 revisit 預設窗口（NATIVE_OVERLAP.yaml 的 revisit_trigger:「每季度」）。
+DEFAULT_REVISIT_INTERVAL_DAYS = 90
+
+
+def _parse_iso_date(value) -> date | None:
+    """Parse a 'YYYY-MM-DD' string to date; return None on anything unparseable."""
+    try:
+        return date.fromisoformat(str(value))
+    except (ValueError, TypeError):
+        return None
+
+
+def metric_m4(overlap_data: dict, today: date | None = None) -> MetricResult:
+    """M4 — Claude Code 原生功能重疊度 (manual input).
+
+    R7 加了 % 閾值（>50 alert / >=40 warn）。R9 再加兩件事：
+    - 時間維度 staleness：reviewed_on 逾 revisit_interval_days（預設 90）→ 至少 warn。
+      只把 ok 升成 warn，永不下調已是 alert 的狀態。今天若無 `today` 則跳過（向後相容）。
+    - v3 觸發旗標：pct > 50 時 details.v3_trigger=True，供 render 建議產出 R10 評估。
+    """
     pct = overlap_data.get("aggregate_estimate_pct")
     reviewed_on = overlap_data.get("reviewed_on", "(unknown)")
     if pct is None:
@@ -269,13 +287,50 @@ def metric_m4(overlap_data: dict) -> MetricResult:
         status = "warn"
     else:
         status = "ok"
+
+    details = {
+        "aggregate_pct": pct,
+        "reviewed_on": reviewed_on,
+        "modules": overlap_data.get("modules", []),
+    }
+    notes: list[str] = []
+
+    # v3 觸發：重疊跨過 50% → 建議產出 v3 就緒度評估（roadmap R10）。
+    v3_trigger = pct > 50
+    details["v3_trigger"] = v3_trigger
+    if v3_trigger:
+        notes.append("重疊 > 50%：建議產出 outputs/drafts/v3-readiness-assessment.md（R10）")
+
+    # 季度 staleness：reviewed_on 逾期 → 至少 warn（不下調 alert）。
+    # revisit_interval_days 可能被引號包成字串（YAML 合法，如 "90"）；轉 int，無法解析則退回預設。
+    raw_interval = overlap_data.get("revisit_interval_days", DEFAULT_REVISIT_INTERVAL_DAYS)
+    try:
+        interval_days = int(raw_interval)
+    except (TypeError, ValueError):
+        interval_days = DEFAULT_REVISIT_INTERVAL_DAYS
+    reviewed_date = _parse_iso_date(reviewed_on)
+    if today is not None and reviewed_date is not None:
+        age_days = (today - reviewed_date).days
+        details["review_age_days"] = age_days
+        details["revisit_interval_days"] = interval_days
+        details["revisit_due"] = age_days > interval_days
+        if details["revisit_due"]:
+            notes.append(
+                f"季度 revisit 到期：reviewed_on {reviewed_on}，已 {age_days} 天（門檻 {interval_days}）"
+            )
+            if status == "ok":
+                status = "warn"
+
+    current = f"{pct}% (reviewed {reviewed_on})"
+    if notes:
+        current += " ⚠ " + "；".join(notes)
     return MetricResult(
         id="M4",
         name="Claude Code 原生功能重疊度（人工評估）",
-        current=f"{pct}% (reviewed {reviewed_on})",
-        threshold="> 50% → alert；40-50% → warn",
+        current=current,
+        threshold=f"> 50% → alert（觸發 v3 評估）；40-50% → warn；reviewed_on 逾 {interval_days} 天 → warn",
         status=status,
-        details={"aggregate_pct": pct, "reviewed_on": reviewed_on, "modules": overlap_data.get("modules", [])},
+        details=details,
     )
 
 
@@ -497,6 +552,18 @@ def render_markdown(metrics: list[MetricResult], today: date) -> str:
         lines.append("- 有 warn：下一次 retro 把這些指標納入討論清單")
     else:
         lines.append("- 全部 ok：保持現狀，下個月再採集")
+    # R9: NATIVE_OVERLAP 季度 revisit 的具體建議（從 M4 details 取）。
+    m4 = next((m for m in metrics if m.id == "M4"), None)
+    if m4 and m4.details.get("v3_trigger"):
+        lines.append(
+            "- **M4 原生重疊 > 50%**：建議產出 `outputs/drafts/v3-readiness-assessment.md`"
+            "（roadmap R10，只評估不遷移）"
+        )
+    if m4 and m4.details.get("revisit_due"):
+        lines.append(
+            "- **M4 季度 revisit 到期**：本次 RETRO 重評 `system/NATIVE_OVERLAP.yaml` "
+            "逐模組重疊並更新 `reviewed_on`（與 R4 決策回看同一節奏）"
+        )
     return "\n".join(lines) + "\n"
 
 
@@ -517,7 +584,7 @@ def collect_metrics(today: date) -> list[MetricResult]:
         metric_m1(cards, today),
         metric_m2(drafts, reports),
         metric_m3(cards, audit_ids),
-        metric_m4(overlap),
+        metric_m4(overlap, today),
     ]
 
 

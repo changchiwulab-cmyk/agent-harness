@@ -1,0 +1,69 @@
+# Task Card — R10 v3 遷移就緒度評估
+# 來源：20260529-001 自我評估 roadmap R10（策略層；R9 已完成，使用者指示繼續 R10）
+# 只評估不遷移。對齊既有 2026-05-09_v3_extraction_plan.md（A01）；提出 D003/D007 更新（ask）。
+
+task_id: "20260623-002"
+date: "2026-06-23"
+status: "done"
+
+# === 任務定義 ===
+goal: "產出 v3 遷移就緒度評估草稿：逐模組標『保留/下放原生/並存』就緒度、列不可替代資產、盤點 v3 觸發現況，並提出 D003/D007 更新建議。只評估不遷移。"
+context: |
+  roadmap R1–R9 已完成。R10 為策略層最後一項。
+  既有 A01（outputs/drafts/2026-05-09_v3_extraction_plan.md）已做 16 模組去留裁決（砍5/抽6/重構5/保留0）與遷移路徑；
+  R10 不重做 A01，而是加「就緒度」視角：每模組現在離 v3 形態多遠、觸發了沒、不可替代資產是否被保護。
+  兩條 v3 觸發需分清楚：(a) D003 的 scaling / bounded-specialist 觸發（multi-agent，現全未達標）；
+  (b) NATIVE_OVERLAP >50% 的治理層抽出觸發（現 30% < 50%，未觸發；R9 已把它自動化偵測）。
+  落地通則：產出先進 drafts（allow）；改 decision logs D003/D007（記憶/決策變更）屬 ask，先在草稿提案、人工確認後才套用。
+input_data:
+  - "outputs/drafts/2026-05-09_v3_extraction_plan.md"
+  - "system/NATIVE_OVERLAP.yaml"
+  - "memory/active_projects/agent-harness/decisions/20260415-D003_v3-upgrade-hold.yaml"
+  - "memory/active_projects/agent-harness/decisions/20260509-D007_v3-plugin-bootstrap-decisions.yaml"
+  - "outputs/reports/harness-self-assessment-v1.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "outputs/drafts/2026-06-23_v3-readiness-assessment.md：含 結論 → 逐模組就緒度表（保留/下放原生/並存 + 離 v3 形態距離）→ 不可替代資產清單（校準表、FAILURE_TAXONOMY、Decision/Audit）→ v3 觸發現況（D003 + NATIVE_OVERLAP 兩條）→ 高風險假設 → 待驗證 → 下一步"
+  - "逐模組就緒度對齊 A01 §4.2 裁決（砍除→下放原生、抽出→並存於治理 plugin、重構→並存/介面重做），不矛盾"
+  - "明確標示『只評估不遷移』，未改任何 system/ 或 skills/"
+  - "提出 D003/D007 更新建議（草稿內以 proposed diff 呈現；實際套用屬 ask，待人工確認）"
+  - "本機 CI-equivalent 綠（YAML parse、spec consistency、frontend manifest 無漂移）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-06-23_v3-readiness-assessment.md"
+
+# === 風險與權限 ===
+risk_level: "high"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260623-002 R10 v3 readiness assessment draft"
+actual_tool_calls: 8
+result_summary: |
+  產出 outputs/drafts/2026-06-23_v3-readiness-assessment.md（只評估不遷移）。
+  結論：維持 v2 hold——兩條 v3 觸發（T-A 規模/多代理@D003、T-B 原生重疊 30%@NATIVE_OVERLAP）皆未達標；
+  但執行就緒度高（A01 已裁決 16 模組、D007 bootstrap 檔樹備齊）。綜合就緒度 ≈7.6/10。
+  逐模組就緒度：14 ready / 2 partial（Planner/Router、Permission，卡 H1/H2），下放原生 5 / 並存 11 / 保留 0。
+  校正 A01 §4.2 摘要列（砍5/抽6/重構5）與逐項表（砍5/抽5/重構6）的出入，以逐項表為準。
+  不可替代資產：token 校準表、Failure Taxonomy、Decision Log、Audit Log（+R7 可觀測性引擎建議併入）。
+  D003/D007 更新以 proposed diff 呈現（只加註不改既有決策），實際套用屬 ask 待人工確認。
+  識別 R11 候選：把 T-A 觸發也自動化，與 R9 的 T-B 偵測合流成單一 v3 觸發儀表板。
+completion_time: "2026-06-23"
+audit_log_ref: "logs/AUDIT_LOG.md"

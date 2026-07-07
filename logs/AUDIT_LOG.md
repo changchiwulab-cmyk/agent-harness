@@ -141,6 +141,74 @@ completion_time: '2026-07-02'
 ```
 
 ```yaml
+task_id: 20260623-002
+date: '2026-06-23'
+skill_type: analysis
+goal: 產出 v3 遷移就緒度評估草稿：逐模組標『保留/下放原生/並存』就緒度、列不可替代資產、盤點 v3 觸發現況，並提出 D003/D007 更新建議。只評估不遷移。
+status: done
+risk_level: high
+approval_needed: true
+output_path: outputs/drafts/2026-06-23_v3-readiness-assessment.md
+checkpoints:
+- note: 'checkpoint: 20260623-002 R10 v3 readiness assessment draft'
+actual_tool_calls: 8
+result_summary: '產出 outputs/drafts/2026-06-23_v3-readiness-assessment.md（只評估不遷移）。
+
+  結論：維持 v2 hold——兩條 v3 觸發（T-A 規模/多代理@D003、T-B 原生重疊 30%@NATIVE_OVERLAP）皆未達標；
+
+  但執行就緒度高（A01 已裁決 16 模組、D007 bootstrap 檔樹備齊）。綜合就緒度 ≈7.6/10。
+
+  逐模組就緒度：14 ready / 2 partial（Planner/Router、Permission，卡 H1/H2），下放原生 5 / 並存 11 /
+  保留 0。
+
+  校正 A01 §4.2 摘要列（砍5/抽6/重構5）與逐項表（砍5/抽5/重構6）的出入，以逐項表為準。
+
+  不可替代資產：token 校準表、Failure Taxonomy、Decision Log、Audit Log（+R7 可觀測性引擎建議併入）。
+
+  D003/D007 更新以 proposed diff 呈現（只加註不改既有決策），實際套用屬 ask 待人工確認。
+
+  識別 R11 候選：把 T-A 觸發也自動化，與 R9 的 T-B 偵測合流成單一 v3 觸發儀表板。
+
+  '
+completion_time: '2026-06-23'
+```
+
+```yaml
+task_id: 20260623-001
+date: '2026-06-23'
+skill_type: ops
+goal: 為 NATIVE_OVERLAP 加上季度 revisit 自動化：M4 加時間維度 staleness 偵測 + >50% 明確觸發 v3 評估建議，並於
+  RETRO_FLOW 與 R4 決策回看同一節奏合流
+status: done
+risk_level: low
+approval_needed: true
+output_path: scripts/governance_metrics.py
+checkpoints:
+- note: 'checkpoint: 20260623-001 R9 task card - native-overlap quarterly revisit'
+- note: 'checkpoint: 20260623-001 R9 M4 quarterly staleness + v3 trigger; wire metrics
+    test into CI'
+- note: 'checkpoint: 20260623-001 R9 apply system/ changes (RETRO_FLOW row + revisit_interval_days)'
+actual_tool_calls: 12
+result_summary: 'governance_metrics.py M4 加 today 參數（向後相容）：reviewed_on 逾 revisit_interval_days
+
+  （NATIVE_OVERLAP 現設 90，可覆寫）→ details.revisit_due=true 且 ok 升 warn（不下調 alert）；
+
+  pct>50 → details.v3_trigger=true，render 建議產出 v3-readiness-assessment.md（R10）。
+
+  test_governance_metrics.py 加 11 案例（staleness/v3/render）並接入 CI（原本未跑）。
+
+  本機跑：--today 2026-06-23 → M4 ok（45 天<90、30%<40%）；--today 2026-09-01 → M4 warn（115
+  天>90）。
+
+  system/ 變更（RETRO_FLOW「原生重疊回看」列 + NATIVE_OVERLAP revisit_interval_days）經人工確認（選項 1.2）後套用。
+
+  全套 CI-equivalent 綠。
+
+  '
+completion_time: '2026-06-23'
+```
+
+```yaml
 task_id: 20260620-001
 date: '2026-06-20'
 skill_type: ops
@@ -1408,6 +1476,48 @@ completion_time: '2026-04-04'
 ## 紀錄（依時間倒序）
 
 <!-- 新紀錄加在這裡 -->
+
+```yaml
+- task_id: "20260623-002"
+  date: "2026-06-23"
+  skill_type: "analysis"
+  goal: "R10：v3 遷移就緒度評估（只評估不遷移，對齊 A01，提出 D003/D007 加註）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 5
+    - tool_name: "create_output_files"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/2026-06-23_v3-readiness-assessment.md"
+  error_summary: ""
+  estimated_tokens: "~17K"
+  notes: "roadmap R10（最後一項策略層）。結論：維持 v2 hold——T-A（D003 規模觸發）+ T-B（NATIVE_OVERLAP 30% 重疊觸發）皆未達標；執行就緒度 ≈7.6/10（A01 裁決 + D007 bootstrap 已備）。逐模組 14 ready/2 partial，下放原生5/並存11/保留0。校正 A01 §4.2 摘要列計數出入。不可替代資產 4 類 + R7 引擎。D003/D007 以 proposed diff 加註（ask 待確認，故 approval_given=false）。識別 R11：T-A 觸發自動化與 R9 T-B 偵測合流。analysis skill 首筆樣本（補 R3）。"
+```
+
+```yaml
+- task_id: "20260623-001"
+  date: "2026-06-23"
+  skill_type: "ops"
+  goal: "R9：NATIVE_OVERLAP 季度 revisit 自動化（M4 staleness + v3 觸發 + 與 R4 RETRO 合流）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "create_output_files"
+      call_count: 6
+  checkpoints: 3
+  approval_needed: true
+  approval_given: true
+  output_path: "scripts/governance_metrics.py"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "roadmap R9（R1–R8 已完成）。M4 加 today 參數（向後相容）：reviewed_on 逾 revisit_interval_days（NATIVE_OVERLAP 設 90）→ revisit_due 且 ok 升 warn（不下調 alert）；pct>50 → v3_trigger，render 建議產出 v3-readiness-assessment.md（R10）。test 加 11 案例並接入 CI（原未跑）。system/ 變更（RETRO_FLOW『原生重疊回看』列 + NATIVE_OVERLAP revisit_interval_days）經人工確認（選項 1.2）。全套 CI-equivalent 綠。DoD 6/6。"
+```
 
 ```yaml
 - task_id: "20260529-011"
