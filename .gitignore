@@ -22,3 +22,5 @@ __pycache__/
 # 暫存
 *.tmp
 *.bak
+# 失敗計數器執行期狀態（failure_counter.py；非版控資產）
+logs/.failure_state.json

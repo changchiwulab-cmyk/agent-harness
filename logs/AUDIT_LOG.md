@@ -57,6 +57,32 @@ completion_time: '2026-07-06'
 ```
 
 ```yaml
+task_id: 20260609-001
+date: '2026-06-09'
+skill_type: ops
+goal: 校正狀態漂移、硬化三條硬規則、自動化 GATE_POLICY 剩餘三層，把宣稱的治理變成可被腳本與 CI 驗證的治理
+status: done
+risk_level: medium
+approval_needed: false
+output_path: outputs/drafts/2026-06-09_optimization-summary.md
+checkpoints: []
+actual_tool_calls: 0
+result_summary: '三條工作線全數完成。WS1：context.md/README 同步至 2026-06-09 + self-assessment
+  addendum。
+
+  WS2：task_card_guard.py（reports/ 守門）+ failure_counter.py（失敗 halt）兩支 deterministic
+
+  guard 註冊進 settings.json，PERMISSIONS/GATE_POLICY 補述強制點。WS3：gate_check.py 自動化
+
+  GATE 四層。三支新元件共 32 單元測試並納入 CI。新增 decision log D008。
+
+  v3 治理插件抽出不在本次範圍（D007）。
+
+  '
+completion_time: '2026-06-09'
+```
+
+```yaml
 task_id: 20260530-H02
 date: '2026-05-30'
 skill_type: analysis

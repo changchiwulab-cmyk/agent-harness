@@ -200,3 +200,28 @@
 - LangGraph、OpenAI Agents SDK、Microsoft Agent Framework、CrewAI、HuggingFace smolagents、Dify
 - 設計模式：Circuit Breaker、Least Privilege / Zero Trust、Human-in-the-Loop Gates（Advisory/Validating/Blocking/Escalating）、Durable Execution / Checkpointing、Token Budget / Context Compaction、Dry-Run / Staging
 - 評估維度與成熟度等級 1–5：取自業界 agent 可靠性/可觀測性/評估框架文獻
+
+---
+
+## Addendum — 2026-06-09 優化回寫（task 20260609-001）
+
+> 本段為 addendum，**不改寫上方歷史分析**。記錄 self-assessment 後續落地進度與 2026-06-09 這輪優化。
+
+### 已落地：R1–R8（§五 roadmap）
+git 歷史顯示 R1–R8 已全數 ship（approval schema / logs lint / analysis cost sample /
+decision-revisit tracker / failure drill / token source / observability metrics + frontend /
+recovery runbook）。其中 **R5 故障演練**（§五「單一最高槓桿動作」）已完成，
+`logs/runs/RUN-20260529-003.yaml`（status: failed）+ `tests/e2e/test_failure_drill.py` 坐實了失敗紀錄路徑。
+
+### 2026-06-09 這輪：把宣稱的硬規則變成 deterministic 強制
+針對 plan `ai-bubbly-mountain.md` §3.1「強制力結構不對稱」與 §3.6「gate 未自動化」：
+
+| 三條硬規則 | 2026-05 之前強制力 | 2026-06-09 後 |
+|-----------|------------------|---------------|
+| 沒有 Task Card 不執行 | 0%（純 prompt） | **正式產出硬制**：`scripts/task_card_guard.py` 擋無對應卡片的 `outputs/reports/` 新檔；`drafts/` 探索仍 prompt（刻意，避免 §3.3 為 1% 替 99% 上鎖） |
+| 對外動作只產草稿 | 30%（Bash egress） | Bash egress（`permissions_guard.py`）**＋** reports/ 守門：正式產出須走 draft→review→promote |
+| 連續失敗 3 次停下 | 0%（無計數器） | **有計數器 + halt hook**：`scripts/failure_counter.py` 達 3 次後 block 後續工具，直到 `--reset`；惟「記錄失敗」動作本身仍 best-effort |
+
+- **GATE 自動化**：新增 `scripts/gate_check.py`，把 GATE_POLICY 四層（schema/rule/completion/risk）做成 post-execution validator（L1 重用 validate_task_card；L2 比對 run log tools；L3 驗產物存在；L4 驗 drafts 收斂）。三支新元件各有單元測試並納入 CI。
+- **狀態漂移校正**：`memory/.../context.md`（停在 2026-04-15）與 `README.md` 同步至 2026-06-09 現況。
+- 殘餘 prompt-only（誠實標註）：drafts 階段的 Task Card 約束、ask 等級人工確認、以及失敗的「判定與記錄」仍依賴 Claude 遵循 CLAUDE.md —— 這是「用 LLM 約束 LLM」的結構性天花板，非本輪可消除。
