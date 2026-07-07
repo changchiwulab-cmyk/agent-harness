@@ -27,6 +27,7 @@ GOOD_CARD = {
     "approval_needed": False,
     "allowed_tools": ["file_read", "file_write"],
     "skill_type": "ops",
+    "max_tool_calls": 5,
 }
 
 
