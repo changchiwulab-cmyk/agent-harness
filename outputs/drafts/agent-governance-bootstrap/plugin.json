@@ -21,7 +21,7 @@
   "skills": [],
   "hooks": {
     "PreToolUse": "hooks/pre_tool_use.py",
-    "PostTaskUse": "hooks/post_task_use.py"
+    "Stop": "hooks/post_task_use.py"
   },
   "schemas": {
     "task_card": "schemas/task_card.schema.yaml",

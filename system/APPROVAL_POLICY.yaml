@@ -62,7 +62,9 @@ escalation:
     action: "暫停任務，建議使用者重新評估任務範圍"
 
 # === 批准紀錄格式（R1: 20260529-004 新增）===
-# 定義批准動作如何被記錄、寫到哪。與 EXECUTION_LOG_SCHEMA.yaml 的內嵌 approvals 欄位同名同義。
+# 定義批准動作如何被記錄、寫到哪。
+# 來源權威（source of truth）：logs/approvals/ 為「全任務」核准 audit trail 的唯一權威；
+# EXECUTION_LOG_SCHEMA.yaml 的 execution_log.approvals[] 僅為「該 run」鏡像，不得當權威。
 # RETRO_FLOW §1 的「核准紀錄」資料源即指此目錄。模板見 logs/approvals/APPROVAL_LOG_TEMPLATE.yaml。
 approval_record:
   location: "logs/approvals/"

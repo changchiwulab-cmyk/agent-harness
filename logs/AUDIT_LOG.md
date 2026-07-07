@@ -293,6 +293,39 @@ completion_time: '2026-05-30'
 ```
 
 ```yaml
+task_id: 20260529-013
+date: '2026-05-29'
+skill_type: ops
+goal: 套用 Opus 4.8／Claude Code 原生能力優化 harness：原生 Skills、子代理＋模型成本路由、Hooks 自動化、prompt
+  caching＋context，並補品質修正與 CI/測試
+status: done
+risk_level: medium
+approval_needed: true
+output_path: outputs/drafts/2026-05-29_opus48-uplift-changes.md
+checkpoints: []
+actual_tool_calls: 40
+result_summary: Phase A 品質修正 + B1–B4 原生升級（原生 skills+5 symlinks、5 子代理含模型路由、3 個 fail-open
+  hooks、CLAUDE.md/COST_POLICY/FAILURE_TAXONOMY 更新），CI 擴充 frontmatter/symlint lint＋hook
+  測試，全測試綠
+completion_time: '2026-05-29'
+```
+
+```yaml
+task_id: 20260529-012
+date: '2026-05-29'
+skill_type: review
+goal: 對 Agent Harness v2 做完整檢視，疊加 Opus 4.8 原生能力視角，產出檢視＋優化路線圖草稿
+status: done
+risk_level: low
+approval_needed: false
+output_path: outputs/drafts/2026-05-29_opus48-review-and-roadmap.md
+checkpoints: []
+actual_tool_calls: 12
+result_summary: 完整檢視＋Opus 4.8 優化路線圖草稿產出；列出 10 項不一致/缺口及修正位置與四 lever 排序、最高槓桿動作
+completion_time: '2026-05-29'
+```
+
+```yaml
 task_id: 20260529-011
 date: '2026-05-29'
 skill_type: ops

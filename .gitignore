@@ -24,3 +24,6 @@ __pycache__/
 *.bak
 # 失敗計數器執行期狀態（failure_counter.py；非版控資產）
 logs/.failure_state.json
+
+# PreCompact hook 的 session 快照（暫存、不入庫）
+logs/.session_state.md

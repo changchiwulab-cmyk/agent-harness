@@ -243,6 +243,70 @@ Dir.glob('logs/errors/*.md').sort.each do |err_file|
   end
 end
 
+# 7) skills/*/SKILL.md — 原生 skill frontmatter（name + description；name 須等於目錄名）
+Dir.glob('skills/*/SKILL.md').sort.each do |skill_file|
+  content = File.read(skill_file, encoding: 'UTF-8')
+  m = content.match(/\A---\s*\n(.*?)\n---\s*\n/m)
+  unless m
+    errors << "#{skill_file}: missing YAML frontmatter (--- name/description ---)"
+    next
+  end
+  begin
+    fm = YAML.safe_load(m[1])
+  rescue StandardError => e
+    errors << "#{skill_file}: frontmatter parse error: #{e.message}"
+    next
+  end
+  unless fm.is_a?(Hash)
+    errors << "#{skill_file}: frontmatter must be a mapping"
+    next
+  end
+  %w[name description].each do |key|
+    val = fm[key]
+    errors << "#{skill_file}: frontmatter missing #{key}" if val.nil? || val.to_s.strip.empty?
+  end
+  dir_name = File.basename(File.dirname(skill_file))
+  if fm['name'] && fm['name'].to_s.strip != dir_name
+    errors << "#{skill_file}: frontmatter name '#{fm['name']}' != directory '#{dir_name}'"
+  end
+end
+
+# 8) .claude/agents/*.md — 子代理 frontmatter（name + description；model 若有須合法）
+allowed_agent_model = %w[haiku sonnet opus inherit].freeze
+Dir.glob('.claude/agents/*.md').sort.each do |agent_file|
+  content = File.read(agent_file, encoding: 'UTF-8')
+  m = content.match(/\A---\s*\n(.*?)\n---\s*\n/m)
+  unless m
+    errors << "#{agent_file}: missing YAML frontmatter"
+    next
+  end
+  begin
+    fm = YAML.safe_load(m[1])
+  rescue StandardError => e
+    errors << "#{agent_file}: frontmatter parse error: #{e.message}"
+    next
+  end
+  unless fm.is_a?(Hash)
+    errors << "#{agent_file}: frontmatter must be a mapping"
+    next
+  end
+  %w[name description].each do |key|
+    val = fm[key]
+    errors << "#{agent_file}: frontmatter missing #{key}" if val.nil? || val.to_s.strip.empty?
+  end
+  model = fm['model'].to_s
+  if !model.empty? && !allowed_agent_model.include?(model) && !model.start_with?('claude-')
+    errors << "#{agent_file}: invalid model #{model} (allowed: #{allowed_agent_model.join('/')} or claude-* id)"
+  end
+end
+
+# 9) .claude/skills/* symlink 必須可解析（指向 skills/<name>）
+Dir.glob('.claude/skills/*').sort.each do |link|
+  next unless File.symlink?(link)
+
+  errors << "#{link}: dangling symlink (target missing)" unless File.exist?(link)
+end
+
 if errors.empty?
   puts 'OK: spec consistency checks passed'
   exit 0

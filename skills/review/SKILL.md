@@ -1,6 +1,6 @@
 ---
 name: review
-description: 一人公司的品質審查 skill — 文件校對、邏輯檢查、風險評估、決策驗證、輸出回測。觸發場景：使用者要審查/校對/驗證某個產出，或 Task Card 的 skill_type 為 review。行為：依格式 → 事實 → 邏輯 → 風險逐項檢查，輸出問題清單與修正建議。
+description: 一人公司的品質審查 skill — 文件校對、邏輯檢查、風險評估、決策驗證、輸出回測。觸發場景：使用者要審查/校對/驗證/回測產出，或 Task Card 的 skill_type 為 review。原則：不改原文只提意見、具體到段落、分「必須改/建議改」、逐條對照 definition_of_done。用於 Task Card 執行階段。
 ---
 
 # Review Skill

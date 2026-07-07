@@ -20,6 +20,7 @@
 | `logs/runs/<RUN>.yaml` | 該任務的執行狀態、gate_results、最後階段 | 直接讀檔（若有寫） |
 | `logs/approvals/*.yaml` | 待處理 / 已核准的批准（避免重複請求） | 直接讀檔 |
 | `logs/AUDIT_LOG.md` | 任務最終狀態與產出路徑 | 直接讀檔 |
+| `logs/.session_state.md` | PreCompact 壓縮前快照：未結 Task Card goal/DoD ＋最後 checkpoint | 直接讀檔（gitignored、可能過時，與 Task Card 交叉確認） |
 
 ## 場景與程序
 

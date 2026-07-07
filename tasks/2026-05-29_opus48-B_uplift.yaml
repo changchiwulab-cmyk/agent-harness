@@ -1,0 +1,56 @@
+task_id: "20260529-013"
+date: "2026-05-29"
+status: "done"
+
+# === 任務定義 ===
+goal: "套用 Opus 4.8／Claude Code 原生能力優化 harness：原生 Skills、子代理＋模型成本路由、Hooks 自動化、prompt caching＋context，並補品質修正與 CI/測試"
+context: "承 20260529-012 檢視結論。平衡遷移：高重疊低治理價值改原生，保留風險分級／draft-first／audit／失敗分類學等治理價值。修改 system/、skills/、.claude/ 屬 ask；核可此計畫＝該批 ask 之批准（見 logs/approvals/2026-05-29_20260529-013_approval.yaml）。"
+input_data:
+  - "outputs/drafts/2026-05-29_opus48-review-and-roadmap.md"
+  - "system/PERMISSIONS.yaml"
+  - "system/COST_POLICY.md"
+  - ".claude/settings.json"
+
+# === 完成標準（最重要的欄位）===
+definition_of_done:
+  - "Phase A 品質修正：5 skill 一致列入文件、AGENT_CONTEXT 去重、approval 來源釐清、術語統一、SECURITY.md 改寫、COST_POLICY 標記高變異"
+  - "B1：5 個 skill 皆有一致 YAML frontmatter 並在 .claude/skills/ 註冊；ROUTING_RULES 標註原生路由為主"
+  - "B2：.claude/agents/ 建立 5 個子代理含 model 路由；COST_POLICY 模型路由標為已落地"
+  - "B3：.claude/settings.json 擴充 SessionStart/Stop 等 hook；scripts/session_start_context.py 與測試；修正 plugin.json 的 PostTaskUse"
+  - "B4：CLAUDE.md 改用原生 compaction＋cache 友善載入順序，仍 ≤3000 tokens；COST_POLICY 記錄 prompt caching"
+  - "CI 擴充 skill/agent frontmatter lint；新增 hook 腳本測試；既有測試與 check_spec_consistency／context_budget／frontend --check 全綠"
+  - "變更摘要存於 outputs/drafts/2026-05-29_opus48-uplift-changes.md"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-05-29_opus48-uplift-changes.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "create_output_files"
+  - "modify_system_rules"
+  - "modify_skills"
+  - "modify_claude_md"
+  - "git_commit_checkpoint"
+  - "write_logs"
+
+# === 成本控制 ===
+max_tool_calls: 80
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 40
+result_summary: "Phase A 品質修正 + B1–B4 原生升級（原生 skills+5 symlinks、5 子代理含模型路由、3 個 fail-open hooks、CLAUDE.md/COST_POLICY/FAILURE_TAXONOMY 更新），CI 擴充 frontmatter/symlint lint＋hook 測試，全測試綠"
+completion_time: "2026-05-29"
+audit_log_ref: "logs/AUDIT_LOG.md"
