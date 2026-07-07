@@ -302,7 +302,9 @@ status: done
 risk_level: medium
 approval_needed: true
 output_path: outputs/drafts/2026-05-29_opus48-uplift-changes.md
-checkpoints: []
+checkpoints:
+- commit: 2dfecdb
+  subject: 'checkpoint: [20260529-012] [20260529-013] Opus 4.8 完整檢視與優化'
 actual_tool_calls: 40
 result_summary: Phase A 品質修正 + B1–B4 原生升級（原生 skills+5 symlinks、5 子代理含模型路由、3 個 fail-open
   hooks、CLAUDE.md/COST_POLICY/FAILURE_TAXONOMY 更新），CI 擴充 frontmatter/symlint lint＋hook
@@ -319,7 +321,9 @@ status: done
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-05-29_opus48-review-and-roadmap.md
-checkpoints: []
+checkpoints:
+- commit: 2dfecdb
+  subject: 'checkpoint: [20260529-012] [20260529-013] Opus 4.8 完整檢視與優化'
 actual_tool_calls: 12
 result_summary: 完整檢視＋Opus 4.8 優化路線圖草稿產出；列出 10 項不一致/缺口及修正位置與四 lever 排序、最高槓桿動作
 completion_time: '2026-05-29'
