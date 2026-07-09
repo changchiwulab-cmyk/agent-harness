@@ -1682,39 +1682,6 @@ completion_time: '2026-04-04'
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
-<<<<<<< HEAD
-- task_id: "20260623-002"
-  date: "2026-06-23"
-  skill_type: "analysis"
-  goal: "R10：v3 遷移就緒度評估（只評估不遷移，對齊 A01，提出 D003/D007 加註）"
-  status: "done"
-  model_used: "claude-opus"
-  tools_called:
-    - tool_name: "file_read"
-      call_count: 5
-    - tool_name: "create_output_files"
-      call_count: 3
-  checkpoints: 1
-  approval_needed: true
-  approval_given: true
-  output_path: "outputs/drafts/2026-06-23_v3-readiness-assessment.md"
-  error_summary: ""
-  estimated_tokens: "~17K"
-  notes: "roadmap R10（最後一項策略層）。結論：維持 v2 hold——T-A（D003 規模觸發）+ T-B（NATIVE_OVERLAP 30% 重疊觸發）皆未達標；執行就緒度 ≈7.6/10（A01 裁決 + D007 bootstrap 已備）。逐模組 14 ready/2 partial，下放原生5/並存11/保留0。校正 A01 §4.2 摘要列計數出入。不可替代資產 4 類 + R7 引擎。D003/D007 以 proposed diff 加註（ask 待確認，故 approval_given=false）。識別 R11：T-A 觸發自動化與 R9 T-B 偵測合流。analysis skill 首筆樣本（補 R3）。"
-```
-
-```yaml
-- task_id: "20260623-001"
-  date: "2026-06-23"
-  skill_type: "ops"
-  goal: "R9：NATIVE_OVERLAP 季度 revisit 自動化（M4 staleness + v3 觸發 + 與 R4 RETRO 合流）"
-  status: "done"
-  model_used: "claude-opus"
-  tools_called:
-    - tool_name: "file_read"
-      call_count: 6
-    - tool_name: "create_output_files"
-=======
 - task_id: "20260701-004"
   date: "2026-07-01"
   skill_type: "ops"
@@ -1777,19 +1744,10 @@ completion_time: '2026-04-04'
     - tool_name: "file_write"
       call_count: 4
     - tool_name: "bash"
->>>>>>> pr/121
       call_count: 6
   checkpoints: 3
   approval_needed: true
   approval_given: true
-<<<<<<< HEAD
-  output_path: "scripts/governance_metrics.py"
-  error_summary: ""
-  estimated_tokens: "~14K"
-  notes: "roadmap R9（R1–R8 已完成）。M4 加 today 參數（向後相容）：reviewed_on 逾 revisit_interval_days（NATIVE_OVERLAP 設 90）→ revisit_due 且 ok 升 warn（不下調 alert）；pct>50 → v3_trigger，render 建議產出 v3-readiness-assessment.md（R10）。test 加 11 案例並接入 CI（原未跑）。system/ 變更（RETRO_FLOW『原生重疊回看』列 + NATIVE_OVERLAP revisit_interval_days）經人工確認（選項 1.2）。全套 CI-equivalent 綠。DoD 6/6。"
-```
-
-=======
   output_path: "system/RECOVERY_RUNBOOK.md"
   error_summary: ""
   estimated_tokens: "~15K"
@@ -1823,7 +1781,52 @@ completion_time: '2026-04-04'
 
 ---
 
->>>>>>> pr/121
+```yaml
+- task_id: "20260623-002"
+  date: "2026-06-23"
+  skill_type: "analysis"
+  goal: "R10：v3 遷移就緒度評估（只評估不遷移，對齊 A01，提出 D003/D007 加註）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 5
+    - tool_name: "create_output_files"
+      call_count: 3
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "outputs/drafts/2026-06-23_v3-readiness-assessment.md"
+  error_summary: ""
+  estimated_tokens: "~17K"
+  notes: "roadmap R10（最後一項策略層）。結論：維持 v2 hold——T-A（D003 規模觸發）+ T-B（NATIVE_OVERLAP 30% 重疊觸發）皆未達標；執行就緒度 ≈7.6/10（A01 裁決 + D007 bootstrap 已備）。逐模組 14 ready/2 partial，下放原生5/並存11/保留0。校正 A01 §4.2 摘要列計數出入。不可替代資產 4 類 + R7 引擎。D003/D007 以 proposed diff 加註（ask 待確認，故 approval_given=false）。識別 R11：T-A 觸發自動化與 R9 T-B 偵測合流。analysis skill 首筆樣本（補 R3）。"
+```
+
+---
+
+```yaml
+- task_id: "20260623-001"
+  date: "2026-06-23"
+  skill_type: "ops"
+  goal: "R9：NATIVE_OVERLAP 季度 revisit 自動化（M4 staleness + v3 觸發 + 與 R4 RETRO 合流）"
+  status: "done"
+  model_used: "claude-opus"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "create_output_files"
+      call_count: 6
+  checkpoints: 3
+  approval_needed: true
+  approval_given: true
+  output_path: "scripts/governance_metrics.py"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "roadmap R9（R1–R8 已完成）。M4 加 today 參數（向後相容）：reviewed_on 逾 revisit_interval_days（NATIVE_OVERLAP 設 90）→ revisit_due 且 ok 升 warn（不下調 alert）；pct>50 → v3_trigger，render 建議產出 v3-readiness-assessment.md（R10）。test 加 11 案例並接入 CI（原未跑）。system/ 變更（RETRO_FLOW『原生重疊回看』列 + NATIVE_OVERLAP revisit_interval_days）經人工確認（選項 1.2）。全套 CI-equivalent 綠。DoD 6/6。"
+```
+
+---
+
 ```yaml
 - task_id: "20260529-011"
   date: "2026-05-29"

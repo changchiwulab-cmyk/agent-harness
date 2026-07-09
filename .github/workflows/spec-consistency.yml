@@ -92,8 +92,11 @@ jobs:
       - name: Audit log generator tests
         run: python3 scripts/test_generate_audit_log.py
 
-      - name: Audit log drift check
-        run: python3 scripts/generate_audit_log.py --check
+      # NOTE: no standalone audit-drift check here — on same-repo events the
+      # "Auto-align derived artifacts" step below regenerates and commits any
+      # drift, and both same-repo and fork paths end with sync_derived.sh
+      # --check (covers data.json + AUDIT_LOG). A hard check at this point
+      # would fail the job before auto-align could run.
 
       - name: Governance metrics tests
         run: python3 scripts/test_governance_metrics.py

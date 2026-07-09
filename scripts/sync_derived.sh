@@ -19,10 +19,25 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
+# Neither derived file may carry committed merge-conflict garbage. The audit
+# generator preserves the manual-notes section verbatim, so markers there
+# survive regeneration and pass the drift check silently (seen in PR #129).
+check_conflict_markers() {
+  if grep -nE '^(<{7}|={7}|>{7})' logs/AUDIT_LOG.md frontend/data.json; then
+    echo "ERROR: merge-conflict markers found in derived artifacts." >&2
+    exit 1
+  fi
+}
+
+# Audit log first: frontend/data.json's governance alerts (M3) read
+# logs/AUDIT_LOG.md via load_audit_task_ids, so the manifest must be
+# generated from the fresh audit log or it lags one run behind.
 if [[ "${1:-}" == "--check" ]]; then
-  python3 scripts/generate_frontend_manifest.py --check
+  check_conflict_markers
   python3 scripts/generate_audit_log.py --check
+  python3 scripts/generate_frontend_manifest.py --check
 else
-  python3 scripts/generate_frontend_manifest.py
   python3 scripts/generate_audit_log.py
+  python3 scripts/generate_frontend_manifest.py
+  check_conflict_markers
 fi
