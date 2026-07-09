@@ -130,7 +130,7 @@
         "status": "ok"
       },
       {
-        "current": "71/73 = 97.3%",
+        "current": "73/73 = 100.0%",
         "id": "M3",
         "name": "audit log 覆蓋率（status ∈ {review, done, failed, partial}）",
         "status": "ok"
