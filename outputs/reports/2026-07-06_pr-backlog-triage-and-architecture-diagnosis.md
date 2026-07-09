@@ -28,9 +28,19 @@
 `#15 #27 #28 #35 #50 #52 #64 #73 #74 #85 #86 #91`
 合併後由本收斂 PR 重生成 `data.json` / `AUDIT_LOG.md`，維持 CI 綠。
 
-### B. 高價值工程 PR — 逐一 rebase 後合（衝突僅在兩個衍生檔）
-順序：**#103**（衍生產物自動對齊，直接修掉衝突製造機，最優先）→ #96 → #105 → #122
-→ #121（其 R11–R14 重編號為 R15–R18，解決與 #105 碰撞）→ #100 → #106 → #89 → #118。
+### B. 高價值工程 PR — 逐一合入收斂分支（2026-07-07 執行結果）
+實際整合順序與結果（全部經完整 CI 等價套件驗證後合入 #129 分支）：
+1. **#103** 衍生產物自動對齊 ✅
+2. **#96** state drift + 硬規則 runtime 化 ✅（+修 fixture：main 的 validator 已要求 max_tool_calls）
+3. **#122** 文件實作對齊 ✅（+修 #122 三條新 deny 規則缺 permission_key、匯入即 crash 且不啟用的問題）
+4. **#100** 驗證閉環 ✅（+修 3 個 drill fixture 同類 schema 落後問題）
+5. **#106** R9+R10 ✅（NATIVE_OVERLAP 的 stale_after_days 與 revisit_interval_days 兩 key 並存，各供其 script 使用）
+6. **#89** Opus 4.8 檢視 ✅（GLOBAL_RULES 失敗模式數以 taxonomy 實數為準；4 個 skill 描述取較豐富版）
+7. **#118** G-A 輸入防護 + G-B eval runner ✅（FAILURE_TAXONOMY 增至 17 種含 SEC-05/06；check_spec_consistency 補 state/ resume 驗證段）
+8. **#121** R11/R12 批准覆蓋率 + 參照完整性 ✅（其 section 編號與既有 7-10 撞號，重編為 11/12）
+
+**#105 不合併**（見 C 類新增列：與 #96 同目標重複實作，#96 勝出）。
+整合過程共修 5 處測試破裂，全部同一類根因：**PR 個別對舊 main 是綠的，main 前進後共用的 validator 變嚴，fixture/接線落後**——正是「無整合平面」缺點的微觀重演。
 **#124 合併前需使用者明確確認**（重寫 CLAUDE.md = 改 harness 開機行為，屬 `ask`）。
 
 ### C. 重複系列 — 擇一保留
