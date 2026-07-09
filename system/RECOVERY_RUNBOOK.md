@@ -91,4 +91,16 @@ python3 scripts/generate_frontend_manifest.py --check  # data.json 無漂移
 | 驗證 | sha1 還原前後 **byte-identical**；`git status` 還原後**乾淨** |
 | 結論 | 場景 A 恢復路徑**實測可用**；checkpoint 機制不再只是紙上設計 |
 
-> 後續：場景 C（context 重置接續）建議在下次真實多階段任務中途實測一次，補齊「接續執行」的實證。
+## 附錄：Scenario C 恢復演練紀錄（2026-07-01，Task Card 20260701-002／R13）
+
+| 項目 | 值 |
+|------|----|
+| 演練場景 | C — 任務中途模擬 context 重置後接續執行 |
+| 模擬任務 | `tests/e2e/fixtures/scenario_c_progress.yaml`（3-checkpoint 演練專用進度檔，永久保留作證據） |
+| checkpoint 1 | `8ed849e` — step 1/3 |
+| checkpoint 2（模擬重置點） | `0bc1a37` — step 2/3 |
+| 重置後僅使用的重建來源 | (1) `git log --oneline --grep="checkpoint: 20260701-002"` (2) Task Card `tasks/2026-07-01_r5x-recovery-scenario-c-drill.yaml` 的 goal/definition_of_done (3) 進度檔的 `completed_steps`/`next_step` |
+| checkpoint 3（接續完成） | `442801f` — step 3/3 (post-reset resume) |
+| 驗證 | checkpoint 2→3 的 diff 僅新增 step 3 相關欄位（`reconstruction_evidence`），**未修改** step 1/2 既有 `notes` 內容——確認是「接續」而非「重做」 |
+| 一致性檢查 | `ruby scripts/check_spec_consistency.rb` 綠、`python3 scripts/generate_frontend_manifest.py --check` 綠 |
+| 結論 | 場景 C 恢復路徑**實測可用**：只靠 git log + Task Card + 進度檔三個來源，即可在無對話記憶的情況下正確判斷「做到哪、下一步是什麼」並正確接續，不重工不跳步。四個場景（A/B/D 既有、C 本次）皆已有實測證據。 |

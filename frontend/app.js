@@ -135,6 +135,23 @@ function renderOverview() {
   el.innerHTML = cards
     .map(([label, val]) => `<article class="card"><div class="label">${escapeHtml(label)}</div><div class="value overview-value">${val}</div></article>`)
     .join('');
+  renderAlerts(o.alerts || []);
+}
+
+const ALERT_BADGE = { ok: '✅', warn: '⚠️', alert: '🚨' };
+
+function renderAlerts(alerts) {
+  const el = $('alertPanel');
+  if (!el) return;
+  el.innerHTML = alerts.length
+    ? alerts
+        .map((a) => `
+      <article class="card alert-${escapeHtml(a.status)}">
+        <div class="label">${ALERT_BADGE[a.status] || ''} ${escapeHtml(a.name)}（${escapeHtml(a.id)}）</div>
+        <div class="value overview-value">${escapeHtml(a.current)}</div>
+      </article>`)
+        .join('')
+    : '<small>無警示資料（governance_metrics 尚未產生 overview.alerts）</small>';
 }
 
 function render(tasks, decisions) {

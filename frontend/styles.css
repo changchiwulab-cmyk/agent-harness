@@ -61,6 +61,10 @@ small { color: #6b7280; }
 .timeline-item details { margin-top: .25rem; }
 .overview-value { font-size: .9rem; font-weight: 600; line-height: 1.45; }
 
+.alert-ok { border-left: 4px solid #16a34a; }
+.alert-warn { border-left: 4px solid #d97706; }
+.alert-alert { border-left: 4px solid #dc2626; }
+
 @media (max-width: 900px) {
   .grid { grid-template-columns: 1fr; }
 }

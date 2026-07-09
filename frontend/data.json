@@ -122,6 +122,26 @@
     }
   ],
   "overview": {
+    "alerts": [
+      {
+        "current": "73/8 = 9.12",
+        "id": "M2",
+        "name": "outputs/drafts:reports 比例",
+        "status": "ok"
+      },
+      {
+        "current": "71/73 = 97.3%",
+        "id": "M3",
+        "name": "audit log 覆蓋率（status ∈ {review, done, failed, partial}）",
+        "status": "ok"
+      },
+      {
+        "current": "30% (reviewed 2026-05-09)",
+        "id": "M4",
+        "name": "Claude Code 原生功能重疊度（人工評估）",
+        "status": "ok"
+      }
+    ],
     "gate_results": {
       "completion_check": {
         "not_run": 1,
@@ -147,23 +167,23 @@
     "run_total": 2,
     "task_risk": {
       "high": 2,
-      "low": 51,
-      "medium": 25
+      "low": 54,
+      "medium": 26
     },
     "task_skill": {
       "analysis": 8,
-      "ops": 46,
+      "ops": 50,
       "research": 9,
       "review": 8,
       "writing": 7
     },
     "task_status": {
-      "done": 52,
+      "done": 56,
       "in_progress": 3,
       "pending": 6,
       "review": 17
     },
-    "task_total": 78
+    "task_total": 82
   },
   "tasks": [
     {
@@ -885,6 +905,46 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260630-G04"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-07-01",
+      "goal": "在前端看板新增 M2-M4 治理指標警示可視化，讓異常不再需要手動跑 governance_metrics.py 讀 markdown 才能發現",
+      "path": "tasks/2026-07-01_r14-governance-alert-ui.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260701-001"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-01",
+      "goal": "擴充 check_spec_consistency.rb：對 approval_needed=true 且 status=done/failed 的 Task Card，檢查 logs/approvals/ 是否存在對應 task_id 的批准紀錄，缺漏則 CI fail",
+      "path": "tasks/2026-07-01_r1x-approval-coverage-check.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260701-003"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-01",
+      "goal": "擴充 check_spec_consistency.rb：驗證 logs/approvals/*.yaml 的 linked_run 指向真實存在的 logs/runs/ run_id，以及 logs/runs/*.yaml 的 task_id 指向真實存在的 Task Card",
+      "path": "tasks/2026-07-01_r2x-referential-integrity-lint.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260701-004"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-01",
+      "goal": "實測 RECOVERY_RUNBOOK.md 場景 C：任務中途模擬 context 重置後，只靠 git log --grep + Task Card + 進度檔重建狀態並正確接續（不重做、不跳過），把恢復路徑從紙上設計變成有實證的機制",
+      "path": "tasks/2026-07-01_r5x-recovery-scenario-c-drill.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260701-002"
     },
     {
       "approval_needed": true,

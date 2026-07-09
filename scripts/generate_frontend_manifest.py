@@ -15,6 +15,8 @@ from typing import Any, Iterable
 
 import yaml
 
+import governance_metrics as gm
+
 ROOT = Path(__file__).resolve().parents[1]
 FRONTEND_DIR = ROOT / "frontend"
 OUTPUT = FRONTEND_DIR / "data.json"
@@ -114,12 +116,31 @@ def _tally(items: list[dict[str, Any]], key: str) -> dict[str, int]:
     return out
 
 
-def build_overview(tasks: list[dict[str, Any]], logs: list[dict[str, Any]]) -> dict[str, Any]:
+def build_governance_alerts(tasks: list[dict[str, Any]], root: Path) -> list[dict[str, Any]]:
+    """R14: snapshot of governance_metrics M2-M4 for the dashboard (R7 reinforcement).
+
+    M1 (monthly task count trend) is intentionally excluded — it's a function of
+    wall-clock "today", which would make data.json change on date alone and break
+    the CI drift check (`generate_frontend_manifest.py --check` compares a fresh
+    rebuild against the committed file with no notion of "as of which day"). M2-M4
+    are pure snapshots of current repo file state, so they stay deterministic.
+    """
+    drafts = gm.count_dir_md_files(root / "outputs" / "drafts")
+    reports = gm.count_dir_md_files(root / "outputs" / "reports")
+    metrics = [
+        gm.metric_m2(drafts, reports),
+        gm.metric_m3(tasks, gm.load_audit_task_ids(root)),
+        gm.metric_m4(gm.load_native_overlap(root)),
+    ]
+    return [{"id": m.id, "name": m.name, "status": m.status, "current": m.current} for m in metrics]
+
+
+def build_overview(tasks: list[dict[str, Any]], logs: list[dict[str, Any]], root: Path) -> dict[str, Any]:
     """Governance overview for the dashboard panel (R7 frontend).
 
-    Derived purely from already-collected tasks + run logs — no extra file reads,
-    so it stays root-parameterized and cheap. Distributions are deterministic for
-    a given input, keeping `dump()` byte-identical (idempotent).
+    Derived purely from already-collected tasks + run logs (plus the small,
+    root-parameterized reads in build_governance_alerts) — distributions are
+    deterministic for a given input, keeping `dump()` byte-identical (idempotent).
     """
     gate_results: dict[str, dict] = {g: {} for g in OVERVIEW_GATES}
     run_status: dict[str, int] = {}
@@ -140,6 +161,7 @@ def build_overview(tasks: list[dict[str, Any]], logs: list[dict[str, Any]]) -> d
         "run_total": len(logs),
         "run_status": run_status,
         "gate_results": gate_results,
+        "alerts": build_governance_alerts(tasks, root),
     }
 
 
@@ -150,7 +172,7 @@ def build(root: Path) -> dict[str, Any]:
         "tasks": tasks,
         "logs": logs,
         "decisions": collect_decisions(root),
-        "overview": build_overview(tasks, logs),
+        "overview": build_overview(tasks, logs, root),
     }
 
 

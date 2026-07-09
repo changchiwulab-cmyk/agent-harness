@@ -1,0 +1,15 @@
+# 批准紀錄 — R11（20260701-003）修改 scripts/check_spec_consistency.rb（新增 CI 檢查）
+# 比照 R2（20260529-005）判斷：擴充此腳本會影響全庫 CI 通過與否，approval_needed=true。
+# 核准已於本次會話的 plan-mode 核准中列出（見「R1/R2/R5/R7 補強計畫 Workflow」計畫檔）。
+
+approval_records:
+  - approval_id: "APR-20260701-002"
+    task_id: "20260701-003"
+    date: "2026-07-01"
+    action: "擴充 scripts/check_spec_consistency.rb，新增批准覆蓋率交叉檢查（R11）"
+    approval_method: "human_confirm"
+    risk_level: "low"
+    status: "approved"
+    approved_by: "human"
+    rationale: "使用者於本次會話 plan mode 核准「R1/R2/R5/R7 補強計畫 Workflow」，計畫中 R11 項目明確列出本次 scripts/ 變更範圍"
+    linked_run: ""

@@ -141,6 +141,96 @@ completion_time: '2026-07-02'
 ```
 
 ```yaml
+task_id: 20260701-004
+date: '2026-07-01'
+skill_type: ops
+goal: 擴充 check_spec_consistency.rb：驗證 logs/approvals/*.yaml 的 linked_run 指向真實存在的 logs/runs/
+  run_id，以及 logs/runs/*.yaml 的 task_id 指向真實存在的 Task Card
+status: done
+risk_level: low
+approval_needed: true
+output_path: scripts/check_spec_consistency.rb
+checkpoints:
+- note: 'checkpoint: 20260701-004 R12 referential integrity lint'
+actual_tool_calls: 6
+result_summary: check_spec_consistency.rb 新增 check_run_task_references() 與 check_approval_run_references()
+  兩個純函式，驗證 run log↔Task Card、approval↔run log 的雙向 ID 參照。main 邏輯 section 4/5 順手蒐集 run_records/approval_entries，新增
+  section 8 呼叫。test_check_spec_consistency.rb 新增 TestReferentialIntegrity（6 個測試，含正常/斷鏈各
+  2 組），全綠（連同既有測試共 33 個）。對真實 repo 跑檢查：綠燈，現有 2 筆 run log 與 1 筆 approval 檔的參照皆合法。變更影響
+  CI 行為，approval_needed=true（比照 R2/R11），本卡自己的批准紀錄見 logs/approvals/2026-07-01_20260701-004_approval.yaml。
+completion_time: '2026-07-01'
+```
+
+```yaml
+task_id: 20260701-003
+date: '2026-07-01'
+skill_type: ops
+goal: 擴充 check_spec_consistency.rb：對 approval_needed=true 且 status=done/failed 的 Task
+  Card，檢查 logs/approvals/ 是否存在對應 task_id 的批准紀錄，缺漏則 CI fail
+status: done
+risk_level: low
+approval_needed: true
+output_path: scripts/check_spec_consistency.rb
+checkpoints:
+- note: 'checkpoint: 20260701-003 R11 approval coverage cross-check'
+actual_tool_calls: 9
+result_summary: 'check_spec_consistency.rb 新增 check_approval_coverage() 純函式 + APPROVAL_COVERAGE_CUTOFF=2026-07-01（理由寫在程式碼註解：10+
+  筆歷史缺口無真實來源可回填，故不追溯）。main 邏輯的 section 2/5 順手蒐集 task_records/approval_task_ids，新增
+  section 7 呼叫該函式。test_check_spec_consistency.rb 新增 7 個測試，全綠（連同既有測試共 27 個）。對真實 repo
+  跑檢查：綠燈，且證實抓到真實缺口（R1 自己的 20260529-004、R2 的 20260529-005 等 10+ 筆歷史任務缺批准紀錄，因 cutoff
+  豁免不擋 CI）。變更影響 CI 行為，approval_needed=true（比照 R2），本卡自己的批准紀錄見 logs/approvals/2026-07-01_20260701-003_approval.yaml。追記（PR
+  #121 review, Codex P2）：原本收集 approval_task_ids 時未篩 status，rejected/superseded 紀錄也會被誤判為已覆蓋，覆蓋率檢查形同虛設；已新增
+  approved_task_ids() 純函式只採計 status=approved，並補 5 個測試（含 rejected-only 不覆蓋、approved
+  覆蓋、混合紀錄）。全套檢查仍綠。'
+completion_time: '2026-07-01'
+```
+
+```yaml
+task_id: 20260701-002
+date: '2026-07-01'
+skill_type: ops
+goal: 實測 RECOVERY_RUNBOOK.md 場景 C：任務中途模擬 context 重置後，只靠 git log --grep + Task Card
+  + 進度檔重建狀態並正確接續（不重做、不跳過），把恢復路徑從紙上設計變成有實證的機制
+status: done
+risk_level: medium
+approval_needed: true
+output_path: system/RECOVERY_RUNBOOK.md
+checkpoints:
+- note: 'checkpoint: 20260701-002 R13 scenario C drill — step 1/3 (8ed849e)'
+- note: 'checkpoint: 20260701-002 R13 scenario C drill — step 2/3 (0bc1a37)'
+- note: 'checkpoint: 20260701-002 R13 scenario C drill — step 3/3 post-reset resume
+    (442801f)'
+actual_tool_calls: 11
+result_summary: Scenario C 首次實測完成。以 tests/e2e/fixtures/scenario_c_progress.yaml 模擬
+  3-checkpoint 任務，checkpoint 2 後模擬 context 重置：僅用 git log --grep + Task Card + 進度檔三個來源重建狀態，正確判斷『已完成
+  1/2、下一步是 3』並接續，checkpoint 2→3 的 diff 驗證為純新增（未動 step 1/2 既有 notes）。結果寫入 system/RECOVERY_RUNBOOK.md
+  新附錄，移除原本『建議下次實測』待辦註記。全套一致性檢查（spec consistency / frontend manifest drift / YAML parse）綠。system/
+  變更（RECOVERY_RUNBOOK.md）待此分支的 PR review/merge，比照 R1/R2 模式。
+completion_time: '2026-07-01'
+```
+
+```yaml
+task_id: 20260701-001
+date: '2026-07-01'
+skill_type: ops
+goal: 在前端看板新增 M2-M4 治理指標警示可視化，讓異常不再需要手動跑 governance_metrics.py 讀 markdown 才能發現
+status: done
+risk_level: low
+approval_needed: false
+output_path: frontend/app.js
+checkpoints:
+- note: 'checkpoint: 20260701-001 R14 governance alert UI (M2-M4 in dashboard)'
+actual_tool_calls: 16
+result_summary: governance_metrics.py 的 load_audit_task_ids/load_native_overlap 加
+  root 參數（向下相容，既有 27 個測試全綠）；generate_frontend_manifest.py 新增 build_governance_alerts()
+  重用 gm.metric_m2/m3/m4，overview.alerts 只含 M2/M3/M4（M1 因日期相依性明確排除，理由寫在 docstring）。前端新增治理警示
+  section，app.js renderAlerts() 依狀態上色。新增 2 個測試類別（含日期無關性回歸測試）；test_empty_repo 更新期望值。data.json
+  重生並通過 drift --check；Playwright 截圖確認 3 張綠色 ok badge 正確渲染（真實 repo 現況：M2/M3/M4 皆 ok）。未改
+  system/。
+completion_time: '2026-07-01'
+```
+
+```yaml
 task_id: 20260630-G04
 date: '2026-06-30'
 skill_type: ops
@@ -1592,6 +1682,7 @@ completion_time: '2026-04-04'
 <!-- 新紀錄加在這裡 -->
 
 ```yaml
+<<<<<<< HEAD
 - task_id: "20260623-002"
   date: "2026-06-23"
   skill_type: "analysis"
@@ -1623,16 +1714,116 @@ completion_time: '2026-04-04'
     - tool_name: "file_read"
       call_count: 6
     - tool_name: "create_output_files"
+=======
+- task_id: "20260701-004"
+  date: "2026-07-01"
+  skill_type: "ops"
+  goal: "R12（R2 補強）：跨檔案參照完整性 lint（run↔Task Card、approval↔run）"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 3
+    - tool_name: "file_write"
+      call_count: 2
+    - tool_name: "bash"
+      call_count: 4
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "scripts/check_spec_consistency.rb"
+  error_summary: ""
+  estimated_tokens: "~14K"
+  notes: "R1/R2/R5/R7 補強計畫 R12。新增 check_run_task_references()/check_approval_run_references() 雙向 ID 參照檢查（純函式）。test_check_spec_consistency.rb 新增 6 個測試（正常/斷鏈各半），全綠（共 33）。真實 repo 現有參照皆合法、無誤報。修改 scripts/ 影響 CI 行為，比照 R2/R11 approval_needed=true，批准紀錄見 logs/approvals/2026-07-01_20260701-004_approval.yaml（本次會話 plan-mode 核准）。"
+```
+
+---
+
+```yaml
+- task_id: "20260701-003"
+  date: "2026-07-01"
+  skill_type: "ops"
+  goal: "R11（R1 補強）：批准覆蓋率交叉檢查"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 4
+    - tool_name: "file_write"
+      call_count: 2
+    - tool_name: "bash"
+      call_count: 5
+  checkpoints: 1
+  approval_needed: true
+  approval_given: true
+  output_path: "scripts/check_spec_consistency.rb"
+  error_summary: ""
+  estimated_tokens: "~16K"
+  notes: "R1/R2/R5/R7 補強計畫 R11。新增 check_approval_coverage() 純函式，檢查 approval_needed=true 且 status=done/failed 的 Task Card 是否有對應 logs/approvals/ 紀錄。發現真實缺口：10+ 筆歷史任務（含 R1/R2 自己）從未有批准紀錄，因無真實來源可誠實回填，改用 cutoff=2026-07-01 只管未來、不追溯歷史。test 新增 7 個，全綠（共 27）。approval_needed=true（比照 R2），批准紀錄見 logs/approvals/2026-07-01_20260701-003_approval.yaml。"
+```
+
+---
+
+```yaml
+- task_id: "20260701-002"
+  date: "2026-07-01"
+  skill_type: "ops"
+  goal: "R13（R5 補強）：執行 Scenario C（context 重置接續）恢復演練"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 5
+    - tool_name: "file_write"
+      call_count: 4
+    - tool_name: "bash"
+>>>>>>> pr/121
       call_count: 6
   checkpoints: 3
   approval_needed: true
   approval_given: true
+<<<<<<< HEAD
   output_path: "scripts/governance_metrics.py"
   error_summary: ""
   estimated_tokens: "~14K"
   notes: "roadmap R9（R1–R8 已完成）。M4 加 today 參數（向後相容）：reviewed_on 逾 revisit_interval_days（NATIVE_OVERLAP 設 90）→ revisit_due 且 ok 升 warn（不下調 alert）；pct>50 → v3_trigger，render 建議產出 v3-readiness-assessment.md（R10）。test 加 11 案例並接入 CI（原未跑）。system/ 變更（RETRO_FLOW『原生重疊回看』列 + NATIVE_OVERLAP revisit_interval_days）經人工確認（選項 1.2）。全套 CI-equivalent 綠。DoD 6/6。"
 ```
 
+=======
+  output_path: "system/RECOVERY_RUNBOOK.md"
+  error_summary: ""
+  estimated_tokens: "~15K"
+  notes: "R1/R2/R5/R7 補強計畫 R13。RECOVERY_RUNBOOK.md 附錄明確標註 Scenario C 從未實測，本卡補上：以 tests/e2e/fixtures/scenario_c_progress.yaml 模擬 3-checkpoint 任務，checkpoint 2 後模擬 context 重置，僅靠 git log --grep + Task Card + 進度檔三個來源重建狀態並正確接續（diff 驗證為純新增，未重做 step 1/2）。四個恢復場景（A/B/D 既有、C 本次）皆已有實測證據。修改 system/，approval_needed=true，批准紀錄見 logs/approvals/2026-07-01_20260701-002_approval.yaml（本次會話 plan-mode 核准）。"
+```
+
+---
+
+```yaml
+- task_id: "20260701-001"
+  date: "2026-07-01"
+  skill_type: "ops"
+  goal: "R14（R7 補強）：前端 M2-M4 治理警示可視化"
+  status: "done"
+  model_used: "claude-sonnet-4-6"
+  tools_called:
+    - tool_name: "file_read"
+      call_count: 6
+    - tool_name: "file_write"
+      call_count: 6
+    - tool_name: "bash"
+      call_count: 5
+  checkpoints: 1
+  approval_needed: false
+  approval_given: false
+  output_path: "frontend/app.js"
+  error_summary: ""
+  estimated_tokens: "~18K"
+  notes: "R1/R2/R5/R7 補強計畫 R14。governance_metrics.py 的 load_audit_task_ids/load_native_overlap 加可選 root 參數（向下相容）；generate_frontend_manifest.py 新增 build_governance_alerts() 重用 M2/M3/M4（M1 因日期相依性明確排除，理由見程式碼註解，避免破壞 data.json 的 CI drift-check 決定性）。前端新增治理警示 section + 顏色 badge，Playwright 截圖確認正確渲染。新增/更新測試全綠。未動 system/。"
+```
+
+---
+
+>>>>>>> pr/121
 ```yaml
 - task_id: "20260529-011"
   date: "2026-05-29"

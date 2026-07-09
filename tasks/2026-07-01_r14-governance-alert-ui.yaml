@@ -1,0 +1,66 @@
+# Task Card — R14（R7 補強）前端 M2–M4 治理警示可視化
+# 來源：使用者請求 R1/R2/R5/R7 補強計畫 workflow；本卡對應計畫中的 R14
+# 低風險：純 scripts/ + frontend/，未動 system/；M1 因與日期相關會破壞 data.json 的
+#         drift-check 決定性，刻意排除，只呈現 M2-M4（理由詳見 context 與程式碼註解）
+
+task_id: "20260701-001"
+date: "2026-07-01"
+status: "done"
+
+# === 任務定義 ===
+goal: "在前端看板新增 M2-M4 治理指標警示可視化，讓異常不再需要手動跑 governance_metrics.py 讀 markdown 才能發現"
+context: |
+  R7（20260529-009 指標引擎 + 20260529-011 前端總覽面板）都已交付，但 M1-M4 是否觸發
+  警戒目前只出現在 governance_metrics.py 的 markdown 報告文字裡，前端看板沒有任何視覺化
+  警示——這是使用者要求補強的四項之一。
+  排除 M1：M1（月 Task Card 建立數）的判定依賴呼叫當下的「今天」日期（rolling window），
+  若把它寫進受 CI drift-check（generate_frontend_manifest.py --check）保護的 data.json，
+  同一份 commit 在不同天重跑 --check 可能因為月份邊界跨越而產生假陽性 DRIFT 失敗，
+  跟 data.json 目前「純檔案內容決定輸出」的不變量衝突。M2/M3/M4 都是當下 repo 檔案狀態
+  的純函數（無 wall-clock 依賴），維持決定性，故只納入這三項。
+input_data:
+  - "scripts/governance_metrics.py"
+  - "scripts/generate_frontend_manifest.py"
+  - "scripts/test_generate_frontend_manifest.py"
+  - "frontend/app.js"
+  - "frontend/index.html"
+  - "frontend/styles.css"
+
+# === 完成標準 ===
+definition_of_done:
+  - "governance_metrics.py 的 load_audit_task_ids() / load_native_overlap() 新增可選 root 參數（預設 None 時行為與原本 module-level globals 完全相同，既有 monkeypatch 測試不受影響）"
+  - "generate_frontend_manifest.py 新增 build_governance_alerts()：以 root-parameterized 方式重用 gm.metric_m2/metric_m3/metric_m4，回傳 M2/M3/M4 的 id/name/status/current；build_overview() 的 overview 加入 alerts 鍵"
+  - "test_generate_frontend_manifest.py：test_empty_repo 更新為含 alerts 正確期望值；新增 TestGovernanceAlerts（含一組『warn/alert』情境與一組『alerts 不隨日期變動』回歸測試）全綠"
+  - "frontend/app.js 新增 renderAlerts()：依 status（ok/warn/alert）渲染不同顏色 badge；frontend/index.html 新增治理警示 section + #alertPanel；styles.css 新增 .alert-ok/.alert-warn/.alert-alert"
+  - "data.json 重新產生並通過 drift --check；瀏覽器實測（Playwright 截圖）確認警示卡片正確渲染"
+  - "全套 CI-equivalent 綠；未修改任何 system/ 檔"
+
+# === 輸出定義 ===
+expected_output:
+  format: "js"
+  location: "frontend/"
+  filename: "app.js"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260701-001 R14 governance alert UI (M2-M4 in dashboard)"
+actual_tool_calls: 16
+result_summary: "governance_metrics.py 的 load_audit_task_ids/load_native_overlap 加 root 參數（向下相容，既有 27 個測試全綠）；generate_frontend_manifest.py 新增 build_governance_alerts() 重用 gm.metric_m2/m3/m4，overview.alerts 只含 M2/M3/M4（M1 因日期相依性明確排除，理由寫在 docstring）。前端新增治理警示 section，app.js renderAlerts() 依狀態上色。新增 2 個測試類別（含日期無關性回歸測試）；test_empty_repo 更新期望值。data.json 重生並通過 drift --check；Playwright 截圖確認 3 張綠色 ok badge 正確渲染（真實 repo 現況：M2/M3/M4 皆 ok）。未改 system/。"
+completion_time: "2026-07-01"
+audit_log_ref: "logs/AUDIT_LOG.md"
