@@ -51,6 +51,59 @@ def make_root(card: dict, *, output: bool = False, run_log: dict | None = None) 
     return root, card_path
 
 
+class TestRunLogRequired(unittest.TestCase):
+    """缺 run log 的條件 fail-closed（20260710-003）：cutoff + 高風險 + 產出/結案。"""
+
+    def high_risk_card(self, **overrides) -> dict:
+        card = dict(GOOD_CARD)
+        card.update(
+            {
+                "date": "2026-07-10",
+                "status": "done",
+                "risk_level": "high",
+                "approval_needed": True,
+            }
+        )
+        card.update(overrides)
+        return card
+
+    def test_high_risk_done_after_cutoff_missing_log_fails(self):
+        card = self.high_risk_card()
+        self.assertTrue(gc.run_log_required(card))
+        result = gc.gate_rule(card, None)
+        self.assertEqual(result["status"], gc.FAIL)
+        self.assertIn("fail-closed", result["detail"])
+
+    def test_before_cutoff_missing_log_skipped(self):
+        # 不追溯歷史卡（APPROVAL_COVERAGE_CUTOFF 同款模式）。
+        card = self.high_risk_card(date="2026-07-09")
+        self.assertFalse(gc.run_log_required(card))
+        self.assertEqual(gc.gate_rule(card, None)["status"], gc.SKIPPED)
+
+    def test_low_risk_done_missing_log_skipped(self):
+        card = self.high_risk_card(risk_level="low")
+        self.assertEqual(gc.gate_rule(card, None)["status"], gc.SKIPPED)
+
+    def test_high_risk_in_progress_missing_log_skipped(self):
+        # 尚未進入產出/結案狀態 — 還沒到必須有帳的時點。
+        card = self.high_risk_card(status="in_progress")
+        self.assertEqual(gc.gate_rule(card, None)["status"], gc.SKIPPED)
+
+    def test_critical_failed_after_cutoff_missing_log_fails(self):
+        card = self.high_risk_card(risk_level="critical", status="failed")
+        self.assertEqual(gc.gate_rule(card, None)["status"], gc.FAIL)
+
+    def test_unparseable_date_skipped(self):
+        # date 壞掉時不強制（schema gate 會另行抓 date 缺失）。
+        card = self.high_risk_card(date="not-a-date")
+        self.assertFalse(gc.run_log_required(card))
+
+    def test_present_log_still_checked_normally(self):
+        card = self.high_risk_card()
+        result = gc.gate_rule(card, {"tools_used": [{"tool": "file_read"}]})
+        self.assertEqual(result["status"], gc.PASS)
+
+
 class TestGates(unittest.TestCase):
     def test_pending_good_card_passes(self):
         root, card_path = make_root(GOOD_CARD)

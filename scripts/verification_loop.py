@@ -39,6 +39,12 @@ if str(SYSTEM_DIR) not in sys.path:
     sys.path.insert(0, str(SYSTEM_DIR))
 from validate_task_card import validate as validate_schema  # noqa: E402
 
+# 缺 run log 的 fail-closed 條件與 gate_check 共用（20260710-003），語意由兩邊測試鎖定
+SCRIPTS_DIR = Path(__file__).resolve().parent
+if str(SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_DIR))
+from gate_check import RUN_LOG_REQUIRED_CUTOFF, run_log_required  # noqa: E402
+
 GATES = ("schema_check", "rule_check", "completion_check", "risk_check")
 GLOBAL_HARD_CAP = 3  # CLAUDE.md：連續失敗 3 次就停下來
 
@@ -118,6 +124,13 @@ def check_rule(card: dict, run_log: dict | None) -> tuple[bool, list[str]]:
     for tool in allowed:
         if tool in deny:
             msgs.append(f"allowed_tools 含 deny 工具：{tool}")
+
+    if run_log is None and run_log_required(card):
+        # 高風險 + 產出/結案 + cutoff 起：缺帳本身就是治理失敗（fail-closed，20260710-003）
+        msgs.append(
+            f"risk={card.get('risk_level')} status={card.get('status')} 的卡必須有 "
+            f"logs/runs/ 執行紀錄（cutoff {RUN_LOG_REQUIRED_CUTOFF.isoformat()} 起）"
+        )
 
     if run_log is not None:
         used = run_log_tools(run_log)

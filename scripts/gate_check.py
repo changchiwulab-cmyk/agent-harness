@@ -14,7 +14,9 @@ Layers (mirrors GATE_POLICY.yaml + tests/e2e/test_dummy_task_smoke.py):
     L4 risk_check       — risk_level high/critical ⇒ output under outputs/drafts/
 
 Honest degradation: not every layer is statically decidable.
-    - L2 needs an execution log (logs/runs/*.yaml). Absent ⇒ "skipped".
+    - L2 needs an execution log (logs/runs/*.yaml). Absent ⇒ "skipped" —
+      除非 run_log_required()（高風險 + 產出/結案 + cutoff 2026-07-10 起）
+      成立，此時缺帳直接 FAIL（fail-closed，20260710-003）。
     - L3 free-text DoD lines need human/LLM judgement; this script verifies the
       deterministic proxy (the artifact was produced) and lists DoD for review.
     - L4 is "n/a" for low/medium risk.
@@ -37,6 +39,7 @@ import argparse
 import json
 import sys
 from dataclasses import dataclass, field
+from datetime import date
 from pathlib import Path
 
 import yaml
@@ -52,6 +55,36 @@ PASS, FAIL, SKIPPED, NA = "pass", "fail", "skipped", "n/a"
 # Statuses at which the promised output is expected to already exist on disk.
 _OUTPUT_EXPECTED_STATUS = {"done", "review"}
 _RUN_DONE_STATUS = {"completed", "done", "review"}
+
+# --- 缺 run log 的 fail-closed 條件（20260710-003）--------------------------
+# 外部報告缺點四：最需要稽核的資料缺失，本身不導致治理失敗（skipped 不 fail）。
+# 修正採條件式 fail-closed：只對「cutoff 起、高風險、已進入產出/結案狀態」的卡
+# 強制 — 對齊 CLAUDE.md 第 8 步 EXECUTION_LOG_SCHEMA 使用範圍（risk≥high 必寫
+# run log）。不追溯歷史卡（cutoff 模式仿 check_spec_consistency.rb 的
+# APPROVAL_COVERAGE_CUTOFF）；低風險卡維持 skipped，不違反低摩擦哲學。
+# verification_loop.check_rule 共用本 helper，兩邊語意由測試鎖定。
+RUN_LOG_REQUIRED_CUTOFF = date(2026, 7, 10)
+_RUN_LOG_REQUIRED_RISK = {"high", "critical"}
+_RUN_LOG_REQUIRED_STATUS = {"done", "review", "failed"}
+
+
+def _card_date(value) -> date | None:
+    if isinstance(value, date):
+        return value
+    try:
+        return date.fromisoformat(str(value or "").strip())
+    except ValueError:
+        return None
+
+
+def run_log_required(card: dict) -> bool:
+    """缺 run log 應視為 FAIL（而非 skipped）的卡：高風險 + 產出/結案 + cutoff 起。"""
+    if str(card.get("risk_level") or "").strip() not in _RUN_LOG_REQUIRED_RISK:
+        return False
+    if str(card.get("status") or "").strip() not in _RUN_LOG_REQUIRED_STATUS:
+        return False
+    card_date = _card_date(card.get("date"))
+    return card_date is not None and card_date >= RUN_LOG_REQUIRED_CUTOFF
 
 
 @dataclass
@@ -120,9 +153,19 @@ def gate_schema(card_path: Path) -> dict:
 def gate_rule(card: dict, run_log: dict | None) -> dict:
     """L2: every tool actually used must be in the card's allowed_tools.
 
-    Requires an execution log; without one there is nothing to check.
+    Requires an execution log. Absent ⇒ "skipped"，除非 run_log_required()
+    成立（高風險 + 產出/結案 + cutoff 起）— 此時缺帳本身就是治理失敗。
     """
     if not run_log:
+        if run_log_required(card):
+            return {
+                "status": FAIL,
+                "detail": (
+                    f"risk={card.get('risk_level')} status={card.get('status')} "
+                    f"的卡必須有 logs/runs/ 執行紀錄（fail-closed，"
+                    f"cutoff {RUN_LOG_REQUIRED_CUTOFF.isoformat()} 起；20260710-003）"
+                ),
+            }
         return {"status": SKIPPED, "detail": "no execution log under logs/runs/"}
     allowed = set(card.get("allowed_tools") or [])
     used = []
