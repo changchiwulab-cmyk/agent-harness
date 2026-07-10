@@ -83,6 +83,9 @@ jobs:
       - name: Task card guard tests
         run: python3 scripts/test_task_card_guard.py
 
+      - name: Active task pointer tests
+        run: python3 scripts/test_active_task.py
+
       - name: Failure counter tests
         run: python3 scripts/test_failure_counter.py
 

@@ -32,6 +32,13 @@ DATE_PATTERN = /\A\d{4}-\d{2}-\d{2}\z/
 ALLOWED_STATE_STATUS = %w[active paused done].freeze
 REQUIRED_STATE_FIELDS = %w[task_id updated_at status next_action checkpoint_commit].freeze
 
+# --- active task pointer 常數（20260710-002）---
+# state/active_task.yaml 是「當前執行中 task_id」的 live 真相來源，生命週期與
+# resume 快照不同（任務起點 --set、終點 --clear，沒有 checkpoint_commit 可填），
+# 所以走專屬 schema，不套 REQUIRED_STATE_FIELDS。
+ACTIVE_TASK_BASENAME = 'active_task.yaml'
+ALLOWED_ACTIVE_TASK_STATUS = %w[active idle].freeze
+
 # --- logs/ schema lint 常數（R2: 20260529-005）---
 ALLOWED_RUN_STATUS = %w[completed failed partial cancelled].freeze
 REQUIRED_RUN_FIELDS = %w[run_id task_id status gate_results].freeze
@@ -118,6 +125,35 @@ def parse_iso_date(value)
   Date.strptime(value, '%Y-%m-%d')
 rescue ArgumentError
   nil
+end
+
+# state/active_task.yaml 專屬 lint（20260710-002）。純函式，可離線單元測試。
+# doc: 已解析的 YAML mapping
+def check_active_task_state(state_file, doc)
+  errors = []
+  status = doc['status']
+  task_id = doc['task_id'].to_s.strip
+  activated = doc['activated_at'].to_s.strip
+
+  unless ALLOWED_ACTIVE_TASK_STATUS.include?(status)
+    errors << "#{state_file}: invalid active-task status #{status.inspect} (allowed: #{ALLOWED_ACTIVE_TASK_STATUS.join('/')})"
+    return errors
+  end
+  if status == 'active'
+    if task_id.empty?
+      errors << "#{state_file}: status=active requires a non-empty task_id"
+    elsif !task_id.match?(TASK_ID_PATTERN)
+      errors << "#{state_file}: task_id #{task_id} does not match expected pattern"
+    end
+    if activated.empty? || parse_iso_date(activated).nil?
+      errors << "#{state_file}: status=active requires a valid activated_at (YYYY-MM-DD), got #{doc['activated_at'].inspect}"
+    end
+  elsif !task_id.empty?
+    # idle 時殘留 task_id 會讓人誤讀 live 狀態（active_task.py 只認 status=active，
+    # 但手改殘留仍要擋在 lint）
+    errors << "#{state_file}: status=idle must have an empty task_id (got #{task_id})"
+  end
+  errors
 end
 
 
@@ -397,6 +433,13 @@ Dir.glob('state/*.yaml').sort.each do |state_file|
     errors << "#{state_file}: root must be mapping"
     next
   end
+
+  # active_task.yaml 是 live pointer（20260710-002），schema 與 resume 檔不同
+  if File.basename(state_file) == ACTIVE_TASK_BASENAME
+    errors.concat(check_active_task_state(state_file, doc))
+    next
+  end
+
   REQUIRED_STATE_FIELDS.each do |field|
     value = doc[field]
     empty = value.nil? || (value.is_a?(String) && value.strip.empty?)
