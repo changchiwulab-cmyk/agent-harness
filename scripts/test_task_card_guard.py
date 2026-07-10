@@ -180,16 +180,48 @@ class TestMain(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertEqual(payload["decision"], "allow")
 
-    def test_empty_stdin_allows(self):
+    def test_empty_stdin_blocks(self):
+        # 20260710-003 刻意的行為翻轉：v1 對空 stdin fail-open（allow），
+        # v2 fail-closed — 收不到 payload 代表有看不見路徑的寫入呼叫。
         sys.stdin = io.StringIO("")
-        out = io.StringIO()
+        out, err = io.StringIO(), io.StringIO()
         try:
-            with redirect_stdout(out):
+            with redirect_stdout(out), redirect_stderr(err):
                 code = guard.main()
         finally:
             sys.stdin = sys.__stdin__
-        self.assertEqual(code, 0)
-        self.assertEqual(json.loads(out.getvalue())["decision"], "allow")
+        self.assertEqual(code, 2)
+        self.assertEqual(json.loads(out.getvalue())["decision"], "block")
+
+    def test_bad_json_blocks(self):
+        sys.stdin = io.StringIO("{not json")
+        out, err = io.StringIO(), io.StringIO()
+        try:
+            with redirect_stdout(out), redirect_stderr(err):
+                code = guard.main()
+        finally:
+            sys.stdin = sys.__stdin__
+        self.assertEqual(code, 2)
+        self.assertEqual(json.loads(out.getvalue())["decision"], "block")
+
+    def test_unexpected_exception_blocks(self):
+        # crash-open 防護：未捕捉例外（exit 1 = non-blocking）必須轉 exit 2。
+        original = guard.evaluate
+        guard.evaluate = lambda *a, **k: (_ for _ in ()).throw(RuntimeError("boom"))
+        sys.stdin = io.StringIO(
+            json.dumps({"tool_name": "Write", "tool_input": {"file_path": "x.md"}})
+        )
+        out, err = io.StringIO(), io.StringIO()
+        try:
+            with redirect_stdout(out), redirect_stderr(err):
+                code = guard.run_guarded()
+        finally:
+            guard.evaluate = original
+            sys.stdin = sys.__stdin__
+        self.assertEqual(code, 2)
+        payload = json.loads(out.getvalue())
+        self.assertEqual(payload["decision"], "block")
+        self.assertIn("crash fail-closed", payload["reason"])
 
     def test_write_to_real_repo_drafts_allowed(self):
         # Against the real repo root: drafts writes must never be blocked.

@@ -24,6 +24,15 @@ Deterministic rule (Write/Edit tools):
 Like permissions_guard.py this is a deny-list at one chokepoint, not a sandbox:
 false positives (blocking benign work) are worse than the occasional miss.
 
+Fail-closed exception (20260710-003)：本 hook 的輸入層對「空 stdin / 壞 JSON /
+未捕捉例外」一律 block（exit 2）。理由：matcher 只掛 Write|Edit|MultiEdit|
+NotebookEdit（.claude/settings.json），正常 runtime 必送 JSON payload；收不到
+可解析 payload 代表有一個看不見路徑的寫入呼叫，唯一安全解是擋 — 誤傷面被
+matcher 天然限制在寫入類工具，Bash 與讀取不受影響。Python 未捕捉例外的
+exit 1 在 Claude Code hook 語意是 non-blocking，crash-open 是最隱蔽的洞，
+所以由 run_guarded() 顯式轉 exit 2。permissions_guard（Bash matcher，99%
+低風險路徑）維持 fail-open — 兩者的取捨見 SECURITY.md 防護邊界聲明。
+
 Output (JSON on stdout): {"decision": "allow"} or {"decision": "block", "reason": ...}
 Exit code 2 signals a deterministic block to Claude Code.
 """
@@ -123,16 +132,26 @@ def _extract_path(tool_input: dict) -> str:
     )
 
 
+def _emit_block(reason: str) -> int:
+    print(json.dumps({"decision": "block", "reason": reason}, ensure_ascii=False))
+    print(f"BLOCKED by task_card_guard: {reason}", file=sys.stderr)
+    return 2
+
+
 def main() -> int:
     raw = sys.stdin.read().strip()
     if not raw:
-        print(json.dumps({"decision": "allow"}))
-        return 0
+        return _emit_block(
+            "hook 收到空輸入 — 寫入類工具呼叫必須帶 JSON payload；"
+            "無法判讀寫入目標時一律阻擋（fail-closed，20260710-003）"
+        )
     try:
         payload = json.loads(raw)
     except json.JSONDecodeError as e:
-        print(json.dumps({"decision": "allow", "warning": f"hook input not JSON: {e}"}))
-        return 0
+        return _emit_block(
+            f"hook 輸入不是合法 JSON（{e}）— 無法判讀寫入目標，一律阻擋"
+            f"（fail-closed，20260710-003）"
+        )
 
     tool_name = payload.get("tool_name") or payload.get("name") or ""
     if tool_name not in WRITE_TOOLS:
@@ -142,13 +161,19 @@ def main() -> int:
     tool_input = payload.get("tool_input") or payload.get("input") or {}
     decision, reason = evaluate(_extract_path(tool_input))
     if decision == "block":
-        print(json.dumps({"decision": "block", "reason": reason}, ensure_ascii=False))
-        print(f"BLOCKED by task_card_guard: {reason}", file=sys.stderr)
-        return 2
+        return _emit_block(reason)
 
     print(json.dumps({"decision": "allow"}))
     return 0
 
 
+def run_guarded() -> int:
+    """未捕捉例外的 exit 1 在 hook 語意是 non-blocking — 顯式轉 exit 2。"""
+    try:
+        return main()
+    except Exception as e:  # noqa: BLE001 — crash-open 防護，必須攔一切
+        return _emit_block(f"task_card_guard 內部錯誤（{type(e).__name__}: {e}）— crash fail-closed")
+
+
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_guarded())
