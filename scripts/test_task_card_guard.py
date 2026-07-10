@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Unit tests for scripts/task_card_guard.py."""
+"""Unit tests for scripts/task_card_guard.py (v2: active-task binding)."""
 
 from __future__ import annotations
 
@@ -17,21 +17,42 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import task_card_guard as guard
 
 
-def make_root(card_filename: str | None = None, card_location: str = "outputs/reports/") -> Path:
-    """Temp root with outputs/reports + optionally a Task Card declaring a filename."""
+def make_root() -> Path:
+    """Temp root with outputs/reports + outputs/drafts + tasks/ + state/."""
     root = Path(tempfile.mkdtemp())
     (root / "outputs" / "reports").mkdir(parents=True)
     (root / "outputs" / "drafts").mkdir(parents=True)
     (root / "tasks").mkdir()
-    if card_filename:
-        card = {
-            "task_id": "20260609-X01",
-            "expected_output": {"format": "md", "location": card_location, "filename": card_filename},
-        }
-        (root / "tasks" / "card.yaml").write_text(
-            yaml.safe_dump(card, allow_unicode=True), encoding="utf-8"
-        )
+    (root / "state").mkdir()
     return root
+
+
+def add_card(
+    root: Path,
+    task_id: str = "20260609-X01",
+    filename: str = "backed.md",
+    location: str = "outputs/reports/",
+    status: str = "in_progress",
+    card_file: str | None = None,
+) -> None:
+    card = {
+        "task_id": task_id,
+        "status": status,
+        "expected_output": {"format": "md", "location": location, "filename": filename},
+    }
+    (root / "tasks" / (card_file or f"{task_id}.yaml")).write_text(
+        yaml.safe_dump(card, allow_unicode=True), encoding="utf-8"
+    )
+
+
+def set_state(root: Path, task_id: str, status: str = "active") -> None:
+    """直接寫 state 檔（不經 active_task.set_active 的存活檢查），模擬手改/過期狀態。"""
+    (root / "state" / "active_task.yaml").write_text(
+        yaml.safe_dump(
+            {"task_id": task_id, "status": status, "activated_at": "2026-07-10", "note": ""}
+        ),
+        encoding="utf-8",
+    )
 
 
 def run_main(payload: dict) -> tuple[int, dict, str]:
@@ -46,30 +67,18 @@ def run_main(payload: dict) -> tuple[int, dict, str]:
     return code, (json.loads(text) if text else {}), err.getvalue()
 
 
-class TestEvaluate(unittest.TestCase):
+class TestFrictionlessPaths(unittest.TestCase):
+    """非 reports 路徑與既有報告維持零摩擦（99% 低風險路徑不上鎖）。"""
+
     def test_drafts_write_allowed(self):
         root = make_root()
         decision, _ = guard.evaluate(str(root / "outputs/drafts/foo.md"), root)
         self.assertEqual(decision, "allow")
 
-    def test_unbacked_new_report_blocked(self):
+    def test_non_output_path_allowed(self):
         root = make_root()
-        decision, reason = guard.evaluate(str(root / "outputs/reports/unbacked.md"), root)
-        self.assertEqual(decision, "block")
-        self.assertIn("Task Card", reason)
-
-    def test_backed_new_report_allowed(self):
-        root = make_root(card_filename="backed.md")
-        decision, _ = guard.evaluate(str(root / "outputs/reports/backed.md"), root)
+        decision, _ = guard.evaluate(str(root / "scripts/foo.py"), root)
         self.assertEqual(decision, "allow")
-
-    def test_draft_located_card_does_not_authorize_report(self):
-        # A card declaring outputs/drafts/foo.md must NOT authorize a new
-        # outputs/reports/foo.md (codex P2: location, not just basename).
-        root = make_root(card_filename="foo.md", card_location="outputs/drafts/")
-        decision, reason = guard.evaluate(str(root / "outputs/reports/foo.md"), root)
-        self.assertEqual(decision, "block")
-        self.assertIn("Task Card", reason)
 
     def test_existing_report_edit_allowed(self):
         root = make_root()
@@ -78,10 +87,91 @@ class TestEvaluate(unittest.TestCase):
         decision, _ = guard.evaluate(str(existing), root)
         self.assertEqual(decision, "allow")
 
-    def test_non_output_path_allowed(self):
+
+class TestActiveTaskBinding(unittest.TestCase):
+    """新建正式報告的三段綁定：active task → 卡存活 → 精確路徑。"""
+
+    def test_missing_state_file_blocked(self):
         root = make_root()
-        decision, _ = guard.evaluate(str(root / "scripts/foo.py"), root)
+        (root / "state" / "active_task.yaml").unlink(missing_ok=True)
+        decision, reason = guard.evaluate(str(root / "outputs/reports/new.md"), root)
+        self.assertEqual(decision, "block")
+        self.assertIn("active_task.yaml", reason)
+
+    def test_idle_state_blocked_with_set_hint(self):
+        root = make_root()
+        add_card(root, filename="new.md")
+        set_state(root, "", status="idle")
+        decision, reason = guard.evaluate(str(root / "outputs/reports/new.md"), root)
+        self.assertEqual(decision, "block")
+        self.assertIn("--set", reason)
+
+    def test_active_card_exact_path_allowed(self):
+        root = make_root()
+        add_card(root, task_id="20260710-T01", filename="backed.md")
+        set_state(root, "20260710-T01")
+        decision, _ = guard.evaluate(str(root / "outputs/reports/backed.md"), root)
         self.assertEqual(decision, "allow")
+
+    def test_stale_done_card_blocked(self):
+        # v1 的 stale authorization 破口：done 卡永久授權同名檔 — v2 必須擋。
+        root = make_root()
+        add_card(root, task_id="20260710-T01", filename="backed.md", status="done")
+        set_state(root, "20260710-T01")
+        decision, reason = guard.evaluate(str(root / "outputs/reports/backed.md"), root)
+        self.assertEqual(decision, "block")
+        self.assertIn("stale", reason)
+
+    def test_failed_card_blocked(self):
+        root = make_root()
+        add_card(root, task_id="20260710-T01", filename="backed.md", status="failed")
+        set_state(root, "20260710-T01")
+        decision, _ = guard.evaluate(str(root / "outputs/reports/backed.md"), root)
+        self.assertEqual(decision, "block")
+
+    def test_active_id_without_card_blocked(self):
+        root = make_root()
+        set_state(root, "20260710-GONE")
+        decision, reason = guard.evaluate(str(root / "outputs/reports/new.md"), root)
+        self.assertEqual(decision, "block")
+        self.assertIn("找不到", reason)
+
+    def test_path_mismatch_blocked(self):
+        root = make_root()
+        add_card(root, task_id="20260710-T01", filename="declared.md")
+        set_state(root, "20260710-T01")
+        decision, reason = guard.evaluate(str(root / "outputs/reports/other.md"), root)
+        self.assertEqual(decision, "block")
+        self.assertIn("精確路徑", reason)
+
+    def test_draft_located_card_does_not_authorize_report(self):
+        # codex P2 語意保留：宣告 drafts 輸出的卡不得授權同名正式報告。
+        root = make_root()
+        add_card(root, task_id="20260710-T01", filename="foo.md", location="outputs/drafts/")
+        set_state(root, "20260710-T01")
+        decision, _ = guard.evaluate(str(root / "outputs/reports/foo.md"), root)
+        self.assertEqual(decision, "block")
+
+    def test_basename_coincidence_on_other_card_blocked(self):
+        # v1 核心破口回歸測試：非 active 的卡宣告了同名檔案，不得再放行。
+        root = make_root()
+        add_card(root, task_id="20260710-T01", filename="mine.md")
+        add_card(root, task_id="20260101-OLD", filename="coincidence.md", status="done",
+                 card_file="old.yaml")
+        set_state(root, "20260710-T01")
+        decision, _ = guard.evaluate(str(root / "outputs/reports/coincidence.md"), root)
+        self.assertEqual(decision, "block")
+
+    def test_card_without_expected_output_blocked(self):
+        root = make_root()
+        (root / "tasks" / "bare.yaml").write_text(
+            yaml.safe_dump({"task_id": "20260710-T01", "status": "in_progress"}),
+            encoding="utf-8",
+        )
+        set_state(root, "20260710-T01")
+        decision, reason = guard.evaluate(str(root / "outputs/reports/new.md"), root)
+        self.assertEqual(decision, "block")
+        self.assertIn("未宣告 expected_output", reason)
 
 
 class TestMain(unittest.TestCase):
