@@ -37,6 +37,30 @@ def run_checks(root: Path) -> list[str]:
     return warnings
 
 
+def gate_warning(root: Path) -> list[str]:
+    """active task 有值時對該卡跑 gate_check — 讓四層 gate 至少在每個 session
+    收尾自動跑一次（20260710-003）。警告模式、非 blocking；升級為阻斷前先觀察
+    誤報率（P1 決策點）。"""
+    try:
+        g = subprocess.run(
+            ["python3", "scripts/active_task.py", "--get"],
+            cwd=root, capture_output=True, text=True, timeout=10,
+        )
+        task_id = g.stdout.strip()
+        if g.returncode != 0 or not task_id:
+            return []
+        r = subprocess.run(
+            ["python3", "scripts/gate_check.py", task_id],
+            cwd=root, capture_output=True, text=True, timeout=30,
+        )
+        if r.returncode != 0:
+            out = (r.stdout + r.stderr).strip().splitlines()
+            return [f"[gate_check] active task {task_id} 未全綠：{out[-1] if out else ''}"]
+    except Exception:
+        pass  # fail-open：Stop hook 只警告
+    return []
+
+
 def format_message(warnings: list[str]) -> str:
     """把漂移警告組成 Stop hook 的 JSON 輸出（systemMessage）；clean 時回傳空字串。"""
     if not warnings:
@@ -56,7 +80,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--root", type=Path, default=DEFAULT_ROOT)
     args, _ = parser.parse_known_args(argv)
     try:
-        out = format_message(run_checks(args.root))
+        out = format_message(run_checks(args.root) + gate_warning(args.root))
         if out:
             print(out)
     except Exception:

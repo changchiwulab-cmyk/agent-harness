@@ -75,7 +75,7 @@ DENY_RULES: tuple[DenyRule, ...] = (
               mail\s+-s
               | mailx\b
               | sendmail\b
-              | curl\s+.*\b(api\.sendgrid|api\.mailgun|api\.postmark)\b
+              | (curl|wget)\s+.*\b(api\.sendgrid|api\.mailgun|api\.postmark)\b
             )
             """
         ),
@@ -86,7 +86,7 @@ DENY_RULES: tuple[DenyRule, ...] = (
         permission_key="send_message_external",
         pattern=re.compile(
             r"""(?x)
-            curl\s+.*\b(
+            (curl|wget)\s+.*\b(
               hooks\.slack\.com
               | api\.telegram\.org
               | notify-api\.line\.me
@@ -101,7 +101,7 @@ DENY_RULES: tuple[DenyRule, ...] = (
         permission_key="execute_payment",
         pattern=re.compile(
             r"""(?x)
-            curl\s+.*\b(api\.stripe\.com|api-m\.paypal\.com|api\.square)\b
+            (curl|wget)\s+.*\b(api\.stripe\.com|api-m\.paypal\.com|api\.square)\b
             """
         ),
         description="payment API call blocked (PERMISSIONS deny: execute_payment)",
@@ -150,7 +150,7 @@ DENY_RULES: tuple[DenyRule, ...] = (
         permission_key="publish_content",
         pattern=re.compile(
             r"""(?x)
-            curl\s+.*
+            (curl|wget)\s+.*
             (
               \b( api\.twitter\.com | api\.x\.com | graph\.facebook\.com
                 | api\.linkedin\.com | api\.medium\.com )\b
