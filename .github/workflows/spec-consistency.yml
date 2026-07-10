@@ -1,6 +1,7 @@
 name: Spec Consistency
 
 on:
+  workflow_dispatch:
   pull_request:
   push:
     branches:
@@ -15,9 +16,18 @@ permissions:
 jobs:
   validate-spec:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          # Full history so generate_audit_log.py can resolve `checkpoint:`
+          # commits via `git log --grep`. Default ref keeps pull_request runs on
+          # the merge ref (post-merge validation); the auto-align step checks out
+          # the head branch only for the push-back.
+          fetch-depth: 0
+          persist-credentials: true
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@0cb964fd540e0a24c900370abf38a33466142735 # v1.305.0
@@ -67,14 +77,32 @@ jobs:
       - name: Frontend manifest tests
         run: python3 scripts/test_generate_frontend_manifest.py
 
-      - name: Frontend manifest drift check
-        run: python3 scripts/generate_frontend_manifest.py --check
-
       - name: Permissions guard tests
         run: python3 scripts/test_permissions_guard.py
 
+      - name: Task card guard tests
+        run: python3 scripts/test_task_card_guard.py
+
+      - name: Failure counter tests
+        run: python3 scripts/test_failure_counter.py
+
+      - name: Gate check tests
+        run: python3 scripts/test_gate_check.py
+
       - name: Audit log generator tests
         run: python3 scripts/test_generate_audit_log.py
+
+      # NOTE: no standalone audit-drift check here — on same-repo events the
+      # "Auto-align derived artifacts" step below regenerates and commits any
+      # drift, and both same-repo and fork paths end with sync_derived.sh
+      # --check (covers data.json + AUDIT_LOG). A hard check at this point
+      # would fail the job before auto-align could run.
+
+      - name: Governance metrics tests
+        run: python3 scripts/test_governance_metrics.py
+
+      - name: Hook script tests
+        run: python3 scripts/test_session_start_context.py
 
       - name: E2E dummy task smoke test
         run: python3 tests/e2e/test_dummy_task_smoke.py
@@ -82,5 +110,63 @@ jobs:
       - name: E2E failure-drill regression
         run: python3 tests/e2e/test_failure_drill.py
 
+      - name: Verification loop unit tests
+        run: python3 scripts/test_verification_loop.py
+
+      - name: E2E verification-loop drill
+        run: python3 tests/e2e/test_verification_loop_drill.py
+
       - name: Decision revisit tracker tests
         run: ruby scripts/test_check_decision_revisit.rb
+
+      - name: Input-guardrail detector tests (G-A)
+        run: python3 scripts/test_check_untrusted_content.py
+
+      - name: E2E input-guardrails regression (G-A)
+        run: python3 tests/e2e/test_input_guardrails.py
+
+      - name: Eval runner tests (G-B)
+        run: python3 scripts/test_run_evals.py
+
+      - name: Eval calibration — gold passes / bad fails (G-B)
+        run: python3 scripts/run_evals.py
+
+      # Auto-align the backend-derived frontend artifacts (frontend/data.json,
+      # logs/AUDIT_LOG.md) with their YAML / git sources. On same-repo events we
+      # regenerate and commit any drift back to the branch; on fork PRs (no write
+      # access) we fall back to a hard --check so drift still blocks the merge.
+      - name: Auto-align derived artifacts (same-repo)
+        if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          # Validation above runs on the default ref (the merge ref for PRs).
+          # For the push-back we need the real head branch tip, not the merge
+          # commit, so check it out here only.
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            TARGET="${{ github.head_ref }}"
+            git fetch --no-tags origin "+refs/heads/${TARGET}:refs/remotes/origin/${TARGET}"
+            git checkout -B "${TARGET}" "refs/remotes/origin/${TARGET}"
+          else
+            TARGET="${{ github.ref_name }}"
+          fi
+          bash scripts/sync_derived.sh
+          if git diff --quiet -- frontend/data.json logs/AUDIT_LOG.md; then
+            echo "Derived artifacts already in sync."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add frontend/data.json logs/AUDIT_LOG.md
+            # No [skip ci]: the pushed commit must get its own green check, or
+            # branch protection would block on a pending required check. The
+            # deterministic generators make the re-run a no-op, so it converges.
+            git commit -m "chore: auto-align derived artifacts (data.json, AUDIT_LOG)"
+            git push origin "HEAD:${TARGET}"
+            echo "Pushed auto-align commit to ${TARGET}."
+          fi
+
+      - name: Verify alignment (same-repo)
+        if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+        run: bash scripts/sync_derived.sh --check
+
+      - name: Verify derived artifacts (fork PR)
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
+        run: bash scripts/sync_derived.sh --check

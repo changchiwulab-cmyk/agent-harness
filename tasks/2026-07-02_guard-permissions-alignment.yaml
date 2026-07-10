@@ -1,0 +1,57 @@
+task_id: "20260702-R01"
+date: "2026-07-02"
+status: "done"
+
+goal: "對齊 PERMISSIONS.yaml 與 permissions_guard.py：deny 清單雙向同步、docstring 誠實化、Edit/Write ask 層落地到 settings.json"
+context: |
+  2026-07 文件 vs 實作稽核發現 #2 #3 #4 #5：
+  - #2 無 flag 的 rm 放行，但 PERMISSIONS.yaml 寫「任何刪除操作」→ 決議：放寬文件敘述（guard 刻意只擋高破壞性變體，test 有 pin）
+  - #3 deny 清單 8 項只實作 4 項；guard 的 git_force_push 不在 PERMISSIONS.yaml
+  - #4 guard docstring 宣稱規則 derived from PERMISSIONS.yaml，但 PERMISSIONS_PATH 是死變數
+  - #5 guard 註解宣稱 Edit/Write 由其他層防護，但 settings.json 無 permissions 區塊
+  方向已由使用者於 2026-07-02 plan 核准。
+
+input_data:
+  - "system/PERMISSIONS.yaml"
+  - "scripts/permissions_guard.py"
+  - "scripts/test_permissions_guard.py"
+  - ".claude/settings.json"
+
+definition_of_done:
+  - "PERMISSIONS.yaml shell_delete 敘述改為「rm -r/-f 等高破壞性刪除」，與 guard 實際範圍一致"
+  - "PERMISSIONS.yaml deny 清單含 git_force_push（grep -c git_force_push system/PERMISSIONS.yaml ≥ 1）"
+  - "guard 新增 spawn_background_process / auto_write_memory / publish_content 三條 runtime 規則：nohup 指令與行尾 & 被 block、&& 不誤擋、tee 寫 memory/ 被 block、curl 發布 API 被 block"
+  - "PERMISSIONS.yaml 新增 deny_enforcement 區段標注每項 runtime|model；test_permissions_guard.py 有同步測試斷言 deny 清單、deny_enforcement、DENY_RULES 三方一致"
+  - "guard docstring 不再宣稱 derived from PERMISSIONS.yaml，改為誠實描述手工對映 + CI 同步測試"
+  - ".claude/settings.json 有 permissions.ask 規則鏡射 PERMISSIONS.yaml ask 清單（Edit/Write 於 system/、skills/、CLAUDE.md、memory/、outputs/reports/）"
+  - "python3 scripts/test_permissions_guard.py 全綠"
+
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260702-R01_guard-permissions-alignment-summary.md"
+
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+  - "bash"
+
+max_tool_calls: 25
+max_retries: 3
+max_web_searches: 0
+
+skill_type: "ops"
+
+checkpoints:
+  - commit: "91277ad"
+    stage: "deny 清單雙向同步 + guard docstring 誠實化 + 三方 sync 測試"
+  - commit: "9055c77"
+    stage: "settings.json 補 permissions.ask（延後至 system/skills 編輯完成後）"
+actual_tool_calls: 12
+result_summary: "DoD 7/7 通過。PERMISSIONS.yaml 敘述對齊 + git_force_push + deny_enforcement 區段；guard 新增 3 條 runtime 規則；22 測試綠、10 smoke case 全對；settings.json permissions.ask 落地。"
+completion_time: "2026-07-02"
+audit_log_ref: "logs/AUDIT_LOG.md"

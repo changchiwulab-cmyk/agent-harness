@@ -1,0 +1,60 @@
+# Eval case — analysis skill. Rubric mirrors skills/analysis/eval_examples.md
+# 判斷標準 (結論/選項完整含"不做"/量化/假設透明/下一步). gold PASSES, bad FAILS.
+case_id: analysis-notion-ai
+skill: analysis
+prompt: "評估一人公司是否應該導入 Notion AI（月付 $10 USD）取代現有手動筆記系統"
+definition_of_done:
+  - "第一段明確給出建議（選哪個、為什麼）"
+  - "包含『不做/維持現狀』在內的所有可行選項"
+  - "成本/效益有具體數字或範圍"
+  - "明確列出高風險假設"
+  - "給出可直接行動的下一步"
+
+rubric:
+  - id: conclusion_first
+    kind: section_first
+    args: {heading: "結論"}
+  - id: includes_no_op_option
+    kind: contains_any
+    args: {needles: ["維持現狀"]}
+  - id: quantified
+    kind: regex
+    args: {pattern: "\\$|NT\\$|\\d+\\s*小時|\\d+\\s*%|ROI|\\d+:\\d+"}
+  - id: risk_assumptions
+    kind: section_nonempty
+    args: {heading: "高風險假設"}
+  - id: next_steps
+    kind: section_nonempty
+    args: {heading: "建議下一步"}
+
+gold_example: |
+  # 評估：導入 Notion AI 取代手動筆記系統
+
+  ## 結論與建議
+  **建議導入**，優先度中等。時間節省效益（估 2-3 小時/週）明顯超過月費成本。
+
+  ## 選項比較
+  ### 選項 A：導入 Notion AI（$10/月）
+  成本 $10/月 ≈ NT$320；按 2 小時/週節省估算 ROI 約 8:1。
+  ### 選項 B：維持現狀（手動筆記）
+  $0/月，但時間成本持續存在。
+  ### 選項 C：改用其他 AI 筆記工具
+  需要 4-8 小時遷移工作。
+
+  ## 高風險假設
+  - 「2-3 小時/週節省」：若實際使用率低，效益會顯著縮水。
+
+  ## 待驗證
+  - 目前 Notion 每週實際使用時數
+
+  ## 建議下一步
+  1. 確認當前 Notion 使用率：若 < 5 小時/週，先暫緩
+  2. 若使用率夠，開啟 30 天試用
+
+bad_example: |
+  # Notion AI 評估
+
+  Notion AI 是一個很好的工具，很多公司都在用。它可以幫助你更快完成工作。
+  優點：節省時間、功能強大、容易使用。
+  缺點：需要付費、可能有隱私問題。
+  綜合考慮，這是一個不錯的選擇。

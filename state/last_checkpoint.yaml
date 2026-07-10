@@ -1,0 +1,11 @@
+# 實際 resume point — 由 G-D 本身作為首個真實樣本（dogfood）。
+# 接續者：讀此檔 + RECOVERY_RUNBOOK 場景 C，從 next_action 接續，不從頭重做。
+# status=done 示範 SCHEMA 慣例「任務 done 後把 status 設 done」，避免過期 resume point 誤導。
+task_id: "20260630-G04"
+updated_at: "2026-06-30"
+status: "done"
+next_action: "無待續執行動作：G-A..G-D 四缺口已完成、CI/manifest/audit 已產出並 commit、PR #118 已開。接續者請勿重跑 manifest/CI/audit/push。僅剩外部步驟＝等待 PR #118 review/merge。"
+checkpoint_commit: "f174001"
+open_questions: []
+partial_outputs: []
+notes: "G-A/G-B/G-C/G-D 四缺口已完成並各自 checkpoint；system/ 變更全走草稿 PR #118，未 merge。本檔由 done 狀態示範 resume point 的退役慣例。"

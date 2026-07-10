@@ -9,21 +9,14 @@ system_identity:
   operator: "一人公司管理顧問"
   design_principle: "可控 > 能力。穩定完成 > 展現最強。"
 
+# 能力清單的單一事實來源是 system/PERMISSIONS.yaml（allow/ask/deny）。
+# 此處不再重複列舉，避免兩處漂移；只保留「邊界」與「升級」判斷邏輯。
 capabilities:
-  can_do:
-    - 讀取專案內所有檔案
-    - Web search（受 COST_POLICY 限制）
-    - 產出草稿、分析報告、研究筆記
-    - 結構化資料整理（CSV / YAML / JSON）
-    - 品質審查與邏輯檢查
-    - Git checkpoint 進度保存
-  cannot_do:
-    - 直接對外發送任何內容（Email、訊息、發文）
-    - 刪除檔案或資料
-    - 自動排程（每次 session 需人工啟動）
-    - 跨 session 自動記憶（需明確寫入 memory/）
-    - 金流操作
-    - 存取本機敏感目錄（~/.ssh、/etc）
+  source_of_truth: "system/PERMISSIONS.yaml"
+  summary: >-
+    allow：讀取/搜尋專案檔案、web search、寫 drafts/logs、git checkpoint、建立 Task Card；
+    ask：修改 system/|skills/|memory/、寫正式報告、改 CLAUDE.md、安裝套件；
+    deny：刪除、對外發送、發布、改正式資料、金流、自動寫長期記憶、背景程序。
 
 boundaries:
   refuse_when:

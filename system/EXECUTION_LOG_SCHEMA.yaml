@@ -47,7 +47,22 @@ execution_log:
     total: 0
     source: ""                        # dashboard_measured（API dashboard 實測）/ rule_estimated（規則估算）/ not_recorded；R6 新增，標示數據可信度
 
-  # --- 審批紀錄 ---
+  # --- OTel GenAI 語意慣例對齊（G-B/G-E，optional）---
+  # 對齊 OpenTelemetry GenAI Semantic Conventions（2026 業界觀測標準），使本紀錄可攜、
+  # 未來可被 OTel exporter / LLM observability 平台直接消費。全為 optional，不影響既有紀錄驗證。
+  # 對照：run_id↔trace 概念；started_at/ended_at↔span 起訖；tools_used↔gen_ai.tool spans；
+  #       token_estimate↔gen_ai.usage.*；status↔span status。
+  gen_ai:
+    operation_name: ""                # gen_ai.operation.name：如 invoke_agent / execute_tool
+    system: ""                        # gen_ai.system：如 anthropic
+    request_model: ""                 # gen_ai.request.model：如 claude-opus-4-x（不含內部 id）
+    usage_input_tokens: 0             # gen_ai.usage.input_tokens（= token_estimate.input）
+    usage_output_tokens: 0            # gen_ai.usage.output_tokens（= token_estimate.output）
+    tool_spans:                       # 對齊 gen_ai.tool.* / MCP conventions（可由 tools_used 推導）
+      - name: ""                      # gen_ai.tool.name
+        call_count: 0
+
+  # --- 審批紀錄（此 run 的鏡像；全任務核准權威為 logs/approvals/，見 APPROVAL_POLICY.yaml）---
   approvals:
     - action: ""                      # 需要批准的動作
       status: ""                      # approved / rejected / pending
@@ -62,6 +77,22 @@ execution_log:
     rule_check: ""                    # pass / fail
     completion_check: ""              # pass / fail
     risk_check: ""                    # pass / fail
+
+  # --- 驗證閉環帳本（選用；向後相容）---
+  # 由 scripts/verification_loop.py 產出。定義見 system/VERIFICATION_LOOP.yaml。
+  # 僅當任務經歷多輪「驗證→修正→再驗證」時填寫；單輪 happy-path 可省略，沿用上方 gate_results。
+  verification_loop:
+    outcome: ""                       # pass / hard_stop / escalated / exhausted
+    iterations:
+      - iteration: 0                  # 輪次（從 1 起）
+        gate_results:
+          schema_check: ""            # pass / fail / not_run
+          rule_check: ""              # pass / fail / not_run
+          completion_check: ""        # pass / fail / not_run
+          risk_check: ""              # pass / fail / not_run
+        first_fail: ""                # 首個失敗的 gate（全 pass 則留空）
+        disposition: ""               # retry_fixable / hard_stop / human_gated / escalate
+        action: ""                    # 本輪採取的修正/處置
 
   # --- 備註 ---
   notes: ""

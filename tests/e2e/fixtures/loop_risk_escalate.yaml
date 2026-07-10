@@ -1,0 +1,22 @@
+# verification-loop drill fixture (escalated path).
+# Schema-valid, rule-clean Task Card, but risk_level=high with output pointed at
+# outputs/reports/ instead of outputs/drafts/ → risk_check fails → disposition
+# escalate (lock output in drafts/, await human). Lives outside tasks/.
+
+task_id: "20260620-903"
+date: "2026-06-20"
+status: "pending"
+goal: "示範 escalate：high 風險輸出卻指向 reports/"
+definition_of_done:
+  - "risk_check 必須要求 high 風險輸出改放 drafts/"
+skill_type: "ops"
+risk_level: "high"
+approval_needed: true
+max_tool_calls: 5
+expected_output:
+  format: "md"
+  location: "outputs/reports/"   # VIOLATION: high risk must go to outputs/drafts/
+  filename: "loop_drill.md"
+allowed_tools:
+  - "file_read"
+max_retries: 3

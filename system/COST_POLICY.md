@@ -37,13 +37,23 @@ v1 階段採用「粗略護欄 + 事後量測」策略：
 | Programmatic Tool Calling | 省 ~37% | 中間結果不進 context |
 | CLAUDE.md + GLOBAL_RULES | 控制在 3K 以內 | 軟性上限；實測 baseline ~400 tokens |
 | 單一 skill prompt | 控制在 1.5K 以內 | 軟性上限；含 eval_examples，實測 baseline 200-600 tokens |
+| 常駐 system prompt 快取 | 命中省 ~90% input | prompt caching：穩定前綴（CLAUDE.md+GLOBAL_RULES+PERMISSIONS）做 cache，可變後綴（Task Card+skill）後接 |
 
-## 模型路由規則（v2 準備）
+## 模型路由規則（2026-05-29 起：已落地於原生子代理）
 
-v1 先用單一模型（Claude）。未來如需降本：
-- 分類、抽取、格式檢查 → 便宜模型（Haiku 等級）
-- 規劃、推理、整合分析 → 強模型（Sonnet/Opus 等級）
-- 路由判斷本身 → 便宜模型
+以 `.claude/agents/*.md` 的 per-agent `model` 欄位落地分流（context 隔離另估省 ~67%）：
+
+| 子代理 | model（alias→實際） | 對應 skill | 依據 |
+|--------|--------------------|-----------|------|
+| ops-specialist | haiku → Haiku 4.5 | ops | 分類、抽取、格式檢查 → 便宜模型 |
+| research-specialist | sonnet → Sonnet 4.6 | research | 整合分析 |
+| writing-specialist | sonnet → Sonnet 4.6 | writing | 內容產出 |
+| review-specialist | sonnet → Sonnet 4.6 | review | 品質判斷 |
+| analysis-specialist | opus → Opus 4.8 | analysis | 規劃、推理、決策 → 強模型 |
+
+- alias（haiku/sonnet/opus）會自動對映到當代各層級最新模型，無需追版本。
+- 路由判斷本身改由原生 skill description 自動觸發，不再需要獨立的「路由模型」。
+- 校準資料（下方各 skill 實測平均）回填時，可據以調整對應子代理的分層（成本長期偏高 → 升一層模型）。
 
 ## 事後量測流程（每週）
 
@@ -59,7 +69,7 @@ v1 先用單一模型（Claude）。未來如需降本：
 |---------|-----------|---------|---------|------|
 | research | ~15K | ~21.5K（2 筆）| **32K** | 含 web search 結果解析；實測超估 43% |
 | analysis | ~12K | 待累積 | 20K | 尚無實測；下次 retro 再校正 |
-| writing | ~10K | ~20K（1 筆）| **30K** | 實測超估 100%；視輸出長度浮動 |
+| writing | ~10K | ~20K（1 筆）| **30K** | ⚠️ pending stabilization：僅 1 筆、變異大；暫定硬天花板 40K，累積 ≥3 筆前從嚴估 |
 | ops | ~8K | ~12.5K（2 筆）| **19K** | 實測超估 56% |
 | review | ~12K | ~15K（2 筆）| **23K** | 含原文載入 + 逐條檢查；實測超估 25% |
 
@@ -83,6 +93,7 @@ v1 先用單一模型（Claude）。未來如需降本：
 **使用方式**：
 - 建立 Task Card 時，若 skill 係數 ≥ 1.5，將 `max_tool_calls` 與 `max_retries` 上調 1 檔作為緩衝
 - 係數 < 1.3 視為穩定，依原設定值
+- ⚠️ writing 係數 2.00 僅來自 1 筆，標 pending stabilization；累積 ≥3 筆前從嚴估、暫定硬天花板 40K
 - analysis 係數未知，至少 3 筆實測後再更新
 
 **下次校準觸發**：再累積 5 筆任務（含至少 1 筆 analysis）後，於下次 retro 重算。

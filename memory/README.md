@@ -43,13 +43,21 @@ memory/
 - 跨工具 / AI OS 策略決策 → `~/ai-os/decision_log.md`（DEC-XXX 格式）
 - agent-harness 任務內決策 → `memory/active_projects/[project]/decisions/`
 
-## 兩層記憶規則
+## 三層記憶規則
+
+> 完整 context 工程紀律（組裝順序、JIT 檢索、scratchpad）見 `system/CONTEXT_ENGINEERING.md`。
 
 ### 短期記憶（自動）
 - 當前 session 的對話歷史
 - 由 Claude Code 自動管理
 - Session 結束後不自動保留
 - 需要保留的內容 → 明確寫入檔案
+
+### 工作筆記 scratchpad（任務範圍，allow）
+- 位置：`outputs/drafts/<task_id>-scratchpad.md`
+- 用途：把長對話的中間結論卸載出 context，之後 JIT 讀回（structured note-taking）
+- 生命週期：任務內；完成後可丟棄或併入產出。**不是**長期記憶，不存敏感資料
+- 與 `state/last_checkpoint.yaml`（跨 session 接續點，G-D）區隔：scratchpad 是任務內、state 是跨 session
 
 ### 長期記憶（需人工確認）
 - SOP、模板、已驗證知識、客戶背景

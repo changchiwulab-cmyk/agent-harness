@@ -56,7 +56,9 @@ agent-harness/
 │   ├── GATE_POLICY.yaml            ← 四層驗證 checklist + rollback（v1.5+v2）
 │   ├── AGENT_CONTEXT.yaml          ← 系統自我認知與邊界（v1.5 新增）
 │   ├── APPROVAL_POLICY.yaml        ← 批准流程規則（v2 新增）
-│   ├── FAILURE_TAXONOMY.yaml       ← 15 種失敗模式獨立檔（v2 新增）
+│   ├── FAILURE_TAXONOMY.yaml       ← 17 種失敗模式獨立檔（v2 新增；G-A 補 SEC-05/06 間接注入）
+│   ├── INPUT_GUARDRAILS.md         ← 輸入側防護：不受信任內容當資料不當指令（G-A 新增）
+│   ├── CONTEXT_ENGINEERING.md      ← Context 工程紀律：組裝順序/JIT/scratchpad（G-C 新增）
 │   ├── EXECUTION_LOG_SCHEMA.yaml   ← 執行紀錄結構定義（v2 新增）
 │   ├── INTAKE_FLOW.md              ← Fast-path / Intake 釐清流程
 │   ├── NATIVE_OVERLAP.yaml         ← Claude Code 原生功能重疊度（v3 規劃輸入）
@@ -87,6 +89,10 @@ agent-harness/
 │   ├── README.md              ← 記憶使用規則
 │   ├── user_prefs.md          ← 使用者偏好
 │   └── active_projects/       ← 進行中專案 context
+├── state/                     ← 跨 session resume 接續點（G-D；主動寫，被 RECOVERY_RUNBOOK 場景 C 讀）
+│   ├── last_checkpoint.SCHEMA.yaml
+│   └── last_checkpoint.yaml
+├── evals/                     ← 可執行產出品質 eval（G-B；run_evals.py 跑）
 ├── logs/
 │   ├── AUDIT_LOG.md           ← 稽核紀錄
 │   ├── runs/                  ← 執行紀錄
@@ -203,7 +209,12 @@ python system/validate_task_card.py tasks/your-task.yaml
 - `logs/runs/*.yaml`
 - `memory/active_projects/*/decisions/*.yaml`（多 project）
 
-CI 會跑 `python3 scripts/generate_frontend_manifest.py --check`，若 `frontend/data.json` 與檔案系統實況有漂移即失敗。
+後端 YAML 會衍生出兩個前端產物，兩者都由 `scripts/sync_derived.sh` 一次重產、並被自動對齊機制覆蓋：
+
+| 衍生產物 | Generator | 來源 |
+|---|---|---|
+| `frontend/data.json` | `scripts/generate_frontend_manifest.py` | tasks / logs/runs / decisions YAML |
+| `logs/AUDIT_LOG.md` | `scripts/generate_audit_log.py` | tasks YAML + `git log` 的 `checkpoint:` commit |
 
 ### 啟動方式
 
@@ -245,12 +256,23 @@ scripts/run_frontend.sh --version
 
 開啟：`http://localhost:8000/frontend/index.html`（或對應自訂 port）
 
-### 漂移檢查
+### 前 / 後端自動對齊
 
-新增、刪除或重新命名 `tasks/`、`logs/runs/`、`memory/active_projects/*/decisions/` 下的 YAML 後，請重新執行：
+新增、刪除或重新命名 `tasks/`、`logs/runs/`、`memory/active_projects/*/decisions/` 下的 YAML 後，衍生產物會由三層觸發自動跟著對齊，不需手動記得重產：
+
+1. **本地 git pre-commit hook** — 每次 commit 自動重產並 stage `frontend/data.json` + `logs/AUDIT_LOG.md`。每個 clone 啟用一次：
+
+   ```bash
+   scripts/install_hooks.sh        # 等同 git config core.hooksPath .githooks
+   ```
+
+2. **CI 自動 commit** — `.github/workflows/spec-consistency.yml` 在 push / 同 repo PR 上重產衍生產物；若有漂移就以 `github-actions[bot]` commit 回該分支（權威 reconcile，涵蓋 `logs/AUDIT_LOG.md` 依賴 git history 的部分）。fork PR 無寫權限，改以 `--check` 失敗擋下。
+
+3. **Claude harness Stop hook** — agent 每輪結束後跑 `scripts/sync_derived.sh`，讓工作樹的看板即時反映剛改的 YAML。
+
+任何時候都可手動一次重產 / 驗證：
 
 ```bash
-python3 scripts/generate_frontend_manifest.py
+scripts/sync_derived.sh           # 重產 data.json + AUDIT_LOG.md
+scripts/sync_derived.sh --check   # 只驗證，有漂移回非零
 ```
-
-並把更新後的 `frontend/data.json` 一起 commit。CI 會驗證二者一致。

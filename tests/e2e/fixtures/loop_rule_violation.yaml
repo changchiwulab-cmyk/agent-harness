@@ -1,0 +1,23 @@
+# verification-loop drill fixture (hard_stop path).
+# Schema-valid Task Card, but allowed_tools declares a PERMISSIONS deny entry
+# (send_email) → rule_check fails → disposition hard_stop (no retry).
+# Lives outside tasks/ (see sibling fixtures).
+
+task_id: "20260620-902"
+date: "2026-06-20"
+status: "pending"
+goal: "示範 hard_stop：白名單宣告了 deny 工具"
+definition_of_done:
+  - "rule_check 必須擋下 send_email"
+skill_type: "ops"
+risk_level: "low"
+approval_needed: false
+max_tool_calls: 5
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "loop_drill.md"
+allowed_tools:
+  - "file_read"
+  - "send_email"        # VIOLATION: PERMISSIONS deny
+max_retries: 3

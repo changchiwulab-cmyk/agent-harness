@@ -76,6 +76,17 @@
       "related_task": "20260509-N06",
       "revisit_trigger": "v0.2.0 plugin 達到 agent-harness 全部 system/ 規格 round-trip 後評估轉 public；或下個 session 試行 bootstrap 後發現非預期問題",
       "status": "active"
+    },
+    {
+      "date": "2026-06-09",
+      "decision": "- 硬規則 1：task_card_guard.py 僅硬制 outputs/reports/ 新正式產出需有對應 Task Card；drafts 自由。\n- 硬規則 3：failure_counter.py（計數器 + --hook halt + --reset），達 3 次後 block 後續工具。\n- 兩支 guard 經 .claude/settings.json 註冊為 PreToolUse（Bash + Write|Edit）。\n- GATE 自動化：gate_check.py 做四層 post-execution validator；以單元測試納入 CI（非 --all 阻斷）。\n- PERMISSIONS.yaml / GATE_POLICY.yaml 補述 deterministic 強制點；self-assessment 加日期化 addendum。\n- 狀態漂移：context.md + README 同步至 2026-06-09。\n",
+      "decision_id": "20260609-D008",
+      "path": "memory/active_projects/agent-harness/decisions/20260609-D008_harden-rules-and-automate-gates.yaml",
+      "project": "agent-harness",
+      "reasoning": "直接命中專案自評最大結構缺陷（§3.1 強制力不對稱、§3.6 gate 未自動化），且全部落在現有\nhook/script 模式內，不引入新架構。守門範圍刻意收窄到「正式產出」與「失敗 halt」，避免治理\n框架的經典陷阱（為 1% 高風險替 99% 低風險上鎖，反被繞過）。誠實標註殘餘 prompt-only 邊界，\n與「用 LLM 約束 LLM 有結構性天花板」的自評一致。\n",
+      "related_task": "20260609-001",
+      "revisit_trigger": "若 task_card_guard 對 reports/ 產生誤擋（false positive）或 failure_counter 的 halt 影響正常流程；或 v3 治理插件抽出時，這些 guard 應一併下放到 agent-governance plugin",
+      "status": "active"
     }
   ],
   "logs": [
@@ -111,6 +122,26 @@
     }
   ],
   "overview": {
+    "alerts": [
+      {
+        "current": "73/8 = 9.12",
+        "id": "M2",
+        "name": "outputs/drafts:reports 比例",
+        "status": "ok"
+      },
+      {
+        "current": "73/73 = 100.0%",
+        "id": "M3",
+        "name": "audit log 覆蓋率（status ∈ {review, done, failed, partial}）",
+        "status": "ok"
+      },
+      {
+        "current": "30% (reviewed 2026-05-09)",
+        "id": "M4",
+        "name": "Claude Code 原生功能重疊度（人工評估）",
+        "status": "ok"
+      }
+    ],
     "gate_results": {
       "completion_check": {
         "not_run": 1,
@@ -135,24 +166,24 @@
     },
     "run_total": 2,
     "task_risk": {
-      "high": 1,
-      "low": 48,
-      "medium": 15
+      "high": 2,
+      "low": 54,
+      "medium": 26
     },
     "task_skill": {
-      "analysis": 7,
-      "ops": 34,
+      "analysis": 8,
+      "ops": 50,
       "research": 9,
-      "review": 7,
+      "review": 8,
       "writing": 7
     },
     "task_status": {
-      "done": 39,
-      "in_progress": 2,
+      "done": 56,
+      "in_progress": 3,
       "pending": 6,
       "review": 17
     },
-    "task_total": 64
+    "task_total": 82
   },
   "tasks": [
     {
@@ -656,6 +687,26 @@
       "task_id": "20260529-001"
     },
     {
+      "approval_needed": false,
+      "date": "2026-05-29",
+      "goal": "對 Agent Harness v2 做完整檢視，疊加 Opus 4.8 原生能力視角，產出檢視＋優化路線圖草稿",
+      "path": "tasks/2026-05-29_opus48-A_review.yaml",
+      "risk_level": "low",
+      "skill_type": "review",
+      "status": "done",
+      "task_id": "20260529-012"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-05-29",
+      "goal": "套用 Opus 4.8／Claude Code 原生能力優化 harness：原生 Skills、子代理＋模型成本路由、Hooks 自動化、prompt caching＋context，並補品質修正與 CI/測試",
+      "path": "tasks/2026-05-29_opus48-B_uplift.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260529-013"
+    },
+    {
       "approval_needed": true,
       "date": "2026-05-29",
       "goal": "將 outputs/drafts/2026-05-29_harness-self-assessment.md 依 RETRO_FLOW §5 晉升為 outputs/reports/harness-self-assessment-v1.md",
@@ -774,6 +825,166 @@
       "skill_type": "research",
       "status": "done",
       "task_id": "20260530-H01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-06-09",
+      "goal": "校正狀態漂移、硬化三條硬規則、自動化 GATE_POLICY 剩餘三層，把宣稱的治理變成可被腳本與 CI 驗證的治理",
+      "path": "tasks/2026-06-09_harness-optimization.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260609-001"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-20",
+      "goal": "把線性的四層 GATE_POLICY 收斂成有界、會終止、可稽核的任務內驗證閉環，並提供可執行驗證驅動器與測試",
+      "path": "tasks/2026-06-20_verification-loop.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "in_progress",
+      "task_id": "20260620-001"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-23",
+      "goal": "產出 v3 遷移就緒度評估草稿：逐模組標『保留/下放原生/並存』就緒度、列不可替代資產、盤點 v3 觸發現況，並提出 D003/D007 更新建議。只評估不遷移。",
+      "path": "tasks/2026-06-23_r10-v3-readiness-assessment.yaml",
+      "risk_level": "high",
+      "skill_type": "analysis",
+      "status": "done",
+      "task_id": "20260623-002"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-23",
+      "goal": "為 NATIVE_OVERLAP 加上季度 revisit 自動化：M4 加時間維度 staleness 偵測 + >50% 明確觸發 v3 評估建議，並於 RETRO_FLOW 與 R4 決策回看同一節奏合流",
+      "path": "tasks/2026-06-23_r9-native-overlap-revisit.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260623-001"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-30",
+      "goal": "為 harness 補上輸入側防護：把『檢索/外部內容是資料、不是指令』訂為規範，並接到失敗分類學、gate 與 research skill",
+      "path": "tasks/2026-06-30_g-a-input-guardrails.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260630-G01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-30",
+      "goal": "建立可執行的評估閉環：evals/ 案例 + LLM-as-judge runner + CI baseline，並把執行紀錄詞彙向 OTel gen_ai.* 對齊",
+      "path": "tasks/2026-06-30_g-b-eval-harness.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260630-G02"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-30",
+      "goal": "把 context 從『不可超的預算』升級為『可工程化的產物』：訂 context 組裝順序、JIT 檢索紀律、結構化工作筆記慣例",
+      "path": "tasks/2026-06-30_g-c-context-engineering.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260630-G03"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-06-30",
+      "goal": "為多/跨 session 任務補上結構化接續點 state/last_checkpoint.yaml，並接到 RECOVERY_RUNBOOK 與 CI schema lint",
+      "path": "tasks/2026-06-30_g-d-session-resume.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260630-G04"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-07-01",
+      "goal": "在前端看板新增 M2-M4 治理指標警示可視化，讓異常不再需要手動跑 governance_metrics.py 讀 markdown 才能發現",
+      "path": "tasks/2026-07-01_r14-governance-alert-ui.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260701-001"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-01",
+      "goal": "擴充 check_spec_consistency.rb：對 approval_needed=true 且 status=done/failed 的 Task Card，檢查 logs/approvals/ 是否存在對應 task_id 的批准紀錄，缺漏則 CI fail",
+      "path": "tasks/2026-07-01_r1x-approval-coverage-check.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260701-003"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-01",
+      "goal": "擴充 check_spec_consistency.rb：驗證 logs/approvals/*.yaml 的 linked_run 指向真實存在的 logs/runs/ run_id，以及 logs/runs/*.yaml 的 task_id 指向真實存在的 Task Card",
+      "path": "tasks/2026-07-01_r2x-referential-integrity-lint.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260701-004"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-01",
+      "goal": "實測 RECOVERY_RUNBOOK.md 場景 C：任務中途模擬 context 重置後，只靠 git log --grep + Task Card + 進度檔重建狀態並正確接續（不重做、不跳過），把恢復路徑從紙上設計變成有實證的機制",
+      "path": "tasks/2026-07-01_r5x-recovery-scenario-c-drill.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260701-002"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-02",
+      "goal": "把 AUDIT_LOG 漂移檢查接進 CI、修正 GATE_POLICY 失真敘述、收斂雙驗證器欄位、補 skill token 預算守門",
+      "path": "tasks/2026-07-02_ci-validators-alignment.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260702-R02"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-02",
+      "goal": "修復 PR #122 Codex review 三項發現：audit generator 對 squash merge 的決定論、guard 的 & 分隔符與引號路徑繞過",
+      "path": "tasks/2026-07-02_codex-review-fixes.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260702-R04"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-02",
+      "goal": "CLAUDE.md 第 8 步對齊 D006 執行紀錄使用範圍；補完 4 個 skill 的原生註冊（frontmatter + symlink）",
+      "path": "tasks/2026-07-02_docs-skill-registration.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260702-R03"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-02",
+      "goal": "對齊 PERMISSIONS.yaml 與 permissions_guard.py：deny 清單雙向同步、docstring 誠實化、Edit/Write ask 層落地到 settings.json",
+      "path": "tasks/2026-07-02_guard-permissions-alignment.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260702-R01"
     },
     {
       "approval_needed": true,

@@ -1,0 +1,20 @@
+# ⚠️ INTENTIONALLY BROKEN — verification-loop drill fixture (schema-fixable path).
+# Iteration 1 of the loop: schema_check MUST fail (missing definition_of_done +
+# invalid skill_type). Its corrected counterpart is loop_schema_fixed.yaml.
+# Lives under tests/e2e/fixtures/ (NOT tasks/) so check_spec_consistency.rb's
+# tasks/**/*.yaml glob never lints it, while staying parseable YAML.
+
+task_id: "20260620-901"
+date: "2026-06-20"
+status: "pending"
+goal: "示範 schema 可修路徑：第 1 輪故意缺欄位"
+definition_of_done: []          # VIOLATION: must have >= 1 entry
+skill_type: "invalid_skill"     # VIOLATION: not in valid set
+risk_level: "low"
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "loop_drill.md"
+allowed_tools:
+  - "file_read"
+max_retries: 3

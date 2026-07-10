@@ -1,0 +1,60 @@
+task_id: "20260702-R02"
+date: "2026-07-02"
+status: "done"
+
+goal: "把 AUDIT_LOG 漂移檢查接進 CI、修正 GATE_POLICY 失真敘述、收斂雙驗證器欄位、補 skill token 預算守門"
+context: |
+  2026-07 文件 vs 實作稽核發現 #1 #7 #8 #9：
+  - #1 generate_audit_log.py --check 沒進 CI，且現在就是 DRIFT（exit 1）
+  - #7 GATE_POLICY 宣稱 task_id 格式 YYYYMMDD-### 與 allowed_tools 非空，但驗證器接受字母前綴、無人檢查 allowed_tools
+  - #8 validate_task_card.py 6 欄 vs check_spec_consistency.rb 9 欄不同步（D-O01 決議保留雙驗證器 → 收斂欄位不刪檔）
+  - #9 CLAUDE.md「單一 skill prompt ≤ 1,500 tokens」硬限制無人守門
+  方向已由使用者於 2026-07-02 plan 核准。
+
+input_data:
+  - ".github/workflows/spec-consistency.yml"
+  - "scripts/generate_audit_log.py"
+  - "system/GATE_POLICY.yaml"
+  - "scripts/check_spec_consistency.rb"
+  - "system/validate_task_card.py"
+  - "scripts/check_context_budget.rb"
+
+definition_of_done:
+  - "python3 scripts/generate_audit_log.py --check 本地 exit 0（先重生清掉現有 DRIFT）"
+  - "spec-consistency.yml 含 generate_audit_log.py --check 步驟，且 checkout 加 fetch-depth: 0（shallow clone 會令 checkpoint 推導全空造成假 DRIFT）"
+  - "GATE_POLICY.yaml task_id 格式敘述改為「YYYYMMDD-NNN 或 YYYYMMDD-XNNN（字母前綴選用）」"
+  - "兩驗證器都檢查 allowed_tools 非空（grep -c allowed_tools scripts/check_spec_consistency.rb system/validate_task_card.py 均 ≥ 1）"
+  - "validate_task_card.py REQUIRED_FIELDS 收斂為與 Ruby 同組（含 status/expected_output/approval_needed/allowed_tools），expected_output 檢查補 location"
+  - "test_check_spec_consistency.rb 有跨檔測試：regex 抽 Python REQUIRED_FIELDS 與 Ruby 常數比對，防再漂移"
+  - "check_context_budget.rb 對 skills/*/SKILL.md 逐檔檢查 ≤ 1,500 tokens；test_check_context_budget.rb 有對應測試"
+  - "ruby scripts/test_check_spec_consistency.rb、scripts/check_spec_consistency.rb、ruby scripts/test_check_context_budget.rb、ruby scripts/check_context_budget.rb、python3 tests/e2e/test_dummy_task_smoke.py、python3 tests/e2e/test_failure_drill.py 全綠"
+
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260702-R02_ci-validators-alignment-summary.md"
+
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+  - "bash"
+
+max_tool_calls: 30
+max_retries: 3
+max_web_searches: 0
+
+skill_type: "ops"
+
+checkpoints:
+  - commit: "3d83ddd"
+    stage: "驗證器欄位收斂 + allowed_tools 守門 + parity 測試 + skill 預算檢查"
+  - commit: "faca132"
+    stage: "CI 加 AUDIT_LOG 漂移檢查 + fetch-depth: 0"
+actual_tool_calls: 14
+result_summary: "DoD 8/8 通過。REQUIRED_FIELDS 雙驗證器收斂為 10 欄 + parity 測試；allowed_tools 47 卡全過；GATE_POLICY 敘述對齊；skill 預算逐檔守門；CI 補 drift check（含 fetch-depth: 0）。AUDIT_LOG 於收尾統一重生。"
+completion_time: "2026-07-02"
+audit_log_ref: "logs/AUDIT_LOG.md"

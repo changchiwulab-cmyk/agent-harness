@@ -16,14 +16,15 @@
 
 ## 執行流程
 
-1. 載入 Task Card → 2. 確認 goal + definition_of_done → 3. 載入 context（system/GLOBAL_RULES.md + system/AGENT_CONTEXT.yaml + system/APPROVAL_POLICY.yaml + 對應 skill + project context）→ 4. 執行 → 5. 每關鍵階段 git commit checkpoint → 6. 依 system/GATE_POLICY.yaml 逐層驗證（schema → 規則 → 完成 → 風險，含 rollback 定義）→ 7. 輸出到 outputs/ → 8. 依 system/EXECUTION_LOG_SCHEMA.yaml 寫執行紀錄到 logs/runs/ → 9. 寫 audit log
+1. 載入 Task Card → 2. 確認 goal + definition_of_done → 3. 載入 context（system/GLOBAL_RULES.md + system/AGENT_CONTEXT.yaml + system/APPROVAL_POLICY.yaml + 對應 skill + project context）→ 4. 執行 → 5. 每關鍵階段 git commit checkpoint → 6. 依 system/GATE_POLICY.yaml + system/VERIFICATION_LOOP.yaml 跑驗證閉環（schema → 規則 → 完成 → 風險，迭代≤3、含 rollback）→ 7. 輸出到 outputs/ → 8. 符合 EXECUTION_LOG_SCHEMA.yaml 使用範圍（failed / partial / risk≥high / checkpoints≥3）才寫執行紀錄到 logs/runs/ → 9. 寫 audit log
 
 ## Context 上限（軟性護欄）
 
 - CLAUDE.md + GLOBAL_RULES.md ≤ 3,000 tokens（實測 baseline ~400 tokens；上限給擴展空間）
 - 單一 skill prompt ≤ 1,500 tokens（含 SKILL.md + eval_examples.md；實測 baseline 200-600 tokens）
 - 只載入 Task Card 白名單內的工具
-- 長對話 20 輪後摘要壓縮
+- 長對話交給原生 auto-compaction；PreCompact hook 把 Task Card goal/DoD/checkpoint 寫入持久快照 logs/.session_state.md（取代手動「20 輪摘要」，壓縮/重置後可復原）
+- 載入順序對 prompt caching 友善：穩定前綴（CLAUDE.md→GLOBAL_RULES→PERMISSIONS）先，可變後綴（Task Card→skill）後
 - 大型檔案用路徑引用，不全文貼入
 
 ## Checkpoint

@@ -1,0 +1,18 @@
+# 批准紀錄 — R13（20260701-002）修改 system/RECOVERY_RUNBOOK.md
+# 本次 system/ 變更（新增 Scenario C 演練附錄）已在本次會話的 plan-mode 核准中
+# 明確列出（見「R1/R2/R5/R7 補強計畫 Workflow」計畫檔），使用者以 ExitPlanMode
+# 核准整批 R11/R12/R13/R14，其中 R13 的動作即包含本次 RECOVERY_RUNBOOK.md 變更。
+# 屬「先核准計畫、後執行」而非 R1 原案的「先執行、後草稿 PR review」，故 approval
+# 於變更執行前已發生，記錄於此供 R11 覆蓋率交叉檢查核對。
+
+approval_records:
+  - approval_id: "APR-20260701-001"
+    task_id: "20260701-002"
+    date: "2026-07-01"
+    action: "修改 system/RECOVERY_RUNBOOK.md，新增 Scenario C 恢復演練附錄"
+    approval_method: "human_confirm"
+    risk_level: "medium"
+    status: "approved"
+    approved_by: "human"
+    rationale: "使用者於本次會話 plan mode 核准「R1/R2/R5/R7 補強計畫 Workflow」，計畫中 R13 項目明確列出本次 system/ 變更範圍"
+    linked_run: ""

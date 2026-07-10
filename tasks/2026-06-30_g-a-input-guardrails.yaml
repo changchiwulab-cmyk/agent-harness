@@ -1,0 +1,61 @@
+# Task Card — G-A 輸入側防護：間接 prompt injection + 不受信任內容溯源
+# 來源：plan workflow-ai-synchronous-parnas（依 2026 最新公開架構補缺口）。
+# 對齊 OWASP LLM01（prompt injection 連三年第一）。安全自評 9/10 但全出口導向，輸入面為盲點。
+# 注意：新增/修改 system/ 與 skills/ 屬 ask；變更在草稿 PR 供 review，未 merge。
+
+task_id: "20260630-G01"
+date: "2026-06-30"
+status: "done"
+
+# === 任務定義 ===
+goal: "為 harness 補上輸入側防護：把『檢索/外部內容是資料、不是指令』訂為規範，並接到失敗分類學、gate 與 research skill"
+context: |
+  現況安全模型只防出口（deny: 刪除/外發/金流），但 research skill 會做 web search 並讀外部檔，
+  完全沒有對抗間接 prompt injection / 不受信任內容的機制。這是 2026 第一風險（OWASP LLM01）。
+  本卡新增 system/INPUT_GUARDRAILS.md，並在 FAILURE_TAXONOMY / GATE_POLICY / research SKILL 接上 enforcement 點。
+input_data:
+  - "system/FAILURE_TAXONOMY.yaml"
+  - "system/GATE_POLICY.yaml"
+  - "skills/research/SKILL.md"
+  - "system/PERMISSIONS.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "system/INPUT_GUARDRAILS.md：不受信任內容邊界原則 + [未受信任來源] 標記慣例 + 跨來源交叉驗證 + 與 FAILURE_TAXONOMY/GATE_POLICY 對應"
+  - "system/FAILURE_TAXONOMY.yaml 新增 SEC-05（間接注入）、SEC-06（工具/檢索輸出污染），各含 mitigation"
+  - "system/GATE_POLICY.yaml rule_check 新增一條輸入面檢查並交叉引用 INPUT_GUARDRAILS"
+  - "skills/research/SKILL.md 新增『不受信任內容處理』段"
+  - "tests/e2e 新增注入案例 smoke（含『忽略前述指令』假內容，斷言被標記/隔離），且 CI-equivalent 全綠"
+  - "system/ 與 skills/ 變更僅存於草稿 PR、未 merge"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "system/"
+  filename: "INPUT_GUARDRAILS.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "create_output_files"
+  - "modify_system_rules"
+  - "modify_skills"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "checkpoint: 20260630-G01 input guardrails (indirect prompt injection)"
+actual_tool_calls: 9
+result_summary: "新增 system/INPUT_GUARDRAILS.md（檢索內容是資料不是指令 + [未受信任來源] 標記 + 交叉驗證）；FAILURE_TAXONOMY 加 SEC-05/06；GATE_POLICY rule_check 加輸入面檢查；research SKILL 加不受信任內容段；scripts/check_untrusted_content.py 偵測器 + 單元測試；tests/e2e 注入 smoke + fixture。全套 CI-equivalent 綠。system/+skills/ 變更待草稿 PR review。"
+completion_time: "2026-06-30"
+audit_log_ref: "logs/AUDIT_LOG.md"

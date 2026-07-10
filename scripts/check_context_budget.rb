@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# Context budget check — 驗證 CLAUDE.md + GLOBAL_RULES.md 加總不超過 3,000 tokens。
+# Context budget check — 驗證 CLAUDE.md + GLOBAL_RULES.md 加總不超過 3,000 tokens，
+# 以及每個 skill prompt（skills/*/SKILL.md）單檔不超過 1,500 tokens。
 # 依據：CLAUDE.md「Context 硬限制」段落。
 #
 # 估算法（language-aware，保守上界）：
@@ -17,6 +18,8 @@ TARGET_FILES = [
   'CLAUDE.md',
   'system/GLOBAL_RULES.md'
 ].freeze
+SKILL_TOKEN_BUDGET = 1_500
+SKILL_GLOB = 'skills/*/SKILL.md'
 
 def estimate_tokens(path)
   return nil unless File.exist?(path)
@@ -54,10 +57,29 @@ if __FILE__ == $PROGRAM_NAME
   per_file.each { |path, tokens| puts format('  %-28s  ~%d tokens', path, tokens) }
   puts format('  %-28s  ~%d tokens (budget %d)', 'TOTAL', total, TOKEN_BUDGET)
 
+  failed = false
   if total > TOKEN_BUDGET
     warn "FAILED: context budget exceeded (~#{total} > #{TOKEN_BUDGET})"
-    exit 1
+    failed = true
   end
+
+  skill_files = Dir.glob(SKILL_GLOB).sort
+  if skill_files.empty?
+    warn "FAILED: no skill prompts found under #{SKILL_GLOB}"
+    failed = true
+  end
+
+  puts format('Skill prompt budgets (each ≤ %d tokens):', SKILL_TOKEN_BUDGET)
+  skill_files.each do |path|
+    est = estimate_tokens(path)
+    puts format('  %-28s  ~%d tokens', path, est)
+    if est > SKILL_TOKEN_BUDGET
+      warn "FAILED: skill prompt over budget: #{path} (~#{est} > #{SKILL_TOKEN_BUDGET})"
+      failed = true
+    end
+  end
+
+  exit 1 if failed
 
   puts 'OK: context budget within limit'
   exit 0

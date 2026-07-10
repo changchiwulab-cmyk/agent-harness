@@ -81,6 +81,36 @@ class TestCheckpointDetection(unittest.TestCase):
         with mock.patch("subprocess.run", side_effect=FileNotFoundError):
             self.assertEqual(gen.find_checkpoints("X", Path("/tmp")), [])
 
+    def test_card_recorded_checkpoints_take_precedence(self):
+        # Card-first keeps --check deterministic across squash merges (codex P1):
+        # git must not even be consulted when the card records its checkpoints.
+        task = {
+            "task_id": "20260501-X01",
+            "checkpoints": [{"commit": "91277ad", "stage": "guard sync"}],
+        }
+        with mock.patch.object(gen, "find_checkpoints", side_effect=AssertionError("git consulted")):
+            resolved = gen.resolve_checkpoints(task, Path("/tmp"))
+        self.assertEqual(resolved, [{"commit": "91277ad", "stage": "guard sync"}])
+
+    def test_string_checkpoints_preserved_as_notes(self):
+        # Pre-R04 cards record checkpoints as free-form strings — keep them.
+        task = {
+            "task_id": "20260404-W01",
+            "checkpoints": ["checkpoint: [20260404-W01] 草稿完成"],
+        }
+        with mock.patch.object(gen, "find_checkpoints", side_effect=AssertionError("git consulted")):
+            resolved = gen.resolve_checkpoints(task, Path("/tmp"))
+        self.assertEqual(resolved, [{"note": "checkpoint: [20260404-W01] 草稿完成"}])
+
+    def test_empty_card_checkpoints_fall_back_to_git(self):
+        sentinel = [{"commit": "abc1234", "subject": "checkpoint: [20260501-X01] s"}]
+        for absent in ({"task_id": "20260501-X01"},
+                       {"task_id": "20260501-X01", "checkpoints": []}):
+            with mock.patch.object(gen, "find_checkpoints", return_value=sentinel) as patched:
+                resolved = gen.resolve_checkpoints(absent, Path("/tmp"))
+            patched.assert_called_once_with("20260501-X01", Path("/tmp"))
+            self.assertEqual(resolved, sentinel)
+
 
 class TestManualNotesPreservation(unittest.TestCase):
     def test_existing_manual_notes_survive_regeneration(self):

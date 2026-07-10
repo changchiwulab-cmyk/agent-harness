@@ -9,6 +9,8 @@ errors = []
 ALLOWED_STATUS = %w[pending in_progress checkpoint review done failed].freeze
 ALLOWED_RISK = %w[low medium high critical].freeze
 ALLOWED_SKILL = %w[research writing ops review analysis].freeze
+# 與 system/validate_task_card.py 的 REQUIRED_FIELDS 同步；
+# parity 由 scripts/test_check_spec_consistency.rb 在 CI 保證。
 REQUIRED_FIELDS = %w[
   task_id
   date
@@ -19,11 +21,16 @@ REQUIRED_FIELDS = %w[
   risk_level
   approval_needed
   skill_type
+  allowed_tools
 ].freeze
 REQUIRED_OUTPUT_FIELDS = %w[format location filename].freeze
 
 TASK_ID_PATTERN = /\A\d{8}-[A-Za-z]*\d+\z/
 DATE_PATTERN = /\A\d{4}-\d{2}-\d{2}\z/
+
+# --- state/ resume schema 常數（G-D: 20260630-G04）---
+ALLOWED_STATE_STATUS = %w[active paused done].freeze
+REQUIRED_STATE_FIELDS = %w[task_id updated_at status next_action checkpoint_commit].freeze
 
 # --- logs/ schema lint 常數（R2: 20260529-005）---
 ALLOWED_RUN_STATUS = %w[completed failed partial cancelled].freeze
@@ -32,6 +39,77 @@ ALLOWED_APPROVAL_METHOD = %w[human_confirm draft_first].freeze
 ALLOWED_APPROVAL_STATUS = %w[approved rejected superseded].freeze
 REQUIRED_APPROVAL_FIELDS = %w[approval_id task_id date action approval_method status approved_by].freeze
 ALLOWED_ERROR_TYPE = %w[tool_failure rule_violation schema_failure timeout unknown].freeze
+
+# --- 批准覆蓋率交叉檢查常數（R11: 20260701-003）---
+# 只對 date >= 此日期的 Task Card 強制要求覆蓋：R1 只回填了 1 筆歷史批准樣本
+# （20260409-001），但實際上有 10+ 筆更早的 approval_needed=true/status=done 任務
+# 從未有對應紀錄。沒有真實來源可以誠實回填這些歷史批准，所以不追溯，只從此日期
+# 起強制——新任務不能再悄悄漏掉批准紀錄。
+APPROVAL_COVERAGE_CUTOFF = Date.new(2026, 7, 1)
+
+# 從 approval_entries 篩出真正「已核准」的 task_id（Codex review：rejected/superseded
+# 不該算數，否則一張從未真的被核准的任務，只要有任何一筆非 approved 紀錄就會被誤判為
+# 已覆蓋，覆蓋率檢查形同虛設）。
+# approval_entries: [[appr_file, index, record_hash], ...]
+def approved_task_ids(approval_entries)
+  approval_entries
+    .select { |_, _, rec| rec.is_a?(Hash) && rec['status'] == 'approved' }
+    .map { |_, _, rec| rec['task_id'] }
+end
+
+# 純函式，方便直接單元測試（不需真的讀檔）。
+# tasks: [[task_file, task_hash], ...]；approval_task_ids: 已被核准紀錄覆蓋的 task_id 陣列（只含 status=approved）
+def check_approval_coverage(tasks, approval_task_ids, cutoff_date)
+  errors = []
+  tasks.each do |task_file, task|
+    next unless task.is_a?(Hash)
+    next unless task['approval_needed'] == true
+    next unless %w[done failed].include?(task['status'])
+
+    task_date = parse_iso_date(task['date'])
+    next if task_date.nil? || task_date < cutoff_date
+
+    task_id = task['task_id']
+    unless approval_task_ids.include?(task_id)
+      errors << "#{task_file}: approval_needed task (status=#{task['status']}, date=#{task['date']}) has no matching logs/approvals/ record for task_id #{task_id}"
+    end
+  end
+  errors
+end
+
+# --- 跨檔案參照完整性 lint（R12: 20260701-004）---
+# R1/R2 只驗證單一檔案內部欄位/枚舉是否合法，沒有人驗證「欄位指向的另一個檔案是否真的存在」。
+# 兩個純函式，皆可離線單元測試。
+
+# run_records: [[run_file, log_hash], ...]；known_task_ids: 所有現存 Task Card 的 task_id 陣列
+def check_run_task_references(run_records, known_task_ids)
+  errors = []
+  run_records.each do |run_file, log|
+    next unless log.is_a?(Hash)
+
+    task_id = log['task_id']
+    next if task_id.nil? || task_id.to_s.strip.empty?
+    unless known_task_ids.include?(task_id)
+      errors << "#{run_file}: task_id #{task_id} does not match any existing Task Card in tasks/"
+    end
+  end
+  errors
+end
+
+# approval_entries: [[appr_file, index, record_hash], ...]；known_run_ids: 所有現存 run_id 陣列
+def check_approval_run_references(approval_entries, known_run_ids)
+  errors = []
+  approval_entries.each do |appr_file, index, rec|
+    next unless rec.is_a?(Hash)
+
+    linked_run = rec['linked_run']
+    next if linked_run.nil? || linked_run.to_s.strip.empty?
+    unless known_run_ids.include?(linked_run)
+      errors << "#{appr_file}: approval_records[#{index}] linked_run #{linked_run} does not match any existing logs/runs/ run_id"
+    end
+  end
+  errors
+end
 
 def parse_iso_date(value)
   return value if value.is_a?(Date)
@@ -60,6 +138,7 @@ required_dirs.each do |dir|
 end
 
 # 2) Task Card schema 驗證（排除模板）
+task_records = []
 Dir.glob('tasks/**/*.yaml').sort.each do |task_file|
   next if File.basename(task_file).include?('TEMPLATE')
 
@@ -68,6 +147,7 @@ Dir.glob('tasks/**/*.yaml').sort.each do |task_file|
     errors << "#{task_file}: root must be mapping"
     next
   end
+  task_records << [task_file, task]
 
   REQUIRED_FIELDS.each do |field|
     value = task[field]
@@ -129,6 +209,10 @@ Dir.glob('tasks/**/*.yaml').sort.each do |task_file|
     errors << "#{task_file}: approval_needed must be boolean"
   end
 
+  if task.key?('allowed_tools') && !task['allowed_tools'].is_a?(Array)
+    errors << "#{task_file}: allowed_tools must be an array"
+  end
+
   if task['definition_of_done'].is_a?(Array)
     if task['definition_of_done'].empty? || task['definition_of_done'].any? { |item| !item.is_a?(String) || item.strip.empty? }
       errors << "#{task_file}: definition_of_done must be non-empty string array"
@@ -161,6 +245,7 @@ Dir.glob('tasks/examples/*.yaml').sort.each do |task_file|
 end
 
 # 4) logs/runs/*.yaml — execution log schema（R2: 20260529-005）
+run_records = []
 Dir.glob('logs/runs/*.yaml').sort.each do |run_file|
   doc = YAML.load_file(run_file)
   unless doc.is_a?(Hash)
@@ -176,9 +261,11 @@ Dir.glob('logs/runs/*.yaml').sort.each do |run_file|
   if log.key?('status') && !ALLOWED_RUN_STATUS.include?(log['status'])
     errors << "#{run_file}: invalid run status #{log['status']} (allowed: #{ALLOWED_RUN_STATUS.join('/')})"
   end
+  run_records << [run_file, log]
 end
 
 # 5) logs/approvals/*.yaml — approval record schema（R2；跳過 TEMPLATE）
+approval_entries = []
 Dir.glob('logs/approvals/*.yaml').sort.each do |appr_file|
   next if File.basename(appr_file).include?('TEMPLATE')
 
@@ -205,6 +292,7 @@ Dir.glob('logs/approvals/*.yaml').sort.each do |appr_file|
     if rec.key?('status') && !ALLOWED_APPROVAL_STATUS.include?(rec['status'])
       errors << "#{appr_file}: approval_records[#{i}] invalid status #{rec['status']}"
     end
+    approval_entries << [appr_file, i, rec]
   end
 end
 
@@ -235,6 +323,101 @@ Dir.glob('logs/errors/*.md').sort.each do |err_file|
     errors << "#{err_file}: invalid error_type #{etype} (allowed: #{ALLOWED_ERROR_TYPE.join('/')})"
   end
 end
+
+# 7) skills/*/SKILL.md — 原生 skill frontmatter（name + description；name 須等於目錄名）
+Dir.glob('skills/*/SKILL.md').sort.each do |skill_file|
+  content = File.read(skill_file, encoding: 'UTF-8')
+  m = content.match(/\A---\s*\n(.*?)\n---\s*\n/m)
+  unless m
+    errors << "#{skill_file}: missing YAML frontmatter (--- name/description ---)"
+    next
+  end
+  begin
+    fm = YAML.safe_load(m[1])
+  rescue StandardError => e
+    errors << "#{skill_file}: frontmatter parse error: #{e.message}"
+    next
+  end
+  unless fm.is_a?(Hash)
+    errors << "#{skill_file}: frontmatter must be a mapping"
+    next
+  end
+  %w[name description].each do |key|
+    val = fm[key]
+    errors << "#{skill_file}: frontmatter missing #{key}" if val.nil? || val.to_s.strip.empty?
+  end
+  dir_name = File.basename(File.dirname(skill_file))
+  if fm['name'] && fm['name'].to_s.strip != dir_name
+    errors << "#{skill_file}: frontmatter name '#{fm['name']}' != directory '#{dir_name}'"
+  end
+end
+
+# 8) .claude/agents/*.md — 子代理 frontmatter（name + description；model 若有須合法）
+allowed_agent_model = %w[haiku sonnet opus inherit].freeze
+Dir.glob('.claude/agents/*.md').sort.each do |agent_file|
+  content = File.read(agent_file, encoding: 'UTF-8')
+  m = content.match(/\A---\s*\n(.*?)\n---\s*\n/m)
+  unless m
+    errors << "#{agent_file}: missing YAML frontmatter"
+    next
+  end
+  begin
+    fm = YAML.safe_load(m[1])
+  rescue StandardError => e
+    errors << "#{agent_file}: frontmatter parse error: #{e.message}"
+    next
+  end
+  unless fm.is_a?(Hash)
+    errors << "#{agent_file}: frontmatter must be a mapping"
+    next
+  end
+  %w[name description].each do |key|
+    val = fm[key]
+    errors << "#{agent_file}: frontmatter missing #{key}" if val.nil? || val.to_s.strip.empty?
+  end
+  model = fm['model'].to_s
+  if !model.empty? && !allowed_agent_model.include?(model) && !model.start_with?('claude-')
+    errors << "#{agent_file}: invalid model #{model} (allowed: #{allowed_agent_model.join('/')} or claude-* id)"
+  end
+end
+
+# 9) .claude/skills/* symlink 必須可解析（指向 skills/<name>）
+Dir.glob('.claude/skills/*').sort.each do |link|
+  next unless File.symlink?(link)
+
+  errors << "#{link}: dangling symlink (target missing)" unless File.exist?(link)
+end
+
+# 10) state/*.yaml — cross-session resume schema（G-D；跳過 SCHEMA/TEMPLATE）
+Dir.glob('state/*.yaml').sort.each do |state_file|
+  next if File.basename(state_file) =~ /SCHEMA|TEMPLATE/
+
+  doc = YAML.load_file(state_file)
+  unless doc.is_a?(Hash)
+    errors << "#{state_file}: root must be mapping"
+    next
+  end
+  REQUIRED_STATE_FIELDS.each do |field|
+    value = doc[field]
+    empty = value.nil? || (value.is_a?(String) && value.strip.empty?)
+    errors << "#{state_file}: missing required field #{field}" if empty
+  end
+  if doc.key?('status') && !ALLOWED_STATE_STATUS.include?(doc['status'])
+    errors << "#{state_file}: invalid state status #{doc['status']} (allowed: #{ALLOWED_STATE_STATUS.join('/')})"
+  end
+  if doc.key?('updated_at') && doc['updated_at'].is_a?(String) && parse_iso_date(doc['updated_at']).nil?
+    errors << "#{state_file}: invalid updated_at #{doc['updated_at']} (expected valid YYYY-MM-DD)"
+  end
+end
+
+# 11) 批准覆蓋率交叉檢查（R11: 20260701-003；只適用 date >= APPROVAL_COVERAGE_CUTOFF）
+errors.concat(check_approval_coverage(task_records, approved_task_ids(approval_entries), APPROVAL_COVERAGE_CUTOFF))
+
+# 12) 跨檔案參照完整性（R12: 20260701-004）
+known_task_ids = task_records.map { |_, t| t['task_id'] }.compact
+known_run_ids = run_records.map { |_, log| log['run_id'] }.compact
+errors.concat(check_run_task_references(run_records, known_task_ids))
+errors.concat(check_approval_run_references(approval_entries, known_run_ids))
 
 if errors.empty?
   puts 'OK: spec consistency checks passed'
