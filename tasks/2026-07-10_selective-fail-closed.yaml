@@ -1,6 +1,6 @@
 task_id: "20260710-003"
 date: "2026-07-10"
-status: "in_progress"
+status: "review"
 
 # === 任務定義 ===
 goal: "選擇性 fail-closed 化（task_card_guard 壞 stdin/例外、gate 高風險缺 run log 條件 FAIL），並在 SECURITY.md 寫明防護邊界聲明 + permissions_guard 低誤判補強"
@@ -72,8 +72,16 @@ max_web_searches: 0
 skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
-audit_log_ref: ""
+checkpoints:
+  - commit: "619e9a9"
+    stage: "三張 Task Card 建立並通過 validator（C0，與 001/002 共用）"
+  - commit: "05e6c4e"
+    stage: "task_card_guard 輸入層 fail-closed（空 stdin/壞 JSON/例外 → exit 2）（C5）"
+  - commit: "6a88c5a"
+    stage: "gate_check + verification_loop 缺 run log 條件 FAIL，共用 helper（C6）"
+  - commit: "c65c57d"
+    stage: "permissions_guard wget 擴充 + SECURITY.md 威脅模型 + Stop hook gate 警告（C7）"
+actual_tool_calls: 22
+result_summary: "DoD 7/7。task_card_guard 輸入層 fail-closed（test_empty_stdin_allows 語意翻轉為 expect block）；gate_check/verification_loop 以共用 run_log_required() 對 cutoff 起高風險結案卡缺帳判 FAIL（不追溯歷史卡）；permissions_guard/failure_counter 維持 fail-open 且理由入 SECURITY.md 新威脅模型章節（防線分層表 + 已知繞過面）；4 條網路規則擴 wget 簽名 rule_id 不變；session_stop_checks 對 active task 跑 gate_check 警告（非 blocking）。本地 CI 全套綠。"
+completion_time: "2026-07-10"
+audit_log_ref: "logs/AUDIT_LOG.md"

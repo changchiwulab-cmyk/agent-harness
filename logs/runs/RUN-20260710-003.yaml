@@ -1,0 +1,55 @@
+# Execution Log — 選擇性 fail-closed + SECURITY.md 防護邊界聲明
+# 觸發條件符合 EXECUTION_LOG_SCHEMA 使用範圍：checkpoints ≥ 3
+
+execution_log:
+  run_id: "RUN-20260710-003"
+  task_id: "20260710-003"
+  skill_type: "ops"
+  started_at: "2026-07-10 00:00"
+  ended_at: "2026-07-10 00:00"
+  status: "completed"
+
+  tools_used:
+    - tool: file_read
+      call_count: 7
+    - tool: file_search
+      call_count: 4
+    - tool: create_output_files
+      call_count: 2
+    - tool: run_tests
+      call_count: 8
+    - tool: git_commit_checkpoint
+      call_count: 3
+    - tool: modify_system_rules
+      call_count: 1
+
+  checkpoints:
+    - commit: "05e6c4e"
+      stage: "task_card_guard 輸入層 fail-closed（stdin/例外 → exit 2）"
+    - commit: "6a88c5a"
+      stage: "gate_check + verification_loop 缺 run log 條件 FAIL（共用 helper）"
+    - commit: "c65c57d"
+      stage: "permissions_guard wget + SECURITY.md 威脅模型 + Stop hook gate 警告"
+
+  token_estimate:
+    input: 50000
+    output: 10000
+    total: 60000
+    source: "rule_estimated"
+
+  approvals:
+    - action: "modify_system_rules — system/VERIFICATION_LOOP.yaml rule_check disposition 註記"
+      status: "approved"
+      approved_by: "human"
+      timestamp: "2026-07-10"
+      note: "plan mode 核准範圍（C6 明列與 20260620-001 併版）"
+
+  output_path: "scripts/task_card_guard.py"
+  error_summary: ""
+  gate_results:
+    schema_check: "pass"
+    rule_check: "pass"
+    completion_check: "pass"
+    risk_check: "n/a"
+
+  notes: "fail-closed 只施於誤傷面有界的點位：task_card_guard 輸入層（matcher 限制在寫入類工具）與高風險缺帳（cutoff 2026-07-10 起不追溯）。permissions_guard/failure_counter 維持 fail-open，由測試鎖定。"
