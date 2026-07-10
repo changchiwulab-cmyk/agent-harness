@@ -84,7 +84,7 @@ enforcement:
     enforces: "deny 清單的 shell 簽章（rm -rf / sendmail / 外部 webhook / 金流 API / git force-push）"
   - guard: "scripts/task_card_guard.py"
     matcher: "Write|Edit|MultiEdit|NotebookEdit"
-    enforces: "硬規則 1 — 寫入 outputs/reports/ 的新正式產出，必須有 Task Card 在 expected_output.filename 宣告；否則 block"
+    enforces: "硬規則 1（v2, 20260710-002）— 寫入 outputs/reports/ 的新正式產出，必須綁定 active task（state/active_task.yaml，由 scripts/active_task.py --set 維護）：卡片存在、status ∉ {done,failed}、expected_output 精確路徑與目標一致；否則 block。檔名巧合與已結案卡不再授權"
   - guard: "scripts/failure_counter.py --hook"
     matcher: "Bash + Write|Edit"
     enforces: "硬規則 3 — 同一 task_id 連續失敗達 3 次後，後續工具呼叫一律 block，直到人工 --reset"
