@@ -7,6 +7,53 @@
 
 <!-- AUTO_AUDIT_BEGIN -->
 ```yaml
+task_id: 20260710-003
+date: '2026-07-10'
+skill_type: ops
+goal: 選擇性 fail-closed 化（task_card_guard 壞 stdin/例外、gate 高風險缺 run log 條件 FAIL），並在 SECURITY.md
+  寫明防護邊界聲明 + permissions_guard 低誤判補強
+status: in_progress
+risk_level: medium
+approval_needed: true
+output_path: scripts/task_card_guard.py
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ''
+completion_time: ''
+```
+
+```yaml
+task_id: 20260710-002
+date: '2026-07-10'
+skill_type: ops
+goal: 建立 active task 真相來源（state/active_task.yaml + CLI），並將 task_card_guard 授權模型從 basename
+  比對升級為 normalized 完整路徑 + task_id + status 三段綁定
+status: in_progress
+risk_level: medium
+approval_needed: true
+output_path: scripts/active_task.py
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ''
+completion_time: ''
+```
+
+```yaml
+task_id: 20260710-001
+date: '2026-07-10'
+skill_type: analysis
+goal: 將外部第一性原理分析報告（7.2/10）的六大類指控逐條對照程式碼驗證結果（含檔案:行號證據），給出 P0 建議的接受/修改/駁回結論
+status: in_progress
+risk_level: medium
+approval_needed: true
+output_path: outputs/drafts/20260710-001_external-review-verification.md
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ''
+completion_time: ''
+```
+
+```yaml
 task_id: 20260706-R01
 date: '2026-07-06'
 skill_type: research

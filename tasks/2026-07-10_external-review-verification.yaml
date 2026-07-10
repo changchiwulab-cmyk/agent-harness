@@ -1,0 +1,67 @@
+task_id: "20260710-001"
+date: "2026-07-10"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "將外部第一性原理分析報告（7.2/10）的六大類指控逐條對照程式碼驗證結果（含檔案:行號證據），給出 P0 建議的接受/修改/駁回結論"
+
+context: |
+  使用者提供一份外部分析報告，核心診斷是「文件宣稱的控制力高於 runtime
+  實際能保證的控制力」，並提出 P0（active task 綁定、精確路徑授權、
+  fail-closed、sandbox）與 P1/P2 建議。三路 codebase 探索已確認指控
+  幾乎全數屬實，但報告亦有三處需修正：
+  1) CI 12 項檢查存在，但是單一 workflow 單一 job 的 steps，非獨立 job；
+  2) permissions_guard 對 policy 檔讀取失敗已是 fail-safe（保留全規則），
+     報告低估此點；
+  3) failure_counter 觸發後是 exit 2 硬擋（fail-closed），弱點在計數
+     依賴 prompt 自律，非「不會停」。
+  本報告是 20260710-002/003 兩張 hardening 卡的設計依據文件。
+
+input_data:
+  - "使用者提供的外部第一性原理分析報告全文（對話內）"
+  - "scripts/permissions_guard.py"
+  - "scripts/task_card_guard.py"
+  - "scripts/failure_counter.py"
+  - "scripts/gate_check.py"
+  - "scripts/verification_loop.py"
+  - "scripts/run_evals.py"
+  - "system/COST_POLICY.md"
+  - ".github/workflows/spec-consistency.yml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "六大類指控（hooks 強制力、Task Card 授權、gate fail-open、eval 深度、成本樣本、規格漂移/授權缺失）各有「指控原文 → 程式碼證據（檔案:行號）→ 屬實/部分屬實/不屬實」三段結構"
+  - "對 P0(a)-(d) 各給出接受/修改/駁回結論，並明確處理與專案哲學（false positive 比漏抓更糟、99% 低風險路徑不上鎖）的衝突"
+  - "報告需修正的三處（CI steps 非 jobs、policy fail-safe、failure_counter 觸發後硬擋）明文列出"
+  - "明列本輪不做清單與理由（LLM judge、eval 擴充、容器 sandbox、跨模型 core 等）"
+  - "草稿落 outputs/drafts/，經人工核准後才升 outputs/reports/"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260710-001_external-review-verification.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 15
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
