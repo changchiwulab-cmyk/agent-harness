@@ -7,12 +7,31 @@
 
 <!-- AUTO_AUDIT_BEGIN -->
 ```yaml
+task_id: 20260710-004
+date: '2026-07-10'
+skill_type: ops
+goal: 將人工核准的外部報告對比驗證分析（20260710-001）從 outputs/drafts/ 升格為 outputs/reports/ 正式報告
+status: done
+risk_level: medium
+approval_needed: true
+output_path: outputs/reports/20260710-001_external-review-verification.md
+checkpoints:
+- commit: pending
+  stage: dogfood（idle block / 綁定放行）+ 報告升格 + 四卡 done + 批准紀錄
+actual_tool_calls: 8
+result_summary: DoD 3/3。dogfood 實測：idle 寫 reports exit=2 被擋、--set 20260710-004 後 exit=0
+  放行（guard v2 上線後首次實戰驗證）。報告升格至 outputs/reports/，diff 確認內容與核准草稿一致（僅補升格註記）。四張 20260710
+  卡 done + 批准紀錄補齊。
+completion_time: '2026-07-10'
+```
+
+```yaml
 task_id: 20260710-003
 date: '2026-07-10'
 skill_type: ops
 goal: 選擇性 fail-closed 化（task_card_guard 壞 stdin/例外、gate 高風險缺 run log 條件 FAIL），並在 SECURITY.md
   寫明防護邊界聲明 + permissions_guard 低誤判補強
-status: review
+status: done
 risk_level: medium
 approval_needed: true
 output_path: scripts/task_card_guard.py
@@ -40,7 +59,7 @@ date: '2026-07-10'
 skill_type: ops
 goal: 建立 active task 真相來源（state/active_task.yaml + CLI），並將 task_card_guard 授權模型從 basename
   比對升級為 normalized 完整路徑 + task_id + status 三段綁定
-status: review
+status: done
 risk_level: medium
 approval_needed: true
 output_path: scripts/active_task.py
@@ -66,7 +85,7 @@ task_id: 20260710-001
 date: '2026-07-10'
 skill_type: analysis
 goal: 將外部第一性原理分析報告（7.2/10）的六大類指控逐條對照程式碼驗證結果（含檔案:行號證據），給出 P0 建議的接受/修改/駁回結論
-status: review
+status: done
 risk_level: medium
 approval_needed: true
 output_path: outputs/drafts/20260710-001_external-review-verification.md
