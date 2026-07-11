@@ -170,6 +170,13 @@ class TestGates(unittest.TestCase):
         ok, msgs = vl.check_risk(card(risk_level="high"), run_log)
         self.assertTrue(ok, msgs)
 
+    def test_risk_declared_traversal_out_of_drafts_fails(self):
+        # Codex P1 on #133：outputs/drafts/../reports/ 經 normpath 後在 drafts 外
+        c = card(risk_level="high",
+                 expected_output={"format": "md", "location": "outputs/drafts/../reports/", "filename": "x.md"})
+        ok, _ = vl.check_risk(c)
+        self.assertFalse(ok)
+
 
 class TestBudget(unittest.TestCase):
     def test_attempts_schema_capped_at_2(self):

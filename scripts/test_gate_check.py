@@ -200,6 +200,9 @@ class TestRiskGateSemantics(unittest.TestCase):
         ("high", "outputs/drafts/", "outputs/reports/x.md", False),  # 實際落點違規
         ("high", "outputs/drafts/", "outputs/drafts/x.md", True),
         ("low", "outputs/reports/", None, True),                     # 低風險不受限
+        ("high", "outputs/drafts/../reports/", None, False),         # traversal 出界（Codex P1 on #133）
+        ("high", "outputs/drafts/sub/../x/", None, True),            # 內部 .. 不出界
+        ("high", "outputs/drafts/", "outputs/drafts/../reports/x.md", False),  # run log traversal
     ]
 
     @staticmethod
