@@ -7,6 +7,22 @@
 
 <!-- AUTO_AUDIT_BEGIN -->
 ```yaml
+task_id: 20260711-A01
+date: '2026-07-11'
+skill_type: analysis
+goal: 以「四層 AI Engineering」框架（Prompt/Context/Harness/Loop）對照 agent-harness，產出優缺點分析與
+  P0–P2 改善計劃，並修復本次已驗證的三個 P0 落差
+status: in_progress
+risk_level: low
+approval_needed: true
+output_path: outputs/drafts/20260711-A01_four-layer-alignment-analysis.md
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ''
+completion_time: ''
+```
+
+```yaml
 task_id: 20260710-004
 date: '2026-07-10'
 skill_type: ops

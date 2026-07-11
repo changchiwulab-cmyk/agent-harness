@@ -1,0 +1,65 @@
+task_id: "20260711-A01"
+date: "2026-07-11"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "以「四層 AI Engineering」框架（Prompt/Context/Harness/Loop）對照 agent-harness，產出優缺點分析與 P0–P2 改善計劃，並修復本次已驗證的三個 P0 落差"
+context: |
+  使用者提供 datasciencedojo「The 4 Layers of AI Engineering」概念圖，要求對照本專案
+  指出優缺點並給出改善計劃。全 repo 探索＋人工驗證發現三個 P0 落差：
+  (1) 兩套 L4 風險 gate 語意分歧 — gate_check.gate_risk 對高風險卡空路徑 fail-open
+  且用子字串比對（scripts/gate_check.py:212-225）；verification_loop.check_risk 則
+  前綴精確、空路徑 fail-closed、但不看 run_log 實際落點（scripts/verification_loop.py:178-186）。
+  (2) context 預算宣稱/量測口徑不一致 — CLAUDE.md 說 skill 上限含 eval_examples.md，
+  check_context_budget.rb 只量 SKILL.md；照宣稱口徑 3/6 skill 已超標。
+  (3) memory/active_projects/agent-harness/context.md 決策清單停在 D007，磁碟已有 D008。
+  範圍經使用者選定：報告＋P0 修正；P1 以後只寫入報告 roadmap，不開卡不實作。
+  對齊計畫 /root/.claude/plans/root-claude-uploads-0750823a-2f66-5464-greedy-sonnet.md。
+input_data:
+  - "使用者上傳之四層框架圖（內容轉述於報告首節）"
+  - "scripts/gate_check.py"
+  - "scripts/verification_loop.py"
+  - "scripts/check_context_budget.rb"
+  - "CLAUDE.md"
+  - "memory/active_projects/agent-harness/"
+
+# === 完成標準 ===
+definition_of_done:
+  - "報告 outputs/drafts/20260711-A01_four-layer-alignment-analysis.md 完成：四層各有優/缺點對照且引用檔案:行號證據，含 P0–P2 分級改善 roadmap 與「與圖定位差異」說明"
+  - "gate_check.gate_risk 與 verification_loop.check_risk 語意統一：共用前綴精確 helper、高風險空路徑 fail-closed、皆檢查 run_log.output_path；附兩套判定一致的 parity 測試與案例矩陣（空路徑/drafts-public/foo-outputs-drafts/正常 drafts/run_log 落 reports）"
+  - "CLAUDE.md skill 預算口徑改為只計執行期載入的 SKILL.md；check_context_budget.rb 增 eval_examples.md advisory 輸出且 exit code 行為不變"
+  - "memory/active_projects/agent-harness/context.md 決策清單同步至 D008"
+  - "CI 同款檢查全綠：pytest scripts/ tests/e2e/、check_context_budget.rb、check_spec_consistency.rb、run_evals.py 校準、sync_derived.sh --check"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260711-A01_four-layer-alignment-analysis.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "write_logs"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 60
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
