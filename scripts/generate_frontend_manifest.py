@@ -124,6 +124,8 @@ def build_governance_alerts(tasks: list[dict[str, Any]], root: Path) -> list[dic
     the CI drift check (`generate_frontend_manifest.py --check` compares a fresh
     rebuild against the committed file with no notion of "as of which day"). M2-M4
     are pure snapshots of current repo file state, so they stay deterministic.
+    M5 (open-PR backlog) is excluded for the same reason, stronger: it depends on
+    live GitHub API state that a clean checkout cannot reproduce.
     """
     drafts = gm.count_dir_md_files(root / "outputs" / "drafts")
     reports = gm.count_dir_md_files(root / "outputs" / "reports")
