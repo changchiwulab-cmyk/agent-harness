@@ -45,6 +45,10 @@ def validate(path: str) -> list[str]:
     except Exception as e:
         return [f"YAML 解析失敗：{e}"]
 
+    # 空檔或非 mapping（如純字串/清單）：直接回報，不往下走（card.get 會 AttributeError）
+    if not isinstance(card, dict):
+        return ["Task Card 必須是 YAML mapping（鍵值對）；空檔或非 mapping 內容無效"]
+
     # 必填欄位
     for field in REQUIRED_FIELDS:
         if _is_empty(card.get(field)):

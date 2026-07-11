@@ -19,6 +19,9 @@
 ```
 使用者提出需求
     ↓
+[In-flight 查重] python3 scripts/check_inflight.py <goal 關鍵字>
+    命中 → 停止開卡，呈報使用者裁決：續作既有卡 / 接手 in-flight 分支 / 確認新題
+    ↓ 無命中（或裁決為新題）
 [Fast-path 檢查] 三條都符合？
     ↓ 是
 草擬 Task Card（填 goal / definition_of_done / skill_type / risk_level）
@@ -33,6 +36,23 @@
 
 ---
 
+## 開卡前 In-flight 查重（fast-path 與 intake 兩路都適用）
+
+**為什麼**：2026-07-06 架構診斷實證——eval harness 同題五做（#113–#118）、R9/R10 兩做、
+R11–R14 編號撞車。跨 session 看不見 in-flight 的工作，是「無整合平面」缺點的入口端。
+
+**怎麼查**：`python3 scripts/check_inflight.py <關鍵字...>`（建議中英文各 1–2 個）掃三個來源：
+
+1. `tasks/*.yaml` 的 goal 欄位 + 檔名 slug（既有卡）
+2. `git ls-remote --heads origin` 分支名（in-flight 分支）
+3. open PR 標題（`--pr-json` 提供時；與 `governance_metrics.py --pr-json` 同一份 JSON）
+
+**能力邊界**：關鍵字比對抓不到語意重複（「eval harness」vs「評測框架」），故定位為
+advisory——命中時停止開卡、呈報使用者裁決，不做硬擋。工具不可用時退化為人工
+grep `tasks/*.yaml` 的 goal，並在卡片 `context` 註明查重方式。
+
+---
+
 ## Fallback：Intake 模式（需求不明時啟動）
 
 當 fast-path 三條件**任一不符**，啟動 Intake 模式。
@@ -43,7 +63,8 @@
 - 向使用者提問釐清需求
 - 讀取 project 內部檔案（了解 context）
 - 讀取 memory/（了解偏好與歷史）
-- 查看既有 Task Card（避免重複）
+- 查看既有 Task Card 與 in-flight 分支/open PR（執行 `scripts/check_inflight.py`，避免重複；
+  查重腳本為唯讀，不算「工具呼叫」限制的違例）
 
 不允許：
 - web search

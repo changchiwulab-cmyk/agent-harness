@@ -390,6 +390,132 @@ class TestLoadAuditTaskIds(unittest.TestCase):
         self.assertEqual(ids, {"20260501-001"})
 
 
+def _pr(number, created, draft=False):
+    return {"number": number, "title": f"PR {number}", "created_at": f"{created}T10:00:00Z", "draft": draft}
+
+
+class TestMetricM5(unittest.TestCase):
+    """M5 — open PR 積壓（整合平面對策，2026-07-06 架構診斷）."""
+
+    TODAY = date(2026, 7, 11)
+
+    def test_no_data_when_prs_none(self):
+        m = gm.metric_m5(None, self.TODAY)
+        self.assertEqual(m.status, "no_data")
+        self.assertEqual(m.details["source"], "none")
+
+    def test_few_young_prs_ok(self):
+        prs = [_pr(1, "2026-07-01"), _pr(2, "2026-07-05"), _pr(3, "2026-07-10")]
+        m = gm.metric_m5(prs, self.TODAY)
+        self.assertEqual(m.status, "ok")
+        self.assertEqual(m.details["count"], 3)
+        self.assertEqual(m.details["oldest_age_days"], 10)
+        self.assertEqual(m.details["oldest_pr"], 1)
+
+    def test_six_prs_warn(self):
+        prs = [_pr(i, "2026-07-05") for i in range(1, 7)]
+        m = gm.metric_m5(prs, self.TODAY)
+        self.assertEqual(m.status, "warn")
+
+    def test_eleven_prs_alert(self):
+        prs = [_pr(i, "2026-07-05") for i in range(1, 12)]
+        m = gm.metric_m5(prs, self.TODAY)
+        self.assertEqual(m.status, "alert")
+
+    def test_old_pr_escalates_ok_to_warn(self):
+        prs = [_pr(1, "2026-05-01")]  # 71 天 > 30
+        m = gm.metric_m5(prs, self.TODAY)
+        self.assertEqual(m.status, "warn")
+        self.assertEqual(m.details["oldest_age_days"], 71)
+
+    def test_age_never_downgrades_alert(self):
+        prs = [_pr(i, "2026-05-01") for i in range(1, 12)]
+        m = gm.metric_m5(prs, self.TODAY)
+        self.assertEqual(m.status, "alert")
+
+    def test_draft_prs_counted_and_tracked(self):
+        prs = [_pr(1, "2026-07-05"), _pr(2, "2026-07-05", draft=True)]
+        m = gm.metric_m5(prs, self.TODAY)
+        self.assertEqual(m.details["count"], 2)
+        self.assertEqual(m.details["draft_count"], 1)
+
+    def test_bad_created_at_skipped_not_crash(self):
+        prs = [_pr(1, "2026-07-05"), {"number": 2, "created_at": "garbage", "draft": False}]
+        m = gm.metric_m5(prs, self.TODAY)
+        self.assertEqual(m.details["count"], 2)
+        self.assertEqual(m.details["unparsed_created_at"], [2])
+        self.assertEqual(m.details["oldest_pr"], 1)
+
+    def test_empty_list_ok(self):
+        m = gm.metric_m5([], self.TODAY)
+        self.assertEqual(m.status, "ok")
+        self.assertEqual(m.details["count"], 0)
+        self.assertIsNone(m.details["oldest_age_days"])
+
+    def test_render_markdown_handles_no_data_status(self):
+        # STATUS_BADGE / by_status 都要能吃 no_data，否則月跑（無 --pr-json）會 KeyError。
+        metrics = gm.collect_metrics(date(2026, 5, 9))
+        text = gm.render_markdown(metrics, date(2026, 5, 9))
+        self.assertIn("➖ no data", text)
+
+
+class TestMainPrJson(unittest.TestCase):
+    def test_pr_json_fixture_end_to_end(self):
+        import io
+        import json as _json
+        import tempfile
+        from contextlib import redirect_stdout
+
+        prs = [_pr(90, "2026-05-30"), _pr(126, "2026-07-05"), _pr(130, "2026-07-10")]
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
+            _json.dump(prs, f)
+            path = f.name
+        try:
+            out = io.StringIO()
+            with redirect_stdout(out):
+                code = gm.main(["--json", "--pr-json", path, "--today", "2026-07-11"])
+            self.assertIn(code, (0, 1))
+            data = _json.loads(out.getvalue())
+            m5 = next(m for m in data if m["id"] == "M5")
+            self.assertEqual(m5["details"]["count"], 3)
+            self.assertEqual(m5["details"]["oldest_pr"], 90)
+            self.assertEqual(m5["details"]["source"], "pr_json")
+        finally:
+            Path(path).unlink()
+
+    def test_bad_pr_json_collection_error(self):
+        import io
+        import tempfile
+        from contextlib import redirect_stderr
+
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
+            f.write("{not json")
+            path = f.name
+        try:
+            err = io.StringIO()
+            with redirect_stderr(err):
+                code = gm.main(["--json", "--pr-json", path, "--today", "2026-07-11"])
+            self.assertEqual(code, 2)
+        finally:
+            Path(path).unlink()
+
+    def test_non_list_pr_json_collection_error(self):
+        import io
+        import tempfile
+        from contextlib import redirect_stderr
+
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
+            f.write('{"message": "API rate limit exceeded"}')
+            path = f.name
+        try:
+            err = io.StringIO()
+            with redirect_stderr(err):
+                code = gm.main(["--json", "--pr-json", path, "--today", "2026-07-11"])
+            self.assertEqual(code, 2)
+        finally:
+            Path(path).unlink()
+
+
 class TestMainExitCode(unittest.TestCase):
     def test_main_runs_against_real_repo(self):
         # Smoke test: should not crash on the actual repo layout.
@@ -403,9 +529,9 @@ class TestMainExitCode(unittest.TestCase):
         # JSON parses
         import json
         parsed = json.loads(out.getvalue())
-        self.assertEqual(len(parsed), 4)
+        self.assertEqual(len(parsed), 5)
         ids = {m["id"] for m in parsed}
-        self.assertEqual(ids, {"M1", "M2", "M3", "M4"})
+        self.assertEqual(ids, {"M1", "M2", "M3", "M4", "M5"})
 
 
 class TestObservability(unittest.TestCase):
@@ -462,8 +588,12 @@ class TestObservability(unittest.TestCase):
         data = _json.loads(out.getvalue())
         self.assertEqual(set(data.keys()), {"workflow", "business", "failures"})
 
-    def test_existing_json_still_four_metrics(self):
-        """Guard: --json output must remain M1–M4 only (no regression)."""
+    def test_existing_json_still_five_metrics(self):
+        """Guard: --json output must remain the metric set only（observability 不混入）.
+
+        指標集擴充時（如 R7 後加 M5 整合平面指標）此斷言同步更新；
+        它守的是「--json 只含 MetricResult、不含 observability 區塊」。
+        """
         import io
         import json as _json
         from contextlib import redirect_stdout
@@ -472,7 +602,7 @@ class TestObservability(unittest.TestCase):
         with redirect_stdout(out):
             gm.main(["--json", "--today", "2026-05-29"])
         data = _json.loads(out.getvalue())
-        self.assertEqual({m["id"] for m in data}, {"M1", "M2", "M3", "M4"})
+        self.assertEqual({m["id"] for m in data}, {"M1", "M2", "M3", "M4", "M5"})
 
 
 if __name__ == "__main__":

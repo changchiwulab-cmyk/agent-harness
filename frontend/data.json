@@ -124,13 +124,13 @@
   "overview": {
     "alerts": [
       {
-        "current": "73/8 = 9.12",
+        "current": "120/8 = 15.00",
         "id": "M2",
         "name": "outputs/drafts:reports 比例",
         "status": "ok"
       },
       {
-        "current": "73/73 = 100.0%",
+        "current": "74/74 = 100.0%",
         "id": "M3",
         "name": "audit log 覆蓋率（status ∈ {review, done, failed, partial}）",
         "status": "ok"
@@ -168,11 +168,11 @@
     "task_risk": {
       "high": 2,
       "low": 54,
-      "medium": 26
+      "medium": 27
     },
     "task_skill": {
       "analysis": 8,
-      "ops": 50,
+      "ops": 51,
       "research": 9,
       "review": 8,
       "writing": 7
@@ -181,9 +181,9 @@
       "done": 56,
       "in_progress": 3,
       "pending": 6,
-      "review": 17
+      "review": 18
     },
-    "task_total": 82
+    "task_total": 83
   },
   "tasks": [
     {
@@ -1005,6 +1005,16 @@
       "skill_type": "ops",
       "status": "review",
       "task_id": "20260706-F01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-07-11",
+      "goal": "依評分系譜（6.8/10 外部評估、7.2/10 外部報告、07-06 架構診斷）檢視改進進度，落地『無整合平面』的三項制度對策（執行流程第10步／M5 open-PR 積壓指標／INTAKE 開卡查重），修復 CI dup-key 死鎖，並執行 triage 已核定的 PR 積壓收斂",
+      "path": "tasks/2026-07-11_evaluation-improvement-progress.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260711-001"
     }
   ]
 }

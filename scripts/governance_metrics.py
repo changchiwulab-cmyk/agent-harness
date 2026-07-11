@@ -13,6 +13,7 @@ Metrics:
     M2 — outputs/drafts:reports 比例
     M3 — audit log 覆蓋率
     M4 — Claude Code 原生功能重疊度（人工 input from system/NATIVE_OVERLAP.yaml）
+    M5 — open PR 積壓（數量/齡期；資料由 --pr-json 提供，無資料時降級 no_data）
 """
 
 from __future__ import annotations
@@ -115,6 +116,19 @@ def load_audit_task_ids(root: Path | None = None) -> set[str]:
             if isinstance(tid, str) and tid:
                 ids.add(tid)
     return ids
+
+
+def load_open_prs(path: str | None) -> list[dict] | None:
+    """Load GitHub REST `/pulls?state=open` JSON（PR 物件的 list）；無路徑回 None.
+
+    壞檔/壞 JSON/非 list 形狀會拋例外 — main() 轉為 exit 2（collection error 慣例）。
+    """
+    if not path:
+        return None
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    if not isinstance(data, list):
+        raise ValueError(f"{path}: 預期 GitHub pulls list JSON，實得 {type(data).__name__}")
+    return data
 
 
 def count_dir_md_files(d: Path) -> int:
@@ -340,6 +354,87 @@ def metric_m4(overlap_data: dict, today: date | None = None) -> MetricResult:
     )
 
 
+# 整合平面對策（2026-07-06 架構診斷）：open PR 積壓警戒線。
+M5_COUNT_ALERT = 10        # 診斷驗收基準：open PR ≤ 10
+M5_COUNT_WARN = 5
+M5_OLDEST_WARN_DAYS = 30
+
+
+def metric_m5(prs: list[dict] | None, today: date) -> MetricResult:
+    """M5 — open PR 積壓（數量/齡期）.
+
+    量測「工作成果有多少還沒收斂回 main」——07-06 架構診斷指出所有既有 metric
+    都只看 session 內，沒有整合平面指標，75 個 PR 積壓三個月無人察覺。
+
+    資料來源：GitHub REST `/pulls?state=open` JSON（CI 以 GITHUB_TOKEN 抓取後用
+    --pr-json 傳入）。本地無資料 → no_data（不觸發 exit 1）。刻意不用
+    `git ls-remote` 分支數當 proxy：殘留分支對 open PR 高估實測約 6 倍。
+
+    判定：count > 10 → alert；count > 5 → warn；最老 > 30 天 → 至少 warn
+    （齡期只升不降，仿 M4 staleness 慣例）。
+    """
+    threshold = (
+        f"> {M5_COUNT_ALERT} 個 → alert（07-06 診斷驗收基準 ≤{M5_COUNT_ALERT}）；"
+        f"> {M5_COUNT_WARN} 個或最老 > {M5_OLDEST_WARN_DAYS} 天 → warn"
+    )
+    if prs is None:
+        return MetricResult(
+            id="M5",
+            name="open PR 積壓（數量/齡期）",
+            current="(no data — 以 --pr-json 提供 open PR JSON)",
+            threshold=threshold,
+            status="no_data",
+            details={"source": "none"},
+        )
+    count = 0
+    draft_count = 0
+    oldest_age: int | None = None
+    oldest_pr = None
+    unparsed: list = []
+    for pr in prs:
+        if not isinstance(pr, dict):
+            continue
+        count += 1
+        if pr.get("draft"):
+            draft_count += 1
+        created = _parse_iso_date(str(pr.get("created_at", ""))[:10])
+        if created is None:
+            unparsed.append(pr.get("number"))
+            continue
+        age = (today - created).days
+        if oldest_age is None or age > oldest_age:
+            oldest_age = age
+            oldest_pr = pr.get("number")
+    if count > M5_COUNT_ALERT:
+        status = "alert"
+    elif count > M5_COUNT_WARN:
+        status = "warn"
+    else:
+        status = "ok"
+    if status == "ok" and oldest_age is not None and oldest_age > M5_OLDEST_WARN_DAYS:
+        status = "warn"
+    if oldest_age is not None:
+        current = f"{count} open, oldest {oldest_age} 天 (#{oldest_pr})"
+    else:
+        current = f"{count} open"
+    return MetricResult(
+        id="M5",
+        name="open PR 積壓（數量/齡期）",
+        current=current,
+        threshold=threshold,
+        status=status,
+        details={
+            "count": count,
+            "draft_count": draft_count,
+            "oldest_age_days": oldest_age,
+            "oldest_pr": oldest_pr,
+            "threshold_count": M5_COUNT_ALERT,
+            "unparsed_created_at": unparsed,
+            "source": "pr_json",
+        },
+    )
+
+
 # --- Observability metrics (R7: workflow / business / failure layers) ------
 
 
@@ -517,7 +612,7 @@ def render_observability_markdown(obs: dict) -> str:
 # --- Reporters -------------------------------------------------------------
 
 
-STATUS_BADGE = {"ok": "✅ ok", "warn": "⚠️ warn", "alert": "🚨 alert"}
+STATUS_BADGE = {"ok": "✅ ok", "warn": "⚠️ warn", "alert": "🚨 alert", "no_data": "➖ no data"}
 
 
 def render_markdown(metrics: list[MetricResult], today: date) -> str:
@@ -529,7 +624,7 @@ def render_markdown(metrics: list[MetricResult], today: date) -> str:
     lines.append("- 警訊處理：alert → 開 retro task；warn → 下次 retro 帶討論")
     lines.append("")
     lines.append("## 摘要")
-    by_status = {"ok": 0, "warn": 0, "alert": 0}
+    by_status = {"ok": 0, "warn": 0, "alert": 0, "no_data": 0}
     for m in metrics:
         by_status[m.status] += 1
     overall = "🚨 ALERT" if by_status["alert"] else ("⚠️ WARN" if by_status["warn"] else "✅ OK")
@@ -570,6 +665,12 @@ def render_markdown(metrics: list[MetricResult], today: date) -> str:
             "- **M4 季度 revisit 到期**：本次 RETRO 重評 `system/NATIVE_OVERLAP.yaml` "
             "逐模組重疊並更新 `reviewed_on`（與 R4 決策回看同一節奏）"
         )
+    m5 = next((m for m in metrics if m.id == "M5"), None)
+    if m5 and m5.status == "alert":
+        lines.append(
+            "- **M5 open PR 積壓超標**：開 PR 收斂 task，逐一合併或明確關閉至 ≤ "
+            f"{M5_COUNT_ALERT}（07-06 架構診斷驗收基準；執行流程第 10 步）"
+        )
     return "\n".join(lines) + "\n"
 
 
@@ -580,34 +681,38 @@ def render_json(metrics: list[MetricResult]) -> str:
 # --- Main ------------------------------------------------------------------
 
 
-def collect_metrics(today: date) -> list[MetricResult]:
+def collect_metrics(today: date, pr_json_path: str | None = None) -> list[MetricResult]:
     cards = load_task_cards()
     audit_ids = load_audit_task_ids()
     drafts = count_dir_md_files(DRAFTS_DIR)
     reports = count_dir_md_files(REPORTS_DIR)
     overlap = load_native_overlap()
+    prs = load_open_prs(pr_json_path)
     return [
         metric_m1(cards, today),
         metric_m2(drafts, reports),
         metric_m3(cards, audit_ids),
         metric_m4(overlap, today),
+        metric_m5(prs, today),
     ]
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Collect governance metrics (plan §5.3).")
-    parser.add_argument("--json", action="store_true", help="Output M1–M4 JSON instead of markdown.")
+    parser.add_argument("--json", action="store_true", help="Output M1–M5 JSON instead of markdown.")
     parser.add_argument("--observability", action="store_true",
                         help="Output R7 observability metrics (workflow/business/failure) as JSON.")
     parser.add_argument("--today", type=str, help="Override today's date (YYYY-MM-DD), for testing.")
+    parser.add_argument("--pr-json", type=str, default=None,
+                        help="Path to GitHub REST /pulls?state=open JSON for M5; omit → M5 = no_data.")
     args = parser.parse_args(argv)
 
     today = date.fromisoformat(args.today) if args.today else date.today()
 
     try:
-        metrics = collect_metrics(today)
+        metrics = collect_metrics(today, args.pr_json)
         obs = collect_observability()
-    except (OSError, yaml.YAMLError) as exc:
+    except (OSError, yaml.YAMLError, ValueError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 2
 

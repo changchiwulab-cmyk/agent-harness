@@ -7,6 +7,30 @@
 
 <!-- AUTO_AUDIT_BEGIN -->
 ```yaml
+task_id: 20260711-001
+date: '2026-07-11'
+skill_type: ops
+goal: 依評分系譜（6.8/10 外部評估、7.2/10 外部報告、07-06 架構診斷）檢視改進進度，落地『無整合平面』的三項制度對策（執行流程第10步／M5
+  open-PR 積壓指標／INTAKE 開卡查重），修復 CI dup-key 死鎖，並執行 triage 已核定的 PR 積壓收斂
+status: review
+risk_level: medium
+approval_needed: false
+output_path: outputs/drafts/2026-07-11_evaluation-improvement-progress.md
+checkpoints:
+- note: 62b19be 開卡
+- note: 03799b5 CI dup-key 修復（06-20 起零 job 死鎖）
+- note: d5c9869 M5 open-PR 積壓指標 + governance-metrics.yml workflow
+- note: 53a8a60 check_inflight.py 開卡查重 + INTAKE_FLOW 前置步驟
+- note: b61ded4 執行流程第 10 步（CLAUDE.md + GLOBAL_RULES）
+- note: e810e2e D 類 15 PR 的 46 份報告檔 salvage 進 drafts/
+- note: fa40a24 validate_task_card 空檔防護（6.8 報告 P0-c 回移植）
+actual_tool_calls: 80
+result_summary: 整合平面 v0 三制度對策全數落地（第 10 步／M5 警戒線／開卡查重）；CI dup-key 死鎖修復；46 份報告 salvage
+  後關閉 17 個 PR（open PR 21→4，達驗收基準 ≤10）；P0-c crash 回移植；統一缺點台帳報告產出至 outputs/drafts/。
+completion_time: ''
+```
+
+```yaml
 task_id: 20260706-R01
 date: '2026-07-06'
 skill_type: research
