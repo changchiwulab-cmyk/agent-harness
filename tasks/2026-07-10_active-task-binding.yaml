@@ -1,6 +1,6 @@
 task_id: "20260710-002"
 date: "2026-07-10"
-status: "review"
+status: "done"
 
 # === 任務定義 ===
 goal: "建立 active task 真相來源（state/active_task.yaml + CLI），並將 task_card_guard 授權模型從 basename 比對升級為 normalized 完整路徑 + task_id + status 三段綁定"

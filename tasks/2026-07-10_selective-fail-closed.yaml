@@ -1,6 +1,6 @@
 task_id: "20260710-003"
 date: "2026-07-10"
-status: "review"
+status: "done"
 
 # === 任務定義 ===
 goal: "選擇性 fail-closed 化（task_card_guard 壞 stdin/例外、gate 高風險缺 run log 條件 FAIL），並在 SECURITY.md 寫明防護邊界聲明 + permissions_guard 低誤判補強"

@@ -1,0 +1,56 @@
+task_id: "20260710-004"
+date: "2026-07-10"
+status: "done"
+
+# === 任務定義 ===
+goal: "將人工核准的外部報告對比驗證分析（20260710-001）從 outputs/drafts/ 升格為 outputs/reports/ 正式報告"
+
+context: |
+  20260710-001 的驗證報告草稿經人工核准（PR #130 merge + 使用者確認
+  「全部執行」收尾）。沿用 2026-05-29_promote-self-assessment 前例：
+  升格動作需要一張宣告 outputs/reports/ 精確路徑的卡 — 不能直接用
+  卡 001 升格，因為 001 宣告的是 drafts 路徑，guard v2 的精確路徑
+  比對會正確地擋下。本卡同時是 guard v2 上線後（PR #130）第一個
+  實戰 dogfood：升格前先實測 idle 狀態被 block。
+
+input_data:
+  - "outputs/drafts/20260710-001_external-review-verification.md"
+  - "tasks/2026-07-10_external-review-verification.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "outputs/reports/20260710-001_external-review-verification.md 存在且內容與核准草稿一致（僅補升格註記）"
+  - "guard v2 dogfood：未 --set 時寫入被 block；--set 20260710-004 後放行"
+  - "四張 20260710 卡 status=done 且 logs/approvals/ 有對應 approved 紀錄（rb 第 11 節覆蓋率檢查綠）"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/reports/"
+  filename: "20260710-001_external-review-verification.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "write_reports"
+  - "create_output_files"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - commit: "8045b35"
+    stage: "dogfood（idle block / 綁定放行）+ 報告升格 + 四卡 done + 批准紀錄"
+actual_tool_calls: 8
+result_summary: "DoD 3/3。dogfood 實測：idle 寫 reports exit=2 被擋、--set 20260710-004 後 exit=0 放行（guard v2 上線後首次實戰驗證）。報告升格至 outputs/reports/，diff 確認內容與核准草稿一致（僅補升格註記）。四張 20260710 卡 done + 批准紀錄補齊。"
+completion_time: "2026-07-10"
+audit_log_ref: "logs/AUDIT_LOG.md"

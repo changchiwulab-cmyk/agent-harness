@@ -154,13 +154,13 @@
   "overview": {
     "alerts": [
       {
-        "current": "74/8 = 9.25",
+        "current": "74/9 = 8.22",
         "id": "M2",
         "name": "outputs/drafts:reports 比例",
         "status": "ok"
       },
       {
-        "current": "76/76 = 100.0%",
+        "current": "77/77 = 100.0%",
         "id": "M3",
         "name": "audit log 覆蓋率（status ∈ {review, done, failed, partial}）",
         "status": "ok"
@@ -199,22 +199,22 @@
     "task_risk": {
       "high": 2,
       "low": 54,
-      "medium": 29
+      "medium": 30
     },
     "task_skill": {
       "analysis": 9,
-      "ops": 52,
+      "ops": 53,
       "research": 9,
       "review": 8,
       "writing": 7
     },
     "task_status": {
-      "done": 56,
+      "done": 60,
       "in_progress": 3,
       "pending": 6,
-      "review": 20
+      "review": 17
     },
-    "task_total": 85
+    "task_total": 86
   },
   "tasks": [
     {
@@ -1044,7 +1044,7 @@
       "path": "tasks/2026-07-10_active-task-binding.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "review",
+      "status": "done",
       "task_id": "20260710-002"
     },
     {
@@ -1054,8 +1054,18 @@
       "path": "tasks/2026-07-10_external-review-verification.yaml",
       "risk_level": "medium",
       "skill_type": "analysis",
-      "status": "review",
+      "status": "done",
       "task_id": "20260710-001"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-10",
+      "goal": "將人工核准的外部報告對比驗證分析（20260710-001）從 outputs/drafts/ 升格為 outputs/reports/ 正式報告",
+      "path": "tasks/2026-07-10_promote-external-review-report.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260710-004"
     },
     {
       "approval_needed": true,
@@ -1064,7 +1074,7 @@
       "path": "tasks/2026-07-10_selective-fail-closed.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "review",
+      "status": "done",
       "task_id": "20260710-003"
     }
   ]
