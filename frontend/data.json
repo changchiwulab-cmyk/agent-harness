@@ -124,13 +124,13 @@
   "overview": {
     "alerts": [
       {
-        "current": "119/8 = 14.88",
+        "current": "120/8 = 15.00",
         "id": "M2",
         "name": "outputs/drafts:reports 比例",
         "status": "ok"
       },
       {
-        "current": "73/73 = 100.0%",
+        "current": "74/74 = 100.0%",
         "id": "M3",
         "name": "audit log 覆蓋率（status ∈ {review, done, failed, partial}）",
         "status": "ok"
@@ -179,9 +179,9 @@
     },
     "task_status": {
       "done": 56,
-      "in_progress": 4,
+      "in_progress": 3,
       "pending": 6,
-      "review": 17
+      "review": 18
     },
     "task_total": 83
   },
@@ -1013,7 +1013,7 @@
       "path": "tasks/2026-07-11_evaluation-improvement-progress.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "in_progress",
+      "status": "review",
       "task_id": "20260711-001"
     }
   ]
