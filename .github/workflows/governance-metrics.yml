@@ -38,6 +38,9 @@ jobs:
             -o "$RUNNER_TEMP/open_prs.json"
 
       - name: Run governance metrics (M1–M5)
+        # 顯式 shell: bash 帶 -eo pipefail：否則 step 回傳 tee 的 exit 0，
+        # metrics warn/alert 的 exit 1（警戒線紅燈）會被 pipe 吃掉。
+        shell: bash
         run: |
           python3 scripts/governance_metrics.py \
             --pr-json "$RUNNER_TEMP/open_prs.json" | tee -a "$GITHUB_STEP_SUMMARY"
