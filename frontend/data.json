@@ -124,7 +124,7 @@
   "overview": {
     "alerts": [
       {
-        "current": "73/8 = 9.12",
+        "current": "119/8 = 14.88",
         "id": "M2",
         "name": "outputs/drafts:reports 比例",
         "status": "ok"

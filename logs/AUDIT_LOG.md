@@ -16,7 +16,20 @@ status: in_progress
 risk_level: medium
 approval_needed: false
 output_path: outputs/drafts/2026-07-11_evaluation-improvement-progress.md
-checkpoints: []
+checkpoints:
+- commit: b61ded4
+  subject: 'checkpoint: [20260711-001] docs: 執行流程加第 10 步——PR 合併或明確關閉才算任務終結'
+- commit: 53a8a60
+  subject: 'checkpoint: [20260711-001] feat: 開卡前 in-flight 查重（check_inflight.py +
+    INTAKE_FLOW 前置步驟）'
+- commit: d5c9869
+  subject: 'checkpoint: [20260711-001] feat: governance_metrics 加 M5 open-PR 積壓指標
+    + 週期 CI workflow'
+- commit: 03799b5
+  subject: 'checkpoint: [20260711-001] fix: 移除 spec-consistency.yml 重複 workflow_dispatch
+    key（06-20 起 CI 零 job 死鎖，同 #130 修法）'
+- commit: 62b19be
+  subject: 'checkpoint: [20260711-001] 開卡：評分缺點改進進度檢視與優化執行'
 actual_tool_calls: 0
 result_summary: ''
 completion_time: ''
