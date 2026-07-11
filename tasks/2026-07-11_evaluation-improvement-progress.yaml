@@ -1,0 +1,55 @@
+# Task Card：依專案評分缺點檢視改進進度並執行優化
+# 範圍經使用者於 session 內確認：制度修法 + CI 修復 + 進度報告 + PR 積壓收斂（全選）
+
+task_id: "20260711-001"
+date: "2026-07-11"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "依評分系譜（6.8/10 外部評估、7.2/10 外部報告、07-06 架構診斷）檢視改進進度，落地『無整合平面』的三項制度對策（執行流程第10步／M5 open-PR 積壓指標／INTAKE 開卡查重），修復 CI dup-key 死鎖，並執行 triage 已核定的 PR 積壓收斂"
+context: "07-06 架構診斷（outputs/reports/2026-07-06_pr-backlog-triage-and-architecture-diagnosis.md）指出最大缺點為跨 session 無整合平面，其三項制度對策至今未動工；main 的 CI 自 06-20 因 spec-consistency.yml 重複 workflow_dispatch key 整條死掉（#130 已修但未合併）；triage D 類 15 個 PR 與被取代的 #105/#123 尚未關閉。使用者確認全範圍執行。"
+input_data:
+  - "outputs/reports/2026-07-06_pr-backlog-triage-and-architecture-diagnosis.md"
+  - "PR #126 外部評估報告（≈6.8/10）"
+  - "PR #130 外部報告驗證（7.2/10）+ P0 hardening"
+  - "outputs/reports/harness-self-assessment-v1.md"
+
+# === 完成標準（最重要的欄位）===
+definition_of_done:
+  - "CLAUDE.md 執行流程加第 10 步（PR 合併或明確關閉才算任務終結），GLOBAL_RULES.md 同步一條，check_context_budget.rb 仍綠"
+  - "governance_metrics.py 新增 M5 open-PR 積壓指標（count/oldest_age_days，警戒線 count>10 alert），含測試與獨立 CI workflow 接線；本地無資料時優雅降級 no_data"
+  - "scripts/check_inflight.py 開卡前 in-flight 查重 helper（tasks goal/分支名/PR 標題三來源）含測試；INTAKE_FLOW.md fast-path 加入查重步驟"
+  - "spec-consistency.yml 重複 workflow_dispatch key 移除，push 後 workflow 實際產生 job"
+  - "triage D 類 15 個 PR 報告檔 salvage 進 outputs/drafts/ 後關閉原 PR；#105 salvage D008+R14 文件後關閉；#123 關閉；open PR 收斂至 4（#90/#124/#126/#130 留待人工決策）"
+  - "進度檢視報告 outputs/drafts/2026-07-11_evaluation-improvement-progress.md：統一缺點台帳（每項標狀態附證據）+ 剩餘路線圖 + 待決策清單"
+  - "全套本地驗證綠：spec consistency、context budget、governance metrics 測試、check_inflight 測試、sync_derived --check、既有測試無連帶紅"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-07-11_evaluation-improvement-progress.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_write"
+  - "bash"
+  - "github_mcp"
+
+# === 成本控制 ===
+max_tool_calls: 120
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

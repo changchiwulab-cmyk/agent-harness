@@ -7,6 +7,22 @@
 
 <!-- AUTO_AUDIT_BEGIN -->
 ```yaml
+task_id: 20260711-001
+date: '2026-07-11'
+skill_type: ops
+goal: 依評分系譜（6.8/10 外部評估、7.2/10 外部報告、07-06 架構診斷）檢視改進進度，落地『無整合平面』的三項制度對策（執行流程第10步／M5
+  open-PR 積壓指標／INTAKE 開卡查重），修復 CI dup-key 死鎖，並執行 triage 已核定的 PR 積壓收斂
+status: in_progress
+risk_level: medium
+approval_needed: false
+output_path: outputs/drafts/2026-07-11_evaluation-improvement-progress.md
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ''
+completion_time: ''
+```
+
+```yaml
 task_id: 20260706-R01
 date: '2026-07-06'
 skill_type: research
