@@ -7,6 +7,82 @@
 
 <!-- AUTO_AUDIT_BEGIN -->
 ```yaml
+task_id: 20260710-003
+date: '2026-07-10'
+skill_type: ops
+goal: 選擇性 fail-closed 化（task_card_guard 壞 stdin/例外、gate 高風險缺 run log 條件 FAIL），並在 SECURITY.md
+  寫明防護邊界聲明 + permissions_guard 低誤判補強
+status: review
+risk_level: medium
+approval_needed: true
+output_path: scripts/task_card_guard.py
+checkpoints:
+- commit: 619e9a9
+  stage: 三張 Task Card 建立並通過 validator（C0，與 001/002 共用）
+- commit: 05e6c4e
+  stage: task_card_guard 輸入層 fail-closed（空 stdin/壞 JSON/例外 → exit 2）（C5）
+- commit: 6a88c5a
+  stage: gate_check + verification_loop 缺 run log 條件 FAIL，共用 helper（C6）
+- commit: c65c57d
+  stage: permissions_guard wget 擴充 + SECURITY.md 威脅模型 + Stop hook gate 警告（C7）
+actual_tool_calls: 22
+result_summary: DoD 7/7。task_card_guard 輸入層 fail-closed（test_empty_stdin_allows 語意翻轉為
+  expect block）；gate_check/verification_loop 以共用 run_log_required() 對 cutoff 起高風險結案卡缺帳判
+  FAIL（不追溯歷史卡）；permissions_guard/failure_counter 維持 fail-open 且理由入 SECURITY.md 新威脅模型章節（防線分層表
+  + 已知繞過面）；4 條網路規則擴 wget 簽名 rule_id 不變；session_stop_checks 對 active task 跑 gate_check
+  警告（非 blocking）。本地 CI 全套綠。
+completion_time: '2026-07-10'
+```
+
+```yaml
+task_id: 20260710-002
+date: '2026-07-10'
+skill_type: ops
+goal: 建立 active task 真相來源（state/active_task.yaml + CLI），並將 task_card_guard 授權模型從 basename
+  比對升級為 normalized 完整路徑 + task_id + status 三段綁定
+status: review
+risk_level: medium
+approval_needed: true
+output_path: scripts/active_task.py
+checkpoints:
+- commit: 619e9a9
+  stage: 三張 Task Card 建立並通過 validator（C0，與 001/003 共用）
+- commit: 27d1ea3
+  stage: active_task schema + CLI + lint 分支 + 測試 + CI step 同 commit 落地（C2）
+- commit: 244ded5
+  stage: task_card_guard v2 三段綁定 + 16 例測試 + 真實 repo dogfood（C3）
+- commit: f3015cb
+  stage: CLAUDE.md 執行流程 + PERMISSIONS.yaml enforcement 同步（C4，ask 路徑）
+actual_tool_calls: 26
+result_summary: DoD 5/5。state/active_task.yaml + SCHEMA + scripts/active_task.py（--set
+  拒絕 done/failed 卡）；task_card_guard.evaluate() 改三段綁定（active task → 卡存活 → normalized
+  精確路徑），封掉 stale authorization 與檔名巧合授權；check_spec_consistency.rb 專屬 schema 分支與檔案同
+  commit；82 張存量卡零回填；dogfood 驗證 idle block / 路徑不符 block / 精確路徑放行。本地 CI 全套綠。
+completion_time: '2026-07-10'
+```
+
+```yaml
+task_id: 20260710-001
+date: '2026-07-10'
+skill_type: analysis
+goal: 將外部第一性原理分析報告（7.2/10）的六大類指控逐條對照程式碼驗證結果（含檔案:行號證據），給出 P0 建議的接受/修改/駁回結論
+status: review
+risk_level: medium
+approval_needed: true
+output_path: outputs/drafts/20260710-001_external-review-verification.md
+checkpoints:
+- commit: 619e9a9
+  stage: 三張 Task Card 建立並通過 validator（C0，與 002/003 共用）
+- commit: a2a0146
+  stage: 對比驗證報告草稿完成，落 outputs/drafts/（C1）
+actual_tool_calls: 12
+result_summary: DoD 5/5。六大類指控逐條對照程式碼證據（檔案:行號）：幾乎全數屬實；報告三處需修正（CI 為單一 job 的 steps、permissions_guard
+  policy 讀取失敗已 fail-safe、failure_counter 觸發後為硬擋）。P0 採納結論：(a)(b) 接受、(c) 選擇性翻轉、(d) 降級為邊界聲明；含十項不做清單。草稿待人工核准後升
+  outputs/reports/。
+completion_time: '2026-07-10'
+```
+
+```yaml
 task_id: 20260706-R01
 date: '2026-07-06'
 skill_type: research

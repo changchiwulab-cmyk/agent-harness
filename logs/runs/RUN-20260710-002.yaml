@@ -1,0 +1,55 @@
+# Execution Log — active task 真相來源 + task_card_guard v2 三段綁定
+# 觸發條件符合 EXECUTION_LOG_SCHEMA 使用範圍：checkpoints ≥ 3
+
+execution_log:
+  run_id: "RUN-20260710-002"
+  task_id: "20260710-002"
+  skill_type: "ops"
+  started_at: "2026-07-10 00:00"
+  ended_at: "2026-07-10 00:00"
+  status: "completed"
+
+  tools_used:
+    - tool: file_read
+      call_count: 8
+    - tool: file_search
+      call_count: 3
+    - tool: create_output_files
+      call_count: 5
+    - tool: run_tests
+      call_count: 6
+    - tool: git_commit_checkpoint
+      call_count: 3
+    - tool: modify_system_rules
+      call_count: 2
+
+  checkpoints:
+    - commit: "27d1ea3"
+      stage: "active_task schema + CLI + lint 分支 + 測試 + CI step（同 commit）"
+    - commit: "244ded5"
+      stage: "task_card_guard v2 三段綁定 + 測試 + dogfood"
+    - commit: "f3015cb"
+      stage: "CLAUDE.md / PERMISSIONS.yaml 治理文件同步"
+
+  token_estimate:
+    input: 60000
+    output: 12000
+    total: 72000
+    source: "rule_estimated"
+
+  approvals:
+    - action: "modify_system_rules — CLAUDE.md 執行流程第 1/9 步與 system/PERMISSIONS.yaml enforcement 段更新"
+      status: "approved"
+      approved_by: "human"
+      timestamp: "2026-07-10"
+      note: "plan mode 核准範圍（C4 明列 ask 路徑）"
+
+  output_path: "scripts/active_task.py"
+  error_summary: ""
+  gate_results:
+    schema_check: "pass"
+    rule_check: "pass"
+    completion_check: "pass"
+    risk_check: "n/a"
+
+  notes: "test_active_task 首輪 1 例失敗（fixture 字串 '::: not yaml {[' 其實是合法 YAML），換 '{[broken' 後全綠 — 符合迭代≤3。82 張存量卡零回填。"

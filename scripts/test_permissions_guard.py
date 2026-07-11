@@ -71,6 +71,38 @@ class TestEvaluate(unittest.TestCase):
         self.assertEqual(decision, "allow")
         self.assertIsNone(reason)
 
+    # --- wget 簽名擴充（20260710-003 defense-in-depth；rule_id 不變）---
+
+    def test_wget_to_slack_webhook_blocked(self):
+        decision, reason = guard.evaluate(
+            "wget --post-data '{}' https://hooks.slack.com/services/AAA"
+        )
+        self.assertEqual(decision, "block")
+        self.assertIn("send_message_external", reason)
+
+    def test_wget_email_api_blocked(self):
+        decision, reason = guard.evaluate("wget https://api.sendgrid.com/v3/mail/send")
+        self.assertEqual(decision, "block")
+        self.assertIn("send_email", reason)
+
+    def test_wget_payment_api_blocked(self):
+        decision, reason = guard.evaluate("wget https://api.stripe.com/v1/charges")
+        self.assertEqual(decision, "block")
+        self.assertIn("execute_payment", reason)
+
+    def test_wget_publish_api_blocked(self):
+        decision, reason = guard.evaluate(
+            "wget --method=POST https://api.twitter.com/2/tweets"
+        )
+        self.assertEqual(decision, "block")
+        self.assertIn("publish_content", reason)
+
+    def test_wget_plain_download_allowed(self):
+        # 一般下載不在 deny 清單 — wget 本身不是違規，打到的 API 才是。
+        decision, reason = guard.evaluate("wget https://example.com/data.csv")
+        self.assertEqual(decision, "allow")
+        self.assertIsNone(reason)
+
     def test_nohup_blocked(self):
         decision, reason = guard.evaluate("nohup python3 worker.py")
         self.assertEqual(decision, "block")

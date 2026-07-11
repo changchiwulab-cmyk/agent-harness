@@ -1,0 +1,75 @@
+task_id: "20260710-002"
+date: "2026-07-10"
+status: "review"
+
+# === 任務定義 ===
+goal: "建立 active task 真相來源（state/active_task.yaml + CLI），並將 task_card_guard 授權模型從 basename 比對升級為 normalized 完整路徑 + task_id + status 三段綁定"
+
+context: |
+  外部報告 P0(a)(b) 經 20260710-001 驗證後採納：現行 task_card_guard.py:86
+  只用 target.name in report_output_filenames(root) 比對，掃全部 tasks/
+  不看 status，形成 stale authorization（done/failed 卡永久授權同名檔），
+  且無任何「當前執行中 task_id」的真相來源可供 hook 查驗
+  （state/last_checkpoint.yaml 是 session 尾寫的 resume 快照，
+  必填 checkpoint_commit 在任務起點無值可填，不適合兼任 live pointer）。
+  設計決定：新增 state/active_task.yaml 單一用途檔；--set 仍是 prompt
+  自律，但強制力來自 guard 端 — 不 set 就寫不了 outputs/reports/。
+  非 reports 路徑（drafts/logs/code）維持零摩擦，不違反
+  「99% 低風險路徑不上鎖」哲學。不加 Task Card 新必填欄位（避免 82 張
+  存量卡回填）。
+
+input_data:
+  - "outputs/drafts/20260710-001_external-review-verification.md"
+  - "scripts/task_card_guard.py"
+  - "scripts/gate_check.py"
+  - "state/last_checkpoint.SCHEMA.yaml"
+  - "scripts/check_spec_consistency.rb"
+
+# === 完成標準 ===
+definition_of_done:
+  - "state/active_task.SCHEMA.yaml 與 state/active_task.yaml 存在；scripts/active_task.py 提供 --set/--clear/--get/--check，--set 對不存在或 status∈{done,failed} 的卡回非零"
+  - "task_card_guard.evaluate() 新建 outputs/reports/ 檔改三段綁定：active task 存在 → 卡 status∉{done,failed} → expected_output normalized 完整路徑與目標一致"
+  - "check_spec_consistency.rb 對 state/active_task.yaml 用專屬 schema 檢查（不誤用 last_checkpoint 必填欄位），且與 active_task.yaml 首次入 repo 同一 commit"
+  - "test_active_task.py 與 test_task_card_guard.py 覆蓋：stale done 卡不再授權、無 active task 阻擋、路徑不符阻擋、drafts 照常放行"
+  - "82 張存量卡零回填（不改 Task Card 必填 schema），本地 CI 全套綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "py"
+  location: "scripts/"
+  filename: "active_task.py"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "run_tests"
+  - "git_commit_checkpoint"
+  - "modify_system_rules"
+
+# === 成本控制 ===
+max_tool_calls: 30
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - commit: "619e9a9"
+    stage: "三張 Task Card 建立並通過 validator（C0，與 001/003 共用）"
+  - commit: "27d1ea3"
+    stage: "active_task schema + CLI + lint 分支 + 測試 + CI step 同 commit 落地（C2）"
+  - commit: "244ded5"
+    stage: "task_card_guard v2 三段綁定 + 16 例測試 + 真實 repo dogfood（C3）"
+  - commit: "f3015cb"
+    stage: "CLAUDE.md 執行流程 + PERMISSIONS.yaml enforcement 同步（C4，ask 路徑）"
+actual_tool_calls: 26
+result_summary: "DoD 5/5。state/active_task.yaml + SCHEMA + scripts/active_task.py（--set 拒絕 done/failed 卡）；task_card_guard.evaluate() 改三段綁定（active task → 卡存活 → normalized 精確路徑），封掉 stale authorization 與檔名巧合授權；check_spec_consistency.rb 專屬 schema 分支與檔案同 commit；82 張存量卡零回填；dogfood 驗證 idle block / 路徑不符 block / 精確路徑放行。本地 CI 全套綠。"
+completion_time: "2026-07-10"
+audit_log_ref: "logs/AUDIT_LOG.md"

@@ -35,7 +35,7 @@ verification_loop:
     rule_check:
       disposition: "hard_stop"
       retry_cap: 0            # GATE_POLICY：「立即停止 + 寫入 logs/errors/ + 通知使用者」
-      note: "違反 PERMISSIONS/GLOBAL_RULES，不重試"
+      note: "違反 PERMISSIONS/GLOBAL_RULES，不重試。缺 run log 原則上不誤判（not_run 語意），但 risk∈{high,critical} 且 status∈{done,review,failed} 且 date≥2026-07-10 的卡缺帳直接 fail（fail-closed，20260710-003；條件 helper 與 scripts/gate_check.py 共用）"
     completion_check:
       disposition: "human_gated"
       retry_cap: "global"     # 受全域上限約束；補齊 definition_of_done 缺漏需人工/agent 決定

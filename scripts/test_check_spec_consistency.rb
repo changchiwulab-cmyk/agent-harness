@@ -240,6 +240,47 @@ class TestStateSchemaConstants < Minitest::Test
   end
 end
 
+# ── 測試 active task pointer lint（20260710-002）──────────────────────────────
+class TestActiveTaskState < Minitest::Test
+  FILE = 'state/active_task.yaml'
+
+  def test_valid_active_passes
+    doc = { 'task_id' => '20260710-002', 'status' => 'active', 'activated_at' => '2026-07-10' }
+    assert_empty check_active_task_state(FILE, doc)
+  end
+
+  def test_valid_idle_passes
+    doc = { 'task_id' => '', 'status' => 'idle', 'activated_at' => '' }
+    assert_empty check_active_task_state(FILE, doc)
+  end
+
+  def test_invalid_status_fails
+    errors = check_active_task_state(FILE, { 'task_id' => '', 'status' => 'paused' })
+    assert_equal 1, errors.length
+    assert_match(/invalid active-task status/, errors.first)
+  end
+
+  def test_active_without_task_id_fails
+    errors = check_active_task_state(FILE, { 'task_id' => '', 'status' => 'active', 'activated_at' => '2026-07-10' })
+    assert_match(/non-empty task_id/, errors.first)
+  end
+
+  def test_active_with_malformed_task_id_fails
+    errors = check_active_task_state(FILE, { 'task_id' => 'not-an-id', 'status' => 'active', 'activated_at' => '2026-07-10' })
+    assert_match(/does not match expected pattern/, errors.first)
+  end
+
+  def test_active_with_invalid_date_fails
+    errors = check_active_task_state(FILE, { 'task_id' => '20260710-002', 'status' => 'active', 'activated_at' => '2026-13-40' })
+    assert_match(/valid activated_at/, errors.first)
+  end
+
+  def test_idle_with_residual_task_id_fails
+    errors = check_active_task_state(FILE, { 'task_id' => '20260710-002', 'status' => 'idle' })
+    assert_match(/must have an empty task_id/, errors.first)
+  end
+end
+
 # ── 測試 R11 批准覆蓋率交叉檢查 ────────────────────────────────────────────────
 class TestApprovalCoverage < Minitest::Test
   CUTOFF = Date.new(2026, 7, 1)

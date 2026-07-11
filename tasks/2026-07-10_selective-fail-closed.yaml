@@ -1,0 +1,87 @@
+task_id: "20260710-003"
+date: "2026-07-10"
+status: "review"
+
+# === 任務定義 ===
+goal: "選擇性 fail-closed 化（task_card_guard 壞 stdin/例外、gate 高風險缺 run log 條件 FAIL），並在 SECURITY.md 寫明防護邊界聲明 + permissions_guard 低誤判補強"
+
+context: |
+  外部報告 P0(c)(d) 經 20260710-001 驗證後採「選擇性翻轉」（使用者核定）：
+  全面 fail-closed 與專案哲學（false positive 比漏抓更糟）衝突，故只翻
+  誤傷面可控的點位 —
+  1) task_card_guard 壞 stdin/未捕捉例外 → exit 2 block（matcher 限制
+     誤傷面在 Write/Edit 類工具；Python 未捕捉例外的 exit 1 在 Claude
+     Code hook 語意下是 non-blocking，crash-open 是隱蔽洞）；
+  2) gate_check.gate_rule 與 verification_loop.check_rule 對
+     「card.date ≥ 2026-07-10 且 risk∈{high,critical} 且
+     status∈{done,review,failed}」缺 run log 改 FAIL，cutoff 模式仿
+     check_spec_consistency.rb 的 APPROVAL_COVERAGE_CUTOFF 先例，
+     不追溯歷史卡；
+  3) permissions_guard 與 failure_counter 維持 fail-open，理由入
+     SECURITY.md 並以測試鎖定；
+  4) SECURITY.md 新增威脅模型/防護邊界章節（regex ≠ sandbox、
+     interpreter one-liner 屬已知接受邊界）；4 條網路型 deny 規則
+     簽名 curl → (curl|wget)，rule_id 不變；
+  5) session_stop_checks.py 對 active task 跑 gate_check 警告
+     （非 blocking，blocking 需先觀察誤報率，列 P1）。
+  gate 修正疊在 in_progress 的 20260620-001（驗證閉環）之上，不另起爐灶。
+
+input_data:
+  - "outputs/drafts/20260710-001_external-review-verification.md"
+  - "scripts/task_card_guard.py"
+  - "scripts/permissions_guard.py"
+  - "scripts/gate_check.py"
+  - "scripts/verification_loop.py"
+  - "scripts/session_stop_checks.py"
+  - "SECURITY.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "task_card_guard 對空/壞 stdin 與未捕捉例外均 exit 2 block；test_empty_stdin_allows 語意翻轉為 expect block 並改名"
+  - "gate_check.gate_rule 與 verification_loop.check_rule 以共用 helper 判定：date≥2026-07-10 且 risk∈{high,critical} 且 status∈{done,review,failed} 缺 run log → FAIL；其餘維持 SKIPPED；cutoff 前歷史卡零影響"
+  - "permissions_guard 與 failure_counter 維持 fail-open，理由入註解與 SECURITY.md，並有測試鎖定該行為"
+  - "SECURITY.md 新增威脅模型/防護邊界章節（防線分層表、可攔與不可攔明列）"
+  - "permissions_guard 4 條網路型規則擴增 wget 簽名，rule_id 不變，deny_enforcement sync 測試零改動仍綠"
+  - "session_stop_checks.py 在 active task 有值時跑 gate_check 並以 stderr 警告（非 blocking）"
+  - "所有對應 test_*.py 更新並在本地 CI 全套通過"
+
+# === 輸出定義 ===
+expected_output:
+  format: "py"
+  location: "scripts/"
+  filename: "task_card_guard.py"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "run_tests"
+  - "git_commit_checkpoint"
+  - "modify_system_rules"
+
+# === 成本控制 ===
+max_tool_calls: 30
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - commit: "619e9a9"
+    stage: "三張 Task Card 建立並通過 validator（C0，與 001/002 共用）"
+  - commit: "05e6c4e"
+    stage: "task_card_guard 輸入層 fail-closed（空 stdin/壞 JSON/例外 → exit 2）（C5）"
+  - commit: "6a88c5a"
+    stage: "gate_check + verification_loop 缺 run log 條件 FAIL，共用 helper（C6）"
+  - commit: "c65c57d"
+    stage: "permissions_guard wget 擴充 + SECURITY.md 威脅模型 + Stop hook gate 警告（C7）"
+actual_tool_calls: 22
+result_summary: "DoD 7/7。task_card_guard 輸入層 fail-closed（test_empty_stdin_allows 語意翻轉為 expect block）；gate_check/verification_loop 以共用 run_log_required() 對 cutoff 起高風險結案卡缺帳判 FAIL（不追溯歷史卡）；permissions_guard/failure_counter 維持 fail-open 且理由入 SECURITY.md 新威脅模型章節（防線分層表 + 已知繞過面）；4 條網路規則擴 wget 簽名 rule_id 不變；session_stop_checks 對 active task 跑 gate_check 警告（非 blocking）。本地 CI 全套綠。"
+completion_time: "2026-07-10"
+audit_log_ref: "logs/AUDIT_LOG.md"

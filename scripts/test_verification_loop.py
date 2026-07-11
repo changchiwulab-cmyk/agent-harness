@@ -84,6 +84,24 @@ class TestGates(unittest.TestCase):
         ok, msgs = vl.check_rule(card(allowed_tools=["write_reports"]), None)
         self.assertTrue(ok, msgs)
 
+    def test_rule_high_risk_done_after_cutoff_missing_log_fails(self):
+        # 20260710-003：高風險 + 產出/結案 + cutoff 起，缺 run log 本身就是治理失敗。
+        c = card(date="2026-07-10", status="done", risk_level="high")
+        ok, msgs = vl.check_rule(c, None)
+        self.assertFalse(ok)
+        self.assertTrue(any("執行紀錄" in m for m in msgs), msgs)
+
+    def test_rule_high_risk_before_cutoff_missing_log_passes(self):
+        # 不追溯歷史卡（cutoff 模式）。
+        c = card(date="2026-07-09", status="done", risk_level="high")
+        ok, msgs = vl.check_rule(c, None)
+        self.assertTrue(ok, msgs)
+
+    def test_rule_low_risk_done_missing_log_passes(self):
+        c = card(date="2026-07-10", status="done", risk_level="low")
+        ok, msgs = vl.check_rule(c, None)
+        self.assertTrue(ok, msgs)
+
     def test_completion_not_run_when_no_marks(self):
         ok, msgs = vl.check_completion(card(), None)
         self.assertFalse(ok)

@@ -1,0 +1,25 @@
+# state/active_task.yaml — 當前執行中 Task Card 的 live 真相來源（20260710-002）
+#
+# 為什麼存在：
+#   外部報告驗證（20260710-001）確認：repo 內沒有任何檔案記錄「現在正在執行哪張卡」。
+#   state/last_checkpoint.yaml 是 session 結束時寫的 resume 快照（必填 checkpoint_commit，
+#   任務起點無值可填），不適合兼任 live pointer。task_card_guard 過去以「檔名巧合」
+#   授權新正式報告（掃全部卡、不看 status），形成 stale authorization。
+#
+# 與 last_checkpoint.yaml 的區隔：
+#   - last_checkpoint.yaml：跨 session「接續點」，session 尾寫入（G-D）。
+#   - active_task.yaml    ：任務內「執行中指標」，任務起點 --set、終點 --clear。
+#   兩者生命週期不同，混在一檔會重演規格漂移（重複 Stop key 教訓）。
+#
+# 誠實定位：
+#   --set 仍是 prompt 自律動作（同 failure_counter --record）；強制力在 guard 端 —
+#   沒有 active task 綁定到宣告精確輸出路徑的存活卡，就無法新建 outputs/reports/ 檔。
+#
+# 維護：scripts/active_task.py（--set / --clear / --get / --check）。
+# lint：scripts/check_spec_consistency.rb 的 check_active_task_state（本 SCHEMA 檔被跳過）。
+# 本檔為 schema 範本，非實際紀錄。
+
+task_id: "YYYYMMDD-XXX"           # status=active 時必填且須符合 task_id 格式；idle 時必須為空
+status: "active"                  # 必填：active / idle
+activated_at: "YYYY-MM-DD"        # status=active 時必填（合法日期）；idle 時為空
+note: ""                          # 選填：補充說明

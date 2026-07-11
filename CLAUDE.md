@@ -16,7 +16,7 @@
 
 ## 執行流程
 
-1. 載入 Task Card → 2. 確認 goal + definition_of_done → 3. 載入 context（system/GLOBAL_RULES.md + system/AGENT_CONTEXT.yaml + system/APPROVAL_POLICY.yaml + 對應 skill + project context）→ 4. 執行 → 5. 每關鍵階段 git commit checkpoint → 6. 依 system/GATE_POLICY.yaml + system/VERIFICATION_LOOP.yaml 跑驗證閉環（schema → 規則 → 完成 → 風險，迭代≤3、含 rollback）→ 7. 輸出到 outputs/ → 8. 符合 EXECUTION_LOG_SCHEMA.yaml 使用範圍（failed / partial / risk≥high / checkpoints≥3）才寫執行紀錄到 logs/runs/ → 9. 寫 audit log
+1. 載入 Task Card 並綁定 active task（`python3 scripts/active_task.py --set <task_id>`；新建正式報告的 hook 授權依賴此綁定）→ 2. 確認 goal + definition_of_done → 3. 載入 context（system/GLOBAL_RULES.md + system/AGENT_CONTEXT.yaml + system/APPROVAL_POLICY.yaml + 對應 skill + project context）→ 4. 執行 → 5. 每關鍵階段 git commit checkpoint → 6. 依 system/GATE_POLICY.yaml + system/VERIFICATION_LOOP.yaml 跑驗證閉環（schema → 規則 → 完成 → 風險，迭代≤3、含 rollback）→ 7. 輸出到 outputs/ → 8. 符合 EXECUTION_LOG_SCHEMA.yaml 使用範圍（failed / partial / risk≥high / checkpoints≥3）才寫執行紀錄到 logs/runs/ → 9. 寫 audit log，任務結束 `active_task.py --clear`
 
 ## Context 上限（軟性護欄）
 

@@ -119,18 +119,48 @@
       "started_at": "2026-05-29 05:25",
       "status": "failed",
       "task_id": "20260529-003"
+    },
+    {
+      "ended_at": "2026-07-10 00:00",
+      "gate_results": {
+        "completion_check": "pass",
+        "risk_check": "n/a",
+        "rule_check": "pass",
+        "schema_check": "pass"
+      },
+      "path": "logs/runs/RUN-20260710-002.yaml",
+      "run_id": "RUN-20260710-002",
+      "skill_type": "ops",
+      "started_at": "2026-07-10 00:00",
+      "status": "completed",
+      "task_id": "20260710-002"
+    },
+    {
+      "ended_at": "2026-07-10 00:00",
+      "gate_results": {
+        "completion_check": "pass",
+        "risk_check": "n/a",
+        "rule_check": "pass",
+        "schema_check": "pass"
+      },
+      "path": "logs/runs/RUN-20260710-003.yaml",
+      "run_id": "RUN-20260710-003",
+      "skill_type": "ops",
+      "started_at": "2026-07-10 00:00",
+      "status": "completed",
+      "task_id": "20260710-003"
     }
   ],
   "overview": {
     "alerts": [
       {
-        "current": "73/8 = 9.12",
+        "current": "74/8 = 9.25",
         "id": "M2",
         "name": "outputs/drafts:reports 比例",
         "status": "ok"
       },
       {
-        "current": "73/73 = 100.0%",
+        "current": "76/76 = 100.0%",
         "id": "M3",
         "name": "audit log 覆蓋率（status ∈ {review, done, failed, partial}）",
         "status": "ok"
@@ -145,34 +175,35 @@
     "gate_results": {
       "completion_check": {
         "not_run": 1,
-        "pass": 1
+        "pass": 3
       },
       "risk_check": {
+        "n/a": 2,
         "not_run": 1,
         "pass": 1
       },
       "rule_check": {
         "not_run": 1,
-        "pass": 1
+        "pass": 3
       },
       "schema_check": {
         "fail": 1,
-        "pass": 1
+        "pass": 3
       }
     },
     "run_status": {
-      "completed": 1,
+      "completed": 3,
       "failed": 1
     },
-    "run_total": 2,
+    "run_total": 4,
     "task_risk": {
       "high": 2,
       "low": 54,
-      "medium": 26
+      "medium": 29
     },
     "task_skill": {
-      "analysis": 8,
-      "ops": 50,
+      "analysis": 9,
+      "ops": 52,
       "research": 9,
       "review": 8,
       "writing": 7
@@ -181,9 +212,9 @@
       "done": 56,
       "in_progress": 3,
       "pending": 6,
-      "review": 17
+      "review": 20
     },
-    "task_total": 82
+    "task_total": 85
   },
   "tasks": [
     {
@@ -1005,6 +1036,36 @@
       "skill_type": "ops",
       "status": "review",
       "task_id": "20260706-F01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-10",
+      "goal": "建立 active task 真相來源（state/active_task.yaml + CLI），並將 task_card_guard 授權模型從 basename 比對升級為 normalized 完整路徑 + task_id + status 三段綁定",
+      "path": "tasks/2026-07-10_active-task-binding.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260710-002"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-10",
+      "goal": "將外部第一性原理分析報告（7.2/10）的六大類指控逐條對照程式碼驗證結果（含檔案:行號證據），給出 P0 建議的接受/修改/駁回結論",
+      "path": "tasks/2026-07-10_external-review-verification.yaml",
+      "risk_level": "medium",
+      "skill_type": "analysis",
+      "status": "review",
+      "task_id": "20260710-001"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-10",
+      "goal": "選擇性 fail-closed 化（task_card_guard 壞 stdin/例外、gate 高風險缺 run log 條件 FAIL），並在 SECURITY.md 寫明防護邊界聲明 + permissions_guard 低誤判補強",
+      "path": "tasks/2026-07-10_selective-fail-closed.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260710-003"
     }
   ]
 }
