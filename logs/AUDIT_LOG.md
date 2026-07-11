@@ -12,14 +12,22 @@ date: '2026-07-11'
 skill_type: analysis
 goal: 以「四層 AI Engineering」框架（Prompt/Context/Harness/Loop）對照 agent-harness，產出優缺點分析與
   P0–P2 改善計劃，並修復本次已驗證的三個 P0 落差
-status: in_progress
+status: review
 risk_level: low
 approval_needed: true
 output_path: outputs/drafts/20260711-A01_four-layer-alignment-analysis.md
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ''
-completion_time: ''
+checkpoints:
+- commit: 035c9f5
+  stage: 四層對照分析報告草稿完成
+- commit: a8d7d90
+  stage: L4 風險 gate 語意統一（前綴精確 + fail-closed + parity 測試）
+- commit: 7001b6d
+  stage: 預算口徑對齊 + memory 規模快照同步
+actual_tool_calls: 61
+result_summary: 四層對照分析報告落地 outputs/drafts/（四層優缺點含檔案:行號證據 + P0–P2 roadmap）；P0 三項修正完成：L4
+  風險 gate 語意統一（fail-closed + parity 測試、全卡回歸 0 翻轉）、context 預算口徑對齊（CLAUDE.md 只計 SKILL.md
+  + CI advisory）、memory 規模快照同步。待人工審核 PR。
+completion_time: '2026-07-11'
 ```
 
 ```yaml
