@@ -150,6 +150,26 @@ class TestGates(unittest.TestCase):
         ok, _ = vl.check_risk(c)
         self.assertTrue(ok)
 
+    def test_risk_high_empty_location_fails_closed(self):
+        # 20260711-A01：高風險卡未宣告落點 ⇒ 無從證明受限於 drafts/，fail-closed
+        c = card(risk_level="high",
+                 expected_output={"format": "md", "location": "", "filename": "x.md"})
+        ok, msgs = vl.check_risk(c)
+        self.assertFalse(ok)
+        self.assertTrue(any("fail-closed" in m for m in msgs), msgs)
+
+    def test_risk_run_log_output_path_outside_drafts_fails(self):
+        # 20260711-A01：宣告合規但 run log 實際落點在 reports/ ⇒ FAIL
+        run_log = {"execution_log": {"output_path": "outputs/reports/x.md"}}
+        ok, msgs = vl.check_risk(card(risk_level="high"), run_log)
+        self.assertFalse(ok)
+        self.assertTrue(any("實際落點" in m for m in msgs), msgs)
+
+    def test_risk_run_log_output_path_in_drafts_passes(self):
+        run_log = {"execution_log": {"output_path": "outputs/drafts/x.md"}}
+        ok, msgs = vl.check_risk(card(risk_level="high"), run_log)
+        self.assertTrue(ok, msgs)
+
 
 class TestBudget(unittest.TestCase):
     def test_attempts_schema_capped_at_2(self):
