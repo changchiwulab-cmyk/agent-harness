@@ -16,7 +16,7 @@ risk_level: medium
 approval_needed: true
 output_path: outputs/reports/20260710-001_external-review-verification.md
 checkpoints:
-- commit: pending
+- commit: 8045b35
   stage: dogfood（idle block / 綁定放行）+ 報告升格 + 四卡 done + 批准紀錄
 actual_tool_calls: 8
 result_summary: DoD 3/3。dogfood 實測：idle 寫 reports exit=2 被擋、--set 20260710-004 後 exit=0

@@ -48,7 +48,7 @@ skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
 checkpoints:
-  - commit: "pending"
+  - commit: "8045b35"
     stage: "dogfood（idle block / 綁定放行）+ 報告升格 + 四卡 done + 批准紀錄"
 actual_tool_calls: 8
 result_summary: "DoD 3/3。dogfood 實測：idle 寫 reports exit=2 被擋、--set 20260710-004 後 exit=0 放行（guard v2 上線後首次實戰驗證）。報告升格至 outputs/reports/，diff 確認內容與核准草稿一致（僅補升格註記）。四張 20260710 卡 done + 批准紀錄補齊。"
