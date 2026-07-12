@@ -4,7 +4,7 @@
 
 task_id: "20260509-N01"
 date: "2026-05-09"
-status: "review"
+status: "done"
 
 # === 任務定義 ===
 goal: "把 ai-bubbly-mountain plan 寫進 repo（memory/active_projects/agent-harness/plans/），並對 A01/W01 與 plan §8.1 Task A/B 做逐項對齊，產出對齊報告與 task card 清理"

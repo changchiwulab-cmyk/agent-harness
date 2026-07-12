@@ -4,7 +4,7 @@
 
 task_id: "20260509-N04"
 date: "2026-05-09"
-status: "review"
+status: "done"
 
 # === 任務定義 ===
 goal: "起草 agent-governance plugin 的 manifest skeleton 設計文件，定義每個 command / hook / schema / validator 的介面契約，但不寫實作"

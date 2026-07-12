@@ -1,6 +1,6 @@
 task_id: "20260427-F01"
 date: "2026-04-27"
-status: "review"
+status: "done"
 
 # === 任務定義 ===
 goal: "收斂 PR #55 為前端平台的最小可審核 baseline：穩定 YAML 解析、防 manifest 漂移、補 generator 測試與 CI 護欄"
