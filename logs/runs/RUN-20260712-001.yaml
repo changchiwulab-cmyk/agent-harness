@@ -1,0 +1,61 @@
+# Execution Log — P1-1 allowed_tools 白名單當下強制（PreToolUse guard）
+# 觸發條件符合 EXECUTION_LOG_SCHEMA 使用範圍：checkpoints ≥ 3
+
+execution_log:
+  run_id: "RUN-20260712-001"
+  task_id: "20260712-P11"
+  skill_type: "ops"
+  started_at: "2026-07-12 00:00"
+  ended_at: "2026-07-12 00:00"
+  status: "completed"
+
+  tools_used:
+    - tool: file_read
+      call_count: 10
+    - tool: file_search
+      call_count: 6
+    - tool: file_write
+      call_count: 4
+    - tool: bash
+      call_count: 8
+    - tool: run_tests
+      call_count: 4
+    - tool: git_commit_checkpoint
+      call_count: 4
+    - tool: modify_system_rules
+      call_count: 2
+    - tool: modify_settings_json
+      call_count: 1
+    - tool: write_logs
+      call_count: 1
+
+  checkpoints:
+    - commit: "cc87854"
+      stage: "Task Card 建立並綁定 active task（C0）"
+    - commit: "b49dc65"
+      stage: "allowed_tools_guard 核心 + 28 例單元測試全綠（C1）"
+    - commit: "5596d1e"
+      stage: "hook 註冊 + PERMISSIONS/GATE_POLICY/SECURITY 同步 + CI step（C2）"
+
+  token_estimate:
+    input: 70000
+    output: 14000
+    total: 84000
+    source: "rule_estimated"
+
+  approvals:
+    - action: "modify_system_rules（GATE_POLICY.yaml L2 automation、PERMISSIONS.yaml enforcement 段）+ modify_settings_json（allowed_tools_guard hook 註冊）"
+      status: "pending"
+      approved_by: ""
+      timestamp: "2026-07-12"
+      note: "approval_needed: true — 待 PR 人工審核；status 停在 review，不自行標 done"
+
+  output_path: "scripts/allowed_tools_guard.py"
+  error_summary: ""
+  gate_results:
+    schema_check: "pass"
+    rule_check: "pass"
+    completion_check: "pass"
+    risk_check: "n/a"
+
+  notes: "白名單當下強制的設計邊界沿用 20260710-001 裁決：idle 全放行（不做全域綁卡）、控制面豁免（tasks/ state/ logs/ 寫入、harness 協定 CLI、git）、輸入層 fail-open（task_card_guard 對同一寫入 payload 已 fail-closed）。dogfood：P11 卡 active 下 bash/drafts/git 放行、未宣告的 memory/ 寫入 exit 2 block。92 張存量卡零回填；13 套 Python 測試 + Ruby 53 runs + 4 支 e2e + evals 全綠。"
