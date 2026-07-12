@@ -57,7 +57,9 @@ max_web_searches: 0
 skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
+checkpoints:
+  - commit: "69a6c70"
+    stage: "review 佇列收斂 17→0（16 done + N06 in_progress）"
 actual_tool_calls: 16
 result_summary: "review 佇列 17→0。16 張已完成卡（result_summary/completion_time/產出俱全）status 翻 done；20260509-N06（DoD 7/9、等帶外 bootstrap）翻回 in_progress；4 張 pre-cutoff approval_needed 卡補批次 approval 紀錄（APR-20260712-001…004）。20260711-A01 留 PR #133 待合併後下輪收。已知落差記錄於收案摘要：R01 缺 run log（不回填）、A01 翻 done 時需補 approval。"
 completion_time: "2026-07-12"
