@@ -184,12 +184,27 @@ class TestWriteEnforcement(unittest.TestCase):
         decision, _ = guard.evaluate("Write", write(root, "system/GATE_POLICY.yaml"), root)
         self.assertEqual(decision, "block")
 
-    def test_create_output_files_covers_outputs_tree(self):
+    def test_create_output_files_covers_outputs_tree_except_reports(self):
         root = make_root()
         activate(root, ["create_output_files"])
-        for rel in ("outputs/drafts/a.md", "outputs/reports/b.md", "outputs/c.csv"):
+        for rel in ("outputs/drafts/a.md", "outputs/c.csv"):
             decision, _ = guard.evaluate("Write", write(root, rel), root)
             self.assertEqual(decision, "allow", rel)
+
+    def test_reports_need_dedicated_token_not_generics(self):
+        # Codex P2（PR #134）：reports/ 是 ask 等級路徑，allow 等級的泛用宣告
+        # （create_output_files / file_write）不得覆蓋，否則繞過 ask 守門。
+        root = make_root()
+        activate(root, ["create_output_files", "file_write"])
+        decision, reason = guard.evaluate("Write", write(root, "outputs/reports/b.md"), root)
+        self.assertEqual(decision, "block")
+        self.assertIn("write_reports", reason)
+
+    def test_write_reports_token_allows_reports(self):
+        root = make_root()
+        activate(root, ["write_reports"])
+        decision, _ = guard.evaluate("Write", write(root, "outputs/reports/b.md"), root)
+        self.assertEqual(decision, "allow")
 
 
 class TestBashEnforcement(unittest.TestCase):

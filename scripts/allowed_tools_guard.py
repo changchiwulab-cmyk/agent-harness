@@ -64,10 +64,12 @@ EXEMPT_WRITE_PREFIXES = ("tasks/", "state/", "logs/")
 # repo-relative prefix → tokens that authorize the write (any one suffices).
 # Vocabulary matches what cards/run logs already use (gate_check L2 operates on
 # the same names). Ask-level areas need their dedicated token — generic
-# file_write does NOT cover them; allow-level output areas accept the generic.
+# file_write / create_output_files do NOT cover them (otherwise an allow-level
+# declaration would bypass an ask-level gate; Codex P2 on PR #134 caught
+# reports/ doing exactly that). Allow-level output areas accept the generics.
 WRITE_TOKEN_MAP: tuple[tuple[str, frozenset[str]], ...] = (
     ("outputs/drafts/", frozenset({"write_drafts", "create_output_files", "file_write"})),
-    ("outputs/reports/", frozenset({"write_reports", "create_output_files", "file_write"})),
+    ("outputs/reports/", frozenset({"write_reports"})),
     ("outputs/", frozenset({"create_output_files", "file_write"})),
     ("system/", frozenset({"modify_system_rules"})),
     ("skills/", frozenset({"modify_skills"})),
