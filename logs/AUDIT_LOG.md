@@ -16,7 +16,9 @@ status: done
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/20260712-O01_review-queue-clearance.md
-checkpoints: []
+checkpoints:
+- commit: 69a6c70
+  subject: 'checkpoint: [20260712-O01] review 佇列收斂 17→0（16 done + N06 in_progress）'
 actual_tool_calls: 16
 result_summary: 'review 佇列 17→0。16 張已完成卡（result_summary/completion_time/產出俱全）status
   翻 done；20260509-N06（DoD 7/9、等帶外 bootstrap）翻回 in_progress；4 張 pre-cutoff approval_needed
