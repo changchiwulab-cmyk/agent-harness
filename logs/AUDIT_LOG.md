@@ -23,6 +23,8 @@ checkpoints:
   stage: allowed_tools_guard 核心 + 28 例單元測試全綠（C1）
 - commit: 5596d1e
   stage: hook 註冊 + PERMISSIONS/GATE_POLICY/SECURITY 同步 + CI step（C2）
+- commit: 43a2c0b
+  stage: Codex P2 修正 — reports/ 只認 write_reports 專屬 token（C4）
 actual_tool_calls: 40
 result_summary: DoD 5/5。scripts/allowed_tools_guard.py 於 Bash + Write|Edit|MultiEdit|NotebookEdit
   兩組 matcher 註冊，active 卡的 allowed_tools 當下強制（寫入路徑→gate_check L2 同詞彙、Bash→run_tests/bash），block

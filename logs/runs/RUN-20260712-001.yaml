@@ -36,6 +36,8 @@ execution_log:
       stage: "allowed_tools_guard 核心 + 28 例單元測試全綠（C1）"
     - commit: "5596d1e"
       stage: "hook 註冊 + PERMISSIONS/GATE_POLICY/SECURITY 同步 + CI step（C2）"
+    - commit: "43a2c0b"
+      stage: "Codex P2 修正 — reports/ 只認 write_reports 專屬 token（C4）"
 
   token_estimate:
     input: 70000
@@ -58,4 +60,4 @@ execution_log:
     completion_check: "pass"
     risk_check: "n/a"
 
-  notes: "白名單當下強制的設計邊界沿用 20260710-001 裁決：idle 全放行（不做全域綁卡）、控制面豁免（tasks/ state/ logs/ 寫入、harness 協定 CLI、git）、輸入層 fail-open（task_card_guard 對同一寫入 payload 已 fail-closed）。dogfood：P11 卡 active 下 bash/drafts/git 放行、未宣告的 memory/ 寫入 exit 2 block。92 張存量卡零回填；13 套 Python 測試 + Ruby 53 runs + 4 支 e2e + evals 全綠。"
+  notes: "白名單當下強制的設計邊界沿用 20260710-001 裁決：idle 全放行（不做全域綁卡）、控制面豁免（tasks/ state/ logs/ 寫入、harness 協定 CLI、git）、輸入層 fail-open（task_card_guard 對同一寫入 payload 已 fail-closed）。dogfood：P11 卡 active 下 bash/drafts/git 放行、未宣告的 memory/ 寫入 exit 2 block。92 張存量卡零回填；13 套 Python 測試 + Ruby 53 runs + 4 支 e2e + evals 全綠。PR #134 Codex P2 採納：outputs/reports/ 改為只認 write_reports 專屬 token，allow 級泛用宣告（create_output_files/file_write）不再覆蓋 ask 級路徑（C4，測試 28→30）。"
