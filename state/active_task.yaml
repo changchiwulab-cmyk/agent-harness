@@ -1,5 +1,5 @@
 # 由 scripts/active_task.py 維護；schema 見 state/active_task.SCHEMA.yaml。
-task_id: ''
-status: idle
-activated_at: ''
+task_id: 20260712-P11
+status: active
+activated_at: '2026-07-12'
 note: ''

@@ -1,0 +1,77 @@
+task_id: "20260712-P11"
+date: "2026-07-12"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "P1-1：把 Task Card 的 allowed_tools 白名單從事後比對（gate_check L2）抬到 PreToolUse 當下強制 — 新增 scripts/allowed_tools_guard.py，於 Bash 與寫入類工具呼叫的當下比對 active 卡的白名單，越界即 block"
+context: |
+  20260710-001 外部報告驗證輪確認「文件宣稱的控制力高於 runtime 實際能保證
+  的控制力」。該輪封掉 reports chokepoint（20260710-002/003），但 allowed_tools
+  仍是純事後治理：gate_check.py L2 比對 logs/runs/ 的 tools_used ⊆ allowed_tools，
+  且依賴 agent 誠實記帳 — 執行當下卡片白名單零強制力（GATE_POLICY.yaml L2
+  automation 自承）。P1-1 是後續 P1 清單中單項增量最大者：讓「卡片宣告什麼
+  工具」在使用的當下就有牙齒。
+  設計邊界（沿用 20260710-001 已裁決的哲學，不重開）：
+  (1) 只在有 active task 時強制 — idle 全放行，不做全域 mutating tool 綁卡
+      （該項在 20260710-001 §三-6 已被否決，違反 99% 低風險路徑哲學）；
+  (2) 只掛既有 mutating matcher（Bash + Write|Edit|MultiEdit|NotebookEdit），
+      讀取類工具不設 matcher、不上鎖；
+  (3) 治理控制面豁免：tasks/、state/、logs/ 寫入與 harness 協定 CLI
+      （active_task / failure_counter / gate_check / verification_loop /
+      sync_derived / validate_task_card）及 git（協定要求的 checkpoint 與
+      push）不受卡片白名單限制 — 卡片管的是工作產出範圍，不是協定簿記；
+  (4) 輸入層 fail-open（空 stdin / 壞 JSON / 例外 → allow + stderr 警告）：
+      寫入 matcher 的 fail-closed 已由 task_card_guard 專責（20260710-003），
+      Bash matcher 哲學是 fail-open（permissions_guard）；本 guard 是範圍
+      防呆而非安全邊界，不新增第二個 brick 點。
+input_data:
+  - "outputs/reports/20260710-001_external-review-verification.md"
+  - "scripts/gate_check.py"
+  - "scripts/task_card_guard.py"
+  - "scripts/active_task.py"
+  - "system/PERMISSIONS.yaml"
+  - "system/GATE_POLICY.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "scripts/allowed_tools_guard.py 存在並在 .claude/settings.json 的 Bash 與 Write|Edit|MultiEdit|NotebookEdit 兩組 matcher 註冊；有 active task 時，寫入路徑映射到與 gate_check L2 同一詞彙的工具名（file_write / write_drafts / write_reports / modify_system_rules 等），Bash 分類為 run_tests / bash，白名單外即 exit 2 block，block 訊息含所需工具名與修復指引"
+  - "idle（無 active task）與 state 檔不可讀時全放行，零新增摩擦；治理控制面（tasks/、state/、logs/ 寫入；harness 協定 CLI；git）在任何卡片下都不被擋 — 各以測試鎖定"
+  - "輸入層 fail-open（空 stdin / 壞 JSON / 未捕捉例外 → allow + 警告）以測試鎖定，理由寫入 SECURITY.md 防護邊界聲明"
+  - "scripts/test_allowed_tools_guard.py 全綠並掛入 .github/workflows/spec-consistency.yml；PERMISSIONS.yaml enforcement 區段與 GATE_POLICY.yaml L2 automation 同步更新"
+  - "92 張存量卡零回填（不改 Task Card schema）；本地全套既有測試（python test_*.py + ruby check_spec_consistency + sync_derived --check）不回歸"
+
+# === 輸出定義 ===
+expected_output:
+  format: "py"
+  location: "scripts/"
+  filename: "allowed_tools_guard.py"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "file_write"
+  - "bash"
+  - "run_tests"
+  - "git_commit_checkpoint"
+  - "modify_system_rules"
+  - "modify_settings_json"
+  - "write_logs"
+  - "write_drafts"
+
+# === 成本控制 ===
+max_tool_calls: 40
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
