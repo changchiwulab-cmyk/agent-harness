@@ -26,6 +26,10 @@
           {
             "type": "command",
             "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/failure_counter.py\" --hook"
+          },
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/allowed_tools_guard.py\""
           }
         ]
       },
@@ -39,6 +43,10 @@
           {
             "type": "command",
             "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/failure_counter.py\" --hook"
+          },
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/allowed_tools_guard.py\""
           }
         ]
       }

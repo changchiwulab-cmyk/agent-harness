@@ -88,4 +88,7 @@ enforcement:
   - guard: "scripts/failure_counter.py --hook"
     matcher: "Bash + Write|Edit"
     enforces: "硬規則 3 — 同一 task_id 連續失敗達 3 次後，後續工具呼叫一律 block，直到人工 --reset"
+  - guard: "scripts/allowed_tools_guard.py"
+    matcher: "Bash + Write|Edit|MultiEdit|NotebookEdit"
+    enforces: "Task Card allowed_tools 白名單當下強制（20260712-P11）— 有 active task 時，寫入目標路徑映射到 gate_check L2 同一詞彙的工具名、Bash 分類為 run_tests/bash，白名單外即 block；idle 全放行（不做全域綁卡，20260710-001 §三-6）；治理控制面（tasks/、state/、logs/ 寫入；harness 協定 CLI；git checkpoint/push）豁免；輸入層 fail-open（寫入 matcher 的 fail-closed 由 task_card_guard 專責，見 SECURITY.md）"
 # 殘餘 prompt-only（誠實標註）：硬規則 1 的「drafts/ 探索」與 ask 等級的人工確認仍依賴 Claude 遵循 CLAUDE.md。
