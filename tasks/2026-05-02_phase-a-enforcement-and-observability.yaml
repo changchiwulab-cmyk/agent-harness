@@ -1,6 +1,6 @@
 task_id: "20260502-A01"
 date: "2026-05-02"
-status: "review"
+status: "done"
 
 # === 任務定義 ===
 goal: "Phase A：補齊規則 enforcement 與觀測自動化（PreToolUse hook、audit log generator、e2e smoke test）"
