@@ -4,7 +4,7 @@
 
 task_id: "20260509-N05"
 date: "2026-05-09"
-status: "review"
+status: "done"
 
 # === 任務定義 ===
 goal: "建立 governance metrics 自動採集腳本，月度執行 plan §5.3 4 條關鍵指標（task card 月新增數 / drafts:reports 比 / audit 覆蓋率 / 原生重疊度），輸出報告 + 警訊狀態"

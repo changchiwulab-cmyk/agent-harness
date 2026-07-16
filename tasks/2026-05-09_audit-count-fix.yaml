@@ -4,7 +4,7 @@
 
 task_id: "20260509-N02"
 date: "2026-05-09"
-status: "review"
+status: "done"
 
 # === 任務定義 ===
 goal: "修正 A01 草稿 §1.1 對『README 寫 30+』的錯誤歸因，更新為實際計數，並在 N1 對齊報告中註記 plan 的數據是 snapshot，不更新"

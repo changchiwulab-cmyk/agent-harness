@@ -1,6 +1,6 @@
 task_id: "20260706-F01"
 date: "2026-07-06"
-status: "review"
+status: "done"
 
 # === 任務定義 ===
 goal: "修復 PR #76 兩條 Codex review 指出、且仍存在於 main 的缺陷：metric_m4 型別防護與 validate_task_card DoD 字串型別檢查"

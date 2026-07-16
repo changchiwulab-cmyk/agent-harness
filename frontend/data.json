@@ -169,7 +169,7 @@
   "overview": {
     "alerts": [
       {
-        "current": "75/9 = 8.33",
+        "current": "76/9 = 8.44",
         "id": "M2",
         "name": "outputs/drafts:reports 比例",
         "status": "ok"
@@ -213,23 +213,23 @@
     "run_total": 5,
     "task_risk": {
       "high": 2,
-      "low": 55,
+      "low": 56,
       "medium": 30
     },
     "task_skill": {
       "analysis": 10,
-      "ops": 53,
+      "ops": 54,
       "research": 9,
       "review": 8,
       "writing": 7
     },
     "task_status": {
-      "done": 60,
-      "in_progress": 3,
+      "done": 77,
+      "in_progress": 4,
       "pending": 6,
-      "review": 18
+      "review": 1
     },
-    "task_total": 87
+    "task_total": 88
   },
   "tasks": [
     {
@@ -539,7 +539,7 @@
       "path": "tasks/2026-04-27_frontend-platform-phase0.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "review",
+      "status": "done",
       "task_id": "20260427-F01"
     },
     {
@@ -549,7 +549,7 @@
       "path": "tasks/2026-05-02_phase-a-enforcement-and-observability.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "review",
+      "status": "done",
       "task_id": "20260502-A01"
     },
     {
@@ -559,7 +559,7 @@
       "path": "tasks/2026-05-02_taiwan-ai-industry-deep-dive.yaml",
       "risk_level": "low",
       "skill_type": "research",
-      "status": "review",
+      "status": "done",
       "task_id": "20260502-T03"
     },
     {
@@ -569,7 +569,7 @@
       "path": "tasks/2026-05-02_taiwan-ai-industry-quick-scan.yaml",
       "risk_level": "low",
       "skill_type": "research",
-      "status": "review",
+      "status": "done",
       "task_id": "20260502-T01"
     },
     {
@@ -579,7 +579,7 @@
       "path": "tasks/2026-05-02_taiwan-ai-industry-standard.yaml",
       "risk_level": "low",
       "skill_type": "research",
-      "status": "review",
+      "status": "done",
       "task_id": "20260502-T02"
     },
     {
@@ -589,7 +589,7 @@
       "path": "tasks/2026-05-09_audit-count-fix.yaml",
       "risk_level": "low",
       "skill_type": "review",
-      "status": "review",
+      "status": "done",
       "task_id": "20260509-N02"
     },
     {
@@ -599,7 +599,7 @@
       "path": "tasks/2026-05-09_governance-metrics-automation.yaml",
       "risk_level": "low",
       "skill_type": "ops",
-      "status": "review",
+      "status": "done",
       "task_id": "20260509-N05"
     },
     {
@@ -609,7 +609,7 @@
       "path": "tasks/2026-05-09_governance-plugin-skeleton.yaml",
       "risk_level": "low",
       "skill_type": "writing",
-      "status": "review",
+      "status": "done",
       "task_id": "20260509-N04"
     },
     {
@@ -619,7 +619,7 @@
       "path": "tasks/2026-05-09_harness-methodology-outline.yaml",
       "risk_level": "low",
       "skill_type": "writing",
-      "status": "review",
+      "status": "done",
       "task_id": "20260509-W01"
     },
     {
@@ -639,7 +639,7 @@
       "path": "tasks/2026-05-09_harness-v3-governance-extraction.yaml",
       "risk_level": "medium",
       "skill_type": "analysis",
-      "status": "review",
+      "status": "done",
       "task_id": "20260509-A01"
     },
     {
@@ -669,7 +669,7 @@
       "path": "tasks/2026-05-09_native-memory-evaluation.yaml",
       "risk_level": "low",
       "skill_type": "analysis",
-      "status": "review",
+      "status": "done",
       "task_id": "20260509-N07"
     },
     {
@@ -689,7 +689,7 @@
       "path": "tasks/2026-05-09_plan-alignment.yaml",
       "risk_level": "low",
       "skill_type": "review",
-      "status": "review",
+      "status": "done",
       "task_id": "20260509-N01"
     },
     {
@@ -699,7 +699,7 @@
       "path": "tasks/2026-05-09_skills-native-registration-poc.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "review",
+      "status": "done",
       "task_id": "20260509-N03"
     },
     {
@@ -709,7 +709,7 @@
       "path": "tasks/2026-05-09_v3-plugin-repo-bootstrap.yaml",
       "risk_level": "high",
       "skill_type": "ops",
-      "status": "review",
+      "status": "in_progress",
       "task_id": "20260509-N06"
     },
     {
@@ -719,7 +719,7 @@
       "path": "tasks/2026-05-09_w01-chapter-one-draft.yaml",
       "risk_level": "low",
       "skill_type": "writing",
-      "status": "review",
+      "status": "done",
       "task_id": "20260509-N08"
     },
     {
@@ -1039,7 +1039,7 @@
       "path": "tasks/2026-07-06_claudian-project-analysis.yaml",
       "risk_level": "low",
       "skill_type": "research",
-      "status": "review",
+      "status": "done",
       "task_id": "20260706-R01"
     },
     {
@@ -1049,7 +1049,7 @@
       "path": "tasks/2026-07-06_pr76-review-fixes.yaml",
       "risk_level": "low",
       "skill_type": "ops",
-      "status": "review",
+      "status": "done",
       "task_id": "20260706-F01"
     },
     {
@@ -1101,6 +1101,16 @@
       "skill_type": "analysis",
       "status": "review",
       "task_id": "20260711-A01"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-07-12",
+      "goal": "把 main 上 17 張滯留 review 狀態的任務卡收斂：16 張工作已完成者翻 done，唯一未完成的 N06 翻回 in_progress，並補齊 pre-cutoff approval 紀錄",
+      "path": "tasks/2026-07-12_clear-review-queue.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260712-O01"
     }
   ]
 }

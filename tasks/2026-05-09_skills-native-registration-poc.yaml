@@ -4,7 +4,7 @@
 
 task_id: "20260509-N03"
 date: "2026-05-09"
-status: "review"
+status: "done"
 
 # === 任務定義 ===
 goal: "在分支上把 skills/research/SKILL.md 加上原生 Claude Code Skills frontmatter 並建立 .claude/skills/ 註冊路徑，輸出 PoC summary 評估 H1（原生自動路由能否取代 ROUTING_RULES.md）"
