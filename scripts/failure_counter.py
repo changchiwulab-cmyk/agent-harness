@@ -6,12 +6,17 @@ deterministic enforcement** — no counter, no halt mechanism, purely a prompt
 request. This script gives the harness an actual counter plus a PreToolUse hook
 that halts further tool calls once the threshold is reached.
 
-It is honestly best-effort: the agent must call ``--record <task_id>`` when a
-step fails and ``--success <task_id>`` when one succeeds (that signalling is
-still prompt-driven). The count is *consecutive*: a success clears it, so two
-failures followed by a success then a later failure leaves the count at 1 — only
-3 failures in a row trip the hook. Once tripped, the ``--hook`` mode
-deterministically blocks subsequent Bash/Write/Edit calls until ``--reset``.
+Counting is runtime-automatic (20260716-P12): ``--post-hook`` is registered on
+both PostToolUse (success-only event) and PostToolUseFailure in
+``.claude/settings.json``, so every failed Bash/write tool call +1s the ACTIVE
+task (``state/active_task.yaml``) and every successful one clears the count.
+The count is *consecutive*: a success clears it, so two failures followed by a
+success then a later failure leaves the count at 1 — only 3 failures in a row
+trip the hook. Once tripped, the ``--hook`` mode deterministically blocks
+subsequent Bash/Write/Edit calls until ``--reset``. The manual
+``--record``/``--success`` CLI remains for debugging and non-hook flows.
+The post-hook input layer is fail-open (bookkeeping automation, not a security
+boundary — bad payload must not mis-count or brick the session; SECURITY.md).
 
 State lives in ``logs/.failure_state.json`` (gitignored).
 
@@ -22,6 +27,7 @@ CLI:
     failure_counter.py --reset   <task_id>     # clear that task's count (human un-halt)
     failure_counter.py --status                # show all counts
     failure_counter.py --hook                  # PreToolUse mode (stdin JSON -> decision)
+    failure_counter.py --post-hook             # PostToolUse/PostToolUseFailure mode (auto count)
 """
 
 from __future__ import annotations
@@ -127,6 +133,79 @@ def run_hook(root: Path | None = None) -> int:
     return 0
 
 
+# --- PostToolUse / PostToolUseFailure hook mode ------------------------------
+
+_SCRIPTS_DIR = str(Path(__file__).resolve().parent)
+POST_EVENTS = {"PostToolUse", "PostToolUseFailure"}
+
+
+def _post_warn(message: str) -> int:
+    print(f"failure_counter --post-hook: {message}（fail-open，見 SECURITY.md）", file=sys.stderr)
+    return 0
+
+
+def _read_active_task_id(root: Path | None = None) -> str:
+    """ACTIVE task_id per state/active_task.yaml; '' when idle or unreadable."""
+    try:
+        if _SCRIPTS_DIR not in sys.path:
+            sys.path.insert(0, _SCRIPTS_DIR)
+        import active_task
+        return active_task.active_task_id(root)
+    except Exception as e:  # noqa: BLE001 — 記帳自動化，state 不可讀不得誤記
+        _post_warn(f"active task 不可讀（{type(e).__name__}: {e}）— 不記數")
+        return ""
+
+
+def apply_post_event(payload: dict, root: Path | None = None) -> int:
+    """Auto-count one tool result: failure -> +1, success -> clear (consecutive)."""
+    event = payload.get("hook_event_name") or ""
+    if event not in POST_EVENTS:
+        return _post_warn(f"未知 hook_event_name {event!r} — 不記數")
+    task_id = _read_active_task_id(root)
+    if not task_id:
+        return 0  # idle — 計數以 task_id 為鍵，無 active 卡不記帳
+    if event == "PostToolUse":
+        if check(task_id, root):
+            reset(task_id, root)
+        return 0
+    if payload.get("is_interrupt"):
+        return 0  # 使用者中斷不是任務失敗
+    n = record(task_id, root)
+    thr = load_state(root).get("threshold", THRESHOLD)
+    if n >= thr:
+        # PostToolUseFailure 的 exit 2 是 non-blocking、stderr 餵給 Claude：
+        # 即時告知熔斷已武裝；真正攔阻由 PreToolUse --hook 負責。
+        print(
+            f"⛔ failure_counter: {task_id} 連續失敗 {n}/{thr} — 已達硬規則 3 門檻，"
+            f"後續 Bash/寫入呼叫將被攔阻。請停下、寫 logs/errors/ 並通知使用者，"
+            f"等人工 `failure_counter.py --reset {task_id}` 解除。",
+            file=sys.stderr,
+        )
+        return 2
+    return 0
+
+
+def run_post_hook(root: Path | None = None) -> int:
+    raw = sys.stdin.read().strip()
+    if not raw:
+        return _post_warn("空 stdin — 無 payload 可判讀")
+    try:
+        payload = json.loads(raw)
+    except json.JSONDecodeError as e:
+        return _post_warn(f"stdin 不是合法 JSON（{e}）")
+    if not isinstance(payload, dict):
+        return _post_warn("payload 不是 JSON object")
+    return apply_post_event(payload, root)
+
+
+def run_post_hook_guarded(root: Path | None = None) -> int:
+    """記帳自動化不是安全邊界：任何內部錯誤都不得誤記或 brick session。"""
+    try:
+        return run_post_hook(root)
+    except Exception as e:  # noqa: BLE001
+        return _post_warn(f"內部錯誤（{type(e).__name__}: {e}）")
+
+
 # --- CLI -------------------------------------------------------------------
 
 
@@ -139,10 +218,13 @@ def main(argv: list[str] | None = None) -> int:
     group.add_argument("--reset", metavar="TASK_ID")
     group.add_argument("--status", action="store_true")
     group.add_argument("--hook", action="store_true")
+    group.add_argument("--post-hook", action="store_true", dest="post_hook")
     args = parser.parse_args(argv)
 
     if args.hook:
         return run_hook()
+    if args.post_hook:
+        return run_post_hook_guarded()
 
     thr = load_state().get("threshold", THRESHOLD)
     if args.record:

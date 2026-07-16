@@ -4,7 +4,7 @@
 
 task_id: "20260716-P12"
 date: "2026-07-16"
-status: "pending"
+status: "in_progress"
 
 # === 任務定義 ===
 goal: "P1-2：新增 PostToolUse hook 對工具錯誤自動 failure_counter --record，把「連續失敗 3 次熔斷」的計數端從 prompt 自律升為 runtime 自動——熔斷觸發不再依賴 agent 記得記帳"
@@ -55,6 +55,7 @@ allowed_tools:
   - "git_commit_checkpoint"
   - "modify_settings_json"
   - "modify_system_rules"
+  - "modify_claude_md"   # DoD 第 4 條要求同步 CLAUDE.md 硬規則 3；開工時補上，否則 allowed_tools_guard 會擋
   - "write_logs"
   - "write_drafts"
 
