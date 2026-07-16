@@ -89,6 +89,11 @@ class TestConstants < Minitest::Test
   def test_skill_glob_targets_skill_prompts
     assert_equal 'skills/*/SKILL.md', SKILL_GLOB
   end
+
+  def test_eval_glob_targets_eval_examples
+    # eval_examples.md 僅 advisory 顯示，不計入預算（20260711-A01）
+    assert_equal 'skills/*/eval_examples.md', EVAL_GLOB
+  end
 end
 
 class TestSkillBudgets < Minitest::Test

@@ -4,7 +4,7 @@
 
 task_id: "20260509-N06"
 date: "2026-05-09"
-status: "review"   # 已核准 4 子題（D007）；bootstrap 檔樹已完整準備於 drafts/；實際 repo 建立留下個 session
+status: "in_progress"   # 已核准 4 子題（D007）；bootstrap 檔樹已完整準備於 drafts/；等帶外建立外部 repo（DoD 7/9），屬執行中而非等審核——20260712-O01 清佇列時自 review 校正
 
 # === 任務定義 ===
 goal: "依 N4 skeleton 真正建立 agent-governance plugin repo（含 plugin.json / 5 commands / 4 schemas / 2 hooks / 2 validators 的最小可運行版本），並把 agent-harness 切到引用該 plugin"

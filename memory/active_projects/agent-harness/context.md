@@ -29,12 +29,12 @@
 - Execution Log（system/EXECUTION_LOG_SCHEMA.yaml）
 - Audit Log（logs/AUDIT_LOG.md）
 
-## 目前狀態（2026-06-09）
+## 目前狀態（2026-07-11）
 - v2 框架成熟運行；R1–R8 強化系列已落地：
   - R1 approval-record schema、R2 logs schema lint（CI）、R3 analysis cost sample、
     R4 decision-revisit tracker、R5 failure drill（e2e）、R6 execution-log token source、
     R7 observability metrics + frontend overview panel、R8 disaster-recovery runbook。
-- 規模：tasks/ 下 45 張 Task Card；7 筆 decision log（D001–D007）；outputs/ 含多份 drafts + 3 份 reports。
+- 規模：tasks/ 下 86 張 Task Card；8 筆 decision log（D001–D008）；outputs/ 含多份 drafts + 9 份 reports。
 - 自動化護欄：
   - `.github/workflows/spec-consistency.yml`（CI 跑 13 道檢查：schema、YAML parse、context budget、
     frontend drift、permissions guard、audit-log generator、e2e smoke + failure drill、decision-revisit）。

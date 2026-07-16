@@ -4,7 +4,7 @@
 
 task_id: "20260509-N07"
 date: "2026-05-09"
-status: "review"
+status: "done"
 
 # === 任務定義 ===
 goal: "評估是否在 agent-harness v2.x 啟用 Claude Code 原生 Memory，並產出明確 Go / No-Go / Conditional-Go 建議與條件清單"

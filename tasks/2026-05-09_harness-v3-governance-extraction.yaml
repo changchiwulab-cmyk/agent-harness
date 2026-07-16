@@ -4,7 +4,7 @@
 
 task_id: "20260509-A01"
 date: "2026-05-09"
-status: "review"
+status: "done"
 
 # === 任務定義 ===
 goal: "規劃 Harness v3 重構範圍：砍除與 Claude Code 原生重疊的模組，把治理三件（Audit / Decision Log / DoD / Failure Taxonomy）抽成可獨立發布的治理層"

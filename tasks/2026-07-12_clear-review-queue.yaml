@@ -1,0 +1,66 @@
+# Task Card: 清 review 佇列 — 17 張滯留卡收斂到正確狀態
+# 建立日期：2026-07-12
+
+task_id: "20260712-O01"
+date: "2026-07-12"
+status: "done"
+
+# === 任務定義 ===
+goal: "把 main 上 17 張滯留 review 狀態的任務卡收斂：16 張工作已完成者翻 done，唯一未完成的 N06 翻回 in_progress，並補齊 pre-cutoff approval 紀錄"
+context: >
+  review 佇列積壓 17 張，人工審核是瓶頸（20260711-A01 分析報告亦點名）。逐卡盤點：
+  16/17 張 result_summary / completion_time 已填、expected_output 全數存在且受版控，
+  純粹缺「人工確認翻 done」；20260509-N06 為唯一例外（DoD 7/9、completion_time 空、
+  等帶外建立外部 repo）。使用者已拍板三項處置：(1) 本輪只清 main 上 17 張，
+  20260711-A01 留在 PR #133 等合併後下輪收；(2) N06 翻回 in_progress；
+  (3) 4 張 approval_needed 但早於 CI 追溯線 2026-07-01 的卡補一份批次 approval 檔。
+  前例：20260417-O01（批次翻 done）、20260710-004（收案 + approval 補錄）。
+input_data:
+  - "tasks/*.yaml（17 張 status=review 的卡）"
+  - "logs/approvals/2026-07-10_20260710-001-004_approval.yaml（批次 approval 格式前例）"
+  - "system/APPROVAL_POLICY.yaml"
+  - "tasks/2026-04-17_close-stale-review-tasks.yaml（前例）"
+
+# === 完成標準 ===
+definition_of_done:
+  - "16 張已完成的 review 卡 status 翻為 done，其他欄位不動（completion_time 全數原已填妥）"
+  - "20260509-N06 status 翻為 in_progress，status 註解更新為等待帶外 bootstrap 的實況"
+  - "logs/approvals/ 新增批次 approval 檔，含 20260427-F01 / 20260502-A01 / 20260509-A01 / 20260509-N03 四筆 status: approved 紀錄"
+  - "收案摘要落地 outputs/drafts/20260712-O01_review-queue-clearance.md（處置表 + 已知落差記錄）"
+  - "validate_task_card 對全部改動卡 exit 0；check_spec_consistency.rb 綠；gate_check 20260712-O01 綠；sync_derived.sh --check 零漂移"
+  - "單一 commit push 到 claude/clear-review-queue-0xjzsc 並開 draft PR"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260712-O01_review-queue-clearance.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "file_write"
+  - "write_drafts"
+  - "write_logs"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 40
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - commit: "69a6c70"
+    stage: "review 佇列收斂 17→0（16 done + N06 in_progress）"
+actual_tool_calls: 16
+result_summary: "review 佇列 17→0。16 張已完成卡（result_summary/completion_time/產出俱全）status 翻 done；20260509-N06（DoD 7/9、等帶外 bootstrap）翻回 in_progress；4 張 pre-cutoff approval_needed 卡補批次 approval 紀錄（APR-20260712-001…004）。20260711-A01 留 PR #133 待合併後下輪收。已知落差記錄於收案摘要：R01 缺 run log（不回填）、A01 翻 done 時需補 approval。"
+completion_time: "2026-07-12"
+audit_log_ref: "logs/AUDIT_LOG.md"

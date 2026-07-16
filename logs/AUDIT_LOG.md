@@ -36,6 +36,51 @@ completion_time: ''
 ```
 
 ```yaml
+task_id: 20260712-O01
+date: '2026-07-12'
+skill_type: ops
+goal: 把 main 上 17 張滯留 review 狀態的任務卡收斂：16 張工作已完成者翻 done，唯一未完成的 N06 翻回 in_progress，並補齊
+  pre-cutoff approval 紀錄
+status: done
+risk_level: low
+approval_needed: false
+output_path: outputs/drafts/20260712-O01_review-queue-clearance.md
+checkpoints:
+- commit: 69a6c70
+  stage: review 佇列收斂 17→0（16 done + N06 in_progress）
+actual_tool_calls: 16
+result_summary: 'review 佇列 17→0。16 張已完成卡（result_summary/completion_time/產出俱全）status
+  翻 done；20260509-N06（DoD 7/9、等帶外 bootstrap）翻回 in_progress；4 張 pre-cutoff approval_needed
+  卡補批次 approval 紀錄（APR-20260712-001…004）。20260711-A01 留 PR #133 待合併後下輪收。已知落差記錄於收案摘要：R01
+  缺 run log（不回填）、A01 翻 done 時需補 approval。'
+completion_time: '2026-07-12'
+```
+
+```yaml
+task_id: 20260711-A01
+date: '2026-07-11'
+skill_type: analysis
+goal: 以「四層 AI Engineering」框架（Prompt/Context/Harness/Loop）對照 agent-harness，產出優缺點分析與
+  P0–P2 改善計劃，並修復本次已驗證的三個 P0 落差
+status: review
+risk_level: low
+approval_needed: true
+output_path: outputs/drafts/20260711-A01_four-layer-alignment-analysis.md
+checkpoints:
+- commit: 035c9f5
+  stage: 四層對照分析報告草稿完成
+- commit: a8d7d90
+  stage: L4 風險 gate 語意統一（前綴精確 + fail-closed + parity 測試）
+- commit: 7001b6d
+  stage: 預算口徑對齊 + memory 規模快照同步
+actual_tool_calls: 61
+result_summary: 四層對照分析報告落地 outputs/drafts/（四層優缺點含檔案:行號證據 + P0–P2 roadmap）；P0 三項修正完成：L4
+  風險 gate 語意統一（fail-closed + parity 測試、全卡回歸 0 翻轉）、context 預算口徑對齊（CLAUDE.md 只計 SKILL.md
+  + CI advisory）、memory 規模快照同步。待人工審核 PR。
+completion_time: '2026-07-11'
+```
+
+```yaml
 task_id: 20260710-004
 date: '2026-07-10'
 skill_type: ops
@@ -135,7 +180,7 @@ task_id: 20260706-R01
 date: '2026-07-06'
 skill_type: research
 goal: 分析 GitHub 開源專案 yishentu/claudian（Obsidian AI coding agent 外掛），優化整理後收進專案知識庫 memory/
-status: review
+status: done
 risk_level: low
 approval_needed: true
 output_path: outputs/drafts/20260706-R01_claudian-analysis.md
@@ -166,7 +211,7 @@ date: '2026-07-06'
 skill_type: ops
 goal: '修復 PR #76 兩條 Codex review 指出、且仍存在於 main 的缺陷：metric_m4 型別防護與 validate_task_card
   DoD 字串型別檢查'
-status: review
+status: done
 risk_level: low
 approval_needed: false
 output_path: scripts/governance_metrics.py
@@ -827,7 +872,7 @@ task_id: 20260509-W01
 date: '2026-05-09'
 skill_type: writing
 goal: 把 Harness v2 沉澱的治理思想（可恢復／可審計／可量化）轉寫成可發表的方法論大綱，適用於書、長文系列、課程三種形態
-status: review
+status: done
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-05-09_methodology_outline.md
@@ -893,7 +938,7 @@ task_id: 20260509-N08
 date: '2026-05-09'
 skill_type: writing
 goal: 把 W01 第 1 章『為什麼一人公司需要 Agent 治理？』從大綱寫成可發佈的部落格首篇草稿，並附 elevator pitch（單獨可流通版）
-status: review
+status: done
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-05-09_n08_w01-chapter-one-draft.md
@@ -913,7 +958,7 @@ date: '2026-05-09'
 skill_type: analysis
 goal: 評估是否在 agent-harness v2.x 啟用 Claude Code 原生 Memory，並產出明確 Go / No-Go / Conditional-Go
   建議與條件清單
-status: review
+status: done
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-05-09_n07_native-memory-evaluation.md
@@ -933,7 +978,7 @@ date: '2026-05-09'
 skill_type: ops
 goal: 依 N4 skeleton 真正建立 agent-governance plugin repo（含 plugin.json / 5 commands /
   4 schemas / 2 hooks / 2 validators 的最小可運行版本），並把 agent-harness 切到引用該 plugin
-status: review
+status: in_progress
 risk_level: high
 approval_needed: true
 output_path: outputs/drafts/2026-05-09_n06_v3-plugin-bootstrap.md
@@ -960,7 +1005,7 @@ date: '2026-05-09'
 skill_type: ops
 goal: 建立 governance metrics 自動採集腳本，月度執行 plan §5.3 4 條關鍵指標（task card 月新增數 / drafts:reports
   比 / audit 覆蓋率 / 原生重疊度），輸出報告 + 警訊狀態
-status: review
+status: done
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/governance-metrics-2026-05.md
@@ -980,7 +1025,7 @@ date: '2026-05-09'
 skill_type: writing
 goal: 起草 agent-governance plugin 的 manifest skeleton 設計文件，定義每個 command / hook / schema
   / validator 的介面契約，但不寫實作
-status: review
+status: done
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-05-09_n04_governance-plugin-skeleton.md
@@ -1000,7 +1045,7 @@ date: '2026-05-09'
 skill_type: ops
 goal: 在分支上把 skills/research/SKILL.md 加上原生 Claude Code Skills frontmatter 並建立 .claude/skills/
   註冊路徑，輸出 PoC summary 評估 H1（原生自動路由能否取代 ROUTING_RULES.md）
-status: review
+status: done
 risk_level: medium
 approval_needed: true
 output_path: outputs/drafts/2026-05-09_n03_skills-native-poc.md
@@ -1019,7 +1064,7 @@ task_id: 20260509-N02
 date: '2026-05-09'
 skill_type: review
 goal: 修正 A01 草稿 §1.1 對『README 寫 30+』的錯誤歸因，更新為實際計數，並在 N1 對齊報告中註記 plan 的數據是 snapshot，不更新
-status: review
+status: done
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-05-09_n02_audit-count-fix.md
@@ -1040,7 +1085,7 @@ date: '2026-05-09'
 skill_type: review
 goal: 把 ai-bubbly-mountain plan 寫進 repo（memory/active_projects/agent-harness/plans/），並對
   A01/W01 與 plan §8.1 Task A/B 做逐項對齊，產出對齊報告與 task card 清理
-status: review
+status: done
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-05-09_n01_plan-alignment.md
@@ -1076,7 +1121,7 @@ date: '2026-05-09'
 skill_type: analysis
 goal: 規劃 Harness v3 重構範圍：砍除與 Claude Code 原生重疊的模組，把治理三件（Audit / Decision Log / DoD
   / Failure Taxonomy）抽成可獨立發布的治理層
-status: review
+status: done
 risk_level: medium
 approval_needed: true
 output_path: outputs/drafts/2026-05-09_v3_extraction_plan.md
@@ -1094,7 +1139,7 @@ task_id: 20260502-T03
 date: '2026-05-02'
 skill_type: research
 goal: 台灣 AI 產業深度報告：5-7 切片量化、政策法規、敏感性表、12 個月機會日曆
-status: review
+status: done
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/20260502-T03_taiwan-ai-industry-deep-dive.md
@@ -1111,7 +1156,7 @@ task_id: 20260502-T02
 date: '2026-05-02'
 skill_type: research
 goal: 台灣 AI 產業標準研究：5 切片含本地 vs 國際玩家比較、成熟度與驅動力分析
-status: review
+status: done
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/20260502-T02_taiwan-ai-industry-standard.md
@@ -1127,7 +1172,7 @@ task_id: 20260502-T01
 date: '2026-05-02'
 skill_type: research
 goal: 台灣 AI 產業快速掃描：3 切片 + 3 跨切片趨勢，1 小時內出 executive brief
-status: review
+status: done
 risk_level: low
 approval_needed: false
 output_path: outputs/drafts/20260502-T01_taiwan-ai-industry-quick-scan.md
@@ -1144,7 +1189,7 @@ date: '2026-05-02'
 skill_type: ops
 goal: Phase A：補齊規則 enforcement 與觀測自動化（PreToolUse hook、audit log generator、e2e smoke
   test）
-status: review
+status: done
 risk_level: medium
 approval_needed: true
 output_path: outputs/drafts/20260502-A01_phase-a-summary.md
@@ -1162,7 +1207,7 @@ date: '2026-04-27'
 skill_type: ops
 goal: '收斂 PR #55 為前端平台的最小可審核 baseline：穩定 YAML 解析、防 manifest 漂移、補 generator 測試與 CI
   護欄'
-status: review
+status: done
 risk_level: medium
 approval_needed: true
 output_path: outputs/drafts/20260427-F01_phase0-summary.md
