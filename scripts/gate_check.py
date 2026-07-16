@@ -37,6 +37,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import posixpath
 import sys
 from dataclasses import dataclass, field
 from datetime import date
@@ -85,6 +86,18 @@ def run_log_required(card: dict) -> bool:
         return False
     card_date = _card_date(card.get("date"))
     return card_date is not None and card_date >= RUN_LOG_REQUIRED_CUTOFF
+
+
+def output_in_drafts(path_str) -> bool:
+    """前綴精確比對 outputs/drafts/：擋 outputs/drafts-public/、foo/outputs/drafts/ 等相似路徑。
+
+    posixpath.normpath 先做 lexical 正規化，擋 outputs/drafts/../reports/ 類
+    traversal（Codex P1 on #133）；不觸檔案系統，絕對路徑與 ../ 開頭仍被拒。
+    gate_risk 與 verification_loop.check_risk 共用（20260711-A01），兩套判定一致
+    由 test_gate_check 的 parity 矩陣鎖定。
+    """
+    norm = posixpath.normpath(Path(str(path_str or "")).as_posix())
+    return norm == "outputs/drafts" or norm.startswith("outputs/drafts/")
 
 
 @dataclass
@@ -219,7 +232,13 @@ def gate_risk(card: dict, run_log: dict | None) -> dict:
         paths.append(out["location"])
     if run_log and run_log.get("output_path"):
         paths.append(run_log["output_path"])
-    bad = [p for p in paths if "outputs/drafts/" not in Path(p).as_posix().rstrip("/") + "/"]
+    if not paths:
+        # 高風險卡連落點宣告都沒有 ⇒ 無從證明輸出受限於 drafts/，fail-closed（20260711-A01）
+        return {
+            "status": FAIL,
+            "detail": "high-risk card has no expected_output.location nor run_log output_path",
+        }
+    bad = [p for p in paths if not output_in_drafts(p)]
     if bad:
         return {"status": FAIL, "detail": f"high-risk output must be in drafts/, got {bad}"}
     return {"status": PASS, "detail": "high-risk output confined to drafts/"}

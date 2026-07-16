@@ -4,6 +4,8 @@
 # Context budget check — 驗證 CLAUDE.md + GLOBAL_RULES.md 加總不超過 3,000 tokens，
 # 以及每個 skill prompt（skills/*/SKILL.md）單檔不超過 1,500 tokens。
 # 依據：CLAUDE.md「Context 硬限制」段落。
+# eval_examples.md 屬 eval 資產（run_evals.py 校準用），非執行期載入的 prompt，
+# 不計入預算；僅以 advisory 輸出維持漂移可見（20260711-A01）。
 #
 # 估算法（language-aware，保守上界）：
 #   - ASCII 字元（codepoint < 128）：每 4 個字元 ≈ 1 token（英文/程式碼經驗值）
@@ -20,6 +22,7 @@ TARGET_FILES = [
 ].freeze
 SKILL_TOKEN_BUDGET = 1_500
 SKILL_GLOB = 'skills/*/SKILL.md'
+EVAL_GLOB = 'skills/*/eval_examples.md'
 
 def estimate_tokens(path)
   return nil unless File.exist?(path)
@@ -76,6 +79,14 @@ if __FILE__ == $PROGRAM_NAME
     if est > SKILL_TOKEN_BUDGET
       warn "FAILED: skill prompt over budget: #{path} (~#{est} > #{SKILL_TOKEN_BUDGET})"
       failed = true
+    end
+  end
+
+  eval_files = Dir.glob(EVAL_GLOB).sort
+  unless eval_files.empty?
+    puts 'Eval example sizes (advisory, not budgeted):'
+    eval_files.each do |path|
+      puts format('  %-28s  ~%d tokens', path, estimate_tokens(path))
     end
   end
 

@@ -43,7 +43,7 @@ from validate_task_card import validate as validate_schema  # noqa: E402
 SCRIPTS_DIR = Path(__file__).resolve().parent
 if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
-from gate_check import RUN_LOG_REQUIRED_CUTOFF, run_log_required  # noqa: E402
+from gate_check import RUN_LOG_REQUIRED_CUTOFF, output_in_drafts, run_log_required  # noqa: E402
 
 GATES = ("schema_check", "rule_check", "completion_check", "risk_check")
 GLOBAL_HARD_CAP = 3  # CLAUDE.md：連續失敗 3 次就停下來
@@ -175,15 +175,27 @@ def check_completion(card: dict, completion: list[str] | None) -> tuple[bool, li
     return (not gaps), gaps
 
 
-def check_risk(card: dict) -> tuple[bool, list[str]]:
+def check_risk(card: dict, run_log: dict | None = None) -> tuple[bool, list[str]]:
+    """L4：高風險輸出受限於 outputs/drafts/ — 宣告落點與 run log 實際落點都查。
+
+    前綴精確比對共用 gate_check.output_in_drafts（20260711-A01）；高風險卡未宣告
+    location 時 fail-closed。兩套驅動器判定一致由 test_gate_check 的 parity 矩陣鎖定。
+    """
     risk = str(card.get("risk_level", "")).strip()
+    if risk not in ("high", "critical"):
+        return True, []
+    msgs: list[str] = []
     loc = str((card.get("expected_output") or {}).get("location", "")).strip()
-    # 精確比對 outputs/drafts/ 目錄，避免 outputs/drafts-public/ 之類的前綴誤判。
-    loc_norm = loc.rstrip("/")
-    in_drafts = loc_norm == "outputs/drafts" or loc_norm.startswith("outputs/drafts/")
-    if risk in ("high", "critical") and not in_drafts:
-        return False, [f"risk_level={risk} 的輸出須在 outputs/drafts/，目前：{loc or '(未指定)'}"]
-    return True, []
+    if not loc:
+        msgs.append(f"risk_level={risk} 的卡未宣告 expected_output.location（fail-closed）")
+    elif not output_in_drafts(loc):
+        msgs.append(f"risk_level={risk} 的輸出須在 outputs/drafts/，目前：{loc}")
+    if run_log is not None:
+        log = run_log.get("execution_log", run_log)
+        actual = str(log.get("output_path") or "").strip()
+        if actual and not output_in_drafts(actual):
+            msgs.append(f"risk_level={risk} 的 run log 實際落點須在 outputs/drafts/，目前：{actual}")
+    return (not msgs), msgs
 
 
 def run_gates(
@@ -223,7 +235,7 @@ def run_gates(
             outcome.first_fail = "completion_check"
             return outcome
 
-    ok, msgs = check_risk(card)
+    ok, msgs = check_risk(card, run_log)
     outcome.results["risk_check"] = "pass" if ok else "fail"
     outcome.messages += msgs
     if not ok:
