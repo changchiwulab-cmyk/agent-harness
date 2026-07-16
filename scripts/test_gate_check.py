@@ -184,6 +184,52 @@ class TestGates(unittest.TestCase):
         )
 
 
+class TestRiskGateSemantics(unittest.TestCase):
+    """L4 語意（20260711-A01）：前綴精確、高風險空路徑 fail-closed、run log 落點照查，
+    且 gate_check.gate_risk 與 verification_loop.check_risk 對同一矩陣判定一致。"""
+
+    # (risk_level, 宣告 location, run log output_path, 預期 ok)
+    MATRIX = [
+        ("high", "", None, False),                                   # 空宣告 fail-closed
+        ("critical", "", None, False),
+        ("high", "outputs/drafts/", None, True),
+        ("high", "outputs/drafts/sub/", None, True),
+        ("high", "outputs/drafts-public/", None, False),             # 前綴相似路徑
+        ("high", "foo/outputs/drafts/", None, False),                # 子字串誤判案例
+        ("high", "outputs/reports/", None, False),
+        ("high", "outputs/drafts/", "outputs/reports/x.md", False),  # 實際落點違規
+        ("high", "outputs/drafts/", "outputs/drafts/x.md", True),
+        ("low", "outputs/reports/", None, True),                     # 低風險不受限
+        ("high", "outputs/drafts/../reports/", None, False),         # traversal 出界（Codex P1 on #133）
+        ("high", "outputs/drafts/sub/../x/", None, True),            # 內部 .. 不出界
+        ("high", "outputs/drafts/", "outputs/drafts/../reports/x.md", False),  # run log traversal
+    ]
+
+    @staticmethod
+    def _card(risk: str, location: str) -> dict:
+        return {
+            "risk_level": risk,
+            "expected_output": {"format": "md", "location": location, "filename": "x.md"},
+        }
+
+    def test_matrix_and_parity_with_verification_loop(self):
+        import verification_loop as vl
+
+        for risk, loc, out_path, expect_ok in self.MATRIX:
+            card = self._card(risk, loc)
+            run_log = {"output_path": out_path} if out_path else None
+            with self.subTest(risk=risk, loc=loc, out_path=out_path):
+                gate_ok = gc.gate_risk(card, run_log)["status"] != gc.FAIL
+                loop_ok, _ = vl.check_risk(card, run_log)
+                self.assertEqual(gate_ok, expect_ok)
+                self.assertEqual(loop_ok, expect_ok)
+
+    def test_empty_location_high_risk_fails_closed(self):
+        result = gc.gate_risk(self._card("high", ""), None)
+        self.assertEqual(result["status"], gc.FAIL)
+        self.assertIn("no expected_output.location", result["detail"])
+
+
 class TestCLI(unittest.TestCase):
     def _run(self, argv: list[str]) -> tuple[int, str, str]:
         out, err = io.StringIO(), io.StringIO()

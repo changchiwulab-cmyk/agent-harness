@@ -82,6 +82,9 @@ jobs:
       - name: Task card guard tests
         run: python3 scripts/test_task_card_guard.py
 
+      - name: Allowed tools guard tests
+        run: python3 scripts/test_allowed_tools_guard.py
+
       - name: Active task pointer tests
         run: python3 scripts/test_active_task.py
 

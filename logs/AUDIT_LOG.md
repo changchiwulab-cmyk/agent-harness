@@ -149,6 +149,35 @@ completion_time: ''
 ```
 
 ```yaml
+task_id: 20260712-P11
+date: '2026-07-12'
+skill_type: ops
+goal: P1-1：把 Task Card 的 allowed_tools 白名單從事後比對（gate_check L2）抬到 PreToolUse 當下強制 —
+  新增 scripts/allowed_tools_guard.py，於 Bash 與寫入類工具呼叫的當下比對 active 卡的白名單，越界即 block
+status: review
+risk_level: medium
+approval_needed: true
+output_path: scripts/allowed_tools_guard.py
+checkpoints:
+- commit: cc87854
+  stage: Task Card 建立並綁定 active task（C0）
+- commit: b49dc65
+  stage: allowed_tools_guard 核心 + 28 例單元測試全綠（C1）
+- commit: 5596d1e
+  stage: hook 註冊 + PERMISSIONS/GATE_POLICY/SECURITY 同步 + CI step（C2）
+- commit: 43a2c0b
+  stage: Codex P2 修正 — reports/ 只認 write_reports 專屬 token（C4）
+actual_tool_calls: 40
+result_summary: DoD 5/5。scripts/allowed_tools_guard.py 於 Bash + Write|Edit|MultiEdit|NotebookEdit
+  兩組 matcher 註冊，active 卡的 allowed_tools 當下強制（寫入路徑→gate_check L2 同詞彙、Bash→run_tests/bash），block
+  訊息含所需工具與修復指引；idle 與 state 不可讀全放行、控制面（tasks/ state/ logs/、harness CLI、git）豁免、輸入層
+  fail-open 各以測試鎖定並寫入 SECURITY.md；28 例單元測試 + CI step；PERMISSIONS enforcement 與 GATE_POLICY
+  L2 同步；92 張存量卡零回填，全套既有測試（13 Python + Ruby 53 runs + 4 e2e + evals）不回歸。dogfood：未宣告的
+  memory/ 寫入 exit 2。
+completion_time: ''
+```
+
+```yaml
 task_id: 20260712-O01
 date: '2026-07-12'
 skill_type: ops
@@ -167,6 +196,30 @@ result_summary: 'review 佇列 17→0。16 張已完成卡（result_summary/comp
   卡補批次 approval 紀錄（APR-20260712-001…004）。20260711-A01 留 PR #133 待合併後下輪收。已知落差記錄於收案摘要：R01
   缺 run log（不回填）、A01 翻 done 時需補 approval。'
 completion_time: '2026-07-12'
+```
+
+```yaml
+task_id: 20260711-A01
+date: '2026-07-11'
+skill_type: analysis
+goal: 以「四層 AI Engineering」框架（Prompt/Context/Harness/Loop）對照 agent-harness，產出優缺點分析與
+  P0–P2 改善計劃，並修復本次已驗證的三個 P0 落差
+status: review
+risk_level: low
+approval_needed: true
+output_path: outputs/drafts/20260711-A01_four-layer-alignment-analysis.md
+checkpoints:
+- commit: 035c9f5
+  stage: 四層對照分析報告草稿完成
+- commit: a8d7d90
+  stage: L4 風險 gate 語意統一（前綴精確 + fail-closed + parity 測試）
+- commit: 7001b6d
+  stage: 預算口徑對齊 + memory 規模快照同步
+actual_tool_calls: 61
+result_summary: 四層對照分析報告落地 outputs/drafts/（四層優缺點含檔案:行號證據 + P0–P2 roadmap）；P0 三項修正完成：L4
+  風險 gate 語意統一（fail-closed + parity 測試、全卡回歸 0 翻轉）、context 預算口徑對齊（CLAUDE.md 只計 SKILL.md
+  + CI advisory）、memory 規模快照同步。待人工審核 PR。
+completion_time: '2026-07-11'
 ```
 
 ```yaml
