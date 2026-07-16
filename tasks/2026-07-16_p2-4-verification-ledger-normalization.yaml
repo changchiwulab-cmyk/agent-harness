@@ -1,0 +1,71 @@
+# Task Card — P2-4：verification_loop 帳本常態化到 medium+ 卡
+# 來源：20260711-A01 四層對照分析報告 roadmap P2 第 4 項（使用者 2026-07-16 拍板 P2 拆四卡佔位）
+# 前置：真實首例 RUN-20260711-A01 隨 PR #133 合併；關聯卡 20260620-001（閉環本體）先收案
+
+task_id: "20260716-P24"
+date: "2026-07-16"
+status: "pending"
+
+# === 任務定義 ===
+goal: "P2-4：verification_loop 帳本常態化——閉環帳本從「真實任務首例」推進為 medium+ 風險卡的常規要求，驗證閉環不再只在 e2e drill 裡活著"
+context: |
+  20260711-A01 L4 盤點：閉環帳本此前僅 e2e drill 證明，真實任務首例是
+  RUN-20260711-A01（隨 PR #133）；報告 P2 建議常態化到 medium+ 卡。
+  設計邊界：
+  (1) 關聯卡：20260620-001（in_progress）管驗證閉環驅動器與政策本身，
+      本卡管「使用範圍擴大」——執行前確認該卡已收案或明確劃界，避免重疊；
+  (2) 與 D006／EXECUTION_LOG_SCHEMA 使用範圍的關係：現行 run log 使用範圍是
+      failed／partial／risk≥high／checkpoints≥3，常態化到 medium+ 等於擴大
+      該範圍——屬 system/ 修訂（ask 級），需決策紀錄，不得與 D006 縮限的
+      原始理由（避免低價值簿記）矛盾而不交代；
+  (3) 存量卡零回填：新規只約束生效日後建立的卡（沿用 cutoff 模式）。
+input_data:
+  - "outputs/drafts/20260711-A01_four-layer-alignment-analysis.md（roadmap P2；隨 PR #133 合併後轉正）"
+  - "system/VERIFICATION_LOOP.yaml"
+  - "system/GATE_POLICY.yaml"
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+  - "tasks/2026-06-20_verification-loop.yaml（關聯卡 20260620-001）"
+  - "logs/runs/（RUN-20260711-A01 隨 PR #133 合併後可引用）"
+
+# === 完成標準 ===
+definition_of_done:
+  - "前置確認：20260620-001 已收案或劃界紀錄在案；RUN-20260711-A01 已在 main（PR #133 合併）"
+  - "VERIFICATION_LOOP.yaml／GATE_POLICY.yaml 使用範圍更新：medium+ 卡要求驅動器實跑帳本，生效採 cutoff 模式、存量卡零回填"
+  - "EXECUTION_LOG_SCHEMA.yaml 使用範圍同步修訂，與 D006 的關係寫成決策紀錄（memory/decisions/ 或 logs/，依 MAINTENANCE 慣例）"
+  - "至少 2 張生效後的真實 medium+ 卡按新規產出帳本，作為常態化驗證"
+  - "check_spec_consistency.rb 對應規則同步（若有 enforcement 條款）；全套既有本地測試與 CI 綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: "system/"
+  filename: "VERIFICATION_LOOP.yaml"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "file_write"
+  - "bash"
+  - "run_tests"
+  - "git_commit_checkpoint"
+  - "modify_system_rules"
+  - "write_drafts"
+  - "write_logs"
+
+# === 成本控制 ===
+max_tool_calls: 30
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

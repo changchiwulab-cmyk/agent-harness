@@ -1,0 +1,73 @@
+# Task Card — P1-4：evals 擴至 6/6 skill + LLM judge 接 provider
+# 來源：20260711-A01 四層對照分析報告 roadmap P1-4（使用者 2026-07-16 拍板分批開卡，每項一卡）
+# 建議執行順位：P1 批次第 3 張
+
+task_id: "20260716-P14"
+date: "2026-07-16"
+status: "pending"
+
+# === 任務定義 ===
+goal: "P1-4：evals 覆蓋 2/6 → 6/6 skill（writing／ops／review／retro 各補 ≥1 case 含 gold/bad 校準對），並把 run_evals.py 的 LLM judge 從強制 fallback 接上真 provider——品質保證從結構層升到語意層"
+context: |
+  基於已完成的 20260630-G02（eval 框架已在：rule judge CI-safe、gold/bad 校準
+  已入 CI、LLM judge 擴充點已預留）。20260711-A01 L1 缺點：evals 只覆蓋
+  2/6 skill（research、analysis 各 1 case）；run_evals.py:187-189 對 --judge llm
+  強制 fallback 到 rule，語意層品質從未被評。
+  設計邊界：
+  (1) CI 無外呼原則不變——LLM judge 只在本地／有金鑰環境跑，無金鑰或離線時
+      自動 fallback rule judge，CI 行為與現況位元級一致；
+  (2) retro skill 不可路由（validate_task_card VALID_SKILLS 不含）為已知現況，
+      eval 覆蓋與路由解耦——照樣補 case，不動 VALID_SKILLS；
+  (3) 各 case 的 rubric 對齊該 skill 的 eval_examples.md good/bad 範例
+      （沿用 G02 做法）。
+input_data:
+  - "outputs/drafts/20260711-A01_four-layer-alignment-analysis.md（roadmap P1-4；隨 PR #133 合併後轉正）"
+  - "scripts/run_evals.py"
+  - "scripts/test_run_evals.py"
+  - "evals/README.md"
+  - "skills/writing/eval_examples.md"
+  - "skills/ops/eval_examples.md"
+  - "skills/review/eval_examples.md"
+  - "tasks/2026-06-30_g-b-eval-harness.yaml（前置卡 20260630-G02）"
+
+# === 完成標準 ===
+definition_of_done:
+  - "evals/writing、evals/ops、evals/review、evals/retro 各 ≥1 case（YAML，含 input＋期望＋gold/bad 校準對），rubric 對齊各 skill eval_examples.md"
+  - "run_evals.py --judge llm 接上 Claude API provider；無金鑰／離線時自動 fallback rule judge，CI 行為不變並以測試鎖定"
+  - "校準全綠入 CI：6/6 skill 在 rule judge 下 gold=pass、bad=fail"
+  - "evals/README.md 更新覆蓋表與 judge 分層（rule＝CI 基線、llm＝本地語意層）說明"
+  - "scripts/test_run_evals.py 擴充 provider 分支與 fallback 案例全綠；全套既有本地測試與 sync_derived.sh --check 不回歸"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "evals/"
+  filename: "README.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "file_write"
+  - "create_output_files"
+  - "bash"
+  - "run_tests"
+  - "git_commit_checkpoint"
+  - "write_drafts"
+
+# === 成本控制 ===
+max_tool_calls: 40
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

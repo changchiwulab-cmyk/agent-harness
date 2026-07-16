@@ -1,0 +1,70 @@
+# Task Card — P1-5：plugin 草稿樹 fork parity 鎖
+# 來源：20260711-A01 四層對照分析報告 roadmap P1-5（使用者 2026-07-16 拍板分批開卡，每項一卡）
+# 建議執行順位：P1 批次第 4 張（前置：20260509-N11 先落地）
+
+task_id: "20260716-P15"
+date: "2026-07-16"
+status: "pending"
+
+# === 任務定義 ===
+goal: "P1-5：在 agent-governance plugin 草稿樹補 fork parity 鎖——deny rules（plugin 5 條 vs 本體 8 條）與 Task Card 必填欄位（plugin 6 vs 本體 10）的差異，在建外部 repo 前以 parity 測試鎖定或收斂"
+context: |
+  20260711-A01 L 盤點：plugin 草稿樹（outputs/drafts/agent-governance-bootstrap/）
+  與 agent-harness 本體已知兩處 fork 漂移——permissions deny rules 5 vs 8、
+  Task Card 必填欄位 6 vs 10。20260509-N11（in_progress）已蓋另 2 條缺陷
+  （risk gate output_path 缺席、gate_completion TypeError），本卡收剩餘 parity。
+  設計邊界：
+  (1) 前置：N11 先落地再動同一批檔案，避免草稿樹內部衝突；
+  (2) parity 鎖的形式＝測試對照本體真相來源（scripts/permissions_guard.py
+      DENY_RULES、system/validate_task_card.py REQUIRED_FIELDS），刻意差異
+      白名單明列理由，白名單外的漂移即 fail；
+  (3) 降級路徑（報告高風險假設）：D007（plugin repo 建立延後）若屆時裁定
+      確定不建 repo，本卡降級為「刪除草稿樹並記錄」，DoD 前三條作廢；
+  (4) 範圍限草稿樹內部，agent-harness 本體零改動。
+input_data:
+  - "outputs/drafts/20260711-A01_four-layer-alignment-analysis.md（roadmap P1-5；隨 PR #133 合併後轉正）"
+  - "outputs/drafts/agent-governance-bootstrap/"
+  - "scripts/permissions_guard.py（本體 DENY_RULES 真相來源）"
+  - "system/validate_task_card.py（本體 REQUIRED_FIELDS 真相來源）"
+  - "tasks/2026-05-09_n11-plugin-hardening-codex-p1p2.yaml（前置卡）"
+
+# === 完成標準 ===
+definition_of_done:
+  - "前置確認：20260509-N11 已收案（或其改動已在草稿樹上），且 D007 未裁定放棄建 repo——若已裁定放棄，改走降級路徑：刪除草稿樹＋記錄，以下三條作廢"
+  - "parity 測試落地於草稿樹（validators/test_validators.py 擴充或獨立 test_parity.py）：對照本體 DENY_RULES 與 REQUIRED_FIELDS，刻意差異白名單明列理由，白名單外差異 fail"
+  - "deny rules 5 vs 8、必填欄位 6 vs 10 逐條處置：收斂到本體、或列入刻意差異白名單（各附理由）"
+  - "plugin 草稿樹自驗測試（hooks + validators）全數綠"
+  - "agent-harness 本體零改動；sync_derived.sh --check 不回歸"
+
+# === 輸出定義 ===
+expected_output:
+  format: "py"
+  location: "outputs/drafts/agent-governance-bootstrap/validators/"
+  filename: "test_validators.py"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "file_write"
+  - "write_drafts"
+  - "bash"
+  - "run_tests"
+  - "git_commit_checkpoint"
+
+# === 成本控制 ===
+max_tool_calls: 30
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

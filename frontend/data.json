@@ -198,12 +198,12 @@
     "run_total": 4,
     "task_risk": {
       "high": 2,
-      "low": 55,
-      "medium": 30
+      "low": 56,
+      "medium": 38
     },
     "task_skill": {
       "analysis": 9,
-      "ops": 54,
+      "ops": 63,
       "research": 9,
       "review": 8,
       "writing": 7
@@ -211,9 +211,9 @@
     "task_status": {
       "done": 77,
       "in_progress": 4,
-      "pending": 6
+      "pending": 15
     },
-    "task_total": 87
+    "task_total": 96
   },
   "tasks": [
     {
@@ -1085,6 +1085,96 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260712-O01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-16",
+      "goal": "P1-2：新增 PostToolUse hook 對工具錯誤自動 failure_counter --record，把「連續失敗 3 次熔斷」的計數端從 prompt 自律升為 runtime 自動——熔斷觸發不再依賴 agent 記得記帳",
+      "path": "tasks/2026-07-16_p1-2-failure-counter-auto-record.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260716-P12"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-16",
+      "goal": "P1-3：把 check_untrusted_content.py 從「有偵測器沒佈線」接上執行面——優先掛 Stop hook 以 advisory 模式掃描 session 新增／修改的 outputs/ 檔案（不 block），次選 CI 掃 outputs/ 新增檔",
+      "path": "tasks/2026-07-16_p1-3-injection-detection-hook.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260716-P13"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-16",
+      "goal": "P1-4：evals 覆蓋 2/6 → 6/6 skill（writing／ops／review／retro 各補 ≥1 case 含 gold/bad 校準對），並把 run_evals.py 的 LLM judge 從強制 fallback 接上真 provider——品質保證從結構層升到語意層",
+      "path": "tasks/2026-07-16_p1-4-evals-expansion-llm-judge.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260716-P14"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-07-16",
+      "goal": "P1-5：在 agent-governance plugin 草稿樹補 fork parity 鎖——deny rules（plugin 5 條 vs 本體 8 條）與 Task Card 必填欄位（plugin 6 vs 本體 10）的差異，在建外部 repo 前以 parity 測試鎖定或收斂",
+      "path": "tasks/2026-07-16_p1-5-plugin-fork-parity.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260716-P15"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-16",
+      "goal": "P1-6：WIP 治理制度化——governance_metrics 新增卡片 WIP aging 指標（未結狀態停留天數與警戒線），並把「每週清 review 佇列 1–2 張」節奏寫進治理文件",
+      "path": "tasks/2026-07-16_p1-6-wip-aging-governance.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260716-P16"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-16",
+      "goal": "P2-1：建立有界自主維運迴圈——以排程定期跑 governance_metrics 與 retro digest 等唯讀彙整，輸出一律進 outputs/drafts/ 等人看，對齊 Loop 層定義但保留人工批准邊界",
+      "path": "tasks/2026-07-16_p2-1-bounded-autonomous-ops-loop.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260716-P21"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-16",
+      "goal": "P2-2：failure_counter 熔斷按 task_id 分閘——連續失敗計數與熔斷改為 per-card 維度，保留全域閘做總開關",
+      "path": "tasks/2026-07-16_p2-2-per-card-circuit-breaker.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260716-P22"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-16",
+      "goal": "P2-3：把「高風險缺 run log 即 FAIL」的 fail-closed 視窗（cutoff 2026-07-10＋risk≥high＋狀態閘）依實測誤擋數據逐步放寬到更低風險層級",
+      "path": "tasks/2026-07-16_p2-3-runlog-failclosed-window.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260716-P23"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-16",
+      "goal": "P2-4：verification_loop 帳本常態化——閉環帳本從「真實任務首例」推進為 medium+ 風險卡的常規要求，驗證閉環不再只在 e2e drill 裡活著",
+      "path": "tasks/2026-07-16_p2-4-verification-ledger-normalization.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "pending",
+      "task_id": "20260716-P24"
     }
   ]
 }
