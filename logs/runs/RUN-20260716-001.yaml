@@ -1,0 +1,63 @@
+# Execution Log — P1-2 failure_counter 自動記錄（PostToolUse/PostToolUseFailure hooks）
+# 觸發條件符合 EXECUTION_LOG_SCHEMA 使用範圍：checkpoints ≥ 3
+
+execution_log:
+  run_id: "RUN-20260716-001"
+  task_id: "20260716-P12"
+  skill_type: "ops"
+  started_at: "2026-07-16 09:00"
+  ended_at: "2026-07-16 10:00"
+  status: "completed"
+
+  tools_used:
+    - tool: file_read
+      call_count: 10
+    - tool: file_search
+      call_count: 8
+    - tool: file_write
+      call_count: 5
+    - tool: bash
+      call_count: 12
+    - tool: run_tests
+      call_count: 5
+    - tool: git_commit_checkpoint
+      call_count: 4
+    - tool: modify_system_rules
+      call_count: 1
+    - tool: modify_settings_json
+      call_count: 1
+    - tool: modify_claude_md
+      call_count: 1
+    - tool: write_logs
+      call_count: 1
+
+  checkpoints:
+    - commit: "b1694a5"
+      stage: "--post-hook 自動計數實作＋兩事件佈線＋13 例新測試全綠（C1）"
+    - commit: "090f457"
+      stage: "SECURITY/PERMISSIONS/CLAUDE.md enforcement 措辭同步（C2）"
+    - commit: "pending"
+      stage: "全套回歸＋drill＋執行紀錄＋卡片收尾（C3）"
+
+  token_estimate:
+    input: 60000
+    output: 12000
+    total: 72000
+    source: "rule_estimated"
+
+  approvals:
+    - action: "modify_settings_json（PostToolUse/PostToolUseFailure hook 註冊）+ modify_system_rules（PERMISSIONS.yaml enforcement 段）+ modify_claude_md（硬規則 3 措辭）"
+      status: "approved"
+      approved_by: "human"
+      timestamp: "2026-07-16"
+      note: "使用者於 plan mode 核准執行計畫（明列三項 ask 級變更），正式紀錄 APR-20260716-001（logs/approvals/2026-07-16_20260716-P12_approval.yaml）；status 停在 review，PR 人工合併為最終批准"
+
+  output_path: "scripts/failure_counter.py"
+  error_summary: ""
+  gate_results:
+    schema_check: "pass"
+    rule_check: "pass"
+    completion_check: "pass"
+    risk_check: "n/a"
+
+  notes: "與卡片字面的一個偏差（已於 PR 說明）：官方 hooks 文件確認 PostToolUse 只在工具成功時觸發、失敗走獨立事件 PostToolUseFailure，故「單一 PostToolUse hook 從 tool_response 判定錯誤」在 runtime 上不可能；實作改為兩事件同一工具範圍（Bash|Write|Edit|MultiEdit|NotebookEdit）——PostToolUseFailure→--record +1、PostToolUse→歸零，完整滿足 DoD 雙向語意。計數鍵取 active task（idle no-op，對齊 P11 哲學）；is_interrupt 不記；達門檻 exit 2（non-blocking stderr 警告，攔阻仍由 PreToolUse --hook 專責）。輸入層 fail-open（壞 payload 不誤記不 block）＋內部例外 guarded，13 例新測試鎖定（合計 25 例）。手動 drill：3 筆合成 failure payload → 3/3 → PreToolUse exit 2 攔阻 → reset → 成功 payload 歸零。卡片 allowed_tools 補 modify_claude_md（DoD 4 要求同步 CLAUDE.md，原卡漏列會被 allowed_tools_guard 擋）。存量卡零回填；全套 Python 測試 + Ruby 檢查 + 4 支 e2e + evals + sync_derived --check 全綠；context budget ~1620/3000。"
