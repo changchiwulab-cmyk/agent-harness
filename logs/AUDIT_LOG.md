@@ -147,7 +147,7 @@ checkpoints:
   stage: --post-hook 自動計數實作＋兩事件佈線＋13 例新測試全綠（C1）
 - commit: 090f457
   stage: SECURITY/PERMISSIONS/CLAUDE.md enforcement 措辭同步（C2）
-- commit: pending
+- commit: f09e795
   stage: 回歸＋drill＋run log＋approval＋卡片收尾（C3）
 actual_tool_calls: 38
 result_summary: DoD 5/5。關鍵設計偏差（已核准）：官方 hooks 文件確認 PostToolUse 只在成功觸發、失敗走 PostToolUseFailure，故實作為兩事件同一工具範圍（Bash|Write|Edit|MultiEdit|NotebookEdit）——failure→--post-hook
