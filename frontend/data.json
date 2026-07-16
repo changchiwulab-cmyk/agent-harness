@@ -164,6 +164,21 @@
       "started_at": "2026-07-11 18:30",
       "status": "completed",
       "task_id": "20260711-A01"
+    },
+    {
+      "ended_at": "2026-07-12 00:00",
+      "gate_results": {
+        "completion_check": "pass",
+        "risk_check": "n/a",
+        "rule_check": "pass",
+        "schema_check": "pass"
+      },
+      "path": "logs/runs/RUN-20260712-001.yaml",
+      "run_id": "RUN-20260712-001",
+      "skill_type": "ops",
+      "started_at": "2026-07-12 00:00",
+      "status": "completed",
+      "task_id": "20260712-P11"
     }
   ],
   "overview": {
@@ -175,7 +190,7 @@
         "status": "ok"
       },
       {
-        "current": "78/78 = 100.0%",
+        "current": "79/79 = 100.0%",
         "id": "M3",
         "name": "audit log 覆蓋率（status ∈ {review, done, failed, partial}）",
         "status": "ok"
@@ -190,35 +205,35 @@
     "gate_results": {
       "completion_check": {
         "not_run": 1,
-        "pass": 4
+        "pass": 5
       },
       "risk_check": {
-        "n/a": 3,
+        "n/a": 4,
         "not_run": 1,
         "pass": 1
       },
       "rule_check": {
         "not_run": 1,
-        "pass": 4
+        "pass": 5
       },
       "schema_check": {
         "fail": 1,
-        "pass": 4
+        "pass": 5
       }
     },
     "run_status": {
-      "completed": 4,
+      "completed": 5,
       "failed": 1
     },
-    "run_total": 5,
+    "run_total": 6,
     "task_risk": {
       "high": 2,
       "low": 56,
-      "medium": 30
+      "medium": 31
     },
     "task_skill": {
       "analysis": 10,
-      "ops": 54,
+      "ops": 55,
       "research": 9,
       "review": 8,
       "writing": 7
@@ -227,9 +242,9 @@
       "done": 77,
       "in_progress": 4,
       "pending": 6,
-      "review": 1
+      "review": 2
     },
-    "task_total": 88
+    "task_total": 89
   },
   "tasks": [
     {
@@ -1111,6 +1126,16 @@
       "skill_type": "ops",
       "status": "done",
       "task_id": "20260712-O01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-12",
+      "goal": "P1-1：把 Task Card 的 allowed_tools 白名單從事後比對（gate_check L2）抬到 PreToolUse 當下強制 — 新增 scripts/allowed_tools_guard.py，於 Bash 與寫入類工具呼叫的當下比對 active 卡的白名單，越界即 block",
+      "path": "tasks/2026-07-12_p1-1-allowed-tools-runtime-enforcement.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260712-P11"
     }
   ]
 }

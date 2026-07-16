@@ -20,7 +20,7 @@
 |---|---|---|---|
 | 0 | 容器／VM／OS 層 sandbox | 真正隔離 — **不在本 repo 內**，屬部署決策 | 未部署則此層不存在 |
 | 1 | `.claude/settings.json` permissions ask 規則 | 人工把關（system/、skills/、memory/、reports/ 的寫入） | 依賴 runtime 實作 |
-| 2 | PreToolUse hooks（deterministic chokepoint） | `task_card_guard.py`：新正式報告需 active task 精確授權，輸入層 **fail-closed**（壞 stdin／例外 → block） | matcher 外的工具不經過 |
+| 2 | PreToolUse hooks（deterministic chokepoint） | `task_card_guard.py`：新正式報告需 active task 精確授權，輸入層 **fail-closed**（壞 stdin／例外 → block）；`allowed_tools_guard.py`：active 卡的 allowed_tools 白名單當下強制（Bash＋寫入類，20260712-P11），idle 全放行、控制面豁免 | matcher 外的工具不經過；idle 時白名單不綁 |
 | 3 | `permissions_guard.py` regex deny-list | 輔助防線：攔明顯違規簽章（刪除／外發／金流／force-push），**fail-open** | 見下方「已知可繞過」 |
 | 4 | Prompt 自律（CLAUDE.md／GLOBAL_RULES） | 最弱層，僅引導 | 模型不遵循即失效 |
 
@@ -39,6 +39,7 @@
 
 - **fail-closed**：`task_card_guard.py` 的輸入層（空 stdin／壞 JSON／未捕捉例外 → exit 2）。理由：matcher 只掛寫入類工具，正常 runtime 必送 JSON payload，收不到代表有看不見路徑的寫入呼叫；誤傷面有界。
 - **fail-open**：`permissions_guard.py` 與 `failure_counter.py` 的輸入層。理由：Bash 是 99% 低風險路徑，為輔助防線 brick 整個 shell 得不償失。此行為由 `test_permissions_guard.py` 的測試明文鎖定，改動視為安全變更。
+- **fail-open（範圍防呆層）**：`allowed_tools_guard.py` 的輸入層與內部例外（空 stdin／壞 JSON／crash → allow ＋ stderr 警告；20260712-P11）。理由：本 guard 是卡片範圍防呆，不是安全邊界 — 寫入 matcher 的 fail-closed 已由 `task_card_guard.py` 對同一 payload 專責，Bash matcher 哲學同 `permissions_guard.py`；再疊一個 fail-closed 只會新增第二個 brick 點而不增加防護。行為由 `test_allowed_tools_guard.py` 鎖定。另：state=active 但卡片不可讀／`allowed_tools` 非法時**block**（工作產出類動作），控制面豁免（tasks/、state/、logs/、harness CLI、git）保證修復路徑不被自己擋死。
 - **條件 fail-closed**：`gate_check.py`／`verification_loop.py` 對「risk≥high 且 status∈{done,review,failed} 且 date≥2026-07-10」的卡，缺 `logs/runs/` 執行紀錄直接 FAIL — 最需要稽核的資料缺失不再靜默通過（不追溯歷史卡）。
 
 ## 敏感資料處理

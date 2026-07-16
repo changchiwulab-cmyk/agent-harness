@@ -7,6 +7,35 @@
 
 <!-- AUTO_AUDIT_BEGIN -->
 ```yaml
+task_id: 20260712-P11
+date: '2026-07-12'
+skill_type: ops
+goal: P1-1：把 Task Card 的 allowed_tools 白名單從事後比對（gate_check L2）抬到 PreToolUse 當下強制 —
+  新增 scripts/allowed_tools_guard.py，於 Bash 與寫入類工具呼叫的當下比對 active 卡的白名單，越界即 block
+status: review
+risk_level: medium
+approval_needed: true
+output_path: scripts/allowed_tools_guard.py
+checkpoints:
+- commit: cc87854
+  stage: Task Card 建立並綁定 active task（C0）
+- commit: b49dc65
+  stage: allowed_tools_guard 核心 + 28 例單元測試全綠（C1）
+- commit: 5596d1e
+  stage: hook 註冊 + PERMISSIONS/GATE_POLICY/SECURITY 同步 + CI step（C2）
+- commit: 43a2c0b
+  stage: Codex P2 修正 — reports/ 只認 write_reports 專屬 token（C4）
+actual_tool_calls: 40
+result_summary: DoD 5/5。scripts/allowed_tools_guard.py 於 Bash + Write|Edit|MultiEdit|NotebookEdit
+  兩組 matcher 註冊，active 卡的 allowed_tools 當下強制（寫入路徑→gate_check L2 同詞彙、Bash→run_tests/bash），block
+  訊息含所需工具與修復指引；idle 與 state 不可讀全放行、控制面（tasks/ state/ logs/、harness CLI、git）豁免、輸入層
+  fail-open 各以測試鎖定並寫入 SECURITY.md；28 例單元測試 + CI step；PERMISSIONS enforcement 與 GATE_POLICY
+  L2 同步；92 張存量卡零回填，全套既有測試（13 Python + Ruby 53 runs + 4 e2e + evals）不回歸。dogfood：未宣告的
+  memory/ 寫入 exit 2。
+completion_time: ''
+```
+
+```yaml
 task_id: 20260712-O01
 date: '2026-07-12'
 skill_type: ops
