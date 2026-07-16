@@ -1,0 +1,70 @@
+# Task Card — P2-2：熔斷按卡分閘
+# 來源：20260711-A01 四層對照分析報告 roadmap P2 第 2 項（使用者 2026-07-16 拍板 P2 拆四卡佔位）
+# 前置：建議在 20260716-P12（failure_counter 自動記錄）落地後執行，避免同檔兩次重構
+
+task_id: "20260716-P22"
+date: "2026-07-16"
+status: "pending"
+
+# === 任務定義 ===
+goal: "P2-2：failure_counter 熔斷按 task_id 分閘——連續失敗計數與熔斷改為 per-card 維度，保留全域閘做總開關"
+context: |
+  20260711-A01 L4 盤點：熔斷是全域跳閘非按卡——一個任務連續失敗 3 次會擋到
+  所有後續工作，包括與失敗無關的新任務；報告 P2 建議分閘並保留全域總開關。
+  設計邊界：
+  (1) 前置：20260716-P12 先把計數自動化（PostToolUse），本卡再動維度，
+      避免 failure_counter.py 兩次重構互踩；
+  (2) 分閘語意：有 active task（state/active_task.yaml）時計數掛在該 task_id
+      維度、熔斷只擋該卡的後續動作；無 active task 時回退全域閘；
+  (3) 全域總開關保留：任一維度達門檻仍硬擋（--hook exit 2 語意不變）——
+      分閘是細化不是放鬆；
+  (4) 熔斷後的解除流程（logs/errors/ 記錄＋人工介入）沿用現制。
+input_data:
+  - "outputs/drafts/20260711-A01_four-layer-alignment-analysis.md（roadmap P2；隨 PR #133 合併後轉正）"
+  - "scripts/failure_counter.py"
+  - "scripts/test_failure_counter.py"
+  - "scripts/active_task.py（active task 真相來源）"
+  - "tasks/2026-07-16_p1-2-failure-counter-auto-record.yaml（前置卡）"
+
+# === 完成標準 ===
+definition_of_done:
+  - "前置確認：20260716-P12 已收案（或明確劃界本卡先行的理由記錄在案）"
+  - "failure_counter 狀態帶 task_id 維度：有 active task 時按卡計數／熔斷，無 active task 時回退全域閘——兩路徑各以測試鎖定"
+  - "全域總開關保留：任一維度達門檻 3 仍 --hook exit 2 硬擋，攔阻行為不回歸"
+  - "scripts/test_failure_counter.py 擴充分閘案例（跨卡隔離／全域回退／解除流程）全綠；CLAUDE.md 硬規則 3 與 SECURITY.md 描述同步"
+  - "全套既有本地測試與 sync_derived.sh --check 不回歸；存量卡零回填"
+
+# === 輸出定義 ===
+expected_output:
+  format: "py"
+  location: "scripts/"
+  filename: "failure_counter.py"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "file_write"
+  - "bash"
+  - "run_tests"
+  - "git_commit_checkpoint"
+  - "modify_system_rules"
+  - "write_logs"
+  - "write_drafts"
+
+# === 成本控制 ===
+max_tool_calls: 30
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

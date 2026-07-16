@@ -1,0 +1,71 @@
+# Task Card — P1-3：注入偵測器佈線（Stop hook advisory 或 CI 掃描）
+# 來源：20260711-A01 四層對照分析報告 roadmap P1-3（使用者 2026-07-16 拍板分批開卡，每項一卡）
+# 建議執行順位：P1 批次第 2 張
+
+task_id: "20260716-P13"
+date: "2026-07-16"
+status: "pending"
+
+# === 任務定義 ===
+goal: "P1-3：把 check_untrusted_content.py 從「有偵測器沒佈線」接上執行面——優先掛 Stop hook 以 advisory 模式掃描 session 新增／修改的 outputs/ 檔案（不 block），次選 CI 掃 outputs/ 新增檔"
+context: |
+  20260711-A01 L3 缺點：注入偵測器 scripts/check_untrusted_content.py 沒掛任何
+  hook、不掃真實輸出——目前只有它的單元測試在 CI 跑（spec-consistency.yml:125），
+  偵測邏輯本身從未接觸真實產出。
+  設計邊界：
+  (1) advisory 定位——命中疑似 prompt injection 樣式→stderr 警告＋寫 logs/ 記錄，
+      不 exit 非零、不 block Stop；升級 blocking 是之後的 P1 決策點，
+      先觀察誤報率（對齊 20260710-001「Stop gate 先警告後 blocking」先例）；
+  (2) 佈線二擇一，優先 .claude/settings.json Stop hook（session 內即時可見）；
+      若 Stop payload 拿不到本次改動檔清單等技術限制，改 CI 掃 outputs/ 新增檔，
+      擇定後記錄理由；
+  (3) 警告記錄需含檔案路徑與命中規則，讓兩週後可統計誤報率。
+input_data:
+  - "outputs/drafts/20260711-A01_four-layer-alignment-analysis.md（roadmap P1-3；隨 PR #133 合併後轉正）"
+  - "scripts/check_untrusted_content.py"
+  - "scripts/test_check_untrusted_content.py"
+  - "scripts/session_stop_checks.py（既有 Stop hook 佈線參考）"
+  - ".claude/settings.json"
+
+# === 完成標準 ===
+definition_of_done:
+  - "佈線落地二擇一：.claude/settings.json Stop hook（優先）或 CI 掃 outputs/ 新增檔——擇定與理由記錄在 PR 說明與卡片 result_summary"
+  - "advisory 語意以測試鎖定：命中→stderr 警告＋logs/ 記錄（含檔案路徑與命中規則），不 exit 非零、不 block"
+  - "誤報觀察機制就緒：記錄格式可統計命中數／誤報數，觀察兩週後供 blocking 升級決策（對齊 20260710-001 待驗證節）"
+  - "scripts/test_check_untrusted_content.py 擴充佈線與 advisory 行為案例全綠；CI 同步"
+  - "全套既有本地測試與 sync_derived.sh --check 不回歸；存量卡零回填"
+
+# === 輸出定義 ===
+expected_output:
+  format: "py"
+  location: "scripts/"
+  filename: "check_untrusted_content.py"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "file_write"
+  - "bash"
+  - "run_tests"
+  - "git_commit_checkpoint"
+  - "modify_settings_json"
+  - "write_logs"
+  - "write_drafts"
+
+# === 成本控制 ===
+max_tool_calls: 40
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

@@ -1,0 +1,73 @@
+# Task Card — P2-3：run log fail-closed 視窗逐步放寬
+# 來源：20260711-A01 四層對照分析報告 roadmap P2 第 3 項（使用者 2026-07-16 拍板 P2 拆四卡佔位）
+# 前置：PR #133（兩套 gate 語意統一）先合併；且需 ≥2 週誤擋觀察數據支持
+
+task_id: "20260716-P23"
+date: "2026-07-16"
+status: "pending"
+
+# === 任務定義 ===
+goal: "P2-3：把「高風險缺 run log 即 FAIL」的 fail-closed 視窗（cutoff 2026-07-10＋risk≥high＋狀態閘）依實測誤擋數據逐步放寬到更低風險層級"
+context: |
+  20260710-003 落地選擇性 fail-closed：cutoff 2026-07-10 後＋risk≥high＋
+  status∈{done,review,failed} 的卡缺 run log→gate FAIL；歷史卡以 cutoff 全數
+  豁免。20260711-A01 P2 建議視窗逐步放寬（如納入 medium），但明確為數據驅動
+  決策，不是無條件收緊。
+  設計邊界：
+  (1) 前置：PR #133 的兩套 gate（gate_check.py／verification_loop.py）語意
+      統一先合併，放寬動作兩套必須同步、parity 測試鎖定；
+  (2) 數據先行：20260710-001 待驗證節要求 2 週誤擋觀察（logs/errors/ 的
+      guard/gate block 記錄）——本卡第一步是出統計，放寬幅度由數據＋人工
+      核准決定；
+  (3) 存量卡保護沿用 cutoff 模式：放寬只約束新視窗生效日之後的卡，
+      任何存量卡 FAIL 翻轉都要逐張列明處置（補 log 或豁免記錄）。
+input_data:
+  - "outputs/drafts/20260711-A01_four-layer-alignment-analysis.md（roadmap P2；隨 PR #133 合併後轉正）"
+  - "outputs/reports/20260710-001_external-review-verification.md（選擇性 fail-closed 的裁決依據）"
+  - "scripts/gate_check.py"
+  - "scripts/verification_loop.py"
+  - "logs/errors/"
+  - "system/GATE_POLICY.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "前置確認：PR #133 已合併（兩套 gate 語意已統一）"
+  - "誤擋統計出爐：觀察期 ≥2 週的 gate／guard block 記錄彙整落 outputs/drafts/，含誤擋率與案例明細"
+  - "放寬提案（如視窗納入 risk≥medium＋新 cutoff 日期）依數據擬定並經人工核准後才實作"
+  - "gate_check.py 與 verification_loop.py 同步收緊，parity 測試鎖定兩套判定一致；全卡回歸掃描的 FAIL 翻轉數列明並逐張處置"
+  - "GATE_POLICY.yaml 視窗定義同步；全套既有本地測試與 CI 綠"
+
+# === 輸出定義 ===
+expected_output:
+  format: "py"
+  location: "scripts/"
+  filename: "gate_check.py"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "file_write"
+  - "bash"
+  - "run_tests"
+  - "git_commit_checkpoint"
+  - "modify_system_rules"
+  - "write_drafts"
+  - "write_logs"
+
+# === 成本控制 ===
+max_tool_calls: 30
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

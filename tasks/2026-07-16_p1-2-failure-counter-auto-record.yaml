@@ -1,0 +1,74 @@
+# Task Card — P1-2：failure_counter 自動記錄（PostToolUse hook）
+# 來源：20260711-A01 四層對照分析報告 roadmap P1-2（使用者 2026-07-16 拍板分批開卡，每項一卡）
+# 建議執行順位：P1 批次第 1 張（P1-1 已由 20260712-P11 完成，PR #134）
+
+task_id: "20260716-P12"
+date: "2026-07-16"
+status: "pending"
+
+# === 任務定義 ===
+goal: "P1-2：新增 PostToolUse hook 對工具錯誤自動 failure_counter --record，把「連續失敗 3 次熔斷」的計數端從 prompt 自律升為 runtime 自動——熔斷觸發不再依賴 agent 記得記帳"
+context: |
+  20260710-001 外部報告驗證輪對 failure_counter 的判定：「觸發後攔阻確定（強）、
+  計數自律（弱）」，修正槓桿明確指向自動化 --record（PostToolUse），該輪列 P1 不做；
+  20260711-A01 四層分析將其列為 roadmap P1-2（單項治理增量次高）。
+  現況：scripts/failure_counter.py 門檻 3、--hook 模式 exit 2 硬擋是確定性的，
+  但計數靠 agent 主動 --record，不記錄就永不觸發；.claude/settings.json 目前
+  沒有任何 PostToolUse hook（本卡是第一個）。
+  設計邊界：
+  (1) 「連續失敗」語意要雙向自動——工具錯誤自動 +1、工具成功自動歸零，
+      否則零星舊錯誤會累積成誤熔斷；
+  (2) 輸入層沿用 fail-open 哲學（壞 payload 不誤記、不 block）——本 hook 是
+      記帳自動化，不是安全邊界；
+  (3) 避撞：PR #134（20260712-P11）動同檔 .claude/settings.json 的 PreToolUse
+      兩組 matcher；本卡加的 PostToolUse 是新區塊，零行重疊，後合者 rebase 即可。
+input_data:
+  - "outputs/drafts/20260711-A01_four-layer-alignment-analysis.md（roadmap P1-2；隨 PR #133 合併後轉正）"
+  - "scripts/failure_counter.py"
+  - "scripts/test_failure_counter.py"
+  - ".claude/settings.json"
+  - "SECURITY.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - ".claude/settings.json 註冊 PostToolUse hook（本 repo 首個），對 Bash 與 Write|Edit|MultiEdit|NotebookEdit 的工具結果自動判定：錯誤→failure_counter --record、成功→計數歸零；兩方向各以測試鎖定"
+  - "觸發後攔阻（--hook 模式 exit 2 硬擋）行為不回歸，scripts/test_failure_counter.py 既有案例全綠並擴充自動記錄／自動歸零案例"
+  - "輸入層 fail-open（空 stdin／壞 JSON／未捕捉例外→不記數、不 block、stderr 警告）以測試鎖定，取捨理由同步 SECURITY.md enforcement 分層章節"
+  - "system/PERMISSIONS.yaml enforcement 段與 CLAUDE.md 硬規則 3 的描述同步（「靠自律」措辭更新為 runtime 自動），context budget 檢查仍綠"
+  - "新測試掛入 .github/workflows/spec-consistency.yml；全套既有本地測試與 sync_derived.sh --check 不回歸；存量卡零回填"
+
+# === 輸出定義 ===
+expected_output:
+  format: "py"
+  location: "scripts/"
+  filename: "failure_counter.py"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "file_write"
+  - "bash"
+  - "run_tests"
+  - "git_commit_checkpoint"
+  - "modify_settings_json"
+  - "modify_system_rules"
+  - "write_logs"
+  - "write_drafts"
+
+# === 成本控制 ===
+max_tool_calls: 40
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

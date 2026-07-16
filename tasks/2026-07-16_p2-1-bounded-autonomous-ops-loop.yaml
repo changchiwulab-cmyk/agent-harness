@@ -1,0 +1,71 @@
+# Task Card — P2-1：有界自主維運迴圈（唯讀彙整排程）
+# 來源：20260711-A01 四層對照分析報告 roadmap P2 第 1 項（使用者 2026-07-16 拍板 P2 拆四卡佔位）
+# 前置閘：報告原建議「待 P1-1／P1-2 落地後再評估」——執行前需人工確認啟動
+
+task_id: "20260716-P21"
+date: "2026-07-16"
+status: "pending"
+
+# === 任務定義 ===
+goal: "P2-1：建立有界自主維運迴圈——以排程定期跑 governance_metrics 與 retro digest 等唯讀彙整，輸出一律進 outputs/drafts/ 等人看，對齊 Loop 層定義但保留人工批准邊界"
+context: |
+  20260711-A01「與圖定位的差異」節：本專案刻意把人留在迴圈（對外只出草稿、
+  ask 級要人工、批准不自動放行），不照圖補全自動；可補的是有界自主維運——
+  排程跑唯讀彙整，人只看結果。
+  設計邊界：
+  (1) 前置閘：使用者 2026-07-16 拍板先開卡佔位，但報告原建議「待 P1-1／P1-2
+      落地後再評估」仍有效——執行本卡前需人工確認啟動（P1-1 已落地於
+      PR #134，P1-2 見 20260716-P12）；
+  (2) 迴圈有界＝唯讀彙整 only：governance_metrics、retro digest 等，
+      不含任何 mutating 動作自動化，輸出僅 drafts/；
+  (3) 排程機制擇一（Claude Code Routine／GitHub Actions schedule），
+      擇定記錄理由；PR #131 的 governance-metrics.yml 排程 workflow
+      若已合併，優先在其上擴充而非另起爐灶；
+  (4) 必須有明確停用方式（一步關閉）。
+input_data:
+  - "outputs/drafts/20260711-A01_four-layer-alignment-analysis.md（roadmap P2；隨 PR #133 合併後轉正）"
+  - "scripts/governance_metrics.py"
+  - "system/RETRO_FLOW.md"
+  - ".github/workflows/"
+
+# === 完成標準 ===
+definition_of_done:
+  - "前置閘通過：P1-1／P1-2 已落地（或使用者明示豁免），且使用者確認啟動本卡——確認紀錄留在卡片或 PR"
+  - "排程機制落地（Routine 或 GitHub Actions schedule 擇一，理由記錄；若 PR #131 的 governance-metrics.yml 已在 main，於其上擴充），定期產出 metrics／retro digest 到 outputs/drafts/"
+  - "迴圈有界性成立並文件化：唯讀彙整、輸出僅 drafts/、零 mutating 自動化、一步停用方式——寫入治理文件"
+  - "連續兩個排程週期實跑證明：drafts/ 各留存一份產物"
+  - "全套既有本地測試與 sync_derived.sh --check 不回歸"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "p2-1_bounded-ops-loop-design.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "file_write"
+  - "bash"
+  - "run_tests"
+  - "git_commit_checkpoint"
+  - "modify_system_rules"
+  - "write_drafts"
+
+# === 成本控制 ===
+max_tool_calls: 30
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""

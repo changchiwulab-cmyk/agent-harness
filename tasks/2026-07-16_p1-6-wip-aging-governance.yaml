@@ -1,0 +1,71 @@
+# Task Card — P1-6：WIP 治理制度化（aging 指標 + 每週清理節奏）
+# 來源：20260711-A01 四層對照分析報告 roadmap P1-6（使用者 2026-07-16 拍板分批開卡，每項一卡）
+# 建議執行順位：P1 批次第 5 張
+# rescope：報告原文「17 張 review 卡先清」已由 20260712-O01（PR #135 已合併）完成 17→0，本卡只剩制度面
+
+task_id: "20260716-P16"
+date: "2026-07-16"
+status: "pending"
+
+# === 任務定義 ===
+goal: "P1-6：WIP 治理制度化——governance_metrics 新增卡片 WIP aging 指標（未結狀態停留天數與警戒線），並把「每週清 review 佇列 1–2 張」節奏寫進治理文件"
+context: |
+  20260711-A01 L1 缺點：86 張卡 26 未結、review 佇列 17 張＝人工審核瓶頸。
+  rescope：其中「17 張先清」已由 20260712-O01 收斂 17→0（PR #135 已合併），
+  本卡剩下防再積壓的制度面——量測（aging 指標）＋節奏（每週清理）。
+  設計邊界：
+  (1) 避撞：PR #131（open）的 M5 是 open-PR 積壓指標，量 PR 不量卡片，
+      與本卡互補不重疊；若 #131 先合併，本卡指標編號讓位（M6），
+      執行時以當時 main 上的指標序號為準；
+  (2) aging 語意：per-status（pending／in_progress／review）卡齡統計＋警戒線
+      （例：review 停留 >14 天→warn），具體門檻執行時依歷史數據定；
+  (3) 節奏文件落點擇一（RETRO_FLOW.md 或 GLOBAL_RULES.md），
+      GLOBAL_RULES 動時 context budget 必須維持綠。
+input_data:
+  - "outputs/drafts/20260711-A01_four-layer-alignment-analysis.md（roadmap P1-6；隨 PR #133 合併後轉正）"
+  - "scripts/governance_metrics.py"
+  - "scripts/test_governance_metrics.py"
+  - "outputs/drafts/20260712-O01_review-queue-clearance.md（已完成的清理輪＋節奏建議出處）"
+  - "system/RETRO_FLOW.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "governance_metrics.py 新增卡片 WIP aging 指標：per-status（pending／in_progress／review）卡齡統計＋警戒線，指標編號依執行時 main 現況讓位（PR #131 的 M5 若已合併則用 M6）"
+  - "scripts/test_governance_metrics.py 擴充 aging 案例（含警戒線觸發／未觸發／無未結卡）全綠"
+  - "「每週清 review 佇列 1–2 張」節奏寫入治理文件（RETRO_FLOW.md 或 GLOBAL_RULES.md 擇一），context budget 檢查仍綠"
+  - "frontend/data.json 若納入新指標須遵守既有 drift 約束；sync_derived.sh --check 零漂移"
+  - "全套既有本地測試不回歸；存量卡零回填"
+
+# === 輸出定義 ===
+expected_output:
+  format: "py"
+  location: "scripts/"
+  filename: "governance_metrics.py"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "file_write"
+  - "bash"
+  - "run_tests"
+  - "git_commit_checkpoint"
+  - "modify_system_rules"
+  - "write_drafts"
+
+# === 成本控制 ===
+max_tool_calls: 30
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
