@@ -83,6 +83,10 @@
           {
             "type": "command",
             "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/session_stop_checks.py\""
+          },
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/check_untrusted_content.py\" --stop-hook"
           }
         ]
       }

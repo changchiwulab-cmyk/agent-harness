@@ -1,0 +1,16 @@
+# 批准紀錄 — 20260716-P13 注入偵測器佈線（Stop hook advisory）
+# 批准依據：執行計畫（佈線擇定 Stop hook 的理由、advisory 語意、ledger tracked
+# 設計、modify_settings_json ask 級變更、零 system/ 修改）於 plan mode 明列後
+# 由使用者核准開工。收案 PR 人工合併為最終批准。
+
+approval_records:
+  - approval_id: "APR-20260717-001"
+    task_id: "20260716-P13"
+    date: "2026-07-17"
+    action: "modify_settings_json（Stop hooks 第三項註冊 check_untrusted_content.py --stop-hook，advisory 不阻斷）"
+    approval_method: "human_confirm"
+    risk_level: "medium"
+    status: "approved"
+    approved_by: "human"
+    rationale: "計畫全文（佈線二擇一擇定 Stop hook＋理由、git 推導改動檔清單、fail-open 取捨、ledger tracked＋verdict 誤報標注設計、驗證方式）經使用者審閱核准後執行；status 停在 review，PR 人工合併為最終批准。"
+    linked_run: "RUN-20260717-001"

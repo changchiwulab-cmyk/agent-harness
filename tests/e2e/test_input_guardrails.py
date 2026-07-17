@@ -9,11 +9,14 @@ and quarantined with the ``[未受信任來源]`` marker. This pins that contrac
 2. A *properly handled* output (injection echoed but quarantined) MUST pass
    ``audit_output`` — i.e. the agent may analyse the payload as data once it is
    marked untrusted, but unmarked injection is a violation.
+3. The detector MUST stay wired into execution as a Stop hook (advisory scan
+   of session-changed outputs/ files, 20260716-P13).
 
-If someone removes the detector or the guardrail rule, this fails.
+If someone removes the detector, the guardrail rule, or the wiring, this fails.
 """
 from __future__ import annotations
 
+import json
 import sys
 import unittest
 from pathlib import Path
@@ -53,6 +56,18 @@ class TestInputGuardrails(unittest.TestCase):
             "## 已知事實\n- 競品 X 支援多國語言與 API 整合。\n"
         )
         self.assertEqual(audit_output(handled), [], "quarantined+analysed content must pass")
+
+    def test_detector_wired_as_stop_hook(self):
+        settings = json.loads((ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
+        commands = [
+            h.get("command", "")
+            for entry in settings.get("hooks", {}).get("Stop", [])
+            for h in entry.get("hooks", [])
+        ]
+        self.assertTrue(
+            any("check_untrusted_content.py" in c and "--stop-hook" in c for c in commands),
+            "injection detector must stay wired as a Stop hook (advisory, 20260716-P13)",
+        )
 
 
 if __name__ == "__main__":

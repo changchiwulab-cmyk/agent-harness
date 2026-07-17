@@ -12,8 +12,20 @@ not instructions". This module makes that rule *checkable* rather than prose:
 3. ``audit_output(text)`` — combines the two: untrusted content that carries
    injection directives MUST be quarantined; returns the unquarantined hits.
 
-CLI: ``python scripts/check_untrusted_content.py <file>...``
-Exit 1 if any file contains injection directives that are NOT quarantined.
+CLI:
+    check_untrusted_content.py <file>...   # lint：有未隔離命中 exit 1，乾淨 0，無參數 2
+    check_untrusted_content.py --stop-hook # Stop hook advisory：掃 session 新增/修改的
+                                           # outputs/ 檔，命中→stderr 警告＋ledger 記錄
+                                           # ＋systemMessage，永遠 exit 0、不 block
+                                           #（20260716-P13；升級 blocking 前先觀察誤報率）
+    check_untrusted_content.py --stats     # 彙整 ledger 命中數／verdict 標注進度
+
+Stop hook 呈現方式比照 session_stop_checks.py：純 stdout 只進 debug log，
+使用者可見警告走 JSON `systemMessage`；DoD 鎖定的機器可測面是 stderr。
+Ledger（logs/untrusted_content_hits.jsonl，tracked——ephemeral session 下
+gitignored 檔活不過 container，兩週誤報統計會斷）以 (file, rule, sha) 去重，
+verdict 欄位留待人工標注 tp/fp。整條 --stop-hook 路徑 fail-open：advisory
+不是安全邊界，出口硬防線仍在 permissions_guard.py 的 deny-by-default egress。
 
 Deliberately a small phrase list, not an ML classifier — for a single-person
 harness the deny-by-default egress (permissions_guard.py) is the hard stop;
@@ -21,9 +33,18 @@ this layer is a discipline lint, consistent with INPUT_GUARDRAILS "不做什麼"
 """
 from __future__ import annotations
 
+import argparse
+import hashlib
+import json
 import re
+import subprocess
 import sys
+from collections import Counter
+from datetime import datetime, timezone
 from pathlib import Path
+
+DEFAULT_ROOT = Path(__file__).resolve().parents[1]
+LEDGER_RELPATH = "logs/untrusted_content_hits.jsonl"
 
 # Directive phrases that should never be obeyed when they arrive via untrusted
 # content. Kept lowercase; matching is case-insensitive. Bilingual (zh-Hant/en).
@@ -86,8 +107,226 @@ def audit_output(text: str) -> list[str]:
     return unquarantined
 
 
+def audit_output_detailed(text: str) -> list[dict]:
+    """audit_output 的規則層版本：回傳 [{"rule": pattern 原文, "fragment": 命中片段}]。
+
+    ledger 需要「命中哪條規則」才能統計誤報率（DoD 3）；detect_injection 只回
+    片段，故另開此函式，區塊級隔離語意與 audit_output 一致。
+    """
+    findings: list[dict] = []
+    for block in split_blocks(text):
+        if is_quarantined(block):
+            continue
+        for pat in _COMPILED:
+            for m in pat.finditer(block):
+                frag = m.group(0).strip()
+                rec = {"rule": pat.pattern, "fragment": frag}
+                if frag and rec not in findings:
+                    findings.append(rec)
+    return findings
+
+
+def changed_output_files(root: Path) -> list[str]:
+    """session 新增/修改的 outputs/ 檔（repo 相對路徑）。
+
+    Stop payload 沒有改動檔清單，以 git 推導：工作樹 dirty（含 untracked）
+    ∪ 相對 origin/main merge-base 的已 commit 差異（checkpoint commit 後檔案
+    不再 dirty，缺這條會漏掃）。任何 git 步驟失敗（無 git、非 repo、逾時、
+    無 origin/main）→ 靜默跳過該來源，fail-open。
+    """
+    found: list[str] = []
+
+    def _add(rel: str) -> None:
+        rel = rel.strip()
+        if rel and rel not in found and (root / rel).is_file():
+            found.append(rel)
+
+    def _git(args: list[str]) -> list[str]:
+        """NUL 分隔記錄（-z：路徑原樣輸出，非 ASCII 檔名不做 C-quoting）。"""
+        r = subprocess.run(["git", *args], cwd=root, capture_output=True, timeout=10)
+        if r.returncode != 0:
+            return []
+        return [p for p in r.stdout.decode("utf-8", "replace").split("\0") if p]
+
+    try:
+        skip_next = False
+        for rec in _git(["status", "--porcelain", "-z", "--untracked-files=all", "--", "outputs/"]):
+            if skip_next:  # rename/copy 的原路徑（獨立 NUL 記錄），不掃
+                skip_next = False
+                continue
+            status, path = rec[:2], rec[3:]
+            if status and status[0] in "RC":  # -z 格式新路徑在前、原路徑為下一筆
+                skip_next = True
+            _add(path)
+    except Exception:
+        pass
+    try:
+        base = "".join(_git(["merge-base", "HEAD", "origin/main"])).strip()
+        if base:
+            for rec in _git(
+                ["diff", "--name-only", "-z", "--diff-filter=ACMR", f"{base}..HEAD", "--", "outputs/"]
+            ):
+                _add(rec)
+    except Exception:
+        pass
+    return found
+
+
+def _load_seen(ledger: Path) -> set[tuple[str, str, str]]:
+    """ledger 既有紀錄的去重鍵 (file, rule, sha)；壞行跳過，缺檔回空集合。"""
+    seen: set[tuple[str, str, str]] = set()
+    try:
+        for line in ledger.read_text(encoding="utf-8").splitlines():
+            try:
+                rec = json.loads(line)
+            except ValueError:
+                continue
+            if isinstance(rec, dict):
+                seen.add((rec.get("file", ""), rec.get("rule", ""), rec.get("sha", "")))
+    except OSError:
+        pass
+    return seen
+
+
+def _read_hook_payload() -> dict:
+    """Stop hook 的 stdin JSON payload；tty/壞 JSON/非 mapping 一律 fail-open {}。"""
+    try:
+        if sys.stdin is None or sys.stdin.isatty():
+            return {}
+        raw = sys.stdin.read()
+        data = json.loads(raw) if raw.strip() else {}
+        return data if isinstance(data, dict) else {}
+    except Exception:
+        return {}
+
+
+def _active_task_id(root: Path) -> str:
+    """active task_id（state/active_task.yaml）；idle/缺檔/缺 PyYAML → 空字串。"""
+    try:
+        import active_task  # 同 scripts/ 目錄
+
+        return active_task.active_task_id(root)
+    except Exception:
+        return ""
+
+
+def run_stop_hook(
+    root: Path | None = None,
+    ledger: Path | None = None,
+    files: list[str] | None = None,
+) -> int:
+    """Stop hook advisory 掃描（**fail-open，永遠 return 0，不阻斷**）。
+
+    命中未隔離注入樣式：stderr 每筆一行（檔案路徑＋命中規則）、append ledger、
+    stdout 輸出 systemMessage；乾淨時完全安靜。``files`` 供測試注入檔案清單
+    （repo 相對路徑），省略時以 git 推導。
+    """
+    try:
+        root = (root or DEFAULT_ROOT).resolve()
+        ledger = ledger if ledger is not None else root / LEDGER_RELPATH
+        session_id = str(_read_hook_payload().get("session_id", "") or "")
+        rel_files = changed_output_files(root) if files is None else files
+        if not rel_files:
+            return 0
+        seen = _load_seen(ledger)
+        task_id = _active_task_id(root)
+        records: list[dict] = []
+        for rel in rel_files:
+            try:
+                text = (root / rel).read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            findings = audit_output_detailed(text)
+            if not findings:
+                continue
+            sha = hashlib.sha256(text.encode("utf-8", "replace")).hexdigest()[:12]
+            for finding in findings:
+                key = (rel, finding["rule"], sha)
+                if key in seen:
+                    continue
+                seen.add(key)
+                records.append(
+                    {
+                        "ts": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                        "file": rel,
+                        "rule": finding["rule"],
+                        "fragment": finding["fragment"],
+                        "sha": sha,
+                        "task_id": task_id,
+                        "session_id": session_id,
+                        "verdict": "",
+                    }
+                )
+        if records:
+            ledger.parent.mkdir(parents=True, exist_ok=True)
+            with ledger.open("a", encoding="utf-8") as fh:
+                for rec in records:
+                    fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
+            lines = [f"{r['file']} 命中規則 {r['rule']!r}" for r in records]
+            for line in lines:
+                print(
+                    f"[untrusted-content] {line}（advisory，不阻斷；已記錄 {LEDGER_RELPATH}）",
+                    file=sys.stderr,
+                )
+            body = "\n".join(f"  - {line}" for line in lines)
+            msg = (
+                "⚠️ 注入樣式 advisory（不阻斷）：outputs/ 產出含未隔離的注入指令樣式\n"
+                f"{body}\n"
+                f"  → 正當引用請為該區塊加 {QUARANTINE_MARKER} 標記；"
+                f"誤報請在 {LEDGER_RELPATH} 標注 verdict: fp"
+            )
+            print(json.dumps({"systemMessage": msg}, ensure_ascii=False))
+    except Exception:
+        pass  # fail-open：advisory 掃描不得干擾 Stop
+    return 0
+
+
+def run_stats(ledger: Path | None = None) -> int:
+    """彙整 ledger：總命中、按 rule／file 分組、verdict 標注進度（DoD 3）。"""
+    ledger = ledger if ledger is not None else DEFAULT_ROOT / LEDGER_RELPATH
+    records: list[dict] = []
+    try:
+        for line in ledger.read_text(encoding="utf-8").splitlines():
+            try:
+                rec = json.loads(line)
+            except ValueError:
+                continue
+            if isinstance(rec, dict):
+                records.append(rec)
+    except OSError:
+        pass
+    print(f"total hits: {len(records)}")
+    if not records:
+        return 0
+    for label, key in (("by rule:", "rule"), ("by file:", "file")):
+        print(label)
+        for value, n in Counter(r.get(key, "") for r in records).most_common():
+            print(f"  {n:3d}  {value}")
+    print("verdicts:")
+    for verdict, n in sorted(
+        Counter(r.get("verdict") or "unlabeled" for r in records).items()
+    ):
+        print(f"  {verdict}: {n}")
+    return 0
+
+
 def main(argv: list[str]) -> int:
-    files = argv[1:]
+    parser = argparse.ArgumentParser(
+        prog="check_untrusted_content.py",
+        description="G-A input-guardrail detector（lint / Stop hook advisory / stats）",
+    )
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--stop-hook", action="store_true", dest="stop_hook")
+    mode.add_argument("--stats", action="store_true")
+    parser.add_argument("files", nargs="*")
+    args = parser.parse_args(argv[1:])
+
+    if args.stop_hook:
+        return run_stop_hook()
+    if args.stats:
+        return run_stats()
+
+    files = args.files
     if not files:
         print("usage: check_untrusted_content.py <file>...", file=sys.stderr)
         return 2
