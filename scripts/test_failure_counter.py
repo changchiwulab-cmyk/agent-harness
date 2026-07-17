@@ -83,6 +83,156 @@ class TestHookDecision(unittest.TestCase):
         self.assertEqual(decision, "allow")
 
 
+class TestPostHook(unittest.TestCase):
+    """--post-hook：PostToolUseFailure 自動 +1、PostToolUse 自動歸零（20260716-P12）。"""
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        (self.root / "logs").mkdir()
+        self.state_file = self.root / "logs" / ".failure_state.json"
+
+    def _bind_active(self, task_id: str = "T1"):
+        (self.root / "state").mkdir(exist_ok=True)
+        (self.root / "state" / "active_task.yaml").write_text(
+            f'task_id: "{task_id}"\nstatus: "active"\nactivated_at: "2026-07-16"\nnote: ""\n',
+            encoding="utf-8",
+        )
+
+    def _post(self, raw: str) -> tuple[int, str]:
+        err = io.StringIO()
+        sys.stdin = io.StringIO(raw)
+        try:
+            with redirect_stdout(io.StringIO()), redirect_stderr(err):
+                code = fc.run_post_hook_guarded(self.root)
+        finally:
+            sys.stdin = sys.__stdin__
+        return code, err.getvalue()
+
+    def _failure_payload(self, **extra) -> str:
+        payload = {
+            "hook_event_name": "PostToolUseFailure",
+            "tool_name": "Bash",
+            "tool_input": {"command": "npm test"},
+            "error": "Command exited with code 1",
+            "is_interrupt": False,
+        }
+        payload.update(extra)
+        return json.dumps(payload)
+
+    def _success_payload(self) -> str:
+        return json.dumps(
+            {
+                "hook_event_name": "PostToolUse",
+                "tool_name": "Bash",
+                "tool_input": {"command": "npm test"},
+                "tool_response": "ok",
+            }
+        )
+
+    def test_failure_event_records(self):
+        self._bind_active()
+        code, _ = self._post(self._failure_payload())
+        self.assertEqual(code, 0)
+        self.assertEqual(fc.check("T1", self.root), 1)
+
+    def test_third_failure_trips_with_exit_2_warning(self):
+        self._bind_active()
+        self._post(self._failure_payload())
+        self._post(self._failure_payload())
+        code, err = self._post(self._failure_payload())
+        self.assertEqual(code, 2)  # non-blocking：stderr 餵給 Claude，攔阻仍在 PreToolUse
+        self.assertIn("3/3", err)
+        self.assertIn("T1", fc.tripped(self.root))
+
+    def test_success_event_clears_count(self):
+        self._bind_active()
+        self._post(self._failure_payload())
+        self._post(self._failure_payload())
+        code, _ = self._post(self._success_payload())
+        self.assertEqual(code, 0)
+        self.assertEqual(fc.check("T1", self.root), 0)
+        # 連續語意：歸零後再失敗只算 1
+        self._post(self._failure_payload())
+        self.assertEqual(fc.check("T1", self.root), 1)
+        self.assertEqual(fc.tripped(self.root), [])
+
+    def test_success_event_skips_write_when_count_zero(self):
+        self._bind_active()
+        code, _ = self._post(self._success_payload())
+        self.assertEqual(code, 0)
+        self.assertFalse(self.state_file.exists())  # 零計數不寫 state，避免每次成功都 churn
+
+    def test_interrupt_not_recorded(self):
+        self._bind_active()
+        code, _ = self._post(self._failure_payload(is_interrupt=True))
+        self.assertEqual(code, 0)
+        self.assertEqual(fc.check("T1", self.root), 0)
+
+    def test_idle_noop_both_directions(self):
+        # 無 state 檔
+        code, _ = self._post(self._failure_payload())
+        self.assertEqual(code, 0)
+        self.assertFalse(self.state_file.exists())
+        # 明確 idle
+        (self.root / "state").mkdir(exist_ok=True)
+        (self.root / "state" / "active_task.yaml").write_text(
+            'task_id: ""\nstatus: "idle"\nactivated_at: ""\nnote: ""\n', encoding="utf-8"
+        )
+        code, _ = self._post(self._failure_payload())
+        self.assertEqual(code, 0)
+        code, _ = self._post(self._success_payload())
+        self.assertEqual(code, 0)
+        self.assertFalse(self.state_file.exists())
+
+    def test_unknown_event_fail_open(self):
+        self._bind_active()
+        code, err = self._post(json.dumps({"hook_event_name": "PreToolUse", "tool_name": "Bash"}))
+        self.assertEqual(code, 0)
+        self.assertIn("fail-open", err)
+        self.assertFalse(self.state_file.exists())
+
+    def test_empty_stdin_fail_open(self):
+        self._bind_active()
+        code, err = self._post("")
+        self.assertEqual(code, 0)
+        self.assertIn("fail-open", err)
+        self.assertFalse(self.state_file.exists())
+
+    def test_bad_json_fail_open(self):
+        self._bind_active()
+        code, err = self._post("{not json")
+        self.assertEqual(code, 0)
+        self.assertIn("fail-open", err)
+        self.assertFalse(self.state_file.exists())
+
+    def test_non_object_payload_fail_open(self):
+        self._bind_active()
+        code, err = self._post("[1, 2]")
+        self.assertEqual(code, 0)
+        self.assertIn("fail-open", err)
+        self.assertFalse(self.state_file.exists())
+
+    def test_internal_error_fail_open(self):
+        from unittest import mock
+
+        with mock.patch.object(fc, "run_post_hook", side_effect=RuntimeError("boom")):
+            err = io.StringIO()
+            with redirect_stderr(err):
+                code = fc.run_post_hook_guarded(self.root)
+        self.assertEqual(code, 0)
+        self.assertIn("fail-open", err.getvalue())
+
+    def test_cli_dispatch(self):
+        # 空 stdin 走 fail-open，證明 --post-hook 佈線到 run_post_hook_guarded 且不觸真實 state
+        sys.stdin = io.StringIO("")
+        try:
+            with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+                code = fc.main(["--post-hook"])
+        finally:
+            sys.stdin = sys.__stdin__
+        self.assertEqual(code, 0)
+
+
 class TestCLI(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp()) / "logs" / ".failure_state.json"

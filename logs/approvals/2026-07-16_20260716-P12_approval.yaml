@@ -1,0 +1,17 @@
+# 批准紀錄 — 20260716-P12 failure_counter 自動記錄（PostToolUse hooks）
+# 批准依據：使用者於 2026-07-16 拍板 P1 分批開卡並指示「第一張可執行的卡是
+# 20260716-P12，說一聲我就開新一輪執行」；執行計畫（含 modify_settings_json /
+# modify_system_rules / modify_claude_md 三項 ask 級變更與兩事件註冊的設計偏差說明）
+# 於 plan mode 明列後由使用者核准開工。收案 PR 人工合併為最終批准。
+
+approval_records:
+  - approval_id: "APR-20260716-001"
+    task_id: "20260716-P12"
+    date: "2026-07-16"
+    action: "modify_settings_json（PostToolUse/PostToolUseFailure hook 註冊）＋ modify_system_rules（PERMISSIONS.yaml enforcement 段同步）＋ modify_claude_md（硬規則 3 計數端措辭更新為 runtime 自動）"
+    approval_method: "human_confirm"
+    risk_level: "medium"
+    status: "approved"
+    approved_by: "human"
+    rationale: "計畫全文（變更清單 1–7、兩事件設計偏差、fail-open 取捨、驗證方式）經使用者審閱核准後執行；status 停在 review，PR 人工合併為最終批准。"
+    linked_run: "RUN-20260716-001"

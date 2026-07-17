@@ -8,7 +8,7 @@
 - **ask 清單（需人工批准）**：修改 `system/`、`skills/`、`memory/`、寫正式報告、改 `CLAUDE.md`、安裝套件。批准紀錄寫入 `logs/approvals/`。
 - **draft-first**：所有對外動作只產出草稿到 `outputs/drafts/`，等人工確認，不直接發布。
 - **風險分級**：low／medium／high／critical → 對應 `auto_execute` 與 `approval_type`（見 `system/PERMISSIONS.yaml`）。
-- **失敗熔斷**：連續失敗 3 次即停止並寫 `logs/errors/`（見 `system/FAILURE_TAXONOMY.yaml` SEC-03）。
+- **失敗熔斷**：連續失敗 3 次即停止並寫 `logs/errors/`（見 `system/FAILURE_TAXONOMY.yaml` SEC-03）。計數為 runtime 自動（20260716-P12）：PostToolUseFailure hook 對工具錯誤自動 `--record`、PostToolUse（僅成功觸發）自動歸零，攔阻由 PreToolUse `--hook` 執行。
 
 ## 威脅模型與防護邊界（20260710-003）
 
@@ -39,6 +39,7 @@
 
 - **fail-closed**：`task_card_guard.py` 的輸入層（空 stdin／壞 JSON／未捕捉例外 → exit 2）。理由：matcher 只掛寫入類工具，正常 runtime 必送 JSON payload，收不到代表有看不見路徑的寫入呼叫；誤傷面有界。
 - **fail-open**：`permissions_guard.py` 與 `failure_counter.py` 的輸入層。理由：Bash 是 99% 低風險路徑，為輔助防線 brick 整個 shell 得不償失。此行為由 `test_permissions_guard.py` 的測試明文鎖定，改動視為安全變更。
+- **fail-open（記帳自動化層）**：`failure_counter.py --post-hook`（PostToolUse／PostToolUseFailure 自動計數，20260716-P12）的輸入層與內部例外（空 stdin／壞 JSON／未知事件／crash → 不記數、不 block、stderr 警告）。理由：本 hook 是硬規則 3 計數端的記帳自動化，不是安全邊界——攔阻已由 PreToolUse `--hook` 專責；壞 payload 誤記會累積成誤熔斷（比漏記更糟），誤 block 則新增 brick 點而不增加防護。使用者中斷（`is_interrupt`）與 idle（無 active task）不記數。行為由 `test_failure_counter.py` 鎖定。
 - **fail-open（範圍防呆層）**：`allowed_tools_guard.py` 的輸入層與內部例外（空 stdin／壞 JSON／crash → allow ＋ stderr 警告；20260712-P11）。理由：本 guard 是卡片範圍防呆，不是安全邊界 — 寫入 matcher 的 fail-closed 已由 `task_card_guard.py` 對同一 payload 專責，Bash matcher 哲學同 `permissions_guard.py`；再疊一個 fail-closed 只會新增第二個 brick 點而不增加防護。行為由 `test_allowed_tools_guard.py` 鎖定。另：state=active 但卡片不可讀／`allowed_tools` 非法時**block**（工作產出類動作），控制面豁免（tasks/、state/、logs/、harness CLI、git）保證修復路徑不被自己擋死。
 - **條件 fail-closed**：`gate_check.py`／`verification_loop.py` 對「risk≥high 且 status∈{done,review,failed} 且 date≥2026-07-10」的卡，缺 `logs/runs/` 執行紀錄直接 FAIL — 最需要稽核的資料缺失不再靜默通過（不追溯歷史卡）。
 

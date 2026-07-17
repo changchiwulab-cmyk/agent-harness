@@ -6,7 +6,7 @@
 
 1. **沒有 Task Card，不執行任何任務。** 需求必須先轉成 `tasks/*.yaml`，確認 goal + definition_of_done 後才執行。
 2. **對外動作只產出草稿。** Email、發文、資料更新一律先到 `outputs/drafts/`，等人工確認。
-3. **連續失敗 3 次就停下來。** 寫入 `logs/errors/` 並通知使用者，不要自己硬修。
+3. **連續失敗 3 次就停下來。** 寫入 `logs/errors/` 並通知使用者，不要自己硬修。（計數與熔斷由 hooks runtime 自動：PostToolUse 系列自動記帳、PreToolUse 攔阻）
 
 ## 權限（細節見 system/PERMISSIONS.yaml）
 
