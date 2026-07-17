@@ -141,8 +141,10 @@ result_summary: DoD 5/5。佈線擇定 Stop hook（優先案成立）：Stop pay
   session 下 gitignored 檔活不過 container，兩週統計會斷），欄位 ts/file/rule/fragment/sha/task_id/session_id/verdict，(file,
   rule, sha) 去重，--stats 分組統計供兩週後 blocking 升級決策。整條路徑 fail-open（git 失敗／壞 stdin／不可讀檔→安靜
   exit 0）：advisory 非安全邊界，硬防線仍在 permissions_guard。零 system/ 修改（advisory 依 session_stop_checks
-  先例不登記 enforcement 段）。16 例新測試（合計 23）＋e2e 佈線斷言，CI 零改動即涵蓋；手動 drill 命中→去重→隔離放行→stats
-  全通過、殘留清除。存量卡零回填；全套 Python＋Ruby＋4 e2e＋evals＋sync_derived --check 不回歸（RUN-20260717-001、APR-20260717-001）。
+  先例不登記 enforcement 段）。18 例新測試（合計 25）＋e2e 佈線斷言，CI 零改動即涵蓋；手動 drill 命中→去重→隔離放行→stats
+  全通過、殘留清除。PR review 修正（Codex P2）：git 路徑解析改用 -z NUL 分隔——core.quotePath 預設會把非 ASCII
+  檔名 C-quote 成八進位跳脫、中文檔名產出會被安靜漏掃；含中文檔名與 rename 測試鎖定＋真實 repo drill 驗證。存量卡零回填；全套 Python＋Ruby＋4
+  e2e＋evals＋sync_derived --check 不回歸（RUN-20260717-001、APR-20260717-001）。
 completion_time: '2026-07-17'
 ```
 

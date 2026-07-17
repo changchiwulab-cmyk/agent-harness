@@ -137,31 +137,36 @@ def changed_output_files(root: Path) -> list[str]:
     found: list[str] = []
 
     def _add(rel: str) -> None:
-        rel = rel.strip().strip('"')
+        rel = rel.strip()
         if rel and rel not in found and (root / rel).is_file():
             found.append(rel)
 
     def _git(args: list[str]) -> list[str]:
-        r = subprocess.run(
-            ["git", *args], cwd=root, capture_output=True, text=True, timeout=10
-        )
-        return r.stdout.splitlines() if r.returncode == 0 else []
+        """NUL 分隔記錄（-z：路徑原樣輸出，非 ASCII 檔名不做 C-quoting）。"""
+        r = subprocess.run(["git", *args], cwd=root, capture_output=True, timeout=10)
+        if r.returncode != 0:
+            return []
+        return [p for p in r.stdout.decode("utf-8", "replace").split("\0") if p]
 
     try:
-        for line in _git(["status", "--porcelain", "--untracked-files=all", "--", "outputs/"]):
-            path = line[3:]
-            if " -> " in path:  # rename：取新路徑
-                path = path.split(" -> ", 1)[1]
+        skip_next = False
+        for rec in _git(["status", "--porcelain", "-z", "--untracked-files=all", "--", "outputs/"]):
+            if skip_next:  # rename/copy 的原路徑（獨立 NUL 記錄），不掃
+                skip_next = False
+                continue
+            status, path = rec[:2], rec[3:]
+            if status and status[0] in "RC":  # -z 格式新路徑在前、原路徑為下一筆
+                skip_next = True
             _add(path)
     except Exception:
         pass
     try:
         base = "".join(_git(["merge-base", "HEAD", "origin/main"])).strip()
         if base:
-            for line in _git(
-                ["diff", "--name-only", "--diff-filter=ACMR", f"{base}..HEAD", "--", "outputs/"]
+            for rec in _git(
+                ["diff", "--name-only", "-z", "--diff-filter=ACMR", f"{base}..HEAD", "--", "outputs/"]
             ):
-                _add(line)
+                _add(rec)
     except Exception:
         pass
     return found

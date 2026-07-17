@@ -220,6 +220,41 @@ class TestChangedOutputFiles(unittest.TestCase):
             self.assertNotIn("outputs/base.md", files, "merge-base 前的存量檔不掃")
             self.assertNotIn("notes.md", files)
 
+    def test_non_ascii_paths_not_quoted_out(self):
+        # git 預設 core.quotePath=true 會把非 ASCII 檔名 C-quote 成八進位跳脫；
+        # -z 解析必須拿到原樣路徑，否則中文檔名的產出會被安靜跳過（Codex P2）
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "outputs").mkdir()
+            self._git(root, "init", "-q")
+            (root / "outputs" / "基線.md").write_text("既有基線檔\n", encoding="utf-8")
+            self._git(root, "add", "-A")
+            self._git(root, "commit", "-qm", "base")
+            self._git(root, "update-ref", "refs/remotes/origin/main", "HEAD")
+            (root / "outputs" / "報告草稿.md").write_text("checkpoint 產出\n", encoding="utf-8")
+            self._git(root, "add", "-A")
+            self._git(root, "commit", "-qm", "checkpoint")
+            (root / "outputs" / "未追蹤筆記.md").write_text("session 草稿\n", encoding="utf-8")
+            files = changed_output_files(root)
+            self.assertIn("outputs/報告草稿.md", files, "已 commit 的中文檔名需可掃")
+            self.assertIn("outputs/未追蹤筆記.md", files, "untracked 中文檔名需可掃")
+            self.assertNotIn("outputs/基線.md", files)
+
+    def test_staged_rename_takes_new_path_only(self):
+        # -z 格式的 rename：新路徑在前、原路徑為下一筆 NUL 記錄，須跳過原路徑
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "outputs").mkdir()
+            self._git(root, "init", "-q")
+            (root / "outputs" / "舊名.md").write_text("內容不變以觸發 rename 偵測\n", encoding="utf-8")
+            self._git(root, "add", "-A")
+            self._git(root, "commit", "-qm", "base")
+            self._git(root, "update-ref", "refs/remotes/origin/main", "HEAD")
+            self._git(root, "mv", "outputs/舊名.md", "outputs/新名.md")
+            files = changed_output_files(root)
+            self.assertIn("outputs/新名.md", files)
+            self.assertNotIn("outputs/舊名.md", files, "rename 原路徑（已不存在）不得混入")
+
 
 class TestStats(StopHookBase):
     def test_stats_aggregates_hits_and_verdicts(self):
