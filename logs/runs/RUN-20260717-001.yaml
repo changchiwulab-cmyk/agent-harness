@@ -1,0 +1,61 @@
+# Execution Log — P1-3 注入偵測器佈線（Stop hook advisory，20260716-P13）
+# 觸發條件符合 EXECUTION_LOG_SCHEMA 使用範圍：checkpoints ≥ 3
+
+execution_log:
+  run_id: "RUN-20260717-001"
+  task_id: "20260716-P13"
+  skill_type: "ops"
+  started_at: "2026-07-17 04:05"
+  ended_at: "2026-07-17 04:45"
+  status: "completed"
+
+  tools_used:
+    - tool: file_read
+      call_count: 9
+    - tool: file_search
+      call_count: 4
+    - tool: file_write
+      call_count: 6
+    - tool: bash
+      call_count: 12
+    - tool: run_tests
+      call_count: 4
+    - tool: git_commit_checkpoint
+      call_count: 3
+    - tool: modify_settings_json
+      call_count: 1
+    - tool: write_logs
+      call_count: 2
+    - tool: write_drafts
+      call_count: 1
+
+  checkpoints:
+    - commit: "8ded5f4"
+      stage: "--stop-hook advisory＋ledger 去重＋--stats 實作，23 例測試全綠（C1）"
+    - commit: "3946395"
+      stage: "settings.json Stop hook 佈線＋e2e 佈線斷言＋手動 drill 通過（C2）"
+    - commit: "pending"
+      stage: "回歸＋run log＋approval＋卡片收尾（status→review）（C3，hash 於收尾 commit 後回填）"
+
+  token_estimate:
+    input: 55000
+    output: 10000
+    total: 65000
+    source: "rule_estimated"
+
+  approvals:
+    - action: "modify_settings_json（Stop hooks 第三項註冊 check_untrusted_content.py --stop-hook）"
+      status: "approved"
+      approved_by: "human"
+      timestamp: "2026-07-17"
+      note: "使用者於 plan mode 核准執行計畫（明列 settings.json ask 級變更、佈線擇定 Stop hook 的理由、ledger tracked 設計），正式紀錄 APR-20260717-001（logs/approvals/2026-07-17_20260716-P13_approval.yaml）；status 停在 review，PR 人工合併為最終批准"
+
+  output_path: "scripts/check_untrusted_content.py"
+  error_summary: ""
+  gate_results:
+    schema_check: "pass"
+    rule_check: "pass"
+    completion_check: "pass"
+    risk_check: "n/a"
+
+  notes: "佈線擇定 Stop hook（卡片優先案）：Stop payload 雖無改動檔清單，但可由 git 推導（工作樹 dirty 含 untracked ∪ 相對 origin/main merge-base 的已 commit 差異——checkpoint commit 後檔案不再 dirty，缺後者會漏掃），CI 次選的 fallback 條件不成立；CI 亦看不到未 commit 的 session 草稿、警告離工作現場太遠。advisory 語意：命中未隔離注入樣式→stderr 每筆一行（檔案路徑＋命中規則）＋stdout systemMessage（Stop hook 純 stdout 不顯示，比照 session_stop_checks.py）＋append ledger，永遠 exit 0、乾淨時完全安靜；區塊級 [未受信任來源] 隔離語意沿用 audit_output。ledger logs/untrusted_content_hits.jsonl 為 tracked（ephemeral session 下 gitignored 檔活不過 container，兩週誤報統計會斷；logs/ 本為 tracked 稽核面），欄位 ts/file/rule/fragment/sha/task_id/session_id/verdict（verdict 留待人工標 tp/fp），以 (file, rule, sha) 去重（內容變更重新警告），--stats 供兩週後 blocking 升級決策統計。整條 --stop-hook 路徑 fail-open（git 失敗、壞 stdin、不可讀檔、內部例外→安靜 exit 0）：advisory 非安全邊界，硬防線仍在 permissions_guard 出口 deny。手動 drill：未隔離注入→exit 0＋雙規則警告＋ledger 2 行（task_id/session_id 正確）→重跑去重安靜→加隔離標記放行→--stats 分組正確→殘留清除。零 system/ 修改（advisory hook 依 session_stop_checks 先例不登記 PERMISSIONS enforcement 段；INPUT_GUARDRAILS.md 接點表留待 blocking 升級卡）。16 例新測試（合計 23）＋e2e 佈線斷言；CI 零改動（spec-consistency.yml 既有 step 已涵蓋兩測試檔）。存量卡零回填；全套 Python 13 支＋Ruby 檢查＋4 e2e＋evals＋sync_derived --check 不回歸。"

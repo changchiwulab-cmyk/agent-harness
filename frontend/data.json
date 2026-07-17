@@ -194,6 +194,21 @@
       "started_at": "2026-07-16 09:00",
       "status": "completed",
       "task_id": "20260716-P12"
+    },
+    {
+      "ended_at": "2026-07-17 04:45",
+      "gate_results": {
+        "completion_check": "pass",
+        "risk_check": "n/a",
+        "rule_check": "pass",
+        "schema_check": "pass"
+      },
+      "path": "logs/runs/RUN-20260717-001.yaml",
+      "run_id": "RUN-20260717-001",
+      "skill_type": "ops",
+      "started_at": "2026-07-17 04:05",
+      "status": "completed",
+      "task_id": "20260716-P13"
     }
   ],
   "overview": {
@@ -205,7 +220,7 @@
         "status": "ok"
       },
       {
-        "current": "80/80 = 100.0%",
+        "current": "81/81 = 100.0%",
         "id": "M3",
         "name": "audit log 覆蓋率（status ∈ {review, done, failed, partial}）",
         "status": "ok"
@@ -220,27 +235,27 @@
     "gate_results": {
       "completion_check": {
         "not_run": 1,
-        "pass": 6
+        "pass": 7
       },
       "risk_check": {
-        "n/a": 5,
+        "n/a": 6,
         "not_run": 1,
         "pass": 1
       },
       "rule_check": {
         "not_run": 1,
-        "pass": 6
+        "pass": 7
       },
       "schema_check": {
         "fail": 1,
-        "pass": 6
+        "pass": 7
       }
     },
     "run_status": {
-      "completed": 6,
+      "completed": 7,
       "failed": 1
     },
-    "run_total": 7,
+    "run_total": 8,
     "task_risk": {
       "high": 2,
       "low": 57,
@@ -255,9 +270,9 @@
     },
     "task_status": {
       "done": 77,
-      "in_progress": 5,
+      "in_progress": 4,
       "pending": 13,
-      "review": 3
+      "review": 4
     },
     "task_total": 98
   },
@@ -1169,7 +1184,7 @@
       "path": "tasks/2026-07-16_p1-3-injection-detection-hook.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "in_progress",
+      "status": "review",
       "task_id": "20260716-P13"
     },
     {
