@@ -34,8 +34,8 @@ execution_log:
       stage: "--stop-hook advisory＋ledger 去重＋--stats 實作，23 例測試全綠（C1）"
     - commit: "3946395"
       stage: "settings.json Stop hook 佈線＋e2e 佈線斷言＋手動 drill 通過（C2）"
-    - commit: "pending"
-      stage: "回歸＋run log＋approval＋卡片收尾（status→review）（C3，hash 於收尾 commit 後回填）"
+    - commit: "59b9d6b"
+      stage: "回歸＋run log＋approval＋卡片收尾（status→review）（C3）"
 
   token_estimate:
     input: 55000

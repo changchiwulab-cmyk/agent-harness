@@ -131,8 +131,8 @@ checkpoints:
   stage: --stop-hook advisory＋ledger 去重＋--stats 實作，23 例測試全綠（C1）
 - commit: '3946395'
   stage: settings.json Stop hook 佈線＋e2e 佈線斷言＋手動 drill 通過（C2）
-- commit: pending
-  stage: 回歸＋run log＋approval＋卡片收尾（status→review）（C3，hash 於收尾 commit 後回填）
+- commit: 59b9d6b
+  stage: 回歸＋run log＋approval＋卡片收尾（status→review）（C3）
 actual_tool_calls: 38
 result_summary: DoD 5/5。佈線擇定 Stop hook（優先案成立）：Stop payload 雖無改動檔清單，但以 git 推導（工作樹 dirty
   含 untracked ∪ 相對 origin/main merge-base 的已 commit 差異——checkpoint 後檔案不再 dirty，缺後者會漏掃），CI
