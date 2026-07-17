@@ -122,7 +122,7 @@ date: '2026-07-16'
 skill_type: ops
 goal: P1-3：把 check_untrusted_content.py 從「有偵測器沒佈線」接上執行面——優先掛 Stop hook 以 advisory
   模式掃描 session 新增／修改的 outputs/ 檔案（不 block），次選 CI 掃 outputs/ 新增檔
-status: pending
+status: in_progress
 risk_level: medium
 approval_needed: true
 output_path: scripts/check_untrusted_content.py

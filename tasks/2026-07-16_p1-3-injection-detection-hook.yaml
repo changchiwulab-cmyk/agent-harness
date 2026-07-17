@@ -4,7 +4,7 @@
 
 task_id: "20260716-P13"
 date: "2026-07-16"
-status: "pending"
+status: "in_progress"
 
 # === 任務定義 ===
 goal: "P1-3：把 check_untrusted_content.py 從「有偵測器沒佈線」接上執行面——優先掛 Stop hook 以 advisory 模式掃描 session 新增／修改的 outputs/ 檔案（不 block），次選 CI 掃 outputs/ 新增檔"

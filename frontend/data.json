@@ -255,8 +255,8 @@
     },
     "task_status": {
       "done": 77,
-      "in_progress": 4,
-      "pending": 14,
+      "in_progress": 5,
+      "pending": 13,
       "review": 3
     },
     "task_total": 98
@@ -1169,7 +1169,7 @@
       "path": "tasks/2026-07-16_p1-3-injection-detection-hook.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "pending",
+      "status": "in_progress",
       "task_id": "20260716-P13"
     },
     {
