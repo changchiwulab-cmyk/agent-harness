@@ -61,7 +61,7 @@ skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
 checkpoints:
-  - commit: "TBD"
+  - commit: "4ac5e6c"
     stage: "3 卡翻 done + P1-1 補 approval/completion_time + 收案摘要 + 衍生檔 regen（C1）"
 actual_tool_calls: 12
 result_summary: "3 張 review 卡收斂 done：20260712-P11 / 20260716-P12 / 20260716-P13（PR #134/#137/#138 皆已合併、DoD 5/5）。20260712-P11 補 completion_time 2026-07-17 + 批次 approval APR-20260719-001（date ≥ cutoff 2026-07-01 卻先前漏記，滿足 check_approval_coverage）；P12/P13 approval 與 completion_time 原已齊備，僅翻 status。收案摘要 outputs/drafts/2026-07-19_close-p1-review-cards.md。衍生檔 regen（frontend/data.json task_status + logs/AUDIT_LOG.md），sync_derived.sh --check 零漂移、check_spec_consistency.rb 綠。"

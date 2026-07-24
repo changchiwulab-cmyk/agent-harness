@@ -18,7 +18,7 @@ risk_level: low
 approval_needed: false
 output_path: outputs/drafts/2026-07-19_close-p1-review-cards.md
 checkpoints:
-- commit: TBD
+- commit: 4ac5e6c
   stage: 3 卡翻 done + P1-1 補 approval/completion_time + 收案摘要 + 衍生檔 regen（C1）
 actual_tool_calls: 12
 result_summary: '3 張 review 卡收斂 done：20260712-P11 / 20260716-P12 / 20260716-P13（PR
