@@ -1,0 +1,71 @@
+# Execution Log — P1-4 evals 6/6 + LLM judge 接 provider（20260716-P14）
+# 使用範圍：medium risk + approval_needed 卡的驗證閉環收尾——供 gate_check L2
+# （tools_used ⊆ allowed_tools）與 approval APR-20260719-002 的 linked_run 引用。
+
+execution_log:
+  run_id: "RUN-20260719-001"
+  task_id: "20260716-P14"
+  skill_type: "ops"
+  started_at: "2026-07-19 03:10"
+  ended_at: "2026-07-19 04:20"
+  status: "completed"
+
+  tools_used:
+    - tool: file_read
+      call_count: 10
+    - tool: file_search
+      call_count: 5
+    - tool: create_output_files
+      call_count: 4
+    - tool: file_write
+      call_count: 3
+    - tool: bash
+      call_count: 14
+    - tool: run_tests
+      call_count: 5
+    - tool: git_commit_checkpoint
+      call_count: 3
+
+  checkpoints:
+    - commit: "34d40ca"
+      stage: "evals 6/6 + LLM judge provider + 15 測試 + README（C1）"
+    - commit: "0259781"
+      stage: "run log + approval + 驗證閉環 + 卡片收尾（status→done）（C2）"
+
+  token_estimate:
+    input: 60000
+    output: 12000
+    total: 72000
+    source: "rule_estimated"
+
+  approvals:
+    - action: "evals 6/6 覆蓋 + LLM judge 接 provider（medium risk, approval_needed）"
+      status: "approved"
+      approved_by: "human"
+      timestamp: "2026-07-19"
+      note: "使用者於 plan mode 核准執行計畫（6/6 覆蓋、金鑰閘 + fallback 保 CI 位元級一致、零新增依賴），正式紀錄 APR-20260719-002（logs/approvals/2026-07-19_20260716-P14_approval.yaml）；status→done，收案 PR 人工合併為最終批准。"
+
+  output_path: "evals/README.md"
+  error_summary: ""
+  gate_results:
+    schema_check: "pass"
+    rule_check: "pass"
+    completion_check: "pass"
+    risk_check: "n/a"
+
+  notes: >
+    evals 覆蓋 2/6 → 6/6：補 writing（vietnam_proposal）、ops（downloads_cleanup）、
+    review（vietnam_report_review）、retro（cycle_retro）各 1 case，gold/bad 校準對
+    改寫自各 skill eval_examples.md 已校準範例，rubric 全用既有 check kinds
+    （section_first / section_nonempty / contains_any / regex）。6/6 在 rule judge 下
+    gold=pass、bad=fail（calibration_ok 全綠）。LLM judge：run_evals.py 加 seam
+    _llm_available / _call_anthropic（stdlib urllib POST Messages API，零新增第三方
+    依賴）/ llm_score_text / _judge_score 派發器；--judge llm 僅在 ANTHROPIC_API_KEY
+    存在時觸網，無金鑰印 notice + fallback rule（CI 呼叫 run_evals.py 無 --judge，
+    位元級不變），provider 例外／壞 JSON per-case fallback rule（離線安全）。
+    test_run_evals.py 擴充至 15 tests：provider 分支、per-case fallback、bad JSON
+    fallback、main 無金鑰 fallback、calibrate 走 llm、6/6 覆蓋斷言，全綠。README
+    更新覆蓋表（6/6）與 judge 分層（rule=CI 基線 / llm=本地語意層）。retro 覆蓋與
+    路由解耦，不動 VALID_SKILLS。回歸：全套 Python 單元 + e2e + Ruby spec/decision +
+    sync_derived --check 零漂移。gate_check L2：tools_used ⊆ allowed_tools（logs/
+    寫入屬控制面豁免，不列入 tools_used）。verification_loop outcome=pass。

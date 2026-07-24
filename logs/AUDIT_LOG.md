@@ -7,6 +7,30 @@
 
 <!-- AUTO_AUDIT_BEGIN -->
 ```yaml
+task_id: 20260719-O01
+date: '2026-07-19'
+skill_type: ops
+goal: 把 3 張已完成、卡在 review 的 P1 卡（20260712-P11 / 20260716-P12 / 20260716-P13）收斂為 done——三者
+  PR（#134/#137/#138）皆已合併、result_summary 皆 DoD 5/5，純缺人工翻 done；並補齊 20260712-P11 缺漏的
+  approval 紀錄與 completion_time
+status: done
+risk_level: low
+approval_needed: false
+output_path: outputs/drafts/2026-07-19_close-p1-review-cards.md
+checkpoints:
+- commit: 4ac5e6c
+  stage: 3 卡翻 done + P1-1 補 approval/completion_time + 收案摘要 + 衍生檔 regen（C1）
+actual_tool_calls: 12
+result_summary: '3 張 review 卡收斂 done：20260712-P11 / 20260716-P12 / 20260716-P13（PR
+  #134/#137/#138 皆已合併、DoD 5/5）。20260712-P11 補 completion_time 2026-07-17 + 批次 approval
+  APR-20260719-001（date ≥ cutoff 2026-07-01 卻先前漏記，滿足 check_approval_coverage）；P12/P13
+  approval 與 completion_time 原已齊備，僅翻 status。收案摘要 outputs/drafts/2026-07-19_close-p1-review-cards.md。衍生檔
+  regen（frontend/data.json task_status + logs/AUDIT_LOG.md），sync_derived.sh --check
+  零漂移、check_spec_consistency.rb 綠。'
+completion_time: '2026-07-19'
+```
+
+```yaml
 task_id: 20260716-P24
 date: '2026-07-16'
 skill_type: ops
@@ -106,14 +130,26 @@ date: '2026-07-16'
 skill_type: ops
 goal: P1-4：evals 覆蓋 2/6 → 6/6 skill（writing／ops／review／retro 各補 ≥1 case 含 gold/bad
   校準對），並把 run_evals.py 的 LLM judge 從強制 fallback 接上真 provider——品質保證從結構層升到語意層
-status: pending
+status: done
 risk_level: medium
 approval_needed: true
 output_path: evals/README.md
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ''
-completion_time: ''
+checkpoints:
+- commit: 34d40ca
+  stage: evals 6/6 + LLM judge provider + 15 測試 + README（C1）
+- commit: 0259781
+  stage: run log + approval + 驗證閉環 + 卡片收尾（status→done）（C2）
+actual_tool_calls: 40
+result_summary: DoD 5/5。evals 覆蓋 2/6 → 6/6 skill：補 writing/ops/review/retro 各 1 case（gold/bad
+  校準對改寫自各 skill eval_examples.md 已校準範例），rubric 全用既有 check kinds，6/6 在 rule judge 下
+  gold=pass、bad=fail（calibration_ok 全綠）。run_evals.py --judge llm 接 Anthropic Messages
+  API（seam _llm_available/_call_anthropic/llm_score_text/_judge_score；走 stdlib urllib、零新增第三方依賴）：ANTHROPIC_API_KEY
+  存在才觸網，無金鑰印 notice + 自動 fallback rule（CI 呼叫無 --judge，位元級一致、永不觸網），provider 例外／壞 JSON
+  per-case fallback rule（離線安全）。test_run_evals.py 擴充至 15 tests（provider 分支/per-case
+  fallback/bad JSON fallback/main 無金鑰 fallback/calibrate 走 llm/6/6 覆蓋斷言）全綠。evals/README.md
+  覆蓋表更新 6/6 + judge 分層（rule=CI 基線 / llm=本地語意層）。retro 覆蓋與路由解耦，不動 VALID_SKILLS。回歸：全套
+  Python 單元+e2e+Ruby spec/decision+sync_derived --check 零漂移。verification_loop 閉環 outcome=pass（RUN-20260719-001、APR-20260719-002）。
+completion_time: '2026-07-19'
 ```
 
 ```yaml
@@ -122,7 +158,7 @@ date: '2026-07-16'
 skill_type: ops
 goal: P1-3：把 check_untrusted_content.py 從「有偵測器沒佈線」接上執行面——優先掛 Stop hook 以 advisory
   模式掃描 session 新增／修改的 outputs/ 檔案（不 block），次選 CI 掃 outputs/ 新增檔
-status: review
+status: done
 risk_level: medium
 approval_needed: true
 output_path: scripts/check_untrusted_content.py
@@ -154,7 +190,7 @@ date: '2026-07-16'
 skill_type: ops
 goal: P1-2：新增 PostToolUse hook 對工具錯誤自動 failure_counter --record，把「連續失敗 3 次熔斷」的計數端從
   prompt 自律升為 runtime 自動——熔斷觸發不再依賴 agent 記得記帳
-status: review
+status: done
 risk_level: medium
 approval_needed: true
 output_path: scripts/failure_counter.py
@@ -182,7 +218,7 @@ date: '2026-07-12'
 skill_type: ops
 goal: P1-1：把 Task Card 的 allowed_tools 白名單從事後比對（gate_check L2）抬到 PreToolUse 當下強制 —
   新增 scripts/allowed_tools_guard.py，於 Bash 與寫入類工具呼叫的當下比對 active 卡的白名單，越界即 block
-status: review
+status: done
 risk_level: medium
 approval_needed: true
 output_path: scripts/allowed_tools_guard.py
@@ -202,7 +238,7 @@ result_summary: DoD 5/5。scripts/allowed_tools_guard.py 於 Bash + Write|Edit|M
   fail-open 各以測試鎖定並寫入 SECURITY.md；28 例單元測試 + CI step；PERMISSIONS enforcement 與 GATE_POLICY
   L2 同步；92 張存量卡零回填，全套既有測試（13 Python + Ruby 53 runs + 4 e2e + evals）不回歸。dogfood：未宣告的
   memory/ 寫入 exit 2。
-completion_time: ''
+completion_time: '2026-07-17'
 ```
 
 ```yaml

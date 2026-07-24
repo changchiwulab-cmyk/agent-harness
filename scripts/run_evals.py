@@ -8,11 +8,14 @@ output *quality* against each skill's definition-of-done rubric.
 
 Two judges:
   * rule  (default) — deterministic structural checks derived from the rubric.
-            Reproducible, no network, CI-safe.
-  * llm   (--judge llm) — extension point for LLM-as-judge. Not wired to a
-            provider here; falls back to `rule` with a notice so CI never
-            depends on a live model. Calibrate any future LLM judge against the
-            gold/bad examples each case already carries.
+            Reproducible, no network, CI-safe. This is the CI baseline.
+  * llm   (--judge llm) — semantic LLM-as-judge, wired to the Anthropic Messages
+            API via the stdlib (no third-party dependency). Runs ONLY when
+            ANTHROPIC_API_KEY is set; with no key (CI / offline) it prints a
+            notice and falls back to `rule`, so CI never touches the network and
+            behaves bit-identically to the rule judge. Any provider/parse error
+            during scoring also falls back to `rule` per case. The LLM judge is
+            calibrated against the same gold/bad examples each case carries.
 
 Modes:
   * default (calibration): for every case, score its gold_example (must PASS)
@@ -30,8 +33,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
+import urllib.request
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -137,6 +142,103 @@ def score_text(case: dict, text: str, threshold: float = 1.0) -> ScoreResult:
     return ScoreResult(case["case_id"], round(score, 3), score >= threshold, items)
 
 
+# --- LLM judge (semantic layer) -------------------------------------------
+# Wired to the Anthropic Messages API via the stdlib. Reached ONLY when a key
+# is present; the seam functions (`_llm_available`, `_call_anthropic`) are the
+# monkeypatch points for the offline tests.
+
+ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"
+ANTHROPIC_VERSION = "2023-06-01"
+# Judge model is configurable so the harness can pin/upgrade without code edits.
+JUDGE_MODEL = os.environ.get("EVAL_JUDGE_MODEL", "claude-sonnet-5")
+
+
+def _llm_available() -> bool:
+    """True when a provider call is possible (API key present)."""
+    return bool(os.environ.get("ANTHROPIC_API_KEY"))
+
+
+def _call_anthropic(prompt: str) -> str:
+    """POST `prompt` to the Messages API and return the assistant text.
+
+    Uses only the stdlib (urllib) — no third-party SDK, so CI needs no extra
+    dependency and never installs one. Only invoked when ANTHROPIC_API_KEY is
+    set, so the network is never touched in CI. Raises on transport/HTTP errors;
+    the caller (`_judge_score`) turns any exception into a per-case rule fallback.
+    """
+    body = json.dumps(
+        {
+            "model": JUDGE_MODEL,
+            "max_tokens": 1024,
+            "messages": [{"role": "user", "content": prompt}],
+        }
+    ).encode("utf-8")
+    req = urllib.request.Request(
+        ANTHROPIC_API_URL,
+        data=body,
+        headers={
+            "content-type": "application/json",
+            "x-api-key": os.environ["ANTHROPIC_API_KEY"],
+            "anthropic-version": ANTHROPIC_VERSION,
+        },
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=60) as resp:  # noqa: S310 (fixed host)
+        payload = json.loads(resp.read().decode("utf-8"))
+    parts = [b.get("text", "") for b in payload.get("content", []) if b.get("type") == "text"]
+    return "".join(parts)
+
+
+def _build_judge_prompt(case: dict, text: str) -> str:
+    dod = "\n".join(f"- {d}" for d in case.get("definition_of_done", [])) or "-（未提供）"
+    rubric = case.get("rubric", [])
+    rubric_lines = "\n".join(f"  - {item['id']}（{item.get('kind', '')}）" for item in rubric)
+    ids = [item["id"] for item in rubric]
+    keys = ", ".join(f'"{i}": true|false' for i in ids)
+    return (
+        "你是一人公司 harness 的產出品質評審。依 definition_of_done 與 rubric，"
+        "逐項判斷候選輸出是否在『語意上』滿足（不只結構符合）。\n\n"
+        f"## definition_of_done\n{dod}\n\n"
+        f"## rubric（逐項 pass/fail）\n{rubric_lines}\n\n"
+        f"## 候選輸出\n{text}\n\n"
+        f'只回傳 JSON，格式 {{"items": {{{keys}}}}}，不要任何其他文字。'
+    )
+
+
+def _parse_judge_json(raw: str) -> dict:
+    """Extract the first JSON object from the model reply and validate shape."""
+    m = re.search(r"\{.*\}", raw, re.DOTALL)
+    if not m:
+        raise ValueError(f"judge returned no JSON object: {raw!r}")
+    data = json.loads(m.group(0))
+    if not isinstance(data, dict) or not isinstance(data.get("items"), dict):
+        raise ValueError(f"judge JSON missing items map: {data!r}")
+    return data
+
+
+def llm_score_text(case: dict, text: str, threshold: float = 1.0) -> ScoreResult:
+    """Score `text` with the LLM judge. Raises on provider/parse failure."""
+    data = _parse_judge_json(_call_anthropic(_build_judge_prompt(case, text)))
+    items = {item["id"]: bool(data["items"].get(item["id"], False)) for item in case.get("rubric", [])}
+    total = len(items) or 1
+    score = sum(1 for v in items.values() if v) / total
+    return ScoreResult(case["case_id"], round(score, 3), score >= threshold, items)
+
+
+def _judge_score(case: dict, text: str, judge: str, threshold: float = 1.0) -> ScoreResult:
+    """Dispatch to the requested judge; fall back to rule on any llm failure."""
+    if judge == "llm":
+        try:
+            return llm_score_text(case, text, threshold)
+        except Exception as exc:  # provider/parse/transport → offline-safe fallback
+            print(
+                f"warning: llm judge failed for {case.get('case_id')} ({exc}); "
+                "falling back to rule judge for this case",
+                file=sys.stderr,
+            )
+    return score_text(case, text, threshold)
+
+
 # --- Loading ---------------------------------------------------------------
 
 
@@ -157,8 +259,8 @@ def calibrate(cases: list[dict], judge: str) -> tuple[list[dict], bool]:
     rows = []
     ok = True
     for case in cases:
-        gold = score_text(case, case.get("gold_example", ""))
-        bad = score_text(case, case.get("bad_example", ""))
+        gold = _judge_score(case, case.get("gold_example", ""), judge)
+        bad = _judge_score(case, case.get("bad_example", ""), judge)
         case_ok = gold.passed and not bad.passed
         ok = ok and case_ok
         rows.append(
@@ -184,8 +286,8 @@ def main(argv: list[str]) -> int:
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args(argv[1:])
 
-    if args.judge == "llm":
-        print("note: --judge llm not wired to a provider; falling back to rule judge", file=sys.stderr)
+    if args.judge == "llm" and not _llm_available():
+        print("note: --judge llm requested but ANTHROPIC_API_KEY not set; falling back to rule judge", file=sys.stderr)
         args.judge = "rule"
 
     cases = load_cases()
@@ -201,7 +303,7 @@ def main(argv: list[str]) -> int:
         if case is None:
             print(f"unknown case: {args.case}", file=sys.stderr)
             return 2
-        res = score_text(case, Path(args.candidate).read_text(encoding="utf-8"))
+        res = _judge_score(case, Path(args.candidate).read_text(encoding="utf-8"), args.judge)
         payload = {"case_id": res.case_id, "score": res.score, "passed": res.passed, "items": res.items}
         print(json.dumps(payload, ensure_ascii=False, indent=2) if args.json else
               f"{res.case_id}: score={res.score} passed={res.passed} items={res.items}")

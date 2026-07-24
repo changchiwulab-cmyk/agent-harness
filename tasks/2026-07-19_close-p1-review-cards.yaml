@@ -1,0 +1,69 @@
+# Task Card: 關閉 3 張 P1 review 卡 — P1-1/P1-2/P1-3 收斂到 done
+# 建立日期：2026-07-19
+# 前例：20260712-O01（批次清 review 佇列）、20260417-O01（批次翻 done）
+
+task_id: "20260719-O01"
+date: "2026-07-19"
+status: "done"
+
+# === 任務定義 ===
+goal: "把 3 張已完成、卡在 review 的 P1 卡（20260712-P11 / 20260716-P12 / 20260716-P13）收斂為 done——三者 PR（#134/#137/#138）皆已合併、result_summary 皆 DoD 5/5，純缺人工翻 done；並補齊 20260712-P11 缺漏的 approval 紀錄與 completion_time"
+context: |
+  使用者 2026-07-19 指示「3 張 review 結案，再開工 P1-4」。逐卡盤點：
+  - 20260712-P11（P1-1 allowed_tools runtime enforcement，PR #134）：result_summary
+    DoD 5/5，但 completion_time 空、且 date 2026-07-12 ≥ approval cutoff 2026-07-01
+    卻無 logs/approvals/ 紀錄——翻 done 前須補 approval 與 completion_time。
+  - 20260716-P12（P1-2 failure_counter 自動記錄，PR #137）：completion_time 已填
+    2026-07-16，approval 已存（APR-20260716-...）。
+  - 20260716-P13（P1-3 注入偵測器佈線，PR #138）：completion_time 已填 2026-07-17，
+    approval 已存（APR-20260717-001）。
+  本卡 approval_needed: false（低風險治理簿記，沿用 20260712-O01 前例）。
+input_data:
+  - "tasks/2026-07-12_p1-1-allowed-tools-runtime-enforcement.yaml"
+  - "tasks/2026-07-16_p1-2-failure-counter-auto-record.yaml"
+  - "tasks/2026-07-16_p1-3-injection-detection-hook.yaml"
+  - "logs/approvals/2026-07-12_review-queue-close_approval.yaml（批次 approval 格式前例）"
+  - "system/APPROVAL_POLICY.yaml"
+
+# === 完成標準 ===
+definition_of_done:
+  - "3 張 review 卡 status 翻為 done，其他既有欄位不動"
+  - "20260712-P11 補 completion_time（2026-07-17，PR #134 合併日）與 logs/approvals/ 批次 approval 紀錄（APR-20260719-001）"
+  - "收案摘要落地 outputs/drafts/2026-07-19_close-p1-review-cards.md（3 卡處置表 + approval/completion 落差記錄）"
+  - "衍生檔 regen：frontend/data.json + logs/AUDIT_LOG.md 隨 task_status 更新，sync_derived.sh --check 零漂移"
+  - "check_spec_consistency.rb 綠（含 approval 覆蓋率交叉檢查）；本卡自身翻 done 時 completion_time 已填"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-07-19_close-p1-review-cards.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "file_write"
+  - "write_drafts"
+  - "write_logs"
+  - "git_commit_checkpoint"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 30
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - commit: "4ac5e6c"
+    stage: "3 卡翻 done + P1-1 補 approval/completion_time + 收案摘要 + 衍生檔 regen（C1）"
+actual_tool_calls: 12
+result_summary: "3 張 review 卡收斂 done：20260712-P11 / 20260716-P12 / 20260716-P13（PR #134/#137/#138 皆已合併、DoD 5/5）。20260712-P11 補 completion_time 2026-07-17 + 批次 approval APR-20260719-001（date ≥ cutoff 2026-07-01 卻先前漏記，滿足 check_approval_coverage）；P12/P13 approval 與 completion_time 原已齊備，僅翻 status。收案摘要 outputs/drafts/2026-07-19_close-p1-review-cards.md。衍生檔 regen（frontend/data.json task_status + logs/AUDIT_LOG.md），sync_derived.sh --check 零漂移、check_spec_consistency.rb 綠。"
+completion_time: "2026-07-19"
+audit_log_ref: "logs/AUDIT_LOG.md"
