@@ -4,7 +4,7 @@
 
 task_id: "20260716-P12"
 date: "2026-07-16"
-status: "review"
+status: "done"
 
 # === 任務定義 ===
 goal: "P1-2：新增 PostToolUse hook 對工具錯誤自動 failure_counter --record，把「連續失敗 3 次熔斷」的計數端從 prompt 自律升為 runtime 自動——熔斷觸發不再依賴 agent 記得記帳"

@@ -1,0 +1,18 @@
+# 批准紀錄 — 關閉 3 張 P1 review 卡（20260719-O01）
+# 使用者 2026-07-19 指示「3 張 review 結案，再開工 P1-4」，為翻 done 的核准依據。
+# 三張中 20260716-P12（APR-20260716-...）與 20260716-P13（APR-20260717-001）已有
+# approval 紀錄；僅 20260712-P11 於 approval cutoff（2026-07-01）後卻無紀錄，於此補正式
+# 批次紀錄以滿足 check_approval_coverage。收案 PR 人工合併為最終批准。
+# schema 見 system/APPROVAL_POLICY.yaml。
+
+approval_records:
+  - approval_id: "APR-20260719-001"
+    task_id: "20260712-P11"
+    date: "2026-07-19"
+    action: "P1-1 allowed_tools PreToolUse runtime enforcement（scripts/allowed_tools_guard.py + 兩組 matcher 註冊）結案核准，status review→done；補 completion_time 2026-07-17"
+    approval_method: "human_confirm"
+    risk_level: "medium"
+    status: "approved"
+    approved_by: "human"
+    rationale: "交付物已隨 PR #134 合併入 main 並為現行 PreToolUse 白名單強制的執行基礎；使用者 2026-07-19 明確指示 3 張 review 卡結案；date（2026-07-12）≥ approval cutoff 2026-07-01 但先前漏記，於此補正式紀錄。收案 PR 人工合併為最終批准。"
+    linked_run: ""
