@@ -1,5 +1,6 @@
 # Execution Log — P1-4 evals 6/6 + LLM judge 接 provider（20260716-P14）
-# 觸發條件符合 EXECUTION_LOG_SCHEMA 使用範圍：checkpoints ≥ 3（含閉環收尾）
+# 使用範圍：medium risk + approval_needed 卡的驗證閉環收尾——供 gate_check L2
+# （tools_used ⊆ allowed_tools）與 approval APR-20260719-002 的 linked_run 引用。
 
 execution_log:
   run_id: "RUN-20260719-001"
@@ -28,10 +29,8 @@ execution_log:
   checkpoints:
     - commit: "34d40ca"
       stage: "evals 6/6 + LLM judge provider + 15 測試 + README（C1）"
-    - commit: "TBD-C2"
+    - commit: "0259781"
       stage: "run log + approval + 驗證閉環 + 卡片收尾（status→done）（C2）"
-    - commit: "TBD-C3"
-      stage: "回填 C2 checkpoint hash（C3）"
 
   token_estimate:
     input: 60000

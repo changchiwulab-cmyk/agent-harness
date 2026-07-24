@@ -137,10 +137,8 @@ output_path: evals/README.md
 checkpoints:
 - commit: 34d40ca
   stage: evals 6/6 + LLM judge provider + 15 測試 + README（C1）
-- commit: TBD-C2
+- commit: 0259781
   stage: run log + approval + 驗證閉環 + 卡片收尾（status→done）（C2）
-- commit: TBD-C3
-  stage: 回填 C2 checkpoint hash（C3）
 actual_tool_calls: 40
 result_summary: DoD 5/5。evals 覆蓋 2/6 → 6/6 skill：補 writing/ops/review/retro 各 1 case（gold/bad
   校準對改寫自各 skill eval_examples.md 已校準範例），rubric 全用既有 check kinds，6/6 在 rule judge 下
