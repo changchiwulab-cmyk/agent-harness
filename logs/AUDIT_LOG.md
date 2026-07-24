@@ -130,14 +130,28 @@ date: '2026-07-16'
 skill_type: ops
 goal: P1-4：evals 覆蓋 2/6 → 6/6 skill（writing／ops／review／retro 各補 ≥1 case 含 gold/bad
   校準對），並把 run_evals.py 的 LLM judge 從強制 fallback 接上真 provider——品質保證從結構層升到語意層
-status: pending
+status: done
 risk_level: medium
 approval_needed: true
 output_path: evals/README.md
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ''
-completion_time: ''
+checkpoints:
+- commit: 34d40ca
+  stage: evals 6/6 + LLM judge provider + 15 測試 + README（C1）
+- commit: TBD-C2
+  stage: run log + approval + 驗證閉環 + 卡片收尾（status→done）（C2）
+- commit: TBD-C3
+  stage: 回填 C2 checkpoint hash（C3）
+actual_tool_calls: 40
+result_summary: DoD 5/5。evals 覆蓋 2/6 → 6/6 skill：補 writing/ops/review/retro 各 1 case（gold/bad
+  校準對改寫自各 skill eval_examples.md 已校準範例），rubric 全用既有 check kinds，6/6 在 rule judge 下
+  gold=pass、bad=fail（calibration_ok 全綠）。run_evals.py --judge llm 接 Anthropic Messages
+  API（seam _llm_available/_call_anthropic/llm_score_text/_judge_score；走 stdlib urllib、零新增第三方依賴）：ANTHROPIC_API_KEY
+  存在才觸網，無金鑰印 notice + 自動 fallback rule（CI 呼叫無 --judge，位元級一致、永不觸網），provider 例外／壞 JSON
+  per-case fallback rule（離線安全）。test_run_evals.py 擴充至 15 tests（provider 分支/per-case
+  fallback/bad JSON fallback/main 無金鑰 fallback/calibrate 走 llm/6/6 覆蓋斷言）全綠。evals/README.md
+  覆蓋表更新 6/6 + judge 分層（rule=CI 基線 / llm=本地語意層）。retro 覆蓋與路由解耦，不動 VALID_SKILLS。回歸：全套
+  Python 單元+e2e+Ruby spec/decision+sync_derived --check 零漂移。verification_loop 閉環 outcome=pass（RUN-20260719-001、APR-20260719-002）。
+completion_time: '2026-07-19'
 ```
 
 ```yaml
