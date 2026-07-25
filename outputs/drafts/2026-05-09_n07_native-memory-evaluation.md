@@ -27,6 +27,19 @@
 
 > 備註：本評估未做工具實測，依據是 N3 PoC 累積的 Claude Code 行為觀察 + plan 引用。Go 後的 PoC 卡須補一次性實測（觸發、寫入提示、撤回）。
 
+> ⚠️ **事實基礎過期標記（20260725-A01 補註，不改本檔結論）**
+>
+> 上表第 2 列「寫入｜Claude Code 提示寫入時須使用者明確確認（非自動寫入）」**已與現況不符**。
+> Claude Code 現有 `autoMemoryEnabled` 設定（**平台預設 `true`**）與 `autoMemoryDirectory`，
+> 存在不需逐次確認的自動寫入路徑；該路徑不經 Bash，`permissions_guard.py` 的
+> `auto_write_memory` 規則（只比對 shell 重導向進 `memory/`）攔不到。
+>
+> 現已於 `.claude/settings.json` 設 `autoMemoryEnabled: false` 關閉，並由
+> `test_permissions_guard.py` 鎖定；邊界說明見 `SECURITY.md` §「非 shell 路徑的繞過面」。
+>
+> **本檔的 Conditional-Go 結論與 4 條前置條件未被推翻**，但第 2 列所依據的「原生不會自動寫入」
+> 這項事實已不成立，若日後要執行本評估建議的 symlink 方案，須先重做這一列的事實查核。
+
 ---
 
 ## 2. 與本框架 4 條硬規則的衝突點逐條檢視

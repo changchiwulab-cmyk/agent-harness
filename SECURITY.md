@@ -19,7 +19,7 @@
 | 層 | 機制 | 性質 | 失效模式 |
 |---|---|---|---|
 | 0 | 容器／VM／OS 層 sandbox | 真正隔離 — **不在本 repo 內**，屬部署決策 | 未部署則此層不存在 |
-| 1 | `.claude/settings.json` permissions ask 規則 | 人工把關（system/、skills/、memory/、reports/ 的寫入） | 依賴 runtime 實作 |
+| 1 | `.claude/settings.json` permissions 規則 | **deny**：由 Claude Code 自己執行的硬擋，harness 之外的一層（20260725-A01；規則來源為 `PERMISSIONS.yaml` 的 `native_deny`，四方 sync 鎖見下）。**ask**：人工把關（system/、skills/、memory/、reports/ 的寫入） | 依賴 runtime 實作；deny 為前綴比對，簽章出現在指令中段者不適用 |
 | 2 | PreToolUse hooks（deterministic chokepoint） | `task_card_guard.py`：新正式報告需 active task 精確授權，輸入層 **fail-closed**（壞 stdin／例外 → block）；`allowed_tools_guard.py`：active 卡的 allowed_tools 白名單當下強制（Bash＋寫入類，20260712-P11），idle 全放行、控制面豁免 | matcher 外的工具不經過；idle 時白名單不綁 |
 | 3 | `permissions_guard.py` regex deny-list | 輔助防線：攔明顯違規簽章（刪除／外發／金流／force-push），**fail-open** | 見下方「已知可繞過」 |
 | 4 | Prompt 自律（CLAUDE.md／GLOBAL_RULES） | 最弱層，僅引導 | 模型不遵循即失效 |
@@ -34,6 +34,13 @@
 - 透過 repo 內既有程式完成被禁止的行為
 
 **不做** interpreter one-liner 的 regex 攔截：false positive 率不可控，違反「誤傷比漏抓更糟」原則（`permissions_guard.py` 檔內明文）。
+
+### 非 shell 路徑的繞過面（20260725-A01 新增）
+
+上面四項講的都是「同一個 shell 通道的不同寫法」。另有一類邊界性質不同：**行為根本不經過 Bash**，因此第 3 層的 regex 在設計上就看不到，再多簽章也沒用。
+
+- **平台原生功能自己的寫入路徑**。已識別並已封閉的一例：Claude Code 原生 auto memory（settings key `autoMemoryEnabled`，**平台預設為 true**）。`PERMISSIONS.yaml` 的 `auto_write_memory` 標記為 `runtime` 執法，但 `permissions_guard.py` 的規則只涵蓋「shell 重導向／`tee`／`cp`/`mv` 寫進 `memory/`」；原生機制不經 Bash，第 3 層攔不到，第 1 層的 `ask(memory/**)` 也涵蓋不到原生機制自己的儲存路徑。**現以 `.claude/settings.json` 的 `autoMemoryEnabled: false` 關閉該路徑**，並由 `test_permissions_guard.py` 的 `TestNativeDenySync.test_auto_memory_is_disabled` 鎖定。
+- **一般化的教訓**：`deny_enforcement` 標記 `runtime` 的語意是「該條 deny **有一組 shell 簽章**會被 guard 攔下」，**不等於**「該行為的所有路徑都被攔下」。平台每新增一項能自主寫檔／發外部請求的原生功能，都應重新檢查對應 deny 條目的覆蓋面，而不是假設既有 regex 自動延伸。此為 `system/NATIVE_OVERLAP.yaml` 季度重評時的必查項。
 
 ### fail-open / fail-closed 的取捨（20260710-003 核定）
 
