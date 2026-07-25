@@ -31,6 +31,24 @@ context 的**內容與排列順序**對表現的影響，大於幾乎任何其�
 
 順序原則：穩定的放前面（利於 prompt cache），易變的放後面。
 
+**這條原則有前提，20260725-A01 補上實測數字**：prompt cache 只在前綴達到**最小可快取長度**
+時才會生效，未達門檻是靜默不快取（不報錯）。該門檻**因模型世代而異且非單調遞減**：
+
+| 世代 | 最小可快取前綴 | 本專案穩定前綴（實測 2,130 tokens）是否可快取 |
+|------|--------------|--------------------------------|
+| Opus 5 | 512 tokens | ✅ |
+| Opus 4.8 | 1,024 tokens | ✅ |
+| Opus 4.6 / 4.5、Haiku 4.5 | 4,096 tokens | ❌ 靜默不快取 |
+
+穩定前綴（`CLAUDE.md` + `GLOBAL_RULES.md`）實測 2,130 tokens（20260725-A01 後，
+`check_context_budget.rb`：861 + 1,269）。兩點推論：
+
+1. **本專案的組裝順序紀律在當代是真的有回報的**，在 4.6 世代則沒有 —— 過去這條原則是憑理論寫的，現在有數字。
+2. 前綴**變短不一定更好**：低於門檻反而完全失去快取。壓縮 `CLAUDE.md` 時要看的是門檻，不是「越小越好」。
+
+驗證方式：看回應的 `cache_read_input_tokens`；若重複同前綴的請求該值恆為 0，代表前綴中有
+每次都變的內容（時間戳、UUID）或未達門檻。
+
 ## 二、JIT 檢索紀律（just-in-time retrieval）
 
 - **預設用路徑引用，不全文貼入**（延續 GLOBAL_RULES 成本意識）。需要某段時才讀那段（用 offset/limit）。
@@ -62,9 +80,19 @@ context 的**內容與排列順序**對表現的影響，大於幾乎任何其�
   整理完只把**結論**帶回主線，原始材料留在 scratchpad/路徑引用。
 - **不**為此引入 multi-agent swarm（在 README「現階段不做清單」）；這是 context 衛生，不是編排。
 
-## 自我檢查（長任務中途與收尾）
+## 收尾的硬檢查點
 
-- [ ] context 是否塞了用不到的全文？（應改路徑引用）
-- [ ] 中間結論是否已卸載到 scratchpad，而非全靠對話歷史？
-- [ ] 跨 session 前是否已更新 `state/last_checkpoint.yaml`（G-D）？
-- [ ] `check_context_budget.rb` 仍綠？
+本節原為一份「自我檢查」勾選清單，20260725-A01 移除 —— 其中可機器驗證的兩項已有
+腳本專責（不需要 prompt 再叮嚀一次），其餘兩項屬本檔上文已述的紀律：
+
+| 原檢查項 | 現由誰負責 |
+|---------|-----------|
+| `check_context_budget.rb` 仍綠？ | CI（`.github/workflows/spec-consistency.yml` 的 Context budget check） |
+| 跨 session 前更新 `state/last_checkpoint.yaml` | `state/last_checkpoint.SCHEMA.yaml` + RECOVERY_RUNBOOK 場景 C |
+| context 是否塞了用不到的全文 | 本檔 §二 JIT 檢索紀律 |
+| 中間結論是否已卸載到 scratchpad | 本檔 §三 scratchpad 慣例 |
+
+> 為什麼移除：當代模型會自行驗證產出，**額外的自我檢查指令會造成過度驗證**（重複跑
+> 已由腳本保證的檢查、產出冗長的自檢報告）。這裡移除的只是 **prompt 層與腳本層重複的
+> 叮嚀**；`gate_check.py` / `verification_loop.py` / `GATE_POLICY.yaml` / CI 這些
+> **腳本層驗證一律不動** —— 那是稽核控制，不是模型自檢，兩者不可混為一談。

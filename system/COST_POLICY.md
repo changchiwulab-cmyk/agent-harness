@@ -35,7 +35,7 @@ v1 階段採用「粗略護欄 + 事後量測」策略：
 | 工具定義（按需載入） | 省 ~85% | Tool Search 模式 |
 | 子代理 context 隔離 | 省 ~67% | vs 單一代理塞所有 context |
 | Programmatic Tool Calling | 省 ~37% | 中間結果不進 context |
-| CLAUDE.md + GLOBAL_RULES | 控制在 3K 以內 | 軟性上限；實測 1,620 tokens（20260725 `check_context_budget.rb`；舊註記「~400」已過期） |
+| CLAUDE.md + GLOBAL_RULES | 控制在 3K 以內 | 軟性上限；實測 2,130 tokens（20260725-A01 後，`check_context_budget.rb`；舊註記「~400」已過期逾 5 倍） |
 | 單一 skill prompt | 控制在 1.5K 以內 | 軟性上限；**只計執行期載入的 SKILL.md**，eval_examples 屬 eval 資產不計入（20260711-A01 口徑對齊）。實測 483–985 tokens |
 | 常駐 system prompt 快取 | 命中省 ~90% input | prompt caching：穩定前綴（CLAUDE.md+GLOBAL_RULES+PERMISSIONS）做 cache，可變後綴（Task Card+skill）後接。前綴須達最小可快取長度才會生效，見 `CONTEXT_ENGINEERING.md` §一 |
 
