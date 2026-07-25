@@ -1,0 +1,91 @@
+task_id: "20260725-A01"
+date: "2026-07-25"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "以 Opus 5 世代的平台能力對照 agent-harness，產出完整檢視分析與改善 roadmap，並落地本次已驗證的 5 項 P0 修正"
+context: |
+  使用者要求「根據 Opus 5 最新能力，完整檢視專案，分析、規劃及給我優化改善計劃」。
+  規劃階段以 claude-api skill + Claude Code hooks/settings 官方文件建立當代能力基準
+  （該階段的 WebFetch 發生在建卡前，屬規劃調查，非本卡執行期查詢）。
+  全 repo 探索 + 實測後確認 8 項落差（F1–F8），其中 5 項列為 P0：
+
+  F1（本次新發現）system/PERMISSIONS.yaml:50 宣告 auto_write_memory 為 runtime 執法，
+      但 scripts/permissions_guard.py:135-146 只比對 shell 重導向進 memory/。
+      Claude Code 原生 auto memory（settings key autoMemoryEnabled，預設 true）
+      是不經 Bash 的另一條寫入路徑，guard 與 settings.json 的 ask(memory/**) 都攔不到。
+  F2 .claude/settings.json 只有 9 條 ask、零條 deny——原生 permissions.deny 完全未用，
+      deny 目前 100% 依賴 permissions_guard.py 的手寫 regex。
+  F4 system/NATIVE_OVERLAP.yaml reviewed_on 停在 2026-05-09（2026-08-07 到期），
+      未涵蓋 auto memory、原生 /rewind checkpoint（現表記 0% overlap）、plugins、
+      effortLevel、sandbox、擴增後的 hook 事件表。重評後 aggregate 預期越過 50%
+      → governance_metrics M4 由 ok 轉 alert → 觸發 T-B。此為誠實重評的預期後果，
+      據實呈現；是否啟動 v3 留給使用者決定。
+  F5 system/COST_POLICY.md:48-52 的層級註記過期，且成本路由缺 effort 維度。
+  F6 Opus 5 四項行為位移（自我驗證/scope 擴張/更傾向委派子代理/產出更長）與現有 prompt 衝突。
+
+  範圍經使用者選定：報告 + P0 修正；F3（hook 覆蓋面）、F8（slash commands）等
+  只寫進報告 roadmap，不開卡不實作。prompt 層採「只加不刪 + 移除與腳本重複的自檢句」：
+  腳本層驗證（gate_check / verification_loop / GATE_POLICY / CI）完全不動。
+  對齊計畫 /root/.claude/plans/opus5-tingly-goose.md。
+input_data:
+  - ".claude/settings.json"
+  - "system/PERMISSIONS.yaml"
+  - "system/NATIVE_OVERLAP.yaml"
+  - "system/COST_POLICY.md"
+  - "system/CONTEXT_ENGINEERING.md"
+  - "system/GLOBAL_RULES.md"
+  - "scripts/permissions_guard.py"
+  - "scripts/allowed_tools_guard.py"
+  - "skills/writing/SKILL.md"
+  - "SECURITY.md"
+  - "outputs/drafts/20260711-A01_four-layer-alignment-analysis.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "報告 outputs/drafts/20260725-A01_opus5-capability-review.md 完成：F1–F8 逐項含檔案:行號證據、選項六維比較（含「不做」）、高風險假設、待驗證、roadmap 與建議下一步"
+  - "P0-1 .claude/settings.json 加 autoMemoryEnabled:false 並新增 permissions.deny 鏡射 PERMISSIONS.yaml 高破壞性項目；scripts/test_permissions_guard.py 的 sync 測試由二方擴為三方（PERMISSIONS.yaml ↔ DENY_RULES ↔ settings.json deny）"
+  - "P0-2 PERMISSIONS.yaml deny_enforcement 與 SECURITY.md 誠實標註 auto_write_memory 的 runtime 覆蓋邊界；outputs/drafts/2026-05-09_n07_native-memory-evaluation.md 標記事實基礎過期（不改結論）"
+  - "P0-3 NATIVE_OVERLAP.yaml 完成 Opus 5 世代重評：reviewed_on 更新、逐模組重評、補齊缺漏模組列、aggregate_estimate_pct 為誠實值且註明依據"
+  - "P0-4 COST_POLICY.md 成本路由由「只選模型」升級為「模型 × effort」兩維，層級註記更新至當代"
+  - "P0-5 移除 skills/writing/SKILL.md 與 system/CONTEXT_ENGINEERING.md 兩處與腳本層重複的自我檢查字句；GLOBAL_RULES.md 新增 scope 紀律／子代理委派上限／產出篇幅三段；CONTEXT_ENGINEERING.md 補上快取最小前綴數字"
+  - "CI 同款檢查全綠：13 支 Python 單元測試 + 4 支 e2e、check_spec_consistency.rb、check_context_budget.rb、run_evals.py 校準、sync_derived.sh --check"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260725-A01_opus5-capability-review.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "create_output_files"
+  - "create_task_card"
+  - "write_logs"
+  - "git_commit_checkpoint"
+  - "bash"
+  - "run_tests"
+  - "file_write"              # scripts/ 測試擴充、SECURITY.md（repo 根）
+  - "modify_settings_json"    # ask 級：P0-1（plan mode 核准）
+  - "modify_system_rules"     # ask 級：P0-2/3/4/5（plan mode 核准）
+  - "modify_skills"           # ask 級：P0-5 writing SKILL.md（plan mode 核准）
+
+# === 成本控制 ===
+max_tool_calls: 120
+max_retries: 3
+max_web_searches: 2
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: ""
