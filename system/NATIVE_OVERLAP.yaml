@@ -11,9 +11,14 @@
 #
 # 本版改為**可複現的計算**：
 #   aggregate_estimate_pct = round(mean(overlap_pct of modules where in_aggregate: true))
-# 並把評估範圍從 9 個模組補齊為 README 定義的 16 個編號模組（舊表只評了重疊度較高的 9 個，
-# 未評的多為本 harness 獨有、重疊度低的治理模組，導致樣本偏誤方向不明）。
-# Interface 依舊表自身註記「屬於 runtime，不是模組」排除於分母外（in_aggregate: false）。
+# 並把評估範圍從 9 個模組補齊為 README 定義的**全部 16 個編號模組**（舊表只評了重疊度較高的
+# 9 個，未評的多為本 harness 獨有、重疊度低的治理模組，導致樣本偏誤方向不明）。
+#
+# 分母＝16（PR #140 review 修正）：初版曾把 Interface 排除於分母外（理由：舊表自身註記
+# 「屬於 runtime，不是模組」，且其 100% 屬同義反覆——Interface 就是原生本身，恆為 100%，
+# 對「本 harness 有多少已被原生取代」不提供資訊）。但 README:15 明確把 Interface 列為
+# 編號模組 #1，宣稱「涵蓋 16 個模組」卻只平均 15 個，本身就是一種宣稱≠實作。
+# 現改為與文件架構一致：**16 個全數計入**。同義反覆的疑慮改以下方 note 揭露，不靠調整分母處理。
 #
 # 重評依據：Claude Code hooks 事件表與 settings.json key 清單（2026-07 現況官方文件）、
 # 本 repo 實測（.claude/settings.json、scripts/*.py、skills/、tasks/）。
@@ -24,12 +29,20 @@ revisit_trigger: "每季度；或 Claude Code 主版本升級時"
 stale_after_days: 90    # 超過此天數視為過期；手動檢查：`python3 scripts/check_native_overlap_freshness.py`
 revisit_interval_days: 90   # R9：把「每季度」量化；governance_metrics.py M4 據此偵測 reviewed_on 是否過季
 
-# 15 個計入分母的模組平均 = 640 / 15 = 42.7 → 43
+# 16 個模組平均 = 740 / 16 = 46.25 → 46
 # 前值 30（手設）。上升主因：原生新增 auto memory、/rewind 檔案 checkpoint、
 # permissions.deny／sandbox、effortLevel／fallbackModel、大幅擴增的 hook 事件表。
-aggregate_estimate_pct: 43
+aggregate_estimate_pct: 46
 
 aggregate_method: "mean(overlap_pct where in_aggregate: true)；四捨五入至整數"
+
+# 解讀警語（供下季重評與 warn/alert 判讀時參考）：
+# Interface（#1）恆為 100% —— 它就是 runtime 本身，不是可被取代的模組。它為分母貢獻
+# 一個固定的 +6.25 個百分點上偏，且不隨本 harness 的實際冗餘程度變動。
+# 排除 Interface 的參考值：640 / 15 = 43%。
+# 兩個數字都落在 40–50% 的 warn 帶，故本次的 M4 等級判定不因取捨而異；
+# 但若日後總值逼近 50% 的 alert 線，應先確認結論不是單靠這個同義反覆項推過去的。
+aggregate_excluding_interface_pct: 43
 
 # 每模組明細（編號對齊 README「三平面、十六模組」）
 modules:
@@ -37,9 +50,9 @@ modules:
   - name: "1. Interface"
     plane: control
     overlap_pct: 100
-    in_aggregate: false     # 舊表註記：屬於 runtime，不是模組 —— 計入會單方面拉高平均
+    in_aggregate: true      # README:15 的編號模組 #1，計入以與文件架構一致（PR #140 review）
     native: "Claude Code CLI / web / IDE / SDK"
-    evidence: "本來就是 runtime 本身"
+    evidence: "本來就是 runtime 本身；恆為 100%，屬同義反覆項 —— 解讀時見上方 aggregate 警語"
 
   - name: "2. Task Card (tasks/*.yaml)"
     plane: control

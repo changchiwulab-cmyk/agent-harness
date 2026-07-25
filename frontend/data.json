@@ -241,7 +241,7 @@
         "status": "ok"
       },
       {
-        "current": "43% (reviewed 2026-07-25)",
+        "current": "46% (reviewed 2026-07-25)",
         "id": "M4",
         "name": "Claude Code 原生功能重疊度（人工評估）",
         "status": "warn"

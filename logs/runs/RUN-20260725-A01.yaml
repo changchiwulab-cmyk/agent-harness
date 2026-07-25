@@ -116,7 +116,7 @@ execution_log:
     F4：舊 aggregate_estimate_pct 為手設 30，與同檔模組表算術平均 62.2%（9 模組）相差逾倍，
     註解卻稱「同量級」——M4 的輸入值不可稽核。改為可複現公式
     mean(overlap_pct where in_aggregate)，評估範圍補齊為 README 的 16 個編號模組，
-    得 640/15 = 43%。**規劃階段曾預測會越過 50% 觸發 alert 與 T-B v3 評估，實際為 warn，
+    得 740/16 = 46%（PR #140 review 後把 Interface 計回分母；初版 43%，兩值同屬 warn 帶）。**規劃階段曾預測會越過 50% 觸發 alert 與 T-B v3 評估，實際為 warn，
     預測失準已於報告首節明列**；差異來源是舊表只評 9 個高重疊模組、據此外推，補齊後
     低重疊治理模組（Decision Log 0%、Failure Taxonomy 0%、Gate Verifier 5%）拉低平均。
 

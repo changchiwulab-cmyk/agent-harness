@@ -30,7 +30,8 @@
 
 規劃階段我預測「NATIVE_OVERLAP 誠實重評後 aggregate 會越過 50%，M4 轉 alert 並觸發 T-B（v3 評估）」。
 
-**實際計算結果是 43%，落在 40–50% 的 warn 帶，未觸及 alert，不觸發 v3。[驗]**
+**實際計算結果是 46%，落在 40–50% 的 warn 帶，未觸及 alert，不觸發 v3。[驗]**
+（初版為 43%，PR #140 review 後把 Interface 計回分母，改為 46%；兩者同屬 warn 帶，判定不變。）
 
 差異來源：舊表只評了 9 個重疊度較高的模組，我據此外推；補齊為 README 定義的 16 個編號模組後，
 本 harness 獨有、重疊度極低的治理模組（Decision Log 0%、Failure Taxonomy 0%、Gate Verifier 5%、
@@ -93,9 +94,14 @@ Execution Log 10%、Audit Log 10%）進入分母，把平均拉了下來。
 `aggregate_estimate_pct: 30` 是手設值，同檔模組表的算術平均為 **62.2%**（9 模組）**[驗]**，
 註解稱兩者「同量級」——相差逾一倍。指標的輸入無法被複現，等於 M4 這條「可量化」證據本身不可稽核。
 
-**已修**：改為 `aggregate = mean(overlap_pct where in_aggregate)`，評估範圍補齊為 16 個編號模組
-（Interface 依舊表自身註記「屬 runtime 不是模組」排除於分母外），得 640/15 = **43%**，
-並以指令驗證宣告值與算術一致 **[驗]**。
+**已修**：改為 `aggregate = mean(overlap_pct where in_aggregate)`，評估範圍補齊為 README 定義的
+**全部 16 個編號模組**，得 740/16 = **46%**，並以指令驗證宣告值與算術一致 **[驗]**。
+
+> **分母的取捨（PR #140 review 修正）**：初版曾把 Interface 排除於分母外（640/15 = 43%），
+> 理由是舊表自身註記「屬 runtime 不是模組」、且其 100% 屬同義反覆。但 `README.md:15` 明確把
+> Interface 列為編號模組 #1——宣稱「涵蓋 16 個模組」卻只平均 15 個，本身就是一種宣稱≠實作，
+> 正是本卡要修的毛病。已改為 16 個全數計入；同義反覆的疑慮改以檔內警語＋
+> `aggregate_excluding_interface_pct: 43` 併陳揭露，不靠調整分母處理。兩值同屬 warn 帶。
 
 實質重評變化（非只是換算法）：
 
@@ -234,7 +240,7 @@ harness 協定（建卡／gate-check／run-log／audit／decision）全靠 promp
   guard 的 regex 仍在原位，最壞情況是回到修改前的防護水準，不會比原本更差。
 - **`autoMemoryEnabled: false` 的行為面未實測**（見待驗證）。若該 key 名稱或語意與文件不符，
   F1 的缺口實際上仍開著。**緩解**：`SECURITY.md` 已明文記錄此路徑與封閉方式，不是靜默假設。
-- **重評分數帶主觀**：16 個模組的 overlap_pct 是人工判斷。aggregate 43% 距 50% alert 線僅 7 個百分點，
+- **重評分數帶主觀**：16 個模組的 overlap_pct 是人工判斷。aggregate 46% 距 50% alert 線僅 4 個百分點，
   若某幾個模組評分偏低 5–10 個百分點即可能翻成 alert。**緩解**：本版已把計算方法寫成可複現公式，
   下一季重評時分歧點會落在個別模組而非總數，容易討論。
 
@@ -260,5 +266,5 @@ harness 協定（建卡／gate-check／run-log／audit／decision）全靠 promp
 
 1. 審核本 PR（5 項 P0 全數通過同款 CI 檢查）。
 2. 合併後開 roadmap #1（`UserPromptSubmit` hook）單獨一張卡——剩餘項目中治理增量最大。
-3. M4 現為 warn（43%），依治理文件於下次 retro 帶討論即可，**不需即刻行動**。
+3. M4 現為 warn（46%），依治理文件於下次 retro 帶討論即可，**不需即刻行動**。距 alert 線 4 個百分點，下季重評值得留意。
 4. 每週清 review 佇列 1–2 張；roadmap 其餘各項依序單卡推進。
