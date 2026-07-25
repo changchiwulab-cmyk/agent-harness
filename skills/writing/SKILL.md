@@ -13,8 +13,7 @@ description: 一人公司的撰寫產出 skill — 提案、報告、文件包�
 2. 載入相關 context（project context、參考資料）
 3. 先產出大綱，確認結構
 4. 逐段撰寫
-5. 自我檢查：邏輯、用詞、格式、完整度
-6. 輸出草稿到 outputs/drafts/
+5. 輸出草稿到 outputs/drafts/
 
 ## 寫作原則
 - 結論先行，再展開論述

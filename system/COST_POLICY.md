@@ -35,25 +35,47 @@ v1 階段採用「粗略護欄 + 事後量測」策略：
 | 工具定義（按需載入） | 省 ~85% | Tool Search 模式 |
 | 子代理 context 隔離 | 省 ~67% | vs 單一代理塞所有 context |
 | Programmatic Tool Calling | 省 ~37% | 中間結果不進 context |
-| CLAUDE.md + GLOBAL_RULES | 控制在 3K 以內 | 軟性上限；實測 baseline ~400 tokens |
-| 單一 skill prompt | 控制在 1.5K 以內 | 軟性上限；含 eval_examples，實測 baseline 200-600 tokens |
-| 常駐 system prompt 快取 | 命中省 ~90% input | prompt caching：穩定前綴（CLAUDE.md+GLOBAL_RULES+PERMISSIONS）做 cache，可變後綴（Task Card+skill）後接 |
+| CLAUDE.md + GLOBAL_RULES | 控制在 3K 以內 | 軟性上限；實測 2,130 tokens（20260725-A01 後，`check_context_budget.rb`；舊註記「~400」已過期逾 5 倍） |
+| 單一 skill prompt | 控制在 1.5K 以內 | 軟性上限；**只計執行期載入的 SKILL.md**，eval_examples 屬 eval 資產不計入（20260711-A01 口徑對齊）。實測 483–985 tokens |
+| 常駐 system prompt 快取 | 命中省 ~90% input | prompt caching：穩定前綴（CLAUDE.md+GLOBAL_RULES+PERMISSIONS）做 cache，可變後綴（Task Card+skill）後接。前綴須達最小可快取長度才會生效，見 `CONTEXT_ENGINEERING.md` §一 |
 
-## 模型路由規則（2026-05-29 起：已落地於原生子代理）
+## 模型路由規則（2026-05-29 起落地於原生子代理；20260725-A01 補 effort 維度）
 
 以 `.claude/agents/*.md` 的 per-agent `model` 欄位落地分流（context 隔離另估省 ~67%）：
 
-| 子代理 | model（alias→實際） | 對應 skill | 依據 |
-|--------|--------------------|-----------|------|
-| ops-specialist | haiku → Haiku 4.5 | ops | 分類、抽取、格式檢查 → 便宜模型 |
-| research-specialist | sonnet → Sonnet 4.6 | research | 整合分析 |
-| writing-specialist | sonnet → Sonnet 4.6 | writing | 內容產出 |
-| review-specialist | sonnet → Sonnet 4.6 | review | 品質判斷 |
-| analysis-specialist | opus → Opus 4.8 | analysis | 規劃、推理、決策 → 強模型 |
+| 子代理 | model（alias→當代層級首選） | 建議 effort | 對應 skill | 依據 |
+|--------|---------------------------|------------|-----------|------|
+| ops-specialist | haiku → Haiku 4.5 | low | ops | 分類、抽取、格式檢查 → 便宜模型 |
+| research-specialist | sonnet → Sonnet 5 | medium | research | 整合分析 |
+| writing-specialist | sonnet → Sonnet 5 | medium | writing | 內容產出 |
+| review-specialist | sonnet → Sonnet 5 | medium–high | review | 品質判斷；漏抓比多抓貴 |
+| analysis-specialist | opus → Opus 5 | high | analysis | 規劃、推理、決策 → 強模型 |
 
-- alias（haiku/sonnet/opus）會自動對映到當代各層級最新模型，無需追版本。
+- alias（haiku/sonnet/opus）會自動對映到當代各層級最新模型，無需追版本。**上表右欄只是當下的對映結果，非設定值**；不要把具體版本寫死進 `.claude/agents/*.md`。
 - 路由判斷本身改由原生 skill description 自動觸發，不再需要獨立的「路由模型」。
-- 校準資料（下方各 skill 實測平均）回填時，可據以調整對應子代理的分層（成本長期偏高 → 升一層模型）。
+- 校準資料（下方各 skill 實測平均）回填時，可據以調整對應子代理的分層（成本長期偏高 → 降 effort 或降一層模型）。
+
+### effort：成本路由的第二維（20260725-A01 新增）
+
+成本路由過去只有「選哪個模型」一維。當代模型另有 `effort`（`low` / `medium` / `high` / `xhigh` / `max`），
+控制思考深度與整體 token 花費，**且它是比換模型更細緻的槓桿**：
+
+- 同一模型降一級 effort，通常比降一層模型更能保住品質。**先調 effort，再考慮換模型。**
+- Opus 5 世代的 `low` / `medium` 表現相對前代異常強，routine 工作不需預設高 effort。
+- 反向陷阱：**effort 不是控制輸出長度的旋鈕**。要縮短產出用 prompt（見 `GLOBAL_RULES.md` 的產出篇幅段），
+  調 effort 可能只改變思考量而不改變可見輸出長度。
+- 高 effort（`xhigh` / `max`）需搭配足夠的 `max_tokens`，否則思考佔滿預算、答案被截斷。
+
+設定位置與取捨：
+
+| 方式 | 範圍 | 取捨 |
+|------|------|------|
+| `/effort` 指令 | 當前 session | 臨時調整，不入庫 |
+| `.claude/settings.json` 的 `effortLevel` | 專案全域 | **本專案刻意不設**：會蓋掉使用者的當下判斷，屬個人偏好而非治理規則 |
+| 本表「建議 effort」欄 | 契約層 | 現行做法：寫成建議值供人工與子代理參照，不強制 |
+
+> 為什麼不寫進 `settings.json`：`model` / `effortLevel` 一旦寫死，使用者在該 repo 內就失去 `/model`、
+> `/effort` 的臨場調整空間。成本路由是**建議**，不是 deny 級的硬規則，維持在文件層是正確的執法強度。
 
 ## 事後量測流程（每週）
 

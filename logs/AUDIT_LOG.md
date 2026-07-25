@@ -7,6 +7,42 @@
 
 <!-- AUTO_AUDIT_BEGIN -->
 ```yaml
+task_id: 20260725-A01
+date: '2026-07-25'
+skill_type: analysis
+goal: 以 Opus 5 世代的平台能力對照 agent-harness，產出完整檢視分析與改善 roadmap，並落地本次已驗證的 5 項 P0 修正
+status: review
+risk_level: medium
+approval_needed: true
+output_path: outputs/drafts/20260725-A01_opus5-capability-review.md
+checkpoints:
+- commit: b793d64
+  stage: 建卡並綁定 active task（C0）
+- commit: e54576d
+  stage: P0-1 原生 deny 層 + auto memory 關閉，sync 鎖擴為四方（C1）
+- commit: 016b13b
+  stage: P0-2 覆蓋邊界誠實標註（C2）
+- commit: 2d2109c
+  stage: P0-3 NATIVE_OVERLAP Opus 5 世代重評，aggregate 改為可複現計算（C3）
+- commit: 35879c8
+  stage: P0-4 成本路由補 effort 維度＋修正過期實測值（C4）
+- commit: '6309589'
+  stage: P0-5 prompt 層對齊 Opus 5（C5）
+- commit: b7160cd
+  stage: 分析報告落地 outputs/drafts/（C6）
+actual_tool_calls: 77
+result_summary: 'Opus 5 世代能力對照報告落地 outputs/drafts/（F1–F8 逐項含檔案:行號證據、四選項六維比較、 高風險假設、待驗證、8
+  項 roadmap），5 項 P0 全數落地： (1) F1 最重要發現——PERMISSIONS.yaml 宣告 auto_write_memory 為 runtime
+  執法，但 guard 只涵蓋 shell 重導向；原生 auto memory（平台預設開啟）不經 Bash，完全在防線外。已以 autoMemoryEnabled:
+  false 關閉並由測試鎖定，SECURITY.md 記錄一般化教訓。 (2) F2 settings.json 原零條 deny，新增 10 條原生規則（保守鏡射），sync
+  鎖由三方擴四方並 負向驗證非空轉。 (3) F4 M4 輸入值由手設 30（與模組表均值 62.2% 矛盾）改為可複現公式， 範圍補齊 16 模組得 46%——規劃階段預測會觸發
+  alert/v3，實際為 warn，預測失準已於報告首節明列。 (4) F5 成本路由補 effort 第二維，並修兩處文件漂移。 (5) F6/F7 prompt
+  層只移除兩處與腳本層 重複的自檢句（腳本層驗證一律未動），新增 scope 紀律／子代理上限／產出篇幅三段， 並補上快取最小前綴的世代差異數字。 gate_check
+  PASS、verification_loop terminal_state=pass、Python 17 支測試與全套 CI 同款檢查全綠。 待人工審核 PR。'
+completion_time: '2026-07-25'
+```
+
+```yaml
 task_id: 20260716-P24
 date: '2026-07-16'
 skill_type: ops

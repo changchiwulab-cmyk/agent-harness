@@ -205,6 +205,65 @@ class TestPermissionsSync(unittest.TestCase):
         self.assertTrue(set(self.enforcement.values()) <= {"runtime", "model"})
 
 
+class TestNativeDenySync(unittest.TestCase):
+    """PERMISSIONS.yaml `native_deny` ↔ .claude/settings.json `permissions.deny`.
+
+    20260725-A01 added a second, harness-external enforcement layer: deny rules
+    executed by Claude Code itself. PERMISSIONS.yaml stays the single source of
+    truth (`native_deny`), and settings.json is the derived artifact — this test
+    is what keeps the derivation honest, extending the sync lock from three
+    parties to four.
+
+    Deliberately NOT asserted: that every deny entry has a native rule. Native
+    Bash rules are prefix/glob matches, so signatures appearing mid-command
+    (webhook / payment / publishing URLs inside a curl) cannot be expressed and
+    correctly stay guard-only.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        import yaml
+
+        doc = yaml.safe_load(guard.PERMISSIONS_PATH.read_text(encoding="utf-8"))
+        cls.deny = set(doc["permissions"]["deny"])
+        cls.enforcement = dict(doc["deny_enforcement"])
+        cls.native_deny = doc["native_deny"]
+
+        settings_path = guard.ROOT / ".claude" / "settings.json"
+        cls.settings = json.loads(settings_path.read_text(encoding="utf-8"))
+
+    def test_settings_deny_equals_native_deny_flattened(self):
+        declared = [rule for rules in self.native_deny.values() for rule in rules]
+        self.assertEqual(
+            sorted(self.settings["permissions"]["deny"]),
+            sorted(declared),
+            "settings.json permissions.deny drifted from PERMISSIONS.yaml native_deny",
+        )
+
+    def test_no_duplicate_native_rules(self):
+        declared = [rule for rules in self.native_deny.values() for rule in rules]
+        self.assertEqual(len(declared), len(set(declared)))
+
+    def test_every_native_deny_key_is_a_declared_deny(self):
+        keys = set(self.native_deny)
+        self.assertTrue(keys <= self.deny,
+                        f"native_deny keys not in PERMISSIONS deny list: {keys - self.deny}")
+
+    def test_every_native_deny_key_is_runtime_enforced(self):
+        for key in self.native_deny:
+            self.assertEqual(self.enforcement.get(key), "runtime",
+                             f"{key} has native rules but is not marked runtime")
+
+    def test_auto_memory_is_disabled(self):
+        """F1: the guard only covers shell redirection into memory/.
+
+        Native auto memory is a separate write path that never goes through
+        Bash, so `auto_write_memory: runtime` is only truthful while the
+        platform feature is off.
+        """
+        self.assertIs(self.settings.get("autoMemoryEnabled"), False)
+
+
 class TestMainEntrypoint(unittest.TestCase):
     def test_block_returns_exit_2(self):
         code, payload, err = run_main(

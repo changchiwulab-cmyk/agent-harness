@@ -1,0 +1,43 @@
+# 批准紀錄 — 20260725-A01 Opus 5 世代能力對照檢視＋5 項 P0 修正
+# 批准依據：執行計畫（5 項 P0 標的、各項 ask 級變更的檔案與理由、保守鏡射原則、
+# 驗證方式）於 plan mode 明列後由使用者核准開工；prompt 層處置另經 AskUserQuestion
+# 明示選定。收案 PR 人工合併為最終批准。
+#
+# 補登事由（誠實標註）：本紀錄於 PR #140 開立後才補上。原僅寫入
+# RUN-20260725-A01.yaml 的 execution_log.approvals[]，但依 APPROVAL_POLICY.yaml:66-67，
+# 該欄位僅為「該 run」鏡像、不得當權威，logs/approvals/ 才是全任務 audit trail 的唯一權威。
+# 缺漏由 PR review（Codex P1）指出後補登，內容與 run log 鏡像一致。
+
+approval_records:
+  - approval_id: "APR-20260725-001"
+    task_id: "20260725-A01"
+    date: "2026-07-25"
+    action: "modify_settings_json（.claude/settings.json 加 autoMemoryEnabled: false，並新增 permissions.deny 10 條原生規則）"
+    approval_method: "human_confirm"
+    risk_level: "medium"
+    status: "approved"
+    rationale: "計畫明列 F1（PERMISSIONS.yaml 宣告 auto_write_memory 為 runtime 執法，但 guard 只涵蓋 shell 重導向；原生 auto memory 不經 Bash 故完全在防線外）與 F2（settings.json 原本零條 deny），並載明保守鏡射原則（只鏡射前綴比對可無歧義命中的簽章，curl 型維持 guard-only，少鏡射勝過誤擋）。使用者核准後執行。"
+    approved_by: "human"
+    linked_run: "RUN-20260725-A01"
+
+  - approval_id: "APR-20260725-002"
+    task_id: "20260725-A01"
+    date: "2026-07-25"
+    action: "modify_system_rules（PERMISSIONS.yaml 新增 native_deny 與覆蓋邊界註解；NATIVE_OVERLAP.yaml 重評；COST_POLICY.md 補 effort 維度；CONTEXT_ENGINEERING.md 補快取門檻數字並改寫自檢節；GLOBAL_RULES.md 新增三段）"
+    approval_method: "human_confirm"
+    risk_level: "medium"
+    status: "approved"
+    rationale: "計畫逐項列出五個 system/ 檔案的修改標的與理由，含「NATIVE_OVERLAP 重評可能推升 M4 等級」的已知後果揭露。使用者核准後執行。"
+    approved_by: "human"
+    linked_run: "RUN-20260725-A01"
+
+  - approval_id: "APR-20260725-003"
+    task_id: "20260725-A01"
+    date: "2026-07-25"
+    action: "modify_skills（skills/writing/SKILL.md 移除執行流程第 5 步的自我檢查句）"
+    approval_method: "human_confirm"
+    risk_level: "low"
+    status: "approved"
+    rationale: "prompt 層處置經 AskUserQuestion 明示選定「只加不刪＋移除重複自檢句」選項；界線明確：僅移除與腳本層重複的 prompt 叮嚀，gate_check／verification_loop／GATE_POLICY／CI 一律不動。"
+    approved_by: "human"
+    linked_run: "RUN-20260725-A01"

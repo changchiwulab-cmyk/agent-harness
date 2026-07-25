@@ -1,53 +1,162 @@
 # Claude Code 原生功能重疊度 — 人工 input
 #
 # plan §5.3 M4 指標的來源：每季由人工依當前 Claude Code 規範重新評估。
-# 數值來源見 outputs/drafts/2026-05-09_v3_extraction_plan.md §4.1 表 A。
 #
-# 警訊閾值（plan §5.3）：aggregate > 50% → 重構觸發點。
+# 警訊閾值（plan §5.3）：aggregate > 50% → 重構觸發點（T-B）。
+#
+# === 20260725-A01 重評：方法變更（重要）===
+# 上一版（2026-05-09）的 aggregate_estimate_pct 是**手設 baseline（30）**，與同檔模組表的
+# 算術平均（9 模組 = 62.2%）相差逾一倍，註解卻稱兩者「同量級」。兩個數字沒有可複現的關係，
+# 等於 M4 這個指標的輸入值無法被稽核 —— 這與本專案「可量化」的主張衝突。
+#
+# 本版改為**可複現的計算**：
+#   aggregate_estimate_pct = round(mean(overlap_pct of modules where in_aggregate: true))
+# 並把評估範圍從 9 個模組補齊為 README 定義的**全部 16 個編號模組**（舊表只評了重疊度較高的
+# 9 個，未評的多為本 harness 獨有、重疊度低的治理模組，導致樣本偏誤方向不明）。
+#
+# 分母＝16（PR #140 review 修正）：初版曾把 Interface 排除於分母外（理由：舊表自身註記
+# 「屬於 runtime，不是模組」，且其 100% 屬同義反覆——Interface 就是原生本身，恆為 100%，
+# 對「本 harness 有多少已被原生取代」不提供資訊）。但 README:15 明確把 Interface 列為
+# 編號模組 #1，宣稱「涵蓋 16 個模組」卻只平均 15 個，本身就是一種宣稱≠實作。
+# 現改為與文件架構一致：**16 個全數計入**。同義反覆的疑慮改以下方 note 揭露，不靠調整分母處理。
+#
+# 重評依據：Claude Code hooks 事件表與 settings.json key 清單（2026-07 現況官方文件）、
+# 本 repo 實測（.claude/settings.json、scripts/*.py、skills/、tasks/）。
 
-reviewed_on: "2026-05-09"
+reviewed_on: "2026-07-25"
 reviewer: "agent-harness owner"
 revisit_trigger: "每季度；或 Claude Code 主版本升級時"
 stale_after_days: 90    # 超過此天數視為過期；手動檢查：`python3 scripts/check_native_overlap_freshness.py`
 revisit_interval_days: 90   # R9：把「每季度」量化；governance_metrics.py M4 據此偵測 reviewed_on 是否過季
 
-aggregate_estimate_pct: 30   # plan §Context 的 baseline；A01 §4.1 表 A 9 模組逐項評估後仍與此 baseline 同量級
+# 16 個模組平均 = 740 / 16 = 46.25 → 46
+# 前值 30（手設）。上升主因：原生新增 auto memory、/rewind 檔案 checkpoint、
+# permissions.deny／sandbox、effortLevel／fallbackModel、大幅擴增的 hook 事件表。
+aggregate_estimate_pct: 46
 
-# 每模組明細（A01 §4.1 表 A）
+aggregate_method: "mean(overlap_pct where in_aggregate: true)；四捨五入至整數"
+
+# 解讀警語（供下季重評與 warn/alert 判讀時參考）：
+# Interface（#1）恆為 100% —— 它就是 runtime 本身，不是可被取代的模組。它為分母貢獻
+# 一個固定的 +6.25 個百分點上偏，且不隨本 harness 的實際冗餘程度變動。
+# 排除 Interface 的參考值：640 / 15 = 43%。
+# 兩個數字都落在 40–50% 的 warn 帶，故本次的 M4 等級判定不因取捨而異；
+# 但若日後總值逼近 50% 的 alert 線，應先確認結論不是單靠這個同義反覆項推過去的。
+aggregate_excluding_interface_pct: 43
+
+# 每模組明細（編號對齊 README「三平面、十六模組」）
 modules:
-  - name: "Skill Executor (skills/)"
-    overlap_pct: 85
-    native: "Claude Code Skills（/skill、自動載入）"
-    evidence: "本 session Skill tool + skills 列表自動列出；N3 PoC 起步，2026-07-02（20260702-R03）已補完 5/5 skill 的 frontmatter + .claude/skills/ symlink 註冊"
-  - name: "Planner/Router (ROUTING_RULES.md)"
-    overlap_pct: 70
-    native: "Skill 自動路由 + 子代理"
-    evidence: "原生會根據 skill description 觸發；表格式手動路由屬冗餘"
-  - name: "Tool Executor (allowed_tools)"
-    overlap_pct: 80
-    native: ".claude/settings.json permissions + PreToolUse"
-    evidence: "Phase A 已有 permissions_guard.py 把 deny 抬到 runtime"
-  - name: "Permission (PERMISSIONS.yaml)"
+  # --- 控制平面 ---
+  - name: "1. Interface"
+    plane: control
+    overlap_pct: 100
+    in_aggregate: true      # README:15 的編號模組 #1，計入以與文件架構一致（PR #140 review）
+    native: "Claude Code CLI / web / IDE / SDK"
+    evidence: "本來就是 runtime 本身；恆為 100%，屬同義反覆項 —— 解讀時見上方 aggregate 警語"
+
+  - name: "2. Task Card (tasks/*.yaml)"
+    plane: control
+    overlap_pct: 20
+    native: "TaskCreate / TaskUpdate / TaskList 工具＋TaskCreated / TaskCompleted hooks"
+    evidence: "原生任務追蹤是 session 內的待辦清單：無 definition_of_done 契約、無 schema 驗證、無 allowed_tools 白名單、不入庫不可稽核。本 harness 的 Task Card 是版控的驗收契約，重疊僅在「有一份任務清單」這層"
+
+  - name: "3. Planner/Router (ROUTING_RULES.md)"
+    plane: control
     overlap_pct: 75
-    native: "settings.json（allow/ask/deny）"
-    evidence: "兩者語意幾乎 1:1，僅缺風險等級欄位"
-  - name: "Agent Context (AGENT_CONTEXT.yaml)"
-    overlap_pct: 60
-    native: "CLAUDE.md / 系統 prompt"
-    evidence: "內容 ≈ 自我描述段落，與 CLAUDE.md 互相重複"
-  - name: "Context Manager (CLAUDE.md 規則段)"
-    overlap_pct: 50
-    native: "CLAUDE.md 自動載入、自動壓縮"
-    evidence: "「20 輪壓縮」原生已具；token 上限規則仍需 CI 護欄"
-  - name: "Checkpoint (git commit)"
+    native: "Skill description 自動路由 + 子代理（.claude/agents/）"
+    evidence: "2026-05-29 起 5 個 skill 已具 frontmatter 並在 .claude/skills/ 註冊，原生自動載入；ROUTING_RULES.md:3 已自行降級為「契約文件與後援」。殘餘為原生不處理的「複合任務拆分」規則"
+
+  - name: "4. Decision Log"
+    plane: control
     overlap_pct: 0
     native: "—"
-    evidence: "本來就是 git 慣例"
-  - name: "Cost Policy (行為規則段)"
-    overlap_pct: 40
-    native: "平台 dashboard + 模型路由"
-    evidence: "校準資料表是真資產；其餘段落多為提醒"
-  - name: "Interface"
-    overlap_pct: 100
-    native: "Claude Code CLI / web / IDE"
-    evidence: "屬於 runtime，不是模組"
+    evidence: "無原生對應。決策紀錄（選項／理由／revisit 觸發）是本 harness 獨有的治理資產"
+
+  # --- 執行平面 ---
+  - name: "5. Context Manager (CLAUDE.md 規則段)"
+    plane: execution
+    overlap_pct: 65
+    native: "CLAUDE.md 自動載入、autoCompactEnabled 自動壓縮、PreCompact/PostCompact hooks、claudeMdExcludes、InstructionsLoaded hook"
+    evidence: "壓縮與載入已全原生（CONTEXT_ENGINEERING.md 已明文不重造）。殘餘為原生不提供的專案級 token 硬上限 CI 護欄（check_context_budget.rb）與組裝順序紀律"
+
+  - name: "6. Skill Executor (skills/)"
+    plane: execution
+    overlap_pct: 85
+    native: "Claude Code Skills（frontmatter 自動載入、/skill、plugin skills、disableBundledSkills）"
+    evidence: "機制面全原生；殘餘 15% 是各 SKILL.md 的輸出規範與 eval_examples 內容資產，那是本專案的內容而非機制"
+
+  - name: "7. Tool Executor (allowed_tools 白名單)"
+    plane: execution
+    overlap_pct: 80
+    native: ".claude/settings.json permissions（allow/ask/deny）+ PreToolUse hook + defaultMode"
+    evidence: "工具層攔阻已全原生。殘餘為原生無法表達的維度：allowed_tools 是**逐張 Task Card**的動態白名單（allowed_tools_guard.py），原生規則是專案級靜態規則"
+
+  - name: "8. Gate Verifier (GATE_POLICY.yaml + gate_check.py)"
+    plane: execution
+    overlap_pct: 5
+    native: "PostToolUse / Stop hook 提供可執行檢查的掛點"
+    evidence: "原生只給「掛點」，四層驗證 checklist（schema→規則→完成→風險）與 rollback 路徑無任何原生對應"
+
+  - name: "9. Checkpoint (git commit)"
+    plane: execution
+    overlap_pct: 30
+    native: "/rewind 檔案 checkpointing（fileCheckpointingEnabled，預設 true）"
+    evidence: "20260509 舊表記 0%，已過期 —— 原生現有 checkpoint/復原機制。但 /rewind 是 session 內、暫存、不可推送、不可稽核；本 harness 的 git checkpoint 是稽核軌跡且被 generate_audit_log.py 消費。重疊在「還原進度」，不在「留下可稽核紀錄」"
+
+  # --- 治理平面 ---
+  - name: "10. Agent Context (AGENT_CONTEXT.yaml)"
+    plane: governance
+    overlap_pct: 70
+    native: "CLAUDE.md / .claude/rules/*.md / 系統 prompt / 受管 claudeMd"
+    evidence: "自我描述段落與 CLAUDE.md 高度重複；殘餘為 refuse_when / escalate_when 的結構化邊界宣告"
+
+  - name: "11. Permission (PERMISSIONS.yaml)"
+    plane: governance
+    overlap_pct: 85
+    native: "settings.json permissions（allow/ask/**deny**）、defaultMode、sandbox、additionalDirectories、allowManagedPermissionRulesOnly"
+    evidence: "20260725-A01 起 deny 亦已鏡射進原生（native_deny → settings.json permissions.deny），語意重疊再升。殘餘為四級 risk_level 分類與 approval_type 對照，原生無此維度"
+
+  - name: "12. Approval Policy (APPROVAL_POLICY.yaml)"
+    plane: governance
+    overlap_pct: 45
+    native: "ask 規則、PermissionRequest hook（含 addPermissionRule）、askUserQuestionTimeout、權限模式"
+    evidence: "「要不要問人」已原生；「問幾次後停下」（同任務 3 次批准請求即暫停）與 draft_first 流程無原生對應，且目前仍是 prompt-only"
+
+  - name: "13. Cost Policy (COST_POLICY.md)"
+    plane: governance
+    overlap_pct: 60
+    native: "settings.json model / effortLevel / availableModels / fallbackModel / enforceAvailableModels、子代理 frontmatter model 欄、平台用量儀表板"
+    evidence: "模型與 effort 路由已可由設定表達（舊表 40% 未含 effortLevel 這個維度）。殘餘為 token 校準資料表與任務級預算，那是實測資產不是機制"
+
+  - name: "14. Failure Taxonomy (FAILURE_TAXONOMY.yaml + failure_counter.py)"
+    plane: governance
+    overlap_pct: 0
+    native: "—"
+    evidence: "17 種失敗模式分類學與「連續失敗 3 次熔斷」無任何原生對應"
+
+  - name: "15. Execution Log (EXECUTION_LOG_SCHEMA.yaml + logs/runs/)"
+    plane: governance
+    overlap_pct: 10
+    native: "~/.claude/projects 的 session transcript、OTEL 遙測（CLAUDE_CODE_ENABLE_TELEMETRY）"
+    evidence: "原生留的是 raw transcript 與指標，不是結構化、schema 驗證、入庫版控的執行紀錄"
+
+  - name: "16. Audit Log (logs/AUDIT_LOG.md)"
+    plane: governance
+    overlap_pct: 10
+    native: "同上；session 紀錄可事後檢視"
+    evidence: "原生無「由 Task Card + checkpoint commit 自動衍生的稽核帳」概念（generate_audit_log.py）"
+
+# === 有原生能力、但本 harness 尚未採用（不是重疊，是採用缺口）===
+# 這些不計入 aggregate —— 分母衡量的是「既有模組被原生取代的程度」，
+# 未採用的原生能力屬 roadmap，混入會扭曲指標語意。
+unadopted_native:
+  - capability: "UserPromptSubmit hook（可 block、可注入 additionalContext）"
+    gap: "硬規則 1「沒有 Task Card 不執行」目前只在寫入 outputs/reports/ 時擋（task_card_guard.py）；此事件是把它前移到輸入當下的正確位置，也是 check_untrusted_content.py 輸入側的自然掛點"
+  - capability: "SubagentStart / SubagentStop hooks（後者可 block）"
+    gap: "5 個 specialist 子代理不受 Stop hook 三支檢查覆蓋（sync_derived.sh / session_stop_checks.py / 注入掃描只在主 session Stop 跑）"
+  - capability: ".claude/commands/ 原生 slash command"
+    gap: "harness 協定（建卡／gate-check／run-log／audit／decision）全靠 prompt 記憶；outputs/drafts/agent-governance-bootstrap/commands/ 已有 5 個現成草稿"
+  - capability: "sandbox / defaultMode"
+    gap: "對應 SECURITY.md 防線分層的第 0 層空缺"
+  - capability: "plugins / marketplace"
+    gap: "D007 的 plugin 抽出路徑（agent-governance-bootstrap 草稿樹）尚未建外部 repo"
