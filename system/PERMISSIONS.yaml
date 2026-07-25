@@ -40,6 +40,10 @@ permissions:
 # model   = 無可靠 shell 簽名，靠模型自律 + 人工審核把關
 # 三方同步（本清單 ↔ 本區段 ↔ guard DENY_RULES）由 scripts/test_permissions_guard.py
 # 的 sync 測試在 CI 保證。
+#
+# 覆蓋邊界（20260725-A01，誠實標註）：runtime 指的是「該條 deny 有一組 shell 簽章
+# 會被 guard 攔下」，不等於「該行為的所有路徑都被攔下」。逐條的殘餘面見 SECURITY.md
+# §「已知且接受的繞過面」；auto_write_memory 的邊界特別大，見下方註解。
 deny_enforcement:
   shell_delete: runtime
   send_email: runtime
@@ -47,9 +51,39 @@ deny_enforcement:
   publish_content: runtime
   modify_production_data: model
   execute_payment: runtime
+  # guard 規則只涵蓋「shell 重導向／tee／cp/mv 寫進 memory/」這條路徑。
+  # Claude Code 原生 auto memory（settings key autoMemoryEnabled，平台預設 true）
+  # 不經 Bash，guard 攔不到，settings.json 的 ask(memory/**) 也涵蓋不到原生機制
+  # 自己的儲存路徑 —— 該路徑改由 .claude/settings.json 的 autoMemoryEnabled: false 關閉。
   auto_write_memory: runtime
   spawn_background_process: runtime
   git_force_push: runtime
+
+# === 原生 permissions.deny 鏡射（20260725-A01）===
+# guard 之外再加一層：由 Claude Code 自己執行的 .claude/settings.json permissions.deny。
+# 這一層不取代 guard（regex 對 URL 型簽章更準），也不取代 SECURITY.md 的 L0 sandbox，
+# 是在 guard 前面補一道「harness 之外」的硬牆。
+#
+# 只鏡射「前綴比對就能無歧義命中」的簽章 —— 原生 Bash 規則是前綴/glob 比對，
+# 對 curl 這種簽章出現在指令中段的情況不適用，那些維持 guard-only。
+# 本區段是 .claude/settings.json permissions.deny 的唯一事實來源；四方同步
+#（deny 清單 ↔ deny_enforcement ↔ guard DENY_RULES ↔ settings.json）由
+# scripts/test_permissions_guard.py 的 sync 測試在 CI 保證。
+native_deny:
+  shell_delete:
+    - "Bash(rm -rf *)"
+    - "Bash(rm -fr *)"
+    - "Bash(rmdir *)"
+    - "Bash(shred *)"
+  git_force_push:
+    - "Bash(git push --force *)"
+    - "Bash(git push -f *)"
+  spawn_background_process:
+    - "Bash(nohup *)"
+    - "Bash(setsid *)"
+  send_email:
+    - "Bash(sendmail *)"
+    - "Bash(mailx *)"
 
 # === 風險等級對應 ===
 risk_levels:
