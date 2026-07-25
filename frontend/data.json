@@ -209,60 +209,75 @@
       "started_at": "2026-07-17 04:05",
       "status": "completed",
       "task_id": "20260716-P13"
+    },
+    {
+      "ended_at": "2026-07-25 07:10",
+      "gate_results": {
+        "completion_check": "pass",
+        "risk_check": "n/a",
+        "rule_check": "pass",
+        "schema_check": "pass"
+      },
+      "path": "logs/runs/RUN-20260725-A01.yaml",
+      "run_id": "RUN-20260725-A01",
+      "skill_type": "analysis",
+      "started_at": "2026-07-25 05:20",
+      "status": "completed",
+      "task_id": "20260725-A01"
     }
   ],
   "overview": {
     "alerts": [
       {
-        "current": "76/9 = 8.44",
+        "current": "77/9 = 8.56",
         "id": "M2",
         "name": "outputs/drafts:reports 比例",
         "status": "ok"
       },
       {
-        "current": "81/81 = 100.0%",
+        "current": "82/82 = 100.0%",
         "id": "M3",
         "name": "audit log 覆蓋率（status ∈ {review, done, failed, partial}）",
         "status": "ok"
       },
       {
-        "current": "30% (reviewed 2026-05-09)",
+        "current": "43% (reviewed 2026-07-25)",
         "id": "M4",
         "name": "Claude Code 原生功能重疊度（人工評估）",
-        "status": "ok"
+        "status": "warn"
       }
     ],
     "gate_results": {
       "completion_check": {
         "not_run": 1,
-        "pass": 7
+        "pass": 8
       },
       "risk_check": {
-        "n/a": 6,
+        "n/a": 7,
         "not_run": 1,
         "pass": 1
       },
       "rule_check": {
         "not_run": 1,
-        "pass": 7
+        "pass": 8
       },
       "schema_check": {
         "fail": 1,
-        "pass": 7
+        "pass": 8
       }
     },
     "run_status": {
-      "completed": 7,
+      "completed": 8,
       "failed": 1
     },
-    "run_total": 8,
+    "run_total": 9,
     "task_risk": {
       "high": 2,
       "low": 57,
-      "medium": 39
+      "medium": 40
     },
     "task_skill": {
-      "analysis": 10,
+      "analysis": 11,
       "ops": 64,
       "research": 9,
       "review": 8,
@@ -272,9 +287,9 @@
       "done": 77,
       "in_progress": 4,
       "pending": 13,
-      "review": 4
+      "review": 5
     },
-    "task_total": 98
+    "task_total": 99
   },
   "tasks": [
     {
@@ -1256,6 +1271,16 @@
       "skill_type": "ops",
       "status": "pending",
       "task_id": "20260716-P24"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-25",
+      "goal": "以 Opus 5 世代的平台能力對照 agent-harness，產出完整檢視分析與改善 roadmap，並落地本次已驗證的 5 項 P0 修正",
+      "path": "tasks/2026-07-25_opus5-capability-review.yaml",
+      "risk_level": "medium",
+      "skill_type": "analysis",
+      "status": "review",
+      "task_id": "20260725-A01"
     }
   ]
 }

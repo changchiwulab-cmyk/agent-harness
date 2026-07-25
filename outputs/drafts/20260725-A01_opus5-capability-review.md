@@ -160,7 +160,7 @@ harness 協定（建卡／gate-check／run-log／audit／decision）全靠 promp
 
 ## 三、選項六維比較
 
-### 選項 A：不做
+### 選項 A：不做（維持現狀）
 
 | 維度 | 評估 |
 |------|------|
@@ -245,6 +245,12 @@ harness 協定（建卡／gate-check／run-log／audit／decision）全靠 promp
   建議下次 session 啟動時觀察是否仍出現自動記憶提示。
 - **原生 10 條 deny 規則未做實際觸發測試**——未實跑 `rm -rf` 等指令確認被原生層擋下
   （會與 guard 的攔阻混淆，且屬破壞性指令）。目前只驗證了規則已寫入且與來源同步 **[驗]**。
+- **本卡意外產生的 P1-4 佐證資料點 [驗]**：把本報告丟給 `run_evals.py` 評分時，
+  `includes_no_op_option` 判為 fail（score 0.8）。原因不是報告缺「不做」選項，而是該 rubric 用
+  **字面子字串比對**找「維持現狀」四個字，而本報告原本寫「選項 A：不做」——語意相同、字面不同。
+  已改為「不做（維持現狀）」使其通過，但這正是 P1-4「rule judge 只保證結構層、需升到語意層」的
+  實例證據：**rule judge 會對同義改寫產生偽陰性**。建議 P1-4 執行時把本例納入 LLM judge 的校準集。
+
 - **`permissions_guard.py` 的一處潛在不一致（本次未修）**：`git_force_push` 規則的
   `permission_key` 是 `modify_production_data` 而非 `git_force_push`（`scripts/permissions_guard.py:110-111`）**[驗]**。
   目前兩者都在 deny 清單中故運作正常，但若日後移除 `modify_production_data`，force-push 攔阻會

@@ -1,0 +1,138 @@
+# Execution Log — Opus 5 世代能力對照檢視＋5 項 P0 修正（20260725-A01）
+# 觸發條件符合 EXECUTION_LOG_SCHEMA 使用範圍：checkpoints ≥ 3、risk_level = medium
+
+execution_log:
+  run_id: "RUN-20260725-A01"
+  task_id: "20260725-A01"
+  skill_type: "analysis"
+  started_at: "2026-07-25 05:20"
+  ended_at: "2026-07-25 07:10"
+  status: "completed"
+
+  tools_used:
+    - tool: file_read
+      call_count: 14
+    - tool: file_search
+      call_count: 8
+    - tool: bash
+      call_count: 22
+    - tool: run_tests
+      call_count: 8
+    - tool: file_write
+      call_count: 3
+    - tool: modify_settings_json
+      call_count: 1
+    - tool: modify_system_rules
+      call_count: 8
+    - tool: modify_skills
+      call_count: 1
+    - tool: write_drafts
+      call_count: 3
+    - tool: create_task_card
+      call_count: 1
+    - tool: write_logs
+      call_count: 1
+    - tool: git_commit_checkpoint
+      call_count: 7
+
+  checkpoints:
+    - commit: "b793d64"
+      stage: "建卡並綁定 active task（C0）"
+    - commit: "e54576d"
+      stage: "P0-1 原生 deny 層 + auto memory 關閉，sync 鎖擴為四方（C1）"
+    - commit: "016b13b"
+      stage: "P0-2 覆蓋邊界誠實標註（C2）"
+    - commit: "2d2109c"
+      stage: "P0-3 NATIVE_OVERLAP Opus 5 世代重評，aggregate 改為可複現計算（C3）"
+    - commit: "35879c8"
+      stage: "P0-4 成本路由補 effort 維度＋修正過期實測值（C4）"
+    - commit: "6309589"
+      stage: "P0-5 prompt 層對齊 Opus 5（C5）"
+    - commit: "b7160cd"
+      stage: "分析報告落地 outputs/drafts/（C6）"
+
+  token_estimate:
+    input: 240000
+    output: 34000
+    total: 274000
+    source: "rule_estimated"
+
+  approvals:
+    - action: "modify_settings_json（autoMemoryEnabled: false + permissions.deny 10 條）"
+      status: "approved"
+      approved_by: "human"
+      timestamp: "2026-07-25"
+      note: "使用者於 plan mode 核准執行計畫（明列 settings.json ask 級變更與保守鏡射原則）；status 停在 review，PR 人工合併為最終批准"
+    - action: "modify_system_rules（PERMISSIONS / NATIVE_OVERLAP / COST_POLICY / CONTEXT_ENGINEERING / GLOBAL_RULES）"
+      status: "approved"
+      approved_by: "human"
+      timestamp: "2026-07-25"
+      note: "plan mode 核准；prompt 層處置另經 AskUserQuestion 明示選定「只加不刪 + 移除重複自檢句」"
+    - action: "modify_skills（skills/writing/SKILL.md 移除重複自檢句）"
+      status: "approved"
+      approved_by: "human"
+      timestamp: "2026-07-25"
+      note: "同上，AskUserQuestion 選項一"
+
+  output_path: "outputs/drafts/20260725-A01_opus5-capability-review.md"
+  error_summary: ""
+
+  gate_results:
+    schema_check: "pass"
+    rule_check: "pass"
+    completion_check: "pass"
+    risk_check: "n/a"
+
+  verification_loop:
+    max_iterations: 3
+    iterations:
+      - iteration: 1
+        schema_check: "pass"
+        rule_check: "pass"
+        completion_check: "pass"
+        risk_check: "n/a"
+        outcome: "pass"
+        note: "DoD 7 條逐條核對均通過；產出落 outputs/drafts/（risk_level=medium 未達 high，risk gate 不適用）。無需迭代。"
+    terminal_state: "pass"
+
+  notes: >-
+    範圍：使用者要求「依 Opus 5 最新能力完整檢視專案」。經 AskUserQuestion 明示選定
+    「報告＋P0 修正」與 prompt 層「只加不刪＋移除重複自檢句」兩項，F3／F8 等需寫程式與
+    演練者只寫進 roadmap 不開卡（既有 21 張未結卡，人工審核是瓶頸）。
+
+    最重要發現 F1：PERMISSIONS.yaml 宣告 auto_write_memory 由 runtime 執法，但
+    permissions_guard.py:135-146 只比對 shell 重導向進 memory/；原生 auto memory
+    （autoMemoryEnabled，平台預設 true）不經 Bash，guard 與 ask(memory/**) 都攔不到。
+    屬「硬規則寫了、runtime 沒守住」，與本專案唯一賣點（宣稱＝實作）直接衝突。
+    已以 autoMemoryEnabled: false 關閉並由測試鎖定；SECURITY.md 新增
+    §「非 shell 路徑的繞過面」記錄一般化教訓：runtime 語意是「有一組 shell 簽章會被攔」，
+    不等於「該行為所有路徑都被攔」。
+
+    F2：settings.json 原本零條 deny，新增 10 條原生規則作為 harness 之外的一層。
+    保守原則：只鏡射前綴比對可無歧義命中的簽章，curl 型維持 guard-only（少鏡射勝過誤擋）。
+    PERMISSIONS.yaml 的 native_deny 為唯一事實來源，sync 鎖由三方擴為四方，
+    並負向驗證斷言非空轉（移除任一條或缺 autoMemoryEnabled 皆翻紅）。
+
+    F4：舊 aggregate_estimate_pct 為手設 30，與同檔模組表算術平均 62.2%（9 模組）相差逾倍，
+    註解卻稱「同量級」——M4 的輸入值不可稽核。改為可複現公式
+    mean(overlap_pct where in_aggregate)，評估範圍補齊為 README 的 16 個編號模組，
+    得 640/15 = 43%。**規劃階段曾預測會越過 50% 觸發 alert 與 T-B v3 評估，實際為 warn，
+    預測失準已於報告首節明列**；差異來源是舊表只評 9 個高重疊模組、據此外推，補齊後
+    低重疊治理模組（Decision Log 0%、Failure Taxonomy 0%、Gate Verifier 5%）拉低平均。
+
+    F6 界線：移除的只有 prompt 層與腳本層重複的自檢叮嚀兩處（writing SKILL.md 第 5 步、
+    CONTEXT_ENGINEERING 自檢清單）；gate_check／verification_loop／GATE_POLICY／CI
+    一律未動——那是稽核控制不是模型自檢。GLOBAL_RULES 新增三段皆為淨增。
+
+    意外副產物：本報告丟給 run_evals.py 評分時 includes_no_op_option 判 fail（0.8），
+    原因是 rubric 用字面子字串找「維持現狀」而報告原寫「不做」——語意同、字面異。
+    已對齊措辭（改後 1.0 pass），並將此例記入報告「待驗證」作為 P1-4（rule judge 升
+    LLM judge）的實證資料點：rule judge 會對同義改寫產生偽陰性。
+
+    未驗證項已誠實記入報告「待驗證」：autoMemoryEnabled 的行為面未實測（僅驗證設定值
+    寫入且被測試鎖定）、10 條原生 deny 未實跑觸發測試、permissions_guard.py:110-111
+    的 git_force_push/modify_production_data key 不一致屬既有小瑕疵未納入本卡範圍。
+
+    回歸：Python 13 支單元＋4 支 e2e 全綠、check_spec_consistency、check_context_budget
+    （穩定前綴 1,620→2,130 tokens，3,000 上限內且遠高於 512 快取門檻）、
+    test_check_context_budget、run_evals 校準、YAML 全解析、sync_derived --check。
