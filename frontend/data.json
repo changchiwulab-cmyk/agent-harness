@@ -209,18 +209,33 @@
       "started_at": "2026-07-17 04:05",
       "status": "completed",
       "task_id": "20260716-P13"
+    },
+    {
+      "ended_at": "2026-07-19 04:20",
+      "gate_results": {
+        "completion_check": "pass",
+        "risk_check": "n/a",
+        "rule_check": "pass",
+        "schema_check": "pass"
+      },
+      "path": "logs/runs/RUN-20260719-001.yaml",
+      "run_id": "RUN-20260719-001",
+      "skill_type": "ops",
+      "started_at": "2026-07-19 03:10",
+      "status": "completed",
+      "task_id": "20260716-P14"
     }
   ],
   "overview": {
     "alerts": [
       {
-        "current": "76/9 = 8.44",
+        "current": "77/9 = 8.56",
         "id": "M2",
         "name": "outputs/drafts:reports 比例",
         "status": "ok"
       },
       {
-        "current": "81/81 = 100.0%",
+        "current": "83/83 = 100.0%",
         "id": "M3",
         "name": "audit log 覆蓋率（status ∈ {review, done, failed, partial}）",
         "status": "ok"
@@ -235,46 +250,46 @@
     "gate_results": {
       "completion_check": {
         "not_run": 1,
-        "pass": 7
+        "pass": 8
       },
       "risk_check": {
-        "n/a": 6,
+        "n/a": 7,
         "not_run": 1,
         "pass": 1
       },
       "rule_check": {
         "not_run": 1,
-        "pass": 7
+        "pass": 8
       },
       "schema_check": {
         "fail": 1,
-        "pass": 7
+        "pass": 8
       }
     },
     "run_status": {
-      "completed": 7,
+      "completed": 8,
       "failed": 1
     },
-    "run_total": 8,
+    "run_total": 9,
     "task_risk": {
       "high": 2,
-      "low": 57,
+      "low": 58,
       "medium": 39
     },
     "task_skill": {
       "analysis": 10,
-      "ops": 64,
+      "ops": 65,
       "research": 9,
       "review": 8,
       "writing": 7
     },
     "task_status": {
-      "done": 77,
+      "done": 82,
       "in_progress": 4,
-      "pending": 13,
-      "review": 4
+      "pending": 12,
+      "review": 1
     },
-    "task_total": 98
+    "task_total": 99
   },
   "tasks": [
     {
@@ -1164,7 +1179,7 @@
       "path": "tasks/2026-07-12_p1-1-allowed-tools-runtime-enforcement.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "review",
+      "status": "done",
       "task_id": "20260712-P11"
     },
     {
@@ -1174,7 +1189,7 @@
       "path": "tasks/2026-07-16_p1-2-failure-counter-auto-record.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "review",
+      "status": "done",
       "task_id": "20260716-P12"
     },
     {
@@ -1184,7 +1199,7 @@
       "path": "tasks/2026-07-16_p1-3-injection-detection-hook.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "review",
+      "status": "done",
       "task_id": "20260716-P13"
     },
     {
@@ -1194,7 +1209,7 @@
       "path": "tasks/2026-07-16_p1-4-evals-expansion-llm-judge.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "pending",
+      "status": "done",
       "task_id": "20260716-P14"
     },
     {
@@ -1256,6 +1271,16 @@
       "skill_type": "ops",
       "status": "pending",
       "task_id": "20260716-P24"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-07-19",
+      "goal": "把 3 張已完成、卡在 review 的 P1 卡（20260712-P11 / 20260716-P12 / 20260716-P13）收斂為 done——三者 PR（#134/#137/#138）皆已合併、result_summary 皆 DoD 5/5，純缺人工翻 done；並補齊 20260712-P11 缺漏的 approval 紀錄與 completion_time",
+      "path": "tasks/2026-07-19_close-p1-review-cards.yaml",
+      "risk_level": "low",
+      "skill_type": "ops",
+      "status": "done",
+      "task_id": "20260719-O01"
     }
   ]
 }

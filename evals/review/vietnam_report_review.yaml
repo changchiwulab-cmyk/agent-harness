@@ -1,0 +1,66 @@
+# Eval case — review skill. Rubric mirrors skills/review/eval_examples.md
+# 判斷標準 (通過項/必須修改/建議修改分級/DoD 逐條比對). gold PASSES, bad FAILS.
+case_id: review-vietnam-report
+skill: review
+prompt: "審查一份「越南 AI 工具調查報告」"
+definition_of_done:
+  - "問題定位到段落/句子（具體）"
+  - "區分必須修改 vs 建議修改"
+  - "逐條比對 definition_of_done（通過/未通過）"
+  - "有通過項也有問題項（平衡）"
+
+rubric:
+  - id: has_pass_items
+    kind: section_nonempty
+    args: {heading: "通過項"}
+  - id: has_must_fix
+    kind: section_nonempty
+    args: {heading: "必須修改"}
+  - id: has_suggest_fix
+    kind: section_nonempty
+    args: {heading: "建議修改"}
+  - id: dod_checklist
+    kind: contains_any
+    args: {needles: ["Definition of Done", "逐條確認"]}
+
+gold_example: |
+  # 審查報告：vietnam-ai-tools-research.md
+
+  ## 總體評估
+  有條件通過 — 結構完整、結論有依據，但有 2 處事實待確認。
+
+  ## 通過項
+  - 四區塊分類清楚（已知事實 / 合理推論 / 待驗證 / 高風險假設）
+  - 結論先行，第一段即摘要
+  - 來源標示完整（5 個來源，含日期）
+
+  ## 必須修改
+  - 【已知事實第 3 點】「越南 AI 市場規模達 US$2B」— 來源為 2024 年報告，
+    2026 年數據可能已變動。建議：標記為 [待驗證] 或補上 2026 年來源。
+  - 【合理推論第 1 點】「本地工具將在 2 年內取代國際工具」— 推論跳躍過大，
+    缺乏中間論證。建議：補上支持此推論的具體趨勢數據，或降級為高風險假設。
+
+  ## 建議修改
+  - 【結論段】可加入一句話說明調查的限制（如：僅涵蓋胡志明市企業）
+  - 【來源區】建議統一格式為「作者, 標題, 日期, URL」
+
+  ## Definition of Done 逐條確認
+  - [x] 涵蓋至少 5 個工具的市場數據 — 通過（列出 6 個）
+  - [x] 包含本地 vs 國際工具比較 — 通過（第三節有比較表）
+  - [x] 所有事實標明來源 — 通過
+  - [ ] 推論與假設明確標記 — 部分通過（第 1 點推論過強，見必須修改）
+  - [x] Markdown 格式 — 通過
+
+bad_example: |
+  # 審查報告
+
+  ## 評估
+  整體寫得不錯，內容豐富，結構清晰。建議可以再加強一些細節。
+
+  ## 問題
+  - 有些地方可以更具體
+  - 來源可以更多
+  - 格式可以再調整
+
+  ## 結論
+  通過。

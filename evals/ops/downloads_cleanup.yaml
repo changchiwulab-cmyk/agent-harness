@@ -1,0 +1,66 @@
+# Eval case — ops skill. Rubric mirrors skills/ops/eval_examples.md
+# 判斷標準 (計畫先行/盤點/Dry-run/排除系統檔/等待確認). gold PASSES, bad FAILS.
+case_id: ops-downloads-cleanup
+skill: ops
+prompt: "整理 Downloads 資料夾，依檔案類型分類"
+definition_of_done:
+  - "計畫先行：先列操作計畫，等確認後才執行"
+  - "操作前盤點現狀（數量、類型）"
+  - "Dry-run 表格呈現搬移動作"
+  - "明確排除系統隱藏檔（.DS_Store 等）"
+  - "等待確認才執行"
+
+rubric:
+  - id: plan_first
+    kind: section_first
+    args: {heading: "操作目標"}
+  - id: has_inventory
+    kind: section_nonempty
+    args: {heading: "現狀盤點"}
+  - id: has_dry_run
+    kind: contains_any
+    args: {needles: ["Dry-run", "操作計畫"]}
+  - id: excludes_system_files
+    kind: contains_any
+    args: {needles: [".DS_Store"]}
+  - id: waits_confirmation
+    kind: contains_any
+    args: {needles: ["等待確認", "確認後才執行"]}
+
+gold_example: |
+  # 檔案整理計畫 — Downloads 資料夾
+
+  ## 操作目標
+  將 ~/Downloads/ 下的檔案依副檔名分類到子資料夾。
+
+  ## 現狀盤點
+  - 總檔案數：47 個
+  - 圖片（.jpg/.png/.gif）：18 個
+  - 文件（.pdf/.docx/.xlsx）：14 個
+  - 壓縮檔（.zip/.rar）：8 個
+  - 其他：7 個
+
+  ## 操作計畫（Dry-run）
+  | 動作 | 來源 | 目的地 | 數量 |
+  |------|------|--------|------|
+  | 移動 | *.jpg, *.png, *.gif | Downloads/images/ | 18 |
+  | 移動 | *.pdf, *.docx, *.xlsx | Downloads/documents/ | 14 |
+  | 移動 | *.zip, *.rar | Downloads/archives/ | 8 |
+  | 保留 | 其他 | Downloads/（不動） | 7 |
+
+  ## 排除項目
+  - .DS_Store — macOS 系統檔，不搬移
+  - .localized — macOS 系統檔，不搬移
+
+  ## 等待確認
+  以上計畫確認後才執行。執行前先 git checkpoint。
+
+bad_example: |
+  # 整理 Downloads
+
+  已完成整理！把所有檔案移到對應資料夾了。
+
+  移動了 47 個檔案：
+  - 圖片移到 images/
+  - 文件移到 documents/
+  - 壓縮檔移到 archives/

@@ -1,0 +1,62 @@
+# Eval case — retro skill. Rubric mirrors skills/retro/eval_examples.md
+# 判斷標準 (數據摘要/task_id 證據/HIGH-MED-LOW 分級/晉升候補). gold PASSES, bad FAILS.
+# 註：retro 不在 validate_task_card VALID_SKILLS（不可路由）為已知現況，
+#     eval 覆蓋與路由解耦——照樣補 case，不動 VALID_SKILLS。
+case_id: retro-cycle-digest
+skill: retro
+prompt: "對最近 6 筆任務做週期 retro"
+definition_of_done:
+  - "數據摘要有具體數字（任務數、錯誤次數、token 估計）"
+  - "每條發現附 task_id 作為證據"
+  - "建議分 HIGH/MED/LOW"
+  - "不自動執行修改；列出 Draft→Report 晉升候補"
+
+rubric:
+  - id: has_data_summary
+    kind: section_nonempty
+    args: {heading: "數據摘要"}
+  - id: cites_task_ids
+    kind: regex
+    args: {pattern: "20\\d{6}-[A-Z]\\d"}
+  - id: severity_levels
+    kind: contains_any
+    args: {needles: ["[HIGH]", "[MED]", "[LOW]"]}
+  - id: promotion_candidates
+    kind: contains_any
+    args: {needles: ["晉升候補", "待人工確認"]}
+
+gold_example: |
+  # Retro 2026-05-15
+
+  ## 數據摘要
+  - 涵蓋期間：2026-04-27 → 2026-05-09
+  - 任務總數：6 / 完成：5 / 失敗：0 / 部分：1
+  - 錯誤次數：1（SPEC-04 事實引用錯誤，任務 20260509-N02）
+  - Token 消耗（估計）：F01 18K / T03 42K → T03 超出 deep-dive 建議上限 32K
+
+  ## 五維發現
+  ### 成本
+  - T03 42K 超出 COST_POLICY research deep-dive 建議 32K（依據：20260502-T03 notes）
+  ### 錯誤
+  - 1 筆 SPEC-04（草稿引用未交叉驗證）：20260509-N02，不達升級閾值，觀察即可
+  ### 流程
+  - N06 因工具範圍限制跨 2 個 session，DoD 留 2 條未完成（依據：20260509-N06 notes）
+
+  ## 建議修改清單
+  - [MED] COST_POLICY.md §research 新增「深度實驗」例外欄位（上限 50K + 事後 retro 必填）→ 依據：20260502-T03
+  - [LOW] GATE_POLICY.yaml 新增 tool_scope_limitation 備注欄 → 依據：20260509-N06
+
+  ## 待人工確認
+  - Draft → Report 晉升候補：W01 方法論大綱、N08 第一章草稿（兩份已 done，等使用者確認）
+  - 專案封存候補：無
+
+bad_example: |
+  # Retro 2026-05-15
+
+  這批任務整體表現不錯。發現了一個關於 token 使用過多的問題，應該要改進。
+  另外有些任務審批比較麻煩，可以考慮調整。
+
+  建議：
+  - 控制 token 使用
+  - 簡化審批
+  - 改善錯誤處理

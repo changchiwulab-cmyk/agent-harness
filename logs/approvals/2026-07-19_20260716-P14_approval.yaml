@@ -1,0 +1,17 @@
+# 批准紀錄 — 20260716-P14 evals 6/6 + LLM judge 接 provider
+# 批准依據：執行計畫（eval 覆蓋 2/6→6/6、LLM judge 接 Anthropic Messages API 走
+# stdlib、金鑰閘 + fallback 保 CI 位元級一致、零新增依賴）於 plan mode 明列後由
+# 使用者核准開工（「再開工 P1-4」）。收案 PR 人工合併為最終批准。
+# schema 見 system/APPROVAL_POLICY.yaml。
+
+approval_records:
+  - approval_id: "APR-20260719-002"
+    task_id: "20260716-P14"
+    date: "2026-07-19"
+    action: "evals 補至 6/6 skill（writing/ops/review/retro 各 1 case 含 gold/bad 校準對）+ run_evals.py --judge llm 接 Anthropic Messages API（stdlib urllib、金鑰閘、fallback rule）"
+    approval_method: "human_confirm"
+    risk_level: "medium"
+    status: "approved"
+    approved_by: "human"
+    rationale: "計畫（6/6 覆蓋、LLM judge 只在有金鑰時觸網、無金鑰／provider 例外／壞 JSON 自動 fallback rule 保 CI 位元級一致、零新增第三方依賴、6/6 rule 校準綠 + provider/fallback 測試鎖定）經使用者於 plan mode 核准後執行。status 停在 review→由收案 PR 人工合併為最終批准。"
+    linked_run: "RUN-20260719-001"

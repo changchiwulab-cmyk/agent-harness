@@ -1,0 +1,66 @@
+# Eval case — writing skill. Rubric mirrors skills/writing/eval_examples.md
+# 判斷標準 (結論先行/比較表/風險/下一步). gold PASSES, bad FAILS.
+case_id: writing-vietnam-proposal
+skill: writing
+prompt: "為越南市場寫一份 AI 工具導入提案（500 字內）"
+definition_of_done:
+  - "結論先行（第一段即建議，不先鋪背景）"
+  - "有比較表輔助決策（方案 × 成本/時間/風險）"
+  - "風險誠實標記"
+  - "給出可行動的下一步"
+  - "篇幅在限制內、台灣商業用語無翻譯腔"
+
+rubric:
+  - id: conclusion_first
+    kind: section_first
+    args: {heading: "建議"}
+  - id: has_comparison_table
+    kind: regex
+    args: {pattern: "\\|.*成本.*\\|"}
+  - id: has_risk
+    kind: section_nonempty
+    args: {heading: "風險"}
+  - id: has_next_steps
+    kind: section_nonempty
+    args: {heading: "下一步"}
+
+gold_example: |
+  # 越南市場 AI 工具導入提案
+
+  ## 建議
+  建議先導入客服自動化（chatbot + FAQ 自動回覆），預估 3 個月內可降低
+  客服人力需求 20-30%，月成本約 US$200-500。
+
+  ## 為什麼現在做
+  - 越南企業 AI 採用率尚低（約 15%），先行者有定價優勢
+  - 越南語 NLP 模型成熟度在 2025-2026 大幅提升（來源：VinAI 2025 白皮書）
+  - 我們已有台灣客服 SOP，可直接移植框架
+
+  ## 建議方案
+  | 方案 | 成本/月 | 導入時間 | 風險 |
+  |------|---------|---------|------|
+  | A. ChatGPT API + 自建 | US$200 | 6 週 | 需技術人力 |
+  | B. 第三方 SaaS（Zendesk AI） | US$500 | 2 週 | 廠商鎖定 |
+
+  **建議選 B**，原因：一人公司無內部技術團隊，快速驗證 > 成本最佳化。
+
+  ## 風險
+  - 越南語品質不穩定（需 2 週人工校正期）
+  - 法規：越南個資法（PDPD）2026 年修訂中，需持續追蹤 [待驗證]
+
+  ## 下一步
+  1. 選定 1 個客戶做 pilot（2 週）
+  2. 收集越南語回覆品質數據
+  3. 決定是否擴大導入
+
+bad_example: |
+  # AI 工具在越南市場的應用前景分析報告
+
+  ## 一、前言
+  人工智慧（AI）技術近年來取得了顯著進展，在全球範圍內掀起了一場數位化
+  轉型的浪潮。越南作為東南亞地區的新興經濟體，其市場潛力不容小覷。本報告
+  旨在探討 AI 工具在越南市場的導入可行性。
+
+  ## 二、市場概述
+  越南經濟持續成長，GDP 增長率維持在 6% 以上，數位經濟蓬勃發展，
+  為 AI 工具的普及奠定了良好的基礎。（以下省略 2000 字）
