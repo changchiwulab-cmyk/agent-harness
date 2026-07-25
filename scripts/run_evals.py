@@ -196,8 +196,10 @@ def _build_judge_prompt(case: dict, text: str) -> str:
     ids = [item["id"] for item in rubric]
     keys = ", ".join(f'"{i}": true|false' for i in ids)
     return (
-        "你是一人公司 harness 的產出品質評審。依 definition_of_done 與 rubric，"
-        "逐項判斷候選輸出是否在『語意上』滿足（不只結構符合）。\n\n"
+        "你是一人公司 harness 的產出品質評審。依原始任務、definition_of_done 與 rubric，"
+        "逐項判斷候選輸出是否在『語意上』滿足（不只結構符合；含題目切題與篇幅等只在 prompt "
+        "宣告的要求）。\n\n"
+        f"## 原始任務（prompt）\n{case.get('prompt', '')}\n\n"
         f"## definition_of_done\n{dod}\n\n"
         f"## rubric（逐項 pass/fail）\n{rubric_lines}\n\n"
         f"## 候選輸出\n{text}\n\n"
@@ -213,6 +215,12 @@ def _parse_judge_json(raw: str) -> dict:
     data = json.loads(m.group(0))
     if not isinstance(data, dict) or not isinstance(data.get("items"), dict):
         raise ValueError(f"judge JSON missing items map: {data!r}")
+    # Verdicts must be real JSON booleans — a string like "false" would otherwise
+    # pass bool("false") == True and count a failing item as a pass. Reject any
+    # non-bool so the documented per-case rule fallback (in _judge_score) kicks in.
+    bad = {k: v for k, v in data["items"].items() if not isinstance(v, bool)}
+    if bad:
+        raise ValueError(f"judge verdicts must be JSON booleans, got non-bool: {bad!r}")
     return data
 
 

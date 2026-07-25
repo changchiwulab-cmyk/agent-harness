@@ -78,6 +78,7 @@ class TestLLMJudge(unittest.TestCase):
 
     CASE = {
         "case_id": "llm-t",
+        "prompt": "測試題目：寫一段含結論並標記待驗證的短文",
         "definition_of_done": ["結論先行", "標記待驗證"],
         "rubric": [
             {"id": "a", "kind": "section_first", "args": {"heading": "結論"}},
@@ -126,6 +127,26 @@ class TestLLMJudge(unittest.TestCase):
         self.assertFalse(res.passed)
         self.assertIn("falling back to rule", err.getvalue())
 
+    def test_non_bool_verdict_falls_back_to_rule(self):
+        # String verdicts (bool("false") == True) must not count a fail as a pass;
+        # a non-bool value is a parse failure → per-case rule fallback.
+        reply = '{"items": {"a": "false", "b": "false"}}'
+        with mock.patch.object(run_evals, "_call_anthropic", return_value=reply):
+            with contextlib.redirect_stderr(io.StringIO()) as err:
+                res = run_evals._judge_score(self.CASE, self.CASE["bad_example"], "llm")
+        rule = run_evals.score_text(self.CASE, self.CASE["bad_example"])
+        self.assertEqual(res.items, rule.items)  # rule verdict, not the bogus strings
+        self.assertFalse(res.passed)
+        self.assertIn("falling back to rule", err.getvalue())
+
+    def test_parse_judge_json_rejects_non_bool(self):
+        with self.assertRaises(ValueError):
+            run_evals._parse_judge_json('{"items": {"a": "false"}}')
+        # real booleans still accepted
+        self.assertEqual(
+            run_evals._parse_judge_json('{"items": {"a": true}}')["items"], {"a": True}
+        )
+
     def test_calibrate_routes_through_llm_judge(self):
         def fake_call(prompt: str) -> str:
             # The candidate output is embedded in the prompt; mirror the rule
@@ -148,8 +169,9 @@ class TestLLMJudge(unittest.TestCase):
         self.assertIn("ANTHROPIC_API_KEY not set", err.getvalue())
         self.assertIn("judge=rule", out.getvalue())  # fell back to CI-safe judge
 
-    def test_build_prompt_carries_rubric_ids_and_dod(self):
+    def test_build_prompt_carries_prompt_dod_and_rubric_ids(self):
         prompt = run_evals._build_judge_prompt(self.CASE, "候選")
+        self.assertIn("測試題目", prompt)    # original task prompt present (Codex #1)
         self.assertIn("結論先行", prompt)   # DoD present
         self.assertIn('"a"', prompt)         # rubric ids present
         self.assertIn('"b"', prompt)
