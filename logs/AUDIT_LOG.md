@@ -20,16 +20,20 @@ checkpoints:
 - commit: d343dd7
   stage: Opus 5 對齊變更套用（COST_POLICY／schema／CLAUDE.md／GLOBAL_RULES／agents／writing）（C1）
 actual_tool_calls: 34
-result_summary: DoD 9/9。8 檔變更、118 insertions / 37 deletions，治理骨架零變更。COST_POLICY 四項：路由表刪去寫死版本號改為
+result_summary: 'DoD 10/10。10 個檔案變更（4 份 policy/schema/規則：COST_POLICY、EXECUTION_LOG_SCHEMA、CLAUDE.md、GLOBAL_RULES；5
+  支 .claude/agents/*.md；1 支 skills/writing/SKILL.md），治理骨架零變更。COST_POLICY 四項：路由表刪去寫死版本號改為
   alias→當代對映（4.5/4.6/4.8 過期本身寫成教訓註記）、新增 effort 二維小節（ops low／research·writing·review
   medium／analysis high，方法為設起點後往下掃到品質掉）、兩個反直覺註記、校準係數表標記 pre-Opus-5 且 effort 未標註不可混算、context
-  基準表修正 ~400→~1,620 與 200-600→483-985 並新增最小可快取前綴列（Opus 5：512／前代 1,024）。EXECUTION_LOG_SCHEMA
+  基準表修正 ~400→~2,340 與 200-600→521-985 並新增最小可快取前綴列（Opus 5：512／前代 1,024）。EXECUTION_LOG_SCHEMA
   新增 optional effort 欄＋request_model 值格式規範。CLAUDE.md 補產出紀律三條並把段落標題由「軟性護欄」正名為「CI 硬閘」（該檢查實為
   blocking step）；GLOBAL_RULES 對應三段完整版，範圍紀律含「不自行縮小範圍、全做完才回報完成」。agents ×5 收尾措辭改為稽核對照表並明示不再跑一輪自我驗證，逐條對照
-  DoD 保留、model frontmatter 未動；skills/writing 第 5 步收斂為對照 expected_output＋新增篇幅紀律。驗證全綠：context
-  budget 2,295/3,000（改動前 1,620，餘裕 705）、spec consistency、Python 13 支、Ruby 4 支（76 runs/199
+  DoD 保留、model frontmatter 未動；skills/writing 第 5 步由開放式自我檢查改為有界收尾（契約面對照 Task Card＋內容面三項：自相矛盾／專有名詞／數據來源）＋新增篇幅紀律。驗證全綠：context
+  budget 2,340/3,000（改動前 1,620，餘裕 660）、spec consistency、Python 13 支、Ruby 4 支（76 runs/199
   assertions/0 failures）、e2e 4 支、run_evals 2 case 皆能區辨 gold/bad。過程中 allowed_tools_guard
-  攔下 scripts/check_context_budget.rb 的註解修正（需 file_write，未宣告），依範圍紀律不擴卡、留作後續一行修正——白名單機制實際生效的一次紀錄。
+  攔下 scripts/check_context_budget.rb 的註解修正（需 file_write，未宣告），依範圍紀律不擴卡、留作後續一行修正——白名單機制實際生效的一次紀錄。C2
+  依 PR #141 的 4 則 Codex review 意見補正：baseline 回填自己造成的增量（1,620→2,340）、篇幅約束指向 DoD 而非只有
+  expected_output（模板無 length 欄）、writing 收尾保留有界內容檢查（gate_check 完成檢查只驗產出存在，測不到散文正確性）、本欄
+  DoD 與檔案計數更正為 10/10 與 10 檔。'
 completion_time: '2026-07-31'
 ```
 

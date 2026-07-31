@@ -31,9 +31,9 @@ LLM 原生缺乏四件事：穩定目標、穩定上下文邊界、穩定權限�
 
 ### 長度紀律
 
-- 交付物篇幅由 expected_output 決定，不由「寫得更完整比較保險」決定。
+- 交付物篇幅由 Task Card 決定，不由「寫得更完整比較保險」決定。約束可能寫在 `definition_of_done`（現行卡片的主要位置）或 `expected_output`；兩處都沒寫才算未指定。
 - 未指定篇幅時：結論先行，能刪的段落就刪；寧可短而可讀，不要長而正確。
-- 要壓長度就改 prompt 與 expected_output，**不要調 effort**——effort 改的是思考量，不會可靠縮短輸出（見 `system/COST_POLICY.md`）。
+- 要壓長度就改 prompt 與 Task Card，**不要調 effort**——effort 改的是思考量，不會可靠縮短輸出（見 `system/COST_POLICY.md`）。
 
 ### 委派紀律
 

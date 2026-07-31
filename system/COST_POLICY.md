@@ -35,14 +35,15 @@ v1 階段採用「粗略護欄 + 事後量測」策略：
 | 工具定義（按需載入） | 省 ~85% | Tool Search 模式 |
 | 子代理 context 隔離 | 省 ~67% | vs 單一代理塞所有 context |
 | Programmatic Tool Calling | 省 ~37% | 中間結果不進 context |
-| CLAUDE.md + GLOBAL_RULES | 控制在 3K 以內 | 硬上限（CI blocking）；實測 baseline ~1,620 tokens（861 + 759，2026-07-31 量） |
-| 單一 skill prompt | 控制在 1.5K 以內 | 硬上限（CI blocking）；只計 SKILL.md（eval_examples 屬 eval 資產不計入），實測 baseline 483–985 tokens |
+| CLAUDE.md + GLOBAL_RULES | 控制在 3K 以內 | 硬上限（CI blocking）；實測 ~2,340 tokens（1,106 + 1,234，2026-07-31 本次改動後量；改動前為 1,620） |
+| 單一 skill prompt | 控制在 1.5K 以內 | 硬上限（CI blocking）；只計 SKILL.md（eval_examples 屬 eval 資產不計入），實測 baseline 521–985 tokens |
 | 常駐 system prompt 快取 | 命中省 ~90% input | prompt caching：穩定前綴（CLAUDE.md+GLOBAL_RULES+PERMISSIONS）做 cache，可變後綴（Task Card+skill）後接 |
-| 最小可快取前綴 | Opus 5：512 tokens<br>Opus 4.8：1,024 tokens | 低於門檻**不會報錯，只是靜默不快取**。本 repo 穩定前綴實測 ~1,620 tokens，兩個世代都在門檻之上 → 上一列的「載入順序 cache 友善」宣稱**成立且有量測支撐**（20260731-A01） |
+| 最小可快取前綴 | Opus 5：512 tokens<br>Opus 4.8：1,024 tokens | 低於門檻**不會報錯，只是靜默不快取**。本 repo 穩定前綴實測 ~2,340 tokens，兩個世代都在門檻之上 → 上一列的「載入順序 cache 友善」宣稱**成立且有量測支撐**（20260731-A01） |
 
 > baseline 量測方式：`ruby scripts/check_context_budget.rb`（ASCII/4 + 非 ASCII ×1，保守上界）。
 > 2026-07-31 校正前本表記載 ~400 / 200-600，與實測差 4.05× / 1.64×，且與 `CLAUDE.md` 的
-> skill baseline 記載（480-990）互相矛盾——屬雙寫漂移。改動 CLAUDE.md 或 SKILL.md 後請重跑並回填。
+> skill baseline 記載（480-990）互相矛盾——屬雙寫漂移。改動 CLAUDE.md 或 SKILL.md 後請重跑並回填，
+> **包含同一次改動自己造成的增量**（本次 1,620 → 2,340 即為一例：先填了改動前的數，經 review 才補正）。
 
 ## 模型路由規則（2026-05-29 起：已落地於原生子代理）
 
