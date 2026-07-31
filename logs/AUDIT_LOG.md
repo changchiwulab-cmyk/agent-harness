@@ -19,6 +19,8 @@ output_path: outputs/drafts/2026-07-31_opus5-alignment-changes.md
 checkpoints:
 - commit: d343dd7
   stage: Opus 5 對齊變更套用（COST_POLICY／schema／CLAUDE.md／GLOBAL_RULES／agents／writing）（C1）
+- commit: 78b8553
+  stage: '依 PR #141 review 補正 4 項（baseline 自身增量、篇幅約束指向 DoD、writing 有界內容檢查、計數更正）（C2）'
 actual_tool_calls: 34
 result_summary: 'DoD 10/10。10 個檔案變更（4 份 policy/schema/規則：COST_POLICY、EXECUTION_LOG_SCHEMA、CLAUDE.md、GLOBAL_RULES；5
   支 .claude/agents/*.md；1 支 skills/writing/SKILL.md），治理骨架零變更。COST_POLICY 四項：路由表刪去寫死版本號改為
