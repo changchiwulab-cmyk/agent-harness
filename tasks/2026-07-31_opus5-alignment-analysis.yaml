@@ -5,7 +5,7 @@
 
 task_id: "20260731-A01"
 date: "2026-07-31"
-status: "pending"
+status: "review"
 
 # === 任務定義 ===
 goal: "以 Opus 5 能力逐項對照 Agent Harness v2，產出落差表、優先序與每項落地位置，作為 20260731-O01 實作依據"
@@ -69,8 +69,10 @@ max_web_searches: 0
 skill_type: "analysis"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
-actual_tool_calls: 0
-result_summary: ""
-completion_time: ""
-audit_log_ref: ""
+checkpoints:
+  - commit: "1e8579e"
+    stage: "兩張卡建立 + Opus 5 對齊分析報告產出（C1）"
+actual_tool_calls: 14
+result_summary: "DoD 6/6。四選項六維比較（含「不做」），建議選項 C（文件與措辭層對齊、保留三層 alias）；D（改 effort 分層廢除模型分流）技術可行但會讓 COST_POLICY 四個校準係數整張作廢，而本專案 2026-06 只開 1 張卡、最後提交停在 07-17，無產能重建樣本——判定為時機不對而非方向錯。四項落差：(1) effort 維度全缺，全 repo 零引用，成本模型仍一維；(2) 四項行為位移逐項對照到檔案行號，其中「更愛派子代理」相對 4.8 是方向反轉，本專案無需刪東西只需補上限；(3) 驗證分類表把「刪掉驗證 scaffolding」翻譯成四類處置——確定性閘門（gate_check/verification_loop/四層 GATE/CI）與稽核契約措辭（逐條對照 DoD）與安全自檢全保留，只收斂 skills/writing/SKILL.md:16 的泛用產出自我檢查；(4) 實測值漂移以 check_context_budget.rb 佐證：CLAUDE.md+GLOBAL_RULES 實測 ~1620 tokens vs 文件記載 ~400（4.05×），且 CLAUDE.md:25 與 COST_POLICY.md:39 對同一件事給出不同數字（480-990 vs 200-600）屬雙寫漂移。附帶查得 Opus 5 最小可快取前綴 1024→512，本 repo 前綴兩世代皆在門檻上，故「載入順序 cache 友善」宣稱成立。10 項落地位置對照表標註檔案／權限／風險，#7（CLAUDE.md）為唯一有硬性失敗模式者（3000 token CI blocking step，現況 861/3000）。6 項明確排除並各給獨立開卡建議。3 條高風險假設，其中 agent frontmatter 是否支援 effort 鍵設計為條件式驗證，無論結果皆不翻轉結論。"
+completion_time: "2026-07-31"
+audit_log_ref: "logs/AUDIT_LOG.md"

@@ -11,4 +11,4 @@ model: haiku
 - 不刪除任何檔案（deny 規則）；檔案操作只在 project 目錄內；批量操作前先小範圍測試。
 - 格式轉換後做可逆驗證（比對欄位數），不可靜默丟失資料。
 - 遵守 `system/PERMISSIONS.yaml`；Bash 動作仍受 `scripts/permissions_guard.py` deny-list 攔截。
-- 連續失敗 3 次即停止並回報。完成後回報：變更清單、產出路徑、逐條對照 definition_of_done。
+- 連續失敗 3 次即停止並回報。完成後交一份對照表：變更清單、產出路徑、definition_of_done 逐條結果。這是稽核產物，照實際做完的事填寫，不要為了填表再跑一輪自我驗證。

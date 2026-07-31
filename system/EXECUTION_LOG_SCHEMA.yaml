@@ -47,6 +47,13 @@ execution_log:
     total: 0
     source: ""                        # dashboard_measured（API dashboard 實測）/ rule_estimated（規則估算）/ not_recorded；R6 新增，標示數據可信度
 
+  # optional；2026-07-31 新增（20260731-O01）。此 run 實際跑的推理力度檔位。
+  # 值：low / medium / high / xhigh / max / not_recorded（未宣告即跑在模型預設，也記 not_recorded）
+  # 用途：COST_POLICY.md 的校準係數表需按 effort 分層才能解讀——舊樣本全是 effort 未標註，
+  #       不可與新樣本混算。填了這欄，新樣本才進得了新的校準模型。
+  # 注意：effort 影響思考量，不是縮短輸出的旋鈕（見 COST_POLICY.md「兩個反直覺註記」）。
+  effort: ""
+
   # --- OTel GenAI 語意慣例對齊（G-B/G-E，optional）---
   # 對齊 OpenTelemetry GenAI Semantic Conventions（2026 業界觀測標準），使本紀錄可攜、
   # 未來可被 OTel exporter / LLM observability 平台直接消費。全為 optional，不影響既有紀錄驗證。
@@ -55,7 +62,10 @@ execution_log:
   gen_ai:
     operation_name: ""                # gen_ai.operation.name：如 invoke_agent / execute_tool
     system: ""                        # gen_ai.system：如 anthropic
-    request_model: ""                 # gen_ai.request.model：如 claude-opus-4-x（不含內部 id）
+    request_model: ""                 # gen_ai.request.model：填「當次實際跑的模型」，世代中性——
+                                      # 格式為 <family>-<tier>-<generation>，如 claude-opus-5 / claude-sonnet-5 / claude-haiku-4-5。
+                                      # 子代理走 alias（haiku/sonnet/opus）自動對映到當代模型，故本欄是還原「究竟跑了什麼」的唯一來源；
+                                      # 不要回填 COST_POLICY.md 路由表裡的層級名稱，也不要填內部 id 或行銷代號。
     usage_input_tokens: 0             # gen_ai.usage.input_tokens（= token_estimate.input）
     usage_output_tokens: 0            # gen_ai.usage.output_tokens（= token_estimate.output）
     tool_spans:                       # 對齊 gen_ai.tool.* / MCP conventions（可由 tools_used 推導）

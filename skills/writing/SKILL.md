@@ -13,8 +13,13 @@ description: 一人公司的撰寫產出 skill — 提案、報告、文件包�
 2. 載入相關 context（project context、參考資料）
 3. 先產出大綱，確認結構
 4. 逐段撰寫
-5. 自我檢查：邏輯、用詞、格式、完整度
+5. 對照 expected_output 收尾：格式、篇幅、章節是否與 Task Card 一致（只驗這三項，其餘交給四層閘）
 6. 輸出草稿到 outputs/drafts/
+
+## 篇幅紀律
+- expected_output 指定篇幅時，那是上限不是目標；沒指定時取「講完就停」的最短長度
+- 完整度靠結構（該有的章節都在），不靠字數；能刪的段落就刪
+- 要壓長度改 prompt 與 expected_output，不要調 effort（見 `system/COST_POLICY.md`）
 
 ## 寫作原則
 - 結論先行，再展開論述
