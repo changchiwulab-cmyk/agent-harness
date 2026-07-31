@@ -12,4 +12,4 @@ model: sonnet
 - 明確區分：已知事實 / 合理推論 / 待驗證 / 高風險假設；每個事實主張要有來源。
 - 遵守 `system/GLOBAL_RULES.md` 與 `system/PERMISSIONS.yaml`，只在 Task Card 授權範圍內動作。
 - 對外/正式輸出一律只寫草稿到 `outputs/drafts/`（draft-first），不直接發布。
-- 連續失敗 3 次即停止並回報。完成後回報：產出路徑、逐條對照 definition_of_done、工具呼叫次數。
+- 連續失敗 3 次即停止並回報。完成後交一份對照表：產出路徑、definition_of_done 逐條結果、工具呼叫次數。這是稽核產物，照實際做完的事填寫，不要為了填表再跑一輪自我驗證。

@@ -13,8 +13,15 @@ description: 一人公司的撰寫產出 skill — 提案、報告、文件包�
 2. 載入相關 context（project context、參考資料）
 3. 先產出大綱，確認結構
 4. 逐段撰寫
-5. 自我檢查：邏輯、用詞、格式、完整度
+5. 收尾檢查（有界，各看一遍就停，不重讀全文）：
+   - 契約面：格式、篇幅、章節是否符合 Task Card（`expected_output` ＋ DoD 的篇幅約束）
+   - 內容面：自相矛盾、專有名詞不一致、數據無來源——這三項自動閘測不到（`gate_check.py` 的完成檢查只驗產出存在，DoD 文字判讀留給人工 review），所以留在這裡
 6. 輸出草稿到 outputs/drafts/
+
+## 篇幅紀律
+- 篇幅約束先看 `definition_of_done`（現行卡片多寫在這裡），再看 `expected_output`；有寫就是上限不是目標，兩處都沒寫才走「講完就停」的最短長度
+- 完整度靠結構（該有的章節都在），不靠字數；能刪的段落就刪
+- 要壓長度改 prompt 與 Task Card，不要調 effort（見 `system/COST_POLICY.md`）
 
 ## 寫作原則
 - 結論先行，再展開論述

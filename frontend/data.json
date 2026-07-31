@@ -214,13 +214,13 @@
   "overview": {
     "alerts": [
       {
-        "current": "76/9 = 8.44",
+        "current": "78/9 = 8.67",
         "id": "M2",
         "name": "outputs/drafts:reports 比例",
         "status": "ok"
       },
       {
-        "current": "81/81 = 100.0%",
+        "current": "83/83 = 100.0%",
         "id": "M3",
         "name": "audit log 覆蓋率（status ∈ {review, done, failed, partial}）",
         "status": "ok"
@@ -258,12 +258,12 @@
     "run_total": 8,
     "task_risk": {
       "high": 2,
-      "low": 57,
-      "medium": 39
+      "low": 58,
+      "medium": 40
     },
     "task_skill": {
-      "analysis": 10,
-      "ops": 64,
+      "analysis": 11,
+      "ops": 65,
       "research": 9,
       "review": 8,
       "writing": 7
@@ -272,9 +272,9 @@
       "done": 77,
       "in_progress": 4,
       "pending": 13,
-      "review": 4
+      "review": 6
     },
-    "task_total": 98
+    "task_total": 100
   },
   "tasks": [
     {
@@ -1256,6 +1256,26 @@
       "skill_type": "ops",
       "status": "pending",
       "task_id": "20260716-P24"
+    },
+    {
+      "approval_needed": false,
+      "date": "2026-07-31",
+      "goal": "以 Opus 5 能力逐項對照 Agent Harness v2，產出落差表、優先序與每項落地位置，作為 20260731-O01 實作依據",
+      "path": "tasks/2026-07-31_opus5-alignment-analysis.yaml",
+      "risk_level": "low",
+      "skill_type": "analysis",
+      "status": "review",
+      "task_id": "20260731-A01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-07-31",
+      "goal": "依 20260731-A01 結論套用 Opus 5 對齊變更：COST_POLICY 加 effort 維度、修正實測值漂移、CLAUDE.md/GLOBAL_RULES 補產出紀律、agents 與 writing skill 措辭收斂",
+      "path": "tasks/2026-07-31_opus5-alignment-uplift.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "review",
+      "task_id": "20260731-O01"
     }
   ]
 }

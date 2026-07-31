@@ -1,0 +1,85 @@
+# Task Card — Opus 5 對齊實作（O 卡：落地）
+# 來源：20260731-A01 分析結論
+# 兩段式第 2 卡；接力點為 outputs/drafts/2026-07-31_opus5-alignment-analysis.md
+
+task_id: "20260731-O01"
+date: "2026-07-31"
+status: "review"
+
+# === 任務定義 ===
+goal: "依 20260731-A01 結論套用 Opus 5 對齊變更：COST_POLICY 加 effort 維度、修正實測值漂移、CLAUDE.md/GLOBAL_RULES 補產出紀律、agents 與 writing skill 措辭收斂"
+context: |
+  接 20260731-A01。本卡只做文件與設定層變更，不動治理骨架。
+
+  三個已拍板的方向：
+  (1) 模型路由保留三層 alias——不改 .claude/agents/*.md 的 model 欄位，
+      只在 COST_POLICY 補 effort 指引作為第二維度。
+  (2) Opus 5 行為位移全部處理（範圍／長度／委派／過度驗證四項）。
+  (3) 確定性閘門一行不動：scripts/gate_check.py、scripts/verification_loop.py、
+      四層 GATE_POLICY、CI workflow 皆不在本卡變更範圍。
+
+  權限說明：system/ 需 modify_system_rules、skills/ 需 modify_skills、
+  CLAUDE.md 需 modify_claude_md、.claude/ 需 modify_settings_json——
+  這四個 token 由 scripts/allowed_tools_guard.py 在 PreToolUse 當下比對，
+  未宣告即被擋。四者皆為 PERMISSIONS.yaml 的 ask 等級，故 approval_needed: true。
+
+  硬性約束：CLAUDE.md 改動後 check_context_budget.rb 必須仍綠（≤3000 tokens），
+  這是最容易被改爆的一項。
+input_data:
+  - "outputs/drafts/2026-07-31_opus5-alignment-analysis.md（20260731-A01 產出，接力點）"
+  - "system/COST_POLICY.md、system/EXECUTION_LOG_SCHEMA.yaml、system/GLOBAL_RULES.md"
+  - "CLAUDE.md、.claude/agents/*.md、skills/writing/SKILL.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "COST_POLICY：模型路由表更新至 Opus 5 世代（alias 機制不動）、新增 effort 維度小節含各 skill_type 建議起始值、兩個反直覺註記（effort 不縮短輸出／低 effort 已勝前代高 effort）"
+  - "COST_POLICY：校準係數表既有樣本標記為 pre-Opus-5 且 effort 未標註、不可與新樣本混算；context 量化基準表修正 skill baseline 並新增 prompt cache 最小前綴列"
+  - "EXECUTION_LOG_SCHEMA：request_model 註解世代中性化＋值格式規範；新增 optional effort 欄讓成本校準可按 effort 分層"
+  - "CLAUDE.md：修正 baseline 實測值、補 prompt cache 門檻、新增產出紀律三條；check_context_budget.rb 仍綠（≤3000 tokens）"
+  - "GLOBAL_RULES：範圍紀律（含完成整件事才回報完成）、長度紀律、委派紀律（含驗證留主線）三段落地"
+  - ".claude/agents/*.md ×5 收斂泛用自我檢查措辭但保留「逐條對照 definition_of_done」；analysis-specialist 描述世代中性化；model frontmatter 不動"
+  - "skills/writing/SKILL.md 自我檢查步驟收斂為對照 expected_output、補篇幅紀律"
+  - "確定性閘門零變更：git diff 確認未動 gate_check.py / verification_loop.py / GATE_POLICY.yaml / .github/workflows/"
+  - "全套本地驗證不回歸：check_context_budget、check_spec_consistency、既有 Python/Ruby 單元測試、4 支 e2e、run_evals 校準、sync_derived.sh --check"
+  - "變更摘要存於 outputs/drafts/2026-07-31_opus5-alignment-changes.md"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-07-31_opus5-alignment-changes.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "modify_system_rules"
+  - "modify_skills"
+  - "modify_claude_md"
+  - "modify_settings_json"
+  - "bash"
+  - "run_tests"
+  - "git_commit_checkpoint"
+  - "write_logs"
+
+# === 成本控制 ===
+max_tool_calls: 45
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - commit: "d343dd7"
+    stage: "Opus 5 對齊變更套用（COST_POLICY／schema／CLAUDE.md／GLOBAL_RULES／agents／writing）（C1）"
+  - commit: "78b8553"
+    stage: "依 PR #141 review 補正 4 項（baseline 自身增量、篇幅約束指向 DoD、writing 有界內容檢查、計數更正）（C2）"
+actual_tool_calls: 34
+result_summary: "DoD 10/10。10 個檔案變更（4 份 policy/schema/規則：COST_POLICY、EXECUTION_LOG_SCHEMA、CLAUDE.md、GLOBAL_RULES；5 支 .claude/agents/*.md；1 支 skills/writing/SKILL.md），治理骨架零變更。COST_POLICY 四項：路由表刪去寫死版本號改為 alias→當代對映（4.5/4.6/4.8 過期本身寫成教訓註記）、新增 effort 二維小節（ops low／research·writing·review medium／analysis high，方法為設起點後往下掃到品質掉）、兩個反直覺註記、校準係數表標記 pre-Opus-5 且 effort 未標註不可混算、context 基準表修正 ~400→~2,340 與 200-600→521-985 並新增最小可快取前綴列（Opus 5：512／前代 1,024）。EXECUTION_LOG_SCHEMA 新增 optional effort 欄＋request_model 值格式規範。CLAUDE.md 補產出紀律三條並把段落標題由「軟性護欄」正名為「CI 硬閘」（該檢查實為 blocking step）；GLOBAL_RULES 對應三段完整版，範圍紀律含「不自行縮小範圍、全做完才回報完成」。agents ×5 收尾措辭改為稽核對照表並明示不再跑一輪自我驗證，逐條對照 DoD 保留、model frontmatter 未動；skills/writing 第 5 步由開放式自我檢查改為有界收尾（契約面對照 Task Card＋內容面三項：自相矛盾／專有名詞／數據來源）＋新增篇幅紀律。驗證全綠：context budget 2,340/3,000（改動前 1,620，餘裕 660）、spec consistency、Python 13 支、Ruby 4 支（76 runs/199 assertions/0 failures）、e2e 4 支、run_evals 2 case 皆能區辨 gold/bad。過程中 allowed_tools_guard 攔下 scripts/check_context_budget.rb 的註解修正（需 file_write，未宣告），依範圍紀律不擴卡、留作後續一行修正——白名單機制實際生效的一次紀錄。C2 依 PR #141 的 4 則 Codex review 意見補正：baseline 回填自己造成的增量（1,620→2,340）、篇幅約束指向 DoD 而非只有 expected_output（模板無 length 欄）、writing 收尾保留有界內容檢查（gate_check 完成檢查只驗產出存在，測不到散文正確性）、本欄 DoD 與檔案計數更正為 10/10 與 10 檔。"
+completion_time: "2026-07-31"
+audit_log_ref: "logs/AUDIT_LOG.md"

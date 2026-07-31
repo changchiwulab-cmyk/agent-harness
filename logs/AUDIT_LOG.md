@@ -7,6 +7,64 @@
 
 <!-- AUTO_AUDIT_BEGIN -->
 ```yaml
+task_id: 20260731-O01
+date: '2026-07-31'
+skill_type: ops
+goal: 依 20260731-A01 結論套用 Opus 5 對齊變更：COST_POLICY 加 effort 維度、修正實測值漂移、CLAUDE.md/GLOBAL_RULES
+  補產出紀律、agents 與 writing skill 措辭收斂
+status: review
+risk_level: medium
+approval_needed: true
+output_path: outputs/drafts/2026-07-31_opus5-alignment-changes.md
+checkpoints:
+- commit: d343dd7
+  stage: Opus 5 對齊變更套用（COST_POLICY／schema／CLAUDE.md／GLOBAL_RULES／agents／writing）（C1）
+- commit: 78b8553
+  stage: '依 PR #141 review 補正 4 項（baseline 自身增量、篇幅約束指向 DoD、writing 有界內容檢查、計數更正）（C2）'
+actual_tool_calls: 34
+result_summary: 'DoD 10/10。10 個檔案變更（4 份 policy/schema/規則：COST_POLICY、EXECUTION_LOG_SCHEMA、CLAUDE.md、GLOBAL_RULES；5
+  支 .claude/agents/*.md；1 支 skills/writing/SKILL.md），治理骨架零變更。COST_POLICY 四項：路由表刪去寫死版本號改為
+  alias→當代對映（4.5/4.6/4.8 過期本身寫成教訓註記）、新增 effort 二維小節（ops low／research·writing·review
+  medium／analysis high，方法為設起點後往下掃到品質掉）、兩個反直覺註記、校準係數表標記 pre-Opus-5 且 effort 未標註不可混算、context
+  基準表修正 ~400→~2,340 與 200-600→521-985 並新增最小可快取前綴列（Opus 5：512／前代 1,024）。EXECUTION_LOG_SCHEMA
+  新增 optional effort 欄＋request_model 值格式規範。CLAUDE.md 補產出紀律三條並把段落標題由「軟性護欄」正名為「CI 硬閘」（該檢查實為
+  blocking step）；GLOBAL_RULES 對應三段完整版，範圍紀律含「不自行縮小範圍、全做完才回報完成」。agents ×5 收尾措辭改為稽核對照表並明示不再跑一輪自我驗證，逐條對照
+  DoD 保留、model frontmatter 未動；skills/writing 第 5 步由開放式自我檢查改為有界收尾（契約面對照 Task Card＋內容面三項：自相矛盾／專有名詞／數據來源）＋新增篇幅紀律。驗證全綠：context
+  budget 2,340/3,000（改動前 1,620，餘裕 660）、spec consistency、Python 13 支、Ruby 4 支（76 runs/199
+  assertions/0 failures）、e2e 4 支、run_evals 2 case 皆能區辨 gold/bad。過程中 allowed_tools_guard
+  攔下 scripts/check_context_budget.rb 的註解修正（需 file_write，未宣告），依範圍紀律不擴卡、留作後續一行修正——白名單機制實際生效的一次紀錄。C2
+  依 PR #141 的 4 則 Codex review 意見補正：baseline 回填自己造成的增量（1,620→2,340）、篇幅約束指向 DoD 而非只有
+  expected_output（模板無 length 欄）、writing 收尾保留有界內容檢查（gate_check 完成檢查只驗產出存在，測不到散文正確性）、本欄
+  DoD 與檔案計數更正為 10/10 與 10 檔。'
+completion_time: '2026-07-31'
+```
+
+```yaml
+task_id: 20260731-A01
+date: '2026-07-31'
+skill_type: analysis
+goal: 以 Opus 5 能力逐項對照 Agent Harness v2，產出落差表、優先序與每項落地位置，作為 20260731-O01 實作依據
+status: review
+risk_level: low
+approval_needed: false
+output_path: outputs/drafts/2026-07-31_opus5-alignment-analysis.md
+checkpoints:
+- commit: 1e8579e
+  stage: 兩張卡建立 + Opus 5 對齊分析報告產出（C1）
+actual_tool_calls: 14
+result_summary: DoD 6/6。四選項六維比較（含「不做」），建議選項 C（文件與措辭層對齊、保留三層 alias）；D（改 effort 分層廢除模型分流）技術可行但會讓
+  COST_POLICY 四個校準係數整張作廢，而本專案 2026-06 只開 1 張卡、最後提交停在 07-17，無產能重建樣本——判定為時機不對而非方向錯。四項落差：(1)
+  effort 維度全缺，全 repo 零引用，成本模型仍一維；(2) 四項行為位移逐項對照到檔案行號，其中「更愛派子代理」相對 4.8 是方向反轉，本專案無需刪東西只需補上限；(3)
+  驗證分類表把「刪掉驗證 scaffolding」翻譯成四類處置——確定性閘門（gate_check/verification_loop/四層 GATE/CI）與稽核契約措辭（逐條對照
+  DoD）與安全自檢全保留，只收斂 skills/writing/SKILL.md:16 的泛用產出自我檢查；(4) 實測值漂移以 check_context_budget.rb
+  佐證：CLAUDE.md+GLOBAL_RULES 實測 ~1620 tokens vs 文件記載 ~400（4.05×），且 CLAUDE.md:25 與 COST_POLICY.md:39
+  對同一件事給出不同數字（480-990 vs 200-600）屬雙寫漂移。附帶查得 Opus 5 最小可快取前綴 1024→512，本 repo 前綴兩世代皆在門檻上，故「載入順序
+  cache 友善」宣稱成立。10 項落地位置對照表標註檔案／權限／風險，#7（CLAUDE.md）為唯一有硬性失敗模式者（3000 token CI blocking
+  step，現況 861/3000）。6 項明確排除並各給獨立開卡建議。3 條高風險假設，其中 agent frontmatter 是否支援 effort 鍵設計為條件式驗證，無論結果皆不翻轉結論。
+completion_time: '2026-07-31'
+```
+
+```yaml
 task_id: 20260716-P24
 date: '2026-07-16'
 skill_type: ops

@@ -1,0 +1,78 @@
+# Task Card — Opus 5 對齊分析（A 卡：檢視）
+# 來源：使用者需求「根據最新 opus5 的能力，來分析，優化這個專案」
+# 兩段式：本卡負責分析（analysis），實作由 20260731-O01 承接
+# 前例：2026-05-29 的 Opus 4.8 兩段式（20260529-012 A_review → 20260529-013 B_uplift）
+
+task_id: "20260731-A01"
+date: "2026-07-31"
+status: "review"
+
+# === 任務定義 ===
+goal: "以 Opus 5 能力逐項對照 Agent Harness v2，產出落差表、優先序與每項落地位置，作為 20260731-O01 實作依據"
+context: |
+  上一次系統性對齊模型能力是 2026-05-29 的 Opus 4.8 自評（20260529-012/013），
+  成果即現行的成本路由（.claude/agents/*.md 的 model 欄位）、prompt caching 載入順序、
+  hooks 自動化。之後 11 次迭代全在治理自身（P1-1〜P1-3 等），未再回頭校準模型層。
+
+  Opus 5 讓那次校準的三個前提失效：
+  (1) effort（low/medium/high/xhigh/max）成為主要成本／品質槓桿，而本專案成本模型
+      是一維的（只有 model tier）；COST_POLICY 的校準係數表在無 effort 概念的年代量得，
+      樣本無法分層解讀。
+  (2) Opus 5 的行為位移與既有措辭衝突：被指示驗證會導致過度驗證（刪掉指示不降能力）、
+      比 4.8 更愛派子代理（方向反轉）、回應與寫入檔案更長、會擴張任務範圍。
+  (3) 文件記載的實測值已漂移（見 input_data 的實測輸出）。
+
+  本卡邊界：
+  - 只做分析與排序，不改任何 system/ skills/ CLAUDE.md 檔案（實作在 O01）。
+  - 必須明確區分「確定性閘門（保留）」與「prompt 層自我檢查措辭（收斂）」——
+    Opus 5 遷移指引的「刪掉驗證 scaffolding」不適用於 gate_check.py /
+    verification_loop.py / 四層 GATE，那是稽核證據不是模型自檢。
+  - 列出明確排除項，避免範圍擴張（Opus 5 本身就有此傾向，本卡即示範）。
+input_data:
+  - "system/COST_POLICY.md（模型路由表、校準係數表、context 量化基準表）"
+  - "system/EXECUTION_LOG_SCHEMA.yaml（request_model 註解、gen_ai 對齊區塊）"
+  - "system/CONTEXT_ENGINEERING.md、system/GLOBAL_RULES.md、CLAUDE.md"
+  - ".claude/agents/*.md（5 個成本路由子代理）、skills/*/SKILL.md"
+  - "scripts/check_context_budget.rb 實測輸出（CLAUDE.md ~861 + GLOBAL_RULES ~759 = ~1620 tokens）"
+  - "system/NATIVE_OVERLAP.yaml（原生重疊度，v3 觸發輸入）"
+
+# === 完成標準 ===
+definition_of_done:
+  - "effort 維度缺口成文：說明成本模型為何要從一維（model tier）改成二維（tier × effort），並給每個 skill_type 的建議起始值與掃描方法"
+  - "四項 Opus 5 行為位移逐項對照本專案的具體檔案與行號：過度驗證、範圍擴張、交付物變長、子代理過度委派"
+  - "驗證分類表落地：明確標出哪些驗證是確定性閘門（保留）、哪些是 prompt 層措辭（收斂），並給理由"
+  - "實測值漂移以本 repo 自己的工具佐證：check_context_budget.rb 實測 vs CLAUDE.md/COST_POLICY 記載值的差異"
+  - "每項建議標註落地檔案、風險等級、是否需 ask 權限；並列出明確排除項與其理由"
+  - "分析報告存在於 outputs/drafts/2026-07-31_opus5-alignment-analysis.md"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-07-31_opus5-alignment-analysis.md"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "write_drafts"
+  - "bash"
+
+# === 成本控制 ===
+max_tool_calls: 20
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - commit: "1e8579e"
+    stage: "兩張卡建立 + Opus 5 對齊分析報告產出（C1）"
+actual_tool_calls: 14
+result_summary: "DoD 6/6。四選項六維比較（含「不做」），建議選項 C（文件與措辭層對齊、保留三層 alias）；D（改 effort 分層廢除模型分流）技術可行但會讓 COST_POLICY 四個校準係數整張作廢，而本專案 2026-06 只開 1 張卡、最後提交停在 07-17，無產能重建樣本——判定為時機不對而非方向錯。四項落差：(1) effort 維度全缺，全 repo 零引用，成本模型仍一維；(2) 四項行為位移逐項對照到檔案行號，其中「更愛派子代理」相對 4.8 是方向反轉，本專案無需刪東西只需補上限；(3) 驗證分類表把「刪掉驗證 scaffolding」翻譯成四類處置——確定性閘門（gate_check/verification_loop/四層 GATE/CI）與稽核契約措辭（逐條對照 DoD）與安全自檢全保留，只收斂 skills/writing/SKILL.md:16 的泛用產出自我檢查；(4) 實測值漂移以 check_context_budget.rb 佐證：CLAUDE.md+GLOBAL_RULES 實測 ~1620 tokens vs 文件記載 ~400（4.05×），且 CLAUDE.md:25 與 COST_POLICY.md:39 對同一件事給出不同數字（480-990 vs 200-600）屬雙寫漂移。附帶查得 Opus 5 最小可快取前綴 1024→512，本 repo 前綴兩世代皆在門檻上，故「載入順序 cache 友善」宣稱成立。10 項落地位置對照表標註檔案／權限／風險，#7（CLAUDE.md）為唯一有硬性失敗模式者（3000 token CI blocking step，現況 861/3000）。6 項明確排除並各給獨立開卡建議。3 條高風險假設，其中 agent frontmatter 是否支援 effort 鍵設計為條件式驗證，無論結果皆不翻轉結論。"
+completion_time: "2026-07-31"
+audit_log_ref: "logs/AUDIT_LOG.md"
