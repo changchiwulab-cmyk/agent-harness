@@ -1,0 +1,116 @@
+# Execution Log — 第一性原理檢視與優化（20260831-F01）
+# 觸發條件符合 EXECUTION_LOG_SCHEMA 使用範圍：checkpoints ≥ 3
+
+execution_log:
+  run_id: "RUN-20260831-001"
+  task_id: "20260831-F01"
+  skill_type: "ops"
+  started_at: "2026-08-31 01:14"
+  ended_at: "2026-08-31 01:55"
+  # partial 而非 completed（Codex P2）：同一份紀錄裡 completion_check=fail、
+  # verification_loop=escalated、DoD 7/9——兩條 human_gated 項目未完成。
+  # frontend/data.json 等消費端會把 completed 算成完成 run，故用 schema 的 partial。
+  status: "partial"
+
+  tools_used:
+    - tool: file_read
+      call_count: 14
+    - tool: file_search
+      call_count: 6
+    - tool: file_write
+      call_count: 12
+    - tool: bash
+      call_count: 22
+    - tool: run_tests
+      call_count: 7
+    - tool: git_commit_checkpoint
+      call_count: 5
+    - tool: write_logs
+      call_count: 2
+    - tool: write_drafts
+      call_count: 2
+
+  checkpoints:
+    - commit: "6082551"
+      stage: "建立 Task Card 並綁定 active task（C0）"
+    - commit: "63a98c2"
+      stage: ".claude/commands/ 五支斜線指令，9 步執行流程從散文固化為指令（C1）"
+    - commit: "58310d2"
+      stage: "注入偵測補輸入側：--user-prompt-hook，測試 25→36 例（C2）"
+    - commit: "901a076"
+      stage: "retro skill 四處漂移收斂，新增目錄對照測試防再漂移（C3）"
+    - commit: "38967de"
+      stage: "重疊度重評＋路由瘦身＋CLAUDE.md 對齊指令＋settings 權限草案（C4）"
+
+  token_estimate:
+    input: 210000
+    output: 34000
+    total: 244000
+    source: "rule_estimated"
+
+  approvals:
+    - action: "modify_system_rules（NATIVE_OVERLAP.yaml 重評、ROUTING_RULES.md 瘦身、PERMISSIONS.yaml allow_enforcement 誠實化、validate_task_card.py VALID_SKILLS）＋modify_claude_md（執行流程對齊斜線指令）"
+      status: "approved"
+      approved_by: "human"
+      timestamp: "2026-08-31"
+      note: "使用者於 plan mode 逐檔核准執行計畫（計畫明列所有 ask 級檔案與改動內容，並選定「診斷＋全面落地」與「一併分流不改狀態」兩個範圍選項）；正式紀錄 APR-20260831-001。status 停在 review，PR 人工合併為最終批准"
+    - action: "modify_settings_json（permissions.allow/deny 補齊＋UserPromptSubmit 佈線）"
+      status: "pending"   # schema 合法值僅 approved/rejected/pending；等待人工套用即 pending
+      approved_by: "—"
+      timestamp: "2026-08-31"
+      note: "未落地。settings.json 屬 SECURITY.md §變更安全相關檔案的高風險檔，且本 session 的 runtime classifier 亦阻擋直接寫入。依硬規則 2 draft-first 產出完整替換草案 outputs/drafts/20260831-F01_settings-permissions-proposal.json，待人工套用；套用步驟與後續 doc 同步清單見報告「尚待人工的一件事」節"
+
+  # 閉環帳本（VERIFICATION_LOOP.yaml）：本卡兩條 DoD 依賴人工套用 settings.json，
+  # 驅動器據實判為 human_gated——不是修得好的失敗，是等人的失敗。
+  verification_loop:
+    outcome: "escalated"
+    iterations:
+      - iteration: 1
+        gate_results:
+          schema_check: "pass"
+          rule_check: "pass"
+          completion_check: "fail"
+          risk_check: "not_run"
+        first_fail: "completion_check"
+        disposition: "human_gated"
+        action: "DoD#2（settings.json permissions 兩段）與 DoD#3（UserPromptSubmit 佈線）未落地——settings.json 屬 SECURITY.md 高風險檔且本 session runtime classifier 阻擋直寫，依硬規則 2 轉草稿 outputs/drafts/20260831-F01_settings-permissions-proposal.json 等人工套用。不重試：重試無法改變閘門條件"
+
+  output_path: "outputs/drafts/20260831-F01_first-principles-review.md"
+  error_summary: ""
+  gate_results:
+    schema_check: "pass"
+    rule_check: "pass"
+    completion_check: "fail"   # 9 條 DoD 中 7 pass／2 human_gated（見 verification_loop）
+    risk_check: "n/a"
+
+  notes: >-
+    本卡刻意不延續 20260711-A01 roadmap 的「再加一道 gate」路線。第一性原理推導：
+    該報告自己的結論是「人工審核是瓶頸」，而其 P1-4〜P2-4 十張卡全部在增加 gate，
+    方向與瓶頸相反。優化目標改為降低每單位價值的人工審核成本。
+
+    落地四條：(1) .claude/commands/ 五支斜線指令——CLAUDE.md 的 9 步流程先前只以散文
+    存在、每 session 由模型重推；指令檔只編排既有 script，不新增第二套驗證邏輯。
+    (2) check_untrusted_content.py --user-prompt-hook——INPUT_GUARDRAILS 規範輸入側，
+    偵測器卻只掛 Stop hook 掃 outputs/（產出之後）；補上輸入側，語意與既有 advisory
+    完全一致（永不阻斷、fail-open、去重），並以測試鎖定「只走 systemMessage 不走裸
+    stdout」——UserPromptSubmit 的裸 stdout 會被併入 context。測試 25→36 例。
+    (3) retro 幽靈 skill 四處收斂：有 frontmatter、列在 ROUTING_RULES，卻同時被
+    VALID_SKILLS／ALLOWED_SKILL／.claude/skills/ 排除，六個 skill 只有五個能用；
+    新增 test_allowed_skill_matches_skills_directory 對照 skills/ 實際目錄防再漂移。
+    (4) NATIVE_OVERLAP 重評（逾期 114 天，M4 warn→ok）：aggregate 改為可重現算式
+    （README 16 模組算術平均，含治理平面 8 個 0%），30%→37%；+7 點全來自本框架主動
+    採用原生而非原生侵蝕本框架。新增 native_only_surface 段回答「原生有什麼還沒用」
+    ——五月到八月間有三項完全未採用而無人察覺。ROUTING_RULES 31→22 行，刪掉與 skill
+    description 逐字重複的關鍵字表。PERMISSIONS.yaml 誠實化 allow 層為 declared_only。
+
+    22 張未結卡分流（不改 status，依使用者指定）：keep 9／merge 8／kill 4。
+    停留天數中位數 51 天、最久 136 天。關鍵發現：四張 review 卡工作全部完成只差一句
+    「可以」——瓶頸的具體樣貌；三張商業價值卡（E01/F01/H01）坐了 129 天，同期出貨
+    34 張框架自維護卡。五張 N/M 系列卡全部卡在同一個延後 114 天的 D007 帶外決策。
+
+    順帶記錄一個護欄邊界（非缺陷）：用 Bash heredoc 寫入含 force-push 字串的設定檔時
+    被 permissions_guard 攔下——guard 分不出「執行該指令」與「檔案內容提到該指令」，
+    屬 regex deny-list 固有邊界，不建議修（加豁免只會擴大繞過面）。
+
+    回歸：Ruby 8 支檢查＋Python 單元全數＋4 支 e2e＋evals＋sync_derived --check 全綠；
+    context budget 1620→1703/3000；存量卡零回填；permissions_guard.py 一行未動。

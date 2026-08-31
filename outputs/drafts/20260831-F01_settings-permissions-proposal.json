@@ -1,0 +1,220 @@
+{
+  "_comment_": [
+    "20260831-F01 草案：.claude/settings.json 的完整替換內容（draft-first，硬規則 2）。",
+    "本檔不會被 Claude Code 讀取；確認後由人工覆蓋 .claude/settings.json 並留 logs/approvals/ 紀錄",
+    "（SECURITY.md §變更安全相關檔案：改 settings.json 屬高風險，須 ask 批准）。",
+    "與現行檔的差異只有三處，hooks 段除新增 UserPromptSubmit 外逐字未動：",
+    "  1. 新增 permissions.allow —— 鏡射 system/PERMISSIONS.yaml 的 allow 層。",
+    "     修掉「宣告 allow 卻仍跳確認」的落差（F4），直接減少人工介入次數。",
+    "     刻意不含 outputs/reports/**（write_reports 屬 ask）與 memory/**（write_long_term_memory 屬 ask）。",
+    "  2. 新增 permissions.deny —— PERMISSIONS.yaml deny 層中有穩定原生簽章者的第 1 層（F5）。",
+    "     定位誠實：原生 deny 是 prefix 比對，涵蓋面小於 permissions_guard.py 的 regex，",
+    "     屬縱深防禦的新增層，不取代第 3 層；permissions_guard.py 一行未動。",
+    "     rm 只擋破壞性旗標（-r/-f/--recursive/--force）與 rmdir/shred，對齊 PERMISSIONS.yaml",
+    "     「單檔 rm 由模型層自律」的既有分寸，不擅自收緊策略。",
+    "  3. ask 段新增 .claude/settings.json 與 scripts/permissions_guard.py 自身",
+    "     —— SECURITY.md 已把兩者列為高風險變更，但先前沒有對應的 ask 規則。",
+    "  4. hooks 新增 UserPromptSubmit → check_untrusted_content.py --user-prompt-hook",
+    "     （模式已實作並測試，36 例全綠；僅差此處佈線）。",
+    "套用後請一併更新 system/PERMISSIONS.yaml 的 allow_enforcement.status → runtime，",
+    "並把 deny_enforcement 有原生簽章者標為 native；SECURITY.md 防線分層表第 1 層補上 deny。",
+    "回歸：tests/e2e/test_input_guardrails.py 可加一條 UserPromptSubmit 佈線斷言（比照既有 Stop hook 斷言）。"
+  ],
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Glob",
+      "Grep",
+      "WebSearch",
+      "Write(outputs/drafts/**)",
+      "Edit(outputs/drafts/**)",
+      "Write(logs/**)",
+      "Edit(logs/**)",
+      "Write(tasks/**)",
+      "Edit(tasks/**)",
+      "Write(state/**)",
+      "Edit(state/**)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(python3 scripts/active_task.py:*)",
+      "Bash(python3 scripts/gate_check.py:*)",
+      "Bash(python3 scripts/verification_loop.py:*)",
+      "Bash(python3 scripts/governance_metrics.py:*)",
+      "Bash(python3 scripts/generate_audit_log.py:*)",
+      "Bash(python3 scripts/generate_frontend_manifest.py:*)",
+      "Bash(python3 scripts/check_native_overlap_freshness.py:*)",
+      "Bash(python3 scripts/check_untrusted_content.py:*)",
+      "Bash(python3 scripts/failure_counter.py:*)",
+      "Bash(python3 scripts/run_evals.py:*)",
+      "Bash(python3 system/validate_task_card.py:*)",
+      "Bash(scripts/sync_derived.sh:*)",
+      "Bash(bash scripts/sync_derived.sh:*)",
+      "Bash(python3 scripts/test_:*)",
+      "Bash(python3 tests/e2e/:*)",
+      "Bash(ruby scripts/check_:*)",
+      "Bash(ruby scripts/test_:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)",
+      "Bash(grep:*)",
+      "Bash(diff:*)"
+    ],
+    "ask": [
+      "Edit(system/**)",
+      "Write(system/**)",
+      "Edit(skills/**)",
+      "Write(skills/**)",
+      "Edit(CLAUDE.md)",
+      "Write(CLAUDE.md)",
+      "Edit(memory/**)",
+      "Write(memory/**)",
+      "Edit(outputs/reports/**)",
+      "Write(outputs/reports/**)",
+      "Edit(.claude/settings.json)",
+      "Write(.claude/settings.json)",
+      "Edit(scripts/permissions_guard.py)",
+      "Write(scripts/permissions_guard.py)"
+    ],
+    "deny": [
+      "Bash(rm -r:*)",
+      "Bash(rm -f:*)",
+      "Bash(rm -rf:*)",
+      "Bash(rm -fr:*)",
+      "Bash(rm --recursive:*)",
+      "Bash(rm --force:*)",
+      "Bash(rmdir:*)",
+      "Bash(shred:*)",
+      "Bash(sendmail:*)",
+      "Bash(mail:*)",
+      "Bash(mailx:*)",
+      "Bash(mutt:*)",
+      "Bash(ssmtp:*)",
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Bash(httpie:*)",
+      "WebFetch",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(nohup:*)",
+      "Bash(screen:*)",
+      "Bash(tmux:*)",
+      "Bash(systemctl:*)",
+      "Bash(crontab:*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/permissions_guard.py\""
+          },
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/failure_counter.py\" --hook"
+          },
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/allowed_tools_guard.py\""
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/task_card_guard.py\""
+          },
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/failure_counter.py\" --hook"
+          },
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/allowed_tools_guard.py\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash|Write|Edit|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/failure_counter.py\" --post-hook"
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "Bash|Write|Edit|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/failure_counter.py\" --post-hook"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/check_untrusted_content.py\" --user-prompt-hook"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PROJECT_DIR:-.}/scripts/sync_derived.sh\""
+          },
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/session_stop_checks.py\""
+          },
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/check_untrusted_content.py\" --stop-hook"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/session_start_context.py\""
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/precompact_preserve.py\""
+          }
+        ]
+      }
+    ]
+  }
+}

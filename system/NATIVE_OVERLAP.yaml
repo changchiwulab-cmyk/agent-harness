@@ -1,53 +1,146 @@
 # Claude Code 原生功能重疊度 — 人工 input
 #
 # plan §5.3 M4 指標的來源：每季由人工依當前 Claude Code 規範重新評估。
-# 數值來源見 outputs/drafts/2026-05-09_v3_extraction_plan.md §4.1 表 A。
+# 數值來源見 outputs/drafts/2026-05-09_v3_extraction_plan.md §4.1 表 A（2026-05-09 首評）
+# 與 outputs/drafts/20260831-F01_first-principles-review.md §重疊度重評（2026-08-31 本次）。
 #
 # 警訊閾值（plan §5.3）：aggregate > 50% → 重構觸發點。
 
-reviewed_on: "2026-05-09"
+reviewed_on: "2026-08-31"
 reviewer: "agent-harness owner"
 revisit_trigger: "每季度；或 Claude Code 主版本升級時"
 stale_after_days: 90    # 超過此天數視為過期；手動檢查：`python3 scripts/check_native_overlap_freshness.py`
 revisit_interval_days: 90   # R9：把「每季度」量化；governance_metrics.py M4 據此偵測 reviewed_on 是否過季
 
-aggregate_estimate_pct: 30   # plan §Context 的 baseline；A01 §4.1 表 A 9 模組逐項評估後仍與此 baseline 同量級
+# === aggregate 的計算方法（20260831-F01 補；先前是無法重現的 baseline 數字）===
+#
+# aggregate = README「三平面十六模組」全部 16 個模組 overlap_pct 的算術平均。
+# 明確納入治理平面那 8 個 overlap 為 0 的模組——這正是本框架不可被原生取代的部分，
+# 把它們排除在外會讓 aggregate 失真成「執行平面重疊度」。
+#
+# 2026-05-09 的 30% 是 plan §Context 的估計值，未載明算法；本次改為可重現的算式，
+# 未來每季重評只需更新各模組 overlap_pct，aggregate 由下表逐項推導。
+#
+# 2026-08-31 計算：(100+0+85+0+50+95+80+0+0+60+85+0+40+0+0+0) / 16 = 595 / 16 = 37.2
+aggregate_estimate_pct: 37
+aggregate_method: "README 16 模組 overlap_pct 的算術平均（含治理平面 8 個 0% 模組）"
+previous_estimate_pct: 30      # 2026-05-09
+delta_rationale: >-
+  +7 點，全部來自**本框架主動採用原生**（skill 註冊 85→95、路由 70→85、權限 75→85），
+  不是原生功能長進來侵蝕本框架。重疊度上升在此情境下是好事：代表少維護一份重造品。
+  仍在 40% 警戒線下，未觸發 v3 重構評估。
 
-# 每模組明細（A01 §4.1 表 A）
+# 每模組明細（對齊 README「三平面十六模組」編號）
 modules:
-  - name: "Skill Executor (skills/)"
-    overlap_pct: 85
-    native: "Claude Code Skills（/skill、自動載入）"
-    evidence: "本 session Skill tool + skills 列表自動列出；N3 PoC 起步，2026-07-02（20260702-R03）已補完 5/5 skill 的 frontmatter + .claude/skills/ symlink 註冊"
-  - name: "Planner/Router (ROUTING_RULES.md)"
-    overlap_pct: 70
-    native: "Skill 自動路由 + 子代理"
-    evidence: "原生會根據 skill description 觸發；表格式手動路由屬冗餘"
-  - name: "Tool Executor (allowed_tools)"
-    overlap_pct: 80
-    native: ".claude/settings.json permissions + PreToolUse"
-    evidence: "Phase A 已有 permissions_guard.py 把 deny 抬到 runtime"
-  - name: "Permission (PERMISSIONS.yaml)"
-    overlap_pct: 75
-    native: "settings.json（allow/ask/deny）"
-    evidence: "兩者語意幾乎 1:1，僅缺風險等級欄位"
-  - name: "Agent Context (AGENT_CONTEXT.yaml)"
-    overlap_pct: 60
-    native: "CLAUDE.md / 系統 prompt"
-    evidence: "內容 ≈ 自我描述段落，與 CLAUDE.md 互相重複"
-  - name: "Context Manager (CLAUDE.md 規則段)"
-    overlap_pct: 50
-    native: "CLAUDE.md 自動載入、自動壓縮"
-    evidence: "「20 輪壓縮」原生已具；token 上限規則仍需 CI 護欄"
-  - name: "Checkpoint (git commit)"
-    overlap_pct: 0
-    native: "—"
-    evidence: "本來就是 git 慣例"
-  - name: "Cost Policy (行為規則段)"
-    overlap_pct: 40
-    native: "平台 dashboard + 模型路由"
-    evidence: "校準資料表是真資產；其餘段落多為提醒"
-  - name: "Interface"
+  - name: "1. Interface"
     overlap_pct: 100
     native: "Claude Code CLI / web / IDE"
     evidence: "屬於 runtime，不是模組"
+
+  - name: "2. Task Card (tasks/*.yaml)"
+    overlap_pct: 0
+    native: "—"
+    evidence: "原生無「任務必須先有 goal + definition_of_done 才准執行」的概念；三層驗證（validate_task_card.py／check_spec_consistency.rb／task_card_guard.py）全為本框架獨有"
+
+  - name: "3. Planner/Router (ROUTING_RULES.md)"
+    overlap_pct: 85
+    native: "Skill 自動路由（依 description）+ 子代理"
+    evidence: "2026-08-31 實測：.claude/skills/ 補上 retro symlink 後，原生 skill 清單當場多出 retro，無需任何路由表。剩餘 15% 為原生不處理的複合任務拆分（一卡一 skill、以 output 檔接力）與 skill_type 契約"
+
+  - name: "4. Decision Log (DECISION_LOG_TEMPLATE)"
+    overlap_pct: 0
+    native: "—"
+    evidence: "決策留痕與 revisit 觸發（check_decision_revisit.rb）無原生對應"
+
+  - name: "5. Context Manager (CLAUDE.md 規則段)"
+    overlap_pct: 50
+    native: "CLAUDE.md 自動載入、自動壓縮、PreCompact hook"
+    evidence: "長對話壓縮已完全交還原生；專案級 token 硬上限（check_context_budget.rb，CJK-aware）原生不強制，仍需 CI 護欄"
+
+  - name: "6. Skill Executor (skills/)"
+    overlap_pct: 95
+    native: "Claude Code Skills（frontmatter 自動載入、Skill tool）"
+    evidence: "2026-08-31 起 6/6 skill 皆有 frontmatter 並在 .claude/skills/ 註冊（20260831-F01 補上第 6 個 retro）。剩餘 5% 為 eval_examples.md 好壞範例慣例——原生無此概念"
+
+  - name: "7. Tool Executor (allowed_tools 白名單)"
+    overlap_pct: 80
+    native: ".claude/settings.json permissions + PreToolUse hook"
+    evidence: "機制完全原生；但原生 permissions 是**專案/session 維度**，本框架的 allowed_tools 是**每張卡維度**（allowed_tools_guard.py 讀 active task 當下強制）——per-card 白名單是剩餘 20% 的來源"
+
+  - name: "8. Gate Verifier (GATE_POLICY.yaml)"
+    overlap_pct: 0
+    native: "—"
+    evidence: "四層 gate（schema→規則→完成→風險）與有界驗證閉環無原生對應"
+
+  - name: "9. Checkpoint (git commit)"
+    overlap_pct: 0
+    native: "—"
+    evidence: "本來就是 git 慣例"
+
+  - name: "10. Agent Context (AGENT_CONTEXT.yaml)"
+    overlap_pct: 60
+    native: "CLAUDE.md / 系統 prompt"
+    evidence: "自我描述段落與 CLAUDE.md 重複；boundaries.refuse_when / escalate_when 是可被引用的明文契約，原生只有散文引導"
+
+  - name: "11. Permission (PERMISSIONS.yaml)"
+    overlap_pct: 85
+    native: "settings.json permissions（allow / ask / deny 三段）"
+    evidence: "語意近 1:1。2026-08-31 前只用了 ask 一段，allow 宣稱與 runtime 不符、deny 全靠第 3 層 regex（20260831-F01 F4/F5）；補齊三段後剩餘 15% 為 risk_levels 四級與 deny_enforcement 誠實標註表——原生無風險分級欄位"
+
+  - name: "12. Approval Policy (APPROVAL_POLICY.yaml)"
+    overlap_pct: 0
+    native: "—"
+    evidence: "「同任務第 3 次請求批准即暫停」「批准不設 timeout 不自動放行」等節流規則無原生對應"
+
+  - name: "13. Cost Policy (COST_POLICY.md)"
+    overlap_pct: 40
+    native: "平台 dashboard + 模型路由 + 子代理 model 欄位"
+    evidence: "token 校準資料表是真資產；每任務 max_tool_calls / max_web_searches 上限原生不強制"
+
+  - name: "14. Failure Taxonomy (FAILURE_TAXONOMY.yaml)"
+    overlap_pct: 0
+    native: "—"
+    evidence: "17 種失敗模式的可引用 ID 與緩解措施無原生對應"
+
+  - name: "15. Execution Log (EXECUTION_LOG_SCHEMA.yaml)"
+    overlap_pct: 0
+    native: "—"
+    evidence: "結構化執行紀錄與條件式 fail-closed 稽核視窗無原生對應"
+
+  - name: "16. Audit Log (logs/AUDIT_LOG.md)"
+    overlap_pct: 0
+    native: "—"
+    evidence: "由 tasks YAML + git log 衍生、三層自動對齊防漂移，無原生對應"
+
+# === 原生獨有能力面（不計入上方 16 模組 aggregate；用途是讓每季重評看見「還沒採用什麼」）===
+#
+# 20260831-F01 新增這一段的理由：先前的表只回答「本框架有幾成被原生取代」，
+# 卻不回答「原生有什麼本框架還沒用」。第二個問題才是每季重評的實際價值——
+# 2026-05-09 到 2026-08-31 之間，下列四項有三項處於「完全未採用」狀態而無人察覺。
+native_only_surface:
+  - name: "斜線指令 (.claude/commands/)"
+    adopted: true          # 20260831-F01 採用；此前完全未用
+    note: >-
+      CLAUDE.md 的 9 步執行流程先前只以散文存在，每個 session 由模型重新推導。
+      已固化為 task-new / task-run / task-close / queue / harness-check 五支，
+      指令檔只編排既有 script，不新增第二套驗證邏輯。
+
+  - name: "Hook 事件面 (.claude/settings.json hooks)"
+    adopted: partial
+    note: >-
+      已用：PreToolUse、PostToolUse、PostToolUseFailure、Stop、SessionStart、PreCompact。
+      20260831-F01 新增 UserPromptSubmit（注入偵測補輸入側，advisory）——佈線屬安全檔變更，
+      待人工套用。未用：SessionEnd、SubagentStop、Notification。
+
+  - name: "子代理 (.claude/agents/)"
+    adopted: true
+    note: >-
+      5 支成本路由子代理已註冊（research／analysis／writing／ops／review）。
+      retro 刻意不設子代理：它是週期性流程，不是委派目標。
+
+  - name: "Plugin 打包"
+    adopted: false
+    note: >-
+      Claude Code plugin 可一次打包 skills + commands + hooks + agents。
+      這是 v3 governance 抽取（D007）比「fork 出獨立 repo + parity 測試」更自然的載體，
+      應作為 P1-5（plugin fork parity）決策時的替代方案輸入，而非默認走 fork 路線。

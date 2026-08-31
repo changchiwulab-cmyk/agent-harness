@@ -1,31 +1,24 @@
 # 路由規則 ROUTING_RULES
 
-> **原生自動路由為主（2026-05-29 起）**：5 個 skill 已具一致 frontmatter（`skills/*/SKILL.md` 的 `name`/`description`）並在 `.claude/skills/` 註冊，Claude Code 會依 description 自動載入對應 skill；對應的成本路由子代理見 `.claude/agents/`。本表降級為**契約文件與後援**：用於人工判讀、Task Card `skill_type` 填寫，以及下方「複合任務拆分」規則（原生不處理）。
+> **路由由原生負責，本檔只寫原生不做的事。**
+> 6 個 skill 皆有 frontmatter 並在 `.claude/skills/` 註冊，Claude Code 依 description 自動載入
+> （對應的成本路由子代理見 `.claude/agents/`）。原本的「關鍵字 → skill」對照表與各 skill 的
+> description 逐字重複，已於 20260831-F01 刪除——兩份會漂移的真相來源不如一份。
 
-## Skill 路由判斷
+## 權威 skill 清單
 
-根據任務性質路由到對應 skill：
+`research` / `analysis` / `writing` / `ops` / `review` / `retro`
 
-| 任務關鍵字 | Skill | 說明 |
-|-----------|-------|------|
-| 調查、研究、比較、事實查核 | research | 資料蒐集與分析 |
-| 決策、評估、Go/No-Go、方案比較、可行性 | analysis | 決策支援與策略分析 |
-| 撰寫、草稿、提案、報告、文案、SOP | writing | 內容產出 |
-| 整理、清洗、轉換、排程、歸檔、組織 | ops | 營運操作 |
-| 審查、校對、檢查、驗證、回測 | review | 品質審查 |
-| 週期回顧、retro、系統調適、規則優化 | retro | 批次任務後的週期性學習與改善 |
+這份清單是 Task Card `skill_type` 欄位的合法值，由 `system/validate_task_card.py` 的
+`VALID_SKILLS` 與 `scripts/check_spec_consistency.rb` 的 `ALLOWED_SKILL` 強制，
+並由 `test_allowed_skill_matches_skills_directory` 對照 `skills/` 實際目錄鎖定。
+**要知道每個 skill 做什麼，讀 `skills/<name>/SKILL.md` 的 description，不要在這裡再抄一份。**
 
-## 路由規則
+## 原生不處理的部分
 
-1. 如果任務明確對應單一 skill → 直接路由
-2. 如果任務跨兩個 skill（例如「研究後撰寫報告」）→ 拆成兩張 Task Card，依序執行
-3. 如果無法判斷 skill 類型 → 詢問使用者，不要猜
-4. 不做開放式的 agent-to-agent 對話路由
-5. 路由判斷本身不應消耗大量 token（不需要 LLM 做複雜推理）
-
-## 複合任務拆分原則
-
-- 一張 Task Card 只對應一個 skill
-- 如果一個需求需要多個 skill → 拆成多張 Task Card
-- Task Card 之間用 output 檔案作為接力點
-- 例如：research → outputs/drafts/research_note.md → writing 讀取並產出報告
+1. **一張 Task Card 只對應一個 skill**。跨兩個 skill 的需求要拆卡，
+   例如「研究後撰寫報告」→ research 卡產出 `outputs/drafts/research_note.md`，
+   writing 卡讀它再產出報告。以 output 檔案作為接力點，不做 agent-to-agent 對話路由。
+2. **無法判斷 skill 類型時詢問使用者，不要猜**（`system/INTAKE_FLOW.md`）。
+3. **路由判斷本身不該消耗大量 token**——不需要 LLM 做複雜推理才能決定用哪個 skill；
+   需要推理才選得出來，通常代表這張卡的範圍沒切乾淨，該回頭拆卡。

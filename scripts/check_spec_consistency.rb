@@ -8,7 +8,7 @@ errors = []
 
 ALLOWED_STATUS = %w[pending in_progress checkpoint review done failed].freeze
 ALLOWED_RISK = %w[low medium high critical].freeze
-ALLOWED_SKILL = %w[research writing ops review analysis].freeze
+ALLOWED_SKILL = %w[research writing ops review analysis retro].freeze
 # 與 system/validate_task_card.py 的 REQUIRED_FIELDS 同步；
 # parity 由 scripts/test_check_spec_consistency.rb 在 CI 保證。
 REQUIRED_FIELDS = %w[
@@ -422,6 +422,35 @@ Dir.glob('.claude/skills/*').sort.each do |link|
   next unless File.symlink?(link)
 
   errors << "#{link}: dangling symlink (target missing)" unless File.exist?(link)
+end
+
+# 9b) skill 清單的「散文列舉」必須涵蓋 ALLOWED_SKILL（20260831-F01 PR review 補）
+#
+# retro 收斂時只改了程式碼裡的三處常數／symlink，卻漏了 GATE_POLICY.yaml 與
+# TASK_CARD_TEMPLATE.yaml 這兩處**註解式列舉**——規格文件仍說只有 5 種，與 runtime
+# 不一致。散文列舉沒有型別，只能靠這種檢查釘住；否則下次新增 skill 一樣會漏。
+SKILL_PROSE_SOURCES = [
+  'system/GATE_POLICY.yaml',
+  'tasks/TASK_CARD_TEMPLATE.yaml',
+  'system/ROUTING_RULES.md'
+].freeze
+
+SKILL_PROSE_SOURCES.each do |prose_file|
+  next unless File.exist?(prose_file)
+
+  content = File.read(prose_file, encoding: 'UTF-8')
+  # 只看有列出多個 skill 名稱的行，避免把偶然提到單一 skill 的敘述當成列舉
+  enumeration_lines = content.lines.select do |line|
+    ALLOWED_SKILL.count { |s| line.include?(s) } >= 3
+  end
+  next if enumeration_lines.empty?
+
+  enumeration_lines.each do |line|
+    missing = ALLOWED_SKILL.reject { |s| line.include?(s) }
+    next if missing.empty?
+
+    errors << "#{prose_file}: skill 列舉缺少 #{missing.join('/')}（與 ALLOWED_SKILL 不一致）：#{line.strip}"
+  end
 end
 
 # 10) state/*.yaml — cross-session resume schema（G-D；跳過 SCHEMA/TEMPLATE）

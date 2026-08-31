@@ -1,0 +1,38 @@
+# 批准紀錄 — 第一性原理檢視與優化（20260831-F01）
+# schema 見 system/APPROVAL_POLICY.yaml 的 approval_record 段。
+
+approval_records:
+  - approval_id: "APR-20260831-001"
+    task_id: "20260831-F01"
+    date: "2026-08-31"
+    action: "modify_system_rules ＋ modify_claude_md（NATIVE_OVERLAP.yaml 重評、ROUTING_RULES.md 瘦身、PERMISSIONS.yaml allow_enforcement 誠實化、validate_task_card.py VALID_SKILLS 加 retro、CLAUDE.md 執行流程對齊斜線指令）"
+    approval_method: "human_confirm"
+    risk_level: "medium"
+    status: "approved"
+    approved_by: "human"
+    rationale: >-
+      使用者於 plan mode 核准執行計畫。計畫逐檔明列 ask 級改動範圍（system/ 四檔、
+      CLAUDE.md、settings.json）與各自理由，並由使用者選定兩個範圍選項：
+      「診斷 + 全面落地」與「積壓一併分流、不改卡片狀態」。
+      卡片 status 停在 review，PR 人工合併為最終批准。
+    linked_run: "RUN-20260831-001"
+
+  - approval_id: "APR-20260831-002"
+    task_id: "20260831-F01"
+    date: "2026-08-31"
+    action: "modify_settings_json（permissions.allow 42 條 ＋ permissions.deny 24 條 ＋ ask 段補安全檔 ＋ UserPromptSubmit 佈線）"
+    approval_method: "draft_first"
+    risk_level: "high"
+    status: "rejected"        # 未落地；以草稿待人工套用（valid_status 無 pending 值）
+    approved_by: "—"
+    rationale: >-
+      **未套用，非拒絕內容而是拒絕自動落地**。settings.json 屬 SECURITY.md
+      §變更安全相關檔案明列的高風險檔；本 session 的 runtime classifier 亦阻擋
+      直接寫入該檔。依硬規則 2（對外／高風險動作只產草稿）產出完整替換草案
+      outputs/drafts/20260831-F01_settings-permissions-proposal.json，
+      hooks 段除新增 UserPromptSubmit 外逐字未動（已程式比對驗證）。
+      人工套用後需一併：PERMISSIONS.yaml allow_enforcement.status → runtime、
+      deny_enforcement 有原生簽章者標 native、SECURITY.md 防線分層表第 1 層補 deny、
+      tests/e2e/test_input_guardrails.py 加 UserPromptSubmit 佈線斷言，
+      並補開一筆 approved 紀錄取代本筆。
+    linked_run: "RUN-20260831-001"

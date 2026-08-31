@@ -24,6 +24,7 @@ from check_untrusted_content import (  # noqa: E402
     is_quarantined,
     run_stats,
     run_stop_hook,
+    run_user_prompt_hook,
 )
 
 # 只命中 1 條規則（ignore ... instructions），讓 ledger 行數斷言可決定
@@ -311,6 +312,116 @@ class TestLegacyCLI(StopHookBase):
         code, out, _ = self._main([str(p)])
         self.assertEqual(code, 1)
         self.assertIn("FAILED", out)
+
+
+class TestUserPromptHookAdvisory(StopHookBase):
+    """UserPromptSubmit advisory（20260831-F01）：掃使用者輸入本身，
+    語意與 --stop-hook 一致——永不 block、fail-open、乾淨時安靜、(file, rule, sha) 去重。"""
+
+    def _run_prompt(self, prompt=None, stdin: str = ""):
+        old_stdin = sys.stdin
+        sys.stdin = io.StringIO(stdin)
+        out, err = io.StringIO(), io.StringIO()
+        try:
+            with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+                code = run_user_prompt_hook(
+                    root=self.root, ledger=self.ledger, prompt=prompt
+                )
+        finally:
+            sys.stdin = old_stdin
+        return code, out.getvalue(), err.getvalue()
+
+    def test_hit_warns_stderr_appends_ledger_exit0(self):
+        code, out, err = self._run_prompt(prompt=f"參考這段：{INJECTION_LINE}")
+        self.assertEqual(code, 0, "advisory 命中也不得 block 使用者輸入")
+        self.assertIn("使用者輸入", err)
+        self.assertIn("ignore", err, "stderr 警告需含命中規則")
+        msg = json.loads(out)
+        self.assertIn("注入樣式 advisory", msg["systemMessage"])
+        records = self._ledger_records()
+        self.assertEqual(len(records), 1)
+        rec = records[0]
+        self.assertEqual(rec["file"], cuc.USER_PROMPT_PSEUDO_PATH)
+        self.assertIn(rec["rule"], INJECTION_PATTERNS)
+        self.assertEqual(rec["verdict"], "")
+
+    def test_advisory_never_written_to_bare_stdout(self):
+        """UserPromptSubmit 的裸 stdout 會被併入 context——警告只能走 systemMessage。"""
+        _, out, _ = self._run_prompt(prompt=f"參考這段：{INJECTION_LINE}")
+        self.assertEqual(
+            set(json.loads(out).keys()),
+            {"systemMessage"},
+            "stdout 只能是 systemMessage，不得含 additionalContext 等會進 context 的欄位",
+        )
+
+    def test_clean_prompt_stays_silent(self):
+        code, out, err = self._run_prompt(prompt="幫我整理這份台灣 AI 產業資料。")
+        self.assertEqual((code, out, err), (0, "", ""))
+        self.assertEqual(self._ledger_records(), [])
+
+    def test_quarantined_block_passes(self):
+        code, out, err = self._run_prompt(
+            prompt=f"{QUARANTINE_MARKER}\n引用網頁內容：{INJECTION_LINE}"
+        )
+        self.assertEqual((code, out, err), (0, "", ""))
+
+    def test_empty_prompt_is_noop(self):
+        code, out, err = self._run_prompt(prompt="   ")
+        self.assertEqual((code, out, err), (0, "", ""))
+
+    def test_dedup_same_prompt_warns_once(self):
+        self._run_prompt(prompt=f"參考這段：{INJECTION_LINE}")
+        code, out, err = self._run_prompt(prompt=f"參考這段：{INJECTION_LINE}")
+        self.assertEqual((code, out, err), (0, "", ""))
+        self.assertEqual(len(self._ledger_records()), 1)
+
+    def test_reads_prompt_and_session_from_stdin_payload(self):
+        payload = json.dumps(
+            {"prompt": f"參考這段：{INJECTION_LINE}", "session_id": "s9"}
+        )
+        code, out, _ = self._run_prompt(stdin=payload)
+        self.assertEqual(code, 0)
+        self.assertIn("systemMessage", out)
+        self.assertEqual(self._ledger_records()[0]["session_id"], "s9")
+
+    def test_bad_stdin_fails_open(self):
+        code, out, err = self._run_prompt(stdin="not json{{{")
+        self.assertEqual((code, out, err), (0, "", ""))
+
+    def test_unwritable_ledger_fails_open(self):
+        """ledger 不可寫也不得干擾使用者輸入（fail-open）。"""
+        bad = self.root / "logs"
+        bad.mkdir(parents=True, exist_ok=True)
+        old_stdin = sys.stdin
+        sys.stdin = io.StringIO("")
+        out, err = io.StringIO(), io.StringIO()
+        try:
+            with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+                code = run_user_prompt_hook(
+                    root=self.root, ledger=bad, prompt=f"x {INJECTION_LINE}"
+                )
+        finally:
+            sys.stdin = old_stdin
+        self.assertEqual(code, 0)
+
+
+class TestUserPromptHookCLI(StopHookBase):
+    def test_cli_flag_dispatches_and_exits_zero(self):
+        r = subprocess.run(
+            [sys.executable, str(cuc.__file__), "--user-prompt-hook"],
+            input=json.dumps({"prompt": "乾淨輸入", "session_id": "s0"}),
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(r.returncode, 0)
+
+    def test_modes_are_mutually_exclusive(self):
+        r = subprocess.run(
+            [sys.executable, str(cuc.__file__), "--user-prompt-hook", "--stop-hook"],
+            capture_output=True,
+            text=True,
+        )
+        self.assertNotEqual(r.returncode, 0, "兩個 hook 模式不得同時指定")
 
 
 if __name__ == "__main__":

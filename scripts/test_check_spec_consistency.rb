@@ -49,9 +49,19 @@ class TestConstants < Minitest::Test
     assert_includes ALLOWED_SKILL, 'analysis'
   end
 
-  def test_allowed_skill_has_five_types
-    assert_equal 5, ALLOWED_SKILL.length
-    assert_equal %w[research writing ops review analysis], ALLOWED_SKILL
+  def test_allowed_skill_has_six_types
+    assert_equal 6, ALLOWED_SKILL.length
+    assert_equal %w[research writing ops review analysis retro], ALLOWED_SKILL
+  end
+
+  # 20260831-F01：retro 先前是「幽靈 skill」——skills/retro/ 有合格 frontmatter、
+  # 列在 ROUTING_RULES，卻同時被 ALLOWED_SKILL、VALID_SKILLS 與 .claude/skills/
+  # 排除，導致無法建卡也無法路由。此測試鎖住程式常數側，散文列舉側由
+  # check_spec_consistency.rb 檢查 9b 負責（兩側合計六處）。
+  def test_allowed_skill_matches_skills_directory
+    on_disk = Dir.glob('skills/*/SKILL.md').map { |p| File.basename(File.dirname(p)) }
+    assert_equal on_disk.sort, ALLOWED_SKILL.sort,
+                 'ALLOWED_SKILL 必須與 skills/ 下實際存在的 skill 目錄一致'
   end
 
   def test_task_id_pattern_accepts_numeric

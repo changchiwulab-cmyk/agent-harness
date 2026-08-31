@@ -21,7 +21,10 @@ REQUIRED_FIELDS = [
     "skill_type",
     "allowed_tools",
 ]
-VALID_SKILLS = {"research", "analysis", "writing", "ops", "review"}
+# 與 scripts/check_spec_consistency.rb 的 ALLOWED_SKILL 同步；一致性由
+# scripts/test_check_spec_consistency.rb 的 test_allowed_skill_matches_skills_directory
+# 對照 skills/ 實際目錄鎖定（20260831-F01 收斂 retro 的四處漂移）。
+VALID_SKILLS = {"research", "analysis", "writing", "ops", "review", "retro"}
 VALID_RISK = {"low", "medium", "high", "critical"}
 VALID_STATUS = {"pending", "in_progress", "checkpoint", "review", "done", "failed"}
 
