@@ -56,7 +56,8 @@ class TestConstants < Minitest::Test
 
   # 20260831-F01：retro 先前是「幽靈 skill」——skills/retro/ 有合格 frontmatter、
   # 列在 ROUTING_RULES，卻同時被 ALLOWED_SKILL、VALID_SKILLS 與 .claude/skills/
-  # 排除，導致無法建卡也無法路由。此測試鎖住四處一致，避免再次漂移。
+  # 排除，導致無法建卡也無法路由。此測試鎖住程式常數側，散文列舉側由
+  # check_spec_consistency.rb 檢查 9b 負責（兩側合計六處）。
   def test_allowed_skill_matches_skills_directory
     on_disk = Dir.glob('skills/*/SKILL.md').map { |p| File.basename(File.dirname(p)) }
     assert_equal on_disk.sort, ALLOWED_SKILL.sort,

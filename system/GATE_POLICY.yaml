@@ -12,7 +12,7 @@ gates:
       - task_id 非空且格式為 YYYYMMDD-NNN 或 YYYYMMDD-XNNN（字母前綴選用，同 TASK_ID_PATTERN）
       - goal 非空
       - definition_of_done 至少 1 條
-      - skill_type 為有效值（research / analysis / writing / ops / review）
+      - skill_type 為有效值（research / analysis / writing / ops / review / retro）
       - risk_level 為有效值（low / medium / high / critical）
       - allowed_tools 非空
     on_fail: "重試 1 次修正格式，仍失敗 → 停下，寫入 logs/errors/"

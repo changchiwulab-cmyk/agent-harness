@@ -36,17 +36,19 @@ result_summary: DoD 7/9 完成，2 項 human_gated（DoD#2 settings.json permiss
   的 9 步流程先前只以散文存在、每 session 由模型重推；指令檔只編排既有 script，不新增第二套驗證邏輯。(2) 注入偵測補輸入側：INPUT_GUARDRAILS
   規範輸入，偵測器卻只掛 Stop hook 掃 outputs/（產出之後）；新增 --user-prompt-hook，語意與既有 advisory 一致（永不阻斷／fail-open／(file,rule,sha)
   去重），並以測試鎖定只走 systemMessage 不走裸 stdout——UserPromptSubmit 的裸 stdout 會被併入 context。測試
-  25→36 例，手動 drill 四路徑通過、殘留已清。(3) retro 幽靈 skill 四處收斂為 6（VALID_SKILLS／ALLOWED_SKILL／.claude/skills/
-  symlink／NATIVE_OVERLAP evidence），新增 test_allowed_skill_matches_skills_directory
-  對照 skills/ 實際目錄防再漂移；落地當下原生 skill 清單即出現 retro。(4) NATIVE_OVERLAP 重評（逾期 114 天→0，M4
-  warn→ok）：aggregate 改為可重現算式（README 16 模組算術平均，含治理平面 8 個 0%）30%→37%，+7 點全來自本框架主動採用原生；新增
-  native_only_surface 段回答『原生有什麼還沒用』——五月到八月間三項完全未採用而無人察覺，其中 plugin 打包直接鬆動 P1-5 的前提。ROUTING_RULES
-  31→22 行（刪與 skill description 逐字重複的關鍵字表）；PERMISSIONS.yaml 誠實化 allow 層為 declared_only；CLAUDE.md
-  執行流程改指向指令，預算 1620→1703/3000。(5) 22 張未結卡分流（不改 status）：keep 9／merge 8／kill 4，停留中位數
-  51 天最久 136 天；四張 review 卡工作全完成只差一句『可以』，三張商業價值卡坐了 129 天而同期出貨 34 張框架自維護卡，五張 N/M 系列全卡在同一個延後
-  114 天的 D007 決策。settings.json 屬 SECURITY.md 高風險檔且本 session runtime classifier 亦阻擋直寫，依硬規則
-  2 出完整替換草案（hooks 段除 UserPromptSubmit 外逐字未動，已程式比對）。回歸全綠：Ruby 8 支＋Python 單元全數＋4 e2e＋evals＋sync_derived
-  --check；存量卡零回填；permissions_guard.py 一行未動（RUN-20260831-001、APR-20260831-001/002）。
+  25→36 例，手動 drill 四路徑通過、殘留已清。(3) retro 幽靈 skill 六處收斂為 6：先改了 VALID_SKILLS／ALLOWED_SKILL／.claude/skills/
+  symlink／NATIVE_OVERLAP evidence 四處，Codex P2 指出 GATE_POLICY.yaml 與 TASK_CARD_TEMPLATE.yaml
+  的註解式列舉仍是 5 種——規格文件與 runtime 不一致，直接抵銷本次收斂的目的；補齊並新增 check_spec_consistency 檢查 9b 掃描散文列舉，加上既有
+  test_allowed_skill_matches_skills_directory，程式常數與散文兩側都由 CI 鎖住。落地當下原生 skill 清單即出現
+  retro。(4) NATIVE_OVERLAP 重評（逾期 114 天→0，M4 warn→ok）：aggregate 改為可重現算式（README 16 模組算術平均，含治理平面
+  8 個 0%）30%→37%，+7 點全來自本框架主動採用原生；新增 native_only_surface 段回答『原生有什麼還沒用』——五月到八月間三項完全未採用而無人察覺，其中
+  plugin 打包直接鬆動 P1-5 的前提。ROUTING_RULES 31→22 行（刪與 skill description 逐字重複的關鍵字表）；PERMISSIONS.yaml
+  誠實化 allow 層為 declared_only；CLAUDE.md 執行流程改指向指令，預算 1620→1703/3000。(5) 22 張未結卡分流（不改
+  status）：keep 9／merge 8／kill 4，停留中位數 51 天最久 136 天；四張 review 卡工作全完成只差一句『可以』，三張商業價值卡坐了
+  129 天而同期出貨 34 張框架自維護卡，五張 N/M 系列全卡在同一個延後 114 天的 D007 決策。settings.json 屬 SECURITY.md
+  高風險檔且本 session runtime classifier 亦阻擋直寫，依硬規則 2 出完整替換草案（hooks 段除 UserPromptSubmit
+  外逐字未動，已程式比對）。回歸全綠：Ruby 8 支＋Python 單元全數＋4 e2e＋evals＋sync_derived --check；存量卡零回填；permissions_guard.py
+  一行未動（RUN-20260831-001、APR-20260831-001/002）。
 completion_time: '2026-08-31'
 ```
 

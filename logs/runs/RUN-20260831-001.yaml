@@ -7,7 +7,10 @@ execution_log:
   skill_type: "ops"
   started_at: "2026-08-31 01:14"
   ended_at: "2026-08-31 01:55"
-  status: "completed"
+  # partial 而非 completed（Codex P2）：同一份紀錄裡 completion_check=fail、
+  # verification_loop=escalated、DoD 7/9——兩條 human_gated 項目未完成。
+  # frontend/data.json 等消費端會把 completed 算成完成 run，故用 schema 的 partial。
+  status: "partial"
 
   tools_used:
     - tool: file_read
@@ -52,7 +55,7 @@ execution_log:
       timestamp: "2026-08-31"
       note: "使用者於 plan mode 逐檔核准執行計畫（計畫明列所有 ask 級檔案與改動內容，並選定「診斷＋全面落地」與「一併分流不改狀態」兩個範圍選項）；正式紀錄 APR-20260831-001。status 停在 review，PR 人工合併為最終批准"
     - action: "modify_settings_json（permissions.allow/deny 補齊＋UserPromptSubmit 佈線）"
-      status: "deferred_to_draft"
+      status: "pending"   # schema 合法值僅 approved/rejected/pending；等待人工套用即 pending
       approved_by: "—"
       timestamp: "2026-08-31"
       note: "未落地。settings.json 屬 SECURITY.md §變更安全相關檔案的高風險檔，且本 session 的 runtime classifier 亦阻擋直接寫入。依硬規則 2 draft-first 產出完整替換草案 outputs/drafts/20260831-F01_settings-permissions-proposal.json，待人工套用；套用步驟與後續 doc 同步清單見報告「尚待人工的一件事」節"

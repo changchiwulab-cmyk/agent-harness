@@ -222,7 +222,7 @@
       "run_id": "RUN-20260831-001",
       "skill_type": "ops",
       "started_at": "2026-08-31 01:14",
-      "status": "completed",
+      "status": "partial",
       "task_id": "20260831-F01"
     }
   ],
@@ -268,8 +268,9 @@
       }
     },
     "run_status": {
-      "completed": 8,
-      "failed": 1
+      "completed": 7,
+      "failed": 1,
+      "partial": 1
     },
     "run_total": 9,
     "task_risk": {

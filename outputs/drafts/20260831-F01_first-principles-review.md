@@ -78,8 +78,14 @@ CLAUDE.md 的 9 步敘述改為指向這三支，並註明**指令是固化不�
 
 ### 工作線 3：規格漂移收斂（F6）與重疊度重評（F3）
 
-**retro 四處對齊為 6**，並新增 `test_allowed_skill_matches_skills_directory`
-直接對照 `skills/` 實際目錄——同類漂移下次由 CI 擋掉，不必靠人發現。
+**retro 六處對齊為 6**，並由 CI 兩側鎖住：`test_allowed_skill_matches_skills_directory`
+對照 `skills/` 實際目錄（程式常數側），`check_spec_consistency.rb` 檢查 9b 掃描
+`GATE_POLICY.yaml`／`TASK_CARD_TEMPLATE.yaml`／`ROUTING_RULES.md` 的列舉（散文側）。
+
+> 誠實補記：我第一版只改了四處，`GATE_POLICY.yaml` 與 `TASK_CARD_TEMPLATE.yaml` 的
+> **註解式列舉**仍寫 5 種，是 Codex review 抓到的。這正好示範了本節自己的論點——
+> 沒有型別的散文列舉一定會漂移，所以補的不只是那兩行，而是掃描它們的 CI 檢查。
+
 落地當下原生 skill 清單即出現 retro **[驗]**，`skill_type: retro` 的卡也通過 schema **[驗]**。
 
 **NATIVE_OVERLAP 重評**（詳下節），M4 由 warn 轉 ok **[驗]**。
