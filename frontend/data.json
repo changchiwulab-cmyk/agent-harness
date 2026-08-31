@@ -209,24 +209,39 @@
       "started_at": "2026-07-17 04:05",
       "status": "completed",
       "task_id": "20260716-P13"
+    },
+    {
+      "ended_at": "2026-08-31 01:55",
+      "gate_results": {
+        "completion_check": "fail",
+        "risk_check": "n/a",
+        "rule_check": "pass",
+        "schema_check": "pass"
+      },
+      "path": "logs/runs/RUN-20260831-001.yaml",
+      "run_id": "RUN-20260831-001",
+      "skill_type": "ops",
+      "started_at": "2026-08-31 01:14",
+      "status": "completed",
+      "task_id": "20260831-F01"
     }
   ],
   "overview": {
     "alerts": [
       {
-        "current": "76/9 = 8.44",
+        "current": "77/9 = 8.56",
         "id": "M2",
         "name": "outputs/drafts:reports 比例",
         "status": "ok"
       },
       {
-        "current": "81/81 = 100.0%",
+        "current": "82/82 = 100.0%",
         "id": "M3",
         "name": "audit log 覆蓋率（status ∈ {review, done, failed, partial}）",
         "status": "ok"
       },
       {
-        "current": "30% (reviewed 2026-05-09)",
+        "current": "37% (reviewed 2026-08-31)",
         "id": "M4",
         "name": "Claude Code 原生功能重疊度（人工評估）",
         "status": "ok"
@@ -234,28 +249,29 @@
     ],
     "gate_results": {
       "completion_check": {
+        "fail": 1,
         "not_run": 1,
         "pass": 7
       },
       "risk_check": {
-        "n/a": 6,
+        "n/a": 7,
         "not_run": 1,
         "pass": 1
       },
       "rule_check": {
         "not_run": 1,
-        "pass": 7
+        "pass": 8
       },
       "schema_check": {
         "fail": 1,
-        "pass": 7
+        "pass": 8
       }
     },
     "run_status": {
-      "completed": 7,
+      "completed": 8,
       "failed": 1
     },
-    "run_total": 8,
+    "run_total": 9,
     "task_risk": {
       "high": 2,
       "low": 57,
@@ -270,9 +286,9 @@
     },
     "task_status": {
       "done": 77,
-      "in_progress": 5,
+      "in_progress": 4,
       "pending": 13,
-      "review": 4
+      "review": 5
     },
     "task_total": 99
   },
@@ -1264,7 +1280,7 @@
       "path": "tasks/2026-08-31_first-principles-optimization.yaml",
       "risk_level": "medium",
       "skill_type": "ops",
-      "status": "in_progress",
+      "status": "review",
       "task_id": "20260831-F01"
     }
   ]
