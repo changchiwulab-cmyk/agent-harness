@@ -35,11 +35,28 @@ permissions:
     - spawn_background_process # 啟動背景程序
     - git_force_push           # git push --force（保護遠端歷史與正式資料）
 
+# === allow 層的執法現況（20260831-F01 誠實化）===
+# ⚠️ 上方 allow 清單目前是**策略宣告，不是 runtime 行為**：
+# .claude/settings.json 只有 permissions.ask 一段，沒有 permissions.allow，
+# 因此宣告為 allow 的動作（寫 drafts、寫 logs、建卡、git checkpoint）在執行時
+# 仍會跳確認——宣稱與實作不符，且直接加重本專案已知的瓶頸（人工審核）。
+# 對齊用的 settings.json 草案見 outputs/drafts/20260831-F01_settings-permissions-proposal.json，
+# 屬 SECURITY.md §變更安全相關檔案的高風險變更，需人工套用並留 logs/approvals/ 紀錄。
+# 套用後請一併把本段改為「allow 已由 settings.json permissions.allow 對齊」。
+allow_enforcement:
+  status: "declared_only"     # declared_only | runtime
+  blocked_on: "人工套用 settings.json permissions.allow"
+
 # === deny 執法層級 ===
+# native  = .claude/settings.json permissions.deny（第 1 層，不依賴本 repo 的 Python）
 # runtime = scripts/permissions_guard.py（PreToolUse hook）有對應攔截規則
 # model   = 無可靠 shell 簽名，靠模型自律 + 人工審核把關
 # 三方同步（本清單 ↔ 本區段 ↔ guard DENY_RULES）由 scripts/test_permissions_guard.py
 # 的 sync 測試在 CI 保證。
+#
+# ⚠️ 下表的 runtime 標記為現況；native 第 1 層尚未存在（settings.json 無 permissions.deny），
+# 草案同上。native 是**縱深防禦的新增層，不取代 runtime**：原生 deny 是 prefix 比對，
+# 涵蓋面小於 permissions_guard.py 的 regex，permissions_guard.py 不因此鬆綁一行。
 deny_enforcement:
   shell_delete: runtime
   send_email: runtime
