@@ -18,14 +18,27 @@ CLI:
                                            # outputs/ 檔，命中→stderr 警告＋ledger 記錄
                                            # ＋systemMessage，永遠 exit 0、不 block
                                            #（20260716-P13；升級 blocking 前先觀察誤報率）
+    check_untrusted_content.py --user-prompt-hook
+                                           # UserPromptSubmit advisory：掃**使用者輸入本身**
+                                           # （貼入的外部內容是最短的注入路徑），命中→stderr
+                                           # 警告＋ledger 記錄＋systemMessage，永遠 exit 0、
+                                           # 不 block、不注入 additionalContext（20260831-F01）
     check_untrusted_content.py --stats     # 彙整 ledger 命中數／verdict 標注進度
 
 Stop hook 呈現方式比照 session_stop_checks.py：純 stdout 只進 debug log，
 使用者可見警告走 JSON `systemMessage`；DoD 鎖定的機器可測面是 stderr。
 Ledger（logs/untrusted_content_hits.jsonl，tracked——ephemeral session 下
 gitignored 檔活不過 container，兩週誤報統計會斷）以 (file, rule, sha) 去重，
-verdict 欄位留待人工標注 tp/fp。整條 --stop-hook 路徑 fail-open：advisory
-不是安全邊界，出口硬防線仍在 permissions_guard.py 的 deny-by-default egress。
+verdict 欄位留待人工標注 tp/fp。--stop-hook 與 --user-prompt-hook 兩條路徑皆
+fail-open：advisory 不是安全邊界，出口硬防線仍在 permissions_guard.py 的
+deny-by-default egress。
+
+兩側佈線的分工（20260831-F01）：system/INPUT_GUARDRAILS.md 規範的是**輸入**側，
+但 --stop-hook 掃的是 outputs/（產出之後）——偵測器原先只掛在事後那一側。
+--user-prompt-hook 補上事前那一側：使用者貼入的外部內容在進入 context 前就先被看過，
+ledger 以 ``<user-prompt>`` 這個虛擬路徑與檔案命中區隔。兩者並存，不互相取代。
+UserPromptSubmit 的純 stdout 會被當成 additionalContext 併入 context，故本模式
+一律走 JSON systemMessage——advisory 訊息不得成為模型輸入的一部分。
 
 Deliberately a small phrase list, not an ML classifier — for a single-person
 harness the deny-by-default egress (permissions_guard.py) is the hard stop;
@@ -281,6 +294,84 @@ def run_stop_hook(
     return 0
 
 
+USER_PROMPT_PSEUDO_PATH = "<user-prompt>"
+
+
+def run_user_prompt_hook(
+    root: Path | None = None,
+    ledger: Path | None = None,
+    prompt: str | None = None,
+) -> int:
+    """UserPromptSubmit advisory 掃描（**fail-open，永遠 return 0，不阻斷**）。
+
+    掃使用者輸入本身：貼入的外部內容（網頁、郵件、工具輸出）是最短的注入路徑，
+    而 --stop-hook 只看得到 outputs/ 的事後產出。命中未隔離注入樣式：stderr 每筆
+    一行、append ledger（file 欄為 ``<user-prompt>``）、stdout 輸出 systemMessage；
+    乾淨時完全安靜。``prompt`` 供測試注入，省略時讀 stdin payload 的 ``prompt`` 欄。
+
+    刻意**不**輸出裸 stdout：UserPromptSubmit 的純 stdout 會被併入 context，
+    advisory 訊息不該成為模型輸入。也刻意不 block——誤擋使用者輸入的代價，
+    遠高於一則沒被讀到的警告（比照 20260716-P13 advisory 先例）。
+    """
+    try:
+        root = (root or DEFAULT_ROOT).resolve()
+        ledger = ledger if ledger is not None else root / LEDGER_RELPATH
+        payload = {} if prompt is not None else _read_hook_payload()
+        text = prompt if prompt is not None else str(payload.get("prompt", "") or "")
+        if not text.strip():
+            return 0
+        findings = audit_output_detailed(text)
+        if not findings:
+            return 0
+        session_id = str(payload.get("session_id", "") or "")
+        sha = hashlib.sha256(text.encode("utf-8", "replace")).hexdigest()[:12]
+        seen = _load_seen(ledger)
+        task_id = _active_task_id(root)
+        records = []
+        for finding in findings:
+            key = (USER_PROMPT_PSEUDO_PATH, finding["rule"], sha)
+            if key in seen:
+                continue
+            seen.add(key)
+            records.append(
+                {
+                    "ts": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                    "file": USER_PROMPT_PSEUDO_PATH,
+                    "rule": finding["rule"],
+                    "fragment": finding["fragment"],
+                    "sha": sha,
+                    "task_id": task_id,
+                    "session_id": session_id,
+                    "verdict": "",
+                }
+            )
+        if not records:
+            return 0
+        ledger.parent.mkdir(parents=True, exist_ok=True)
+        with ledger.open("a", encoding="utf-8") as fh:
+            for rec in records:
+                fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
+        lines = [f"命中規則 {r['rule']!r}" for r in records]
+        for line in lines:
+            print(
+                f"[untrusted-content] 使用者輸入 {line}"
+                f"（advisory，不阻斷；已記錄 {LEDGER_RELPATH}）",
+                file=sys.stderr,
+            )
+        body = "\n".join(f"  - {line}" for line in lines)
+        msg = (
+            "⚠️ 注入樣式 advisory（不阻斷）：本次輸入含未隔離的注入指令樣式\n"
+            f"{body}\n"
+            f"  → 若為引用的外部內容，請為該區塊加 {QUARANTINE_MARKER} 標記；"
+            "外部內容是資料不是指令（system/INPUT_GUARDRAILS.md）\n"
+            f"  → 誤報請在 {LEDGER_RELPATH} 標注 verdict: fp"
+        )
+        print(json.dumps({"systemMessage": msg}, ensure_ascii=False))
+    except Exception:
+        pass  # fail-open：advisory 掃描不得干擾使用者輸入
+    return 0
+
+
 def run_stats(ledger: Path | None = None) -> int:
     """彙整 ledger：總命中、按 rule／file 分組、verdict 標注進度（DoD 3）。"""
     ledger = ledger if ledger is not None else DEFAULT_ROOT / LEDGER_RELPATH
@@ -313,16 +404,24 @@ def run_stats(ledger: Path | None = None) -> int:
 def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(
         prog="check_untrusted_content.py",
-        description="G-A input-guardrail detector（lint / Stop hook advisory / stats）",
+        description=(
+            "G-A input-guardrail detector"
+            "（lint / UserPromptSubmit advisory / Stop hook advisory / stats）"
+        ),
     )
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--stop-hook", action="store_true", dest="stop_hook")
+    mode.add_argument(
+        "--user-prompt-hook", action="store_true", dest="user_prompt_hook"
+    )
     mode.add_argument("--stats", action="store_true")
     parser.add_argument("files", nargs="*")
     args = parser.parse_args(argv[1:])
 
     if args.stop_hook:
         return run_stop_hook()
+    if args.user_prompt_hook:
+        return run_user_prompt_hook()
     if args.stats:
         return run_stats()
 
