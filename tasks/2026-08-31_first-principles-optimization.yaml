@@ -1,0 +1,87 @@
+# Task Card — 第一性原理檢視與優化
+# 來源：使用者 2026-08-31 指示「根據你的最新能力，用第一性原理檢視，優化這個專案」
+# 定位：不延續 20260711-A01 roadmap 的「再加一道 gate」路線；回到目的與瓶頸重新推導
+
+task_id: "20260831-F01"
+date: "2026-08-31"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "以第一性原理檢視 agent-harness，把優化方向從『再加防線』轉為『降低每單位價值的人工審核成本』——接上四項完全未用的 Claude Code 原生能力（斜線指令／permissions allow+deny／UserPromptSubmit hook）、收斂已驗證的四處規格漂移、重評逾期 114 天的原生重疊度，並對 21 張未結卡出分流建議"
+context: |
+  本次檢視的三個第一性原理提問與已驗證證據：
+  (1) 系統為何存在——為一人公司產出商業價值，非為治理完整。實測 98 張卡中 63 張
+      skill_type=ops（框架自身維運），6/7/8 月幾乎全為 meta 卡；M1 指標 2026-08 = 0 張。
+  (2) 瓶頸在哪——20260711-A01 自己的結論是「人工審核是瓶頸」，但其 roadmap P1-4〜P2-4
+      共 10 張卡的方向一律是新增 gate，與瓶頸方向相反。
+  (3) 平台已原生做了什麼——唯一答案來源 system/NATIVE_OVERLAP.yaml 已逾期 114 天
+      （check_native_overlap_freshness.py 回 STALE，門檻 90），評估基準停在 2026-05-09。
+  已驗證缺口：
+  - .claude/commands/ 目錄不存在——CLAUDE.md 的 9 步執行流程每 session 由模型重推。
+  - .claude/settings.json 僅有 permissions.ask，無 allow／deny：PERMISSIONS.yaml 宣告的
+    9 項 allow 在 runtime 照樣跳確認（宣稱與實作不符）；8 條 deny 只有第 3 層
+    permissions_guard.py（fail-open、regex、自承輔助防線），第 1 層不存在。
+  - check_untrusted_content.py 掛 Stop hook 掃 outputs/（產出之後），但 INPUT_GUARDRAILS.md
+    談的是輸入側；原生 UserPromptSubmit 鉤點未用。
+  - retro skill 四處漂移：skills/retro/ 有合格 frontmatter（845 tokens）且列在
+    ROUTING_RULES，但 validate_task_card.VALID_SKILLS、check_spec_consistency.ALLOWED_SKILL、
+    .claude/skills/ symlink 三處都排除它 → 無法建卡、無法路由。
+  設計邊界：本卡不新增任何 blocking gate（加閘與瓶頸方向相反，是本次核心論點）；
+  不啟動 v3 重構／plugin repo 抽取（D007 仍延後）；不動 permissions_guard.py 的 regex
+  與 fail-open 語意（安全變更需獨立卡）；不改 21 張卡的 status（使用者指定只出建議）。
+input_data:
+  - "system/NATIVE_OVERLAP.yaml（reviewed_on 2026-05-09，逾期 114 天）"
+  - "outputs/drafts/20260711-A01_four-layer-alignment-analysis.md（既有 roadmap，本卡刻意不延續其路線）"
+  - ".claude/settings.json（僅 ask 段）"
+  - "system/PERMISSIONS.yaml、SECURITY.md（enforcement 分層宣稱）"
+  - "scripts/governance_metrics.py 輸出（M1 warn／M4 warn）"
+  - "tasks/ 下 21 張 status ∉ {done, failed} 的卡"
+
+# === 完成標準 ===
+definition_of_done:
+  - "斜線指令落地：.claude/commands/ 新增 task-new／task-run／task-close／queue／harness-check 五支，指令檔只編排既有 script、不新增第二套驗證邏輯"
+  - "原生 permissions 兩段補齊：settings.json 新增 permissions.allow（鏡射 PERMISSIONS.yaml allow 層）與 permissions.deny（有穩定原生簽章者），且 PERMISSIONS.yaml deny_enforcement 與 SECURITY.md 防線分層表同步標註 native 層；permissions_guard.py 一行不動"
+  - "注入偵測補輸入側：check_untrusted_content.py 新增 UserPromptSubmit 模式並佈線，維持 advisory + fail-open + 永不 block 語意，測試鎖定；Stop hook 既有 outputs/ 掃描不變"
+  - "retro skill 四處收斂：VALID_SKILLS／ALLOWED_SKILL／.claude/skills/retro symlink／NATIVE_OVERLAP evidence 全部對齊為 6，parity 測試同步更新"
+  - "NATIVE_OVERLAP.yaml 重評：reviewed_on 更新、補上斜線指令／hooks 事件面／plugin 打包／原生 permissions 四個缺漏模組列、aggregate 重估；check_native_overlap_freshness.py 由 STALE 轉綠、governance_metrics M4 由 warn 轉 ok"
+  - "ROUTING_RULES.md 瘦身：砍與 skill description 重複的關鍵字表，只留原生不處理的複合任務拆分與 skill_type 契約；CLAUDE.md 執行流程改指向斜線指令且 check_context_budget.rb 維持綠燈"
+  - "21 張未結卡逐張標 keep／merge／kill 並附理由，寫入報告；不改任何卡片 status"
+  - "檢視報告產出至 outputs/drafts/20260831-F01_first-principles-review.md，含三公理→證據→結論、四工作線落地紀錄、重疊度重評對照、分流表"
+  - "回歸紅線全綠：既有 98 張卡零回填、全套 Ruby+Python 單元測試與 4 支 e2e 與 evals 通過、sync_derived.sh --check 零漂移、context budget 綠燈"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "20260831-F01_first-principles-review.md"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "file_write"
+  - "bash"
+  - "run_tests"
+  - "git_commit_checkpoint"
+  - "modify_settings_json"
+  - "modify_system_rules"
+  - "modify_claude_md"
+  - "write_drafts"
+  - "write_logs"
+
+# === 成本控制 ===
+max_tool_calls: 60
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
+actual_tool_calls: 0
+result_summary: ""
+completion_time: ""
+audit_log_ref: "logs/AUDIT_LOG.md"
