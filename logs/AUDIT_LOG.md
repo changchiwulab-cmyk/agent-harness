@@ -7,6 +7,25 @@
 
 <!-- AUTO_AUDIT_BEGIN -->
 ```yaml
+task_id: 20260831-F01
+date: '2026-08-31'
+skill_type: ops
+goal: 以第一性原理檢視 agent-harness，把優化方向從『再加防線』轉為『降低每單位價值的人工審核成本』——接上四項完全未用的 Claude Code
+  原生能力（斜線指令／permissions allow+deny／UserPromptSubmit hook）、收斂已驗證的四處規格漂移、重評逾期 114 天的原生重疊度，並對
+  21 張未結卡出分流建議
+status: in_progress
+risk_level: medium
+approval_needed: true
+output_path: outputs/drafts/20260831-F01_first-principles-review.md
+checkpoints:
+- commit: '6082551'
+  subject: 'checkpoint: [20260831-F01] 建立第一性原理優化 Task Card 並綁定 active task（C0）'
+actual_tool_calls: 0
+result_summary: ''
+completion_time: ''
+```
+
+```yaml
 task_id: 20260716-P24
 date: '2026-07-16'
 skill_type: ops

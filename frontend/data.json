@@ -259,22 +259,22 @@
     "task_risk": {
       "high": 2,
       "low": 57,
-      "medium": 39
+      "medium": 40
     },
     "task_skill": {
       "analysis": 10,
-      "ops": 64,
+      "ops": 65,
       "research": 9,
       "review": 8,
       "writing": 7
     },
     "task_status": {
       "done": 77,
-      "in_progress": 4,
+      "in_progress": 5,
       "pending": 13,
       "review": 4
     },
-    "task_total": 98
+    "task_total": 99
   },
   "tasks": [
     {
@@ -1256,6 +1256,16 @@
       "skill_type": "ops",
       "status": "pending",
       "task_id": "20260716-P24"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-08-31",
+      "goal": "以第一性原理檢視 agent-harness，把優化方向從『再加防線』轉為『降低每單位價值的人工審核成本』——接上四項完全未用的 Claude Code 原生能力（斜線指令／permissions allow+deny／UserPromptSubmit hook）、收斂已驗證的四處規格漂移、重評逾期 114 天的原生重疊度，並對 21 張未結卡出分流建議",
+      "path": "tasks/2026-08-31_first-principles-optimization.yaml",
+      "risk_level": "medium",
+      "skill_type": "ops",
+      "status": "in_progress",
+      "task_id": "20260831-F01"
     }
   ]
 }
