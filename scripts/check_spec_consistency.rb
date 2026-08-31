@@ -8,7 +8,7 @@ errors = []
 
 ALLOWED_STATUS = %w[pending in_progress checkpoint review done failed].freeze
 ALLOWED_RISK = %w[low medium high critical].freeze
-ALLOWED_SKILL = %w[research writing ops review analysis].freeze
+ALLOWED_SKILL = %w[research writing ops review analysis retro].freeze
 # 與 system/validate_task_card.py 的 REQUIRED_FIELDS 同步；
 # parity 由 scripts/test_check_spec_consistency.rb 在 CI 保證。
 REQUIRED_FIELDS = %w[
