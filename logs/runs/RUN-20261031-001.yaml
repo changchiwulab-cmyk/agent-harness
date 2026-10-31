@@ -1,0 +1,60 @@
+# Execution Log — P0：MCP guard＋retro 註冊＋COST_POLICY 同步（20261031-P01）
+# 觸發條件符合 EXECUTION_LOG_SCHEMA 使用範圍：checkpoints ≥ 3
+
+execution_log:
+  run_id: "RUN-20261031-001"
+  task_id: "20261031-P01"
+  skill_type: "ops"
+  started_at: "2026-10-31 16:08"
+  ended_at: "2026-10-31 16:25"
+  status: "completed"
+
+  tools_used:
+    - tool: file_read
+      call_count: 4
+    - tool: file_search
+      call_count: 3
+    - tool: file_write
+      call_count: 6
+    - tool: bash
+      call_count: 10
+    - tool: run_tests
+      call_count: 3
+    - tool: git_commit_checkpoint
+      call_count: 3
+    - tool: modify_settings_json
+      call_count: 1
+    - tool: modify_system_rules
+      call_count: 2
+    - tool: write_logs
+      call_count: 2
+
+  checkpoints:
+    - commit: "97c3140"
+      stage: "建立 P0 Task Card 並綁定 active task（C1）"
+    - commit: "7ba50f9"
+      stage: "mcp_guard.py＋13 例測試＋settings.json 佈線＋PERMISSIONS/SECURITY 登記＋CI step＋retro symlink（C2）"
+    - commit: "pending"
+      stage: "COST_POLICY 同步＋回歸＋run log＋approval＋卡片收尾（status→review）（C3）"
+
+  token_estimate:
+    input: 60000
+    output: 9000
+    total: 69000
+    source: "rule_estimated"
+
+  approvals:
+    - action: "modify_settings_json＋modify_system_rules"
+      status: "approved"
+      approved_by: "human"
+      timestamp: "2026-10-31"
+      note: "APR-20261031-001；status 停在 review，PR 人工合併為最終批准"
+
+  output_path: "scripts/mcp_guard.py"
+  error_summary: ""
+  gate_results:
+    schema_check: "pass"
+    rule_check: "pass"
+    completion_check: "pass"
+    risk_check: "n/a"
+  notes: "MCP 工具原本完全繞過 Bash-only 的 permissions_guard。mcp_guard 依工具名 token 分級：唯讀動詞開頭 → allow（避免 read_email／get_share_link 因受詞誤擋）；其次命中刪除／外發／發布／合併／分享／push／fork／金流 token 或 create_or_update_file → exit 2；其餘寫入型與未知工具 → hookSpecificOutput permissionDecision=ask。壞 stdin／壞 JSON／內部例外 → ask（不 crash-open）。精確覆寫：disable_pr_auto_merge、claude-code-remote send_message/send_later → ask。stdlib only，以 python -I 子程序測試鎖定。未新增 PERMISSIONS deny key（不動 sync 契約），改登記 enforcement 段。已知限制：分類靠命名慣例，命名不規則的工具落到 ask；hook 設定於下一個 session 才生效（本 session 未做 live drill）。全套 Python 14 支＋Ruby 4 支＋e2e 4 支＋spec/dual-path/context-budget 檢查＋sync_derived --check 不回歸。"

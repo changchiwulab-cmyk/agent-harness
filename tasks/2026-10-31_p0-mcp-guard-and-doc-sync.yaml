@@ -3,7 +3,7 @@
 
 task_id: "20261031-P01"
 date: "2026-10-31"
-status: "in_progress"
+status: "review"
 
 # === 任務定義 ===
 goal: "P0：把 deny／對外動作防線延伸到 MCP 工具（mcp__* PreToolUse guard），並補 retro skill 原生註冊、更新 COST_POLICY 過時的模型表與 token 數字"
@@ -66,4 +66,14 @@ max_web_searches: 0
 skill_type: "ops"
 
 # === 執行紀錄（由 agent 填寫）===
-checkpoints: []
+checkpoints:
+  - commit: "97c3140"
+    stage: "建立 Task Card 並綁定 active task（C1）"
+  - commit: "7ba50f9"
+    stage: "mcp_guard 佈線＋測試＋retro 註冊（C2）"
+  - commit: "pending"
+    stage: "COST_POLICY 同步＋回歸＋run log＋approval＋收尾（C3）"
+actual_tool_calls: 30
+result_summary: "DoD 6/6。mcp_guard.py（matcher mcp__.*）：唯讀 allow、刪除／外發／發布／合併／分享／push／金流 deny（exit 2）、其餘寫入與未知 ask、壞輸入 ask；stdlib only。13 例測試含 settings.json 佈線與 PERMISSIONS 登記斷言，CI 已接。retro symlink 補齊（6/6，session 內已見 retro skill 出現）。COST_POLICY 模型表改 Claude 5 世代並標 [待驗證] 以官方 alias 為準，skill token 口徑與 CLAUDE.md 一致。全套回歸通過（RUN-20261031-001、APR-20261031-001）。限制：hook 下個 session 生效，未做 live drill。"
+completion_time: "2026-10-31"
+audit_log_ref: "logs/AUDIT_LOG.md"
