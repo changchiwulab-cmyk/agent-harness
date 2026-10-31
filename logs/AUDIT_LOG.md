@@ -7,6 +7,37 @@
 
 <!-- AUTO_AUDIT_BEGIN -->
 ```yaml
+task_id: 20261031-P02
+date: '2026-10-31'
+skill_type: analysis
+goal: P1：以實際執行證據（logs/errors、logs/runs、Task Card 實測欄位、程式依賴）盤點 system/ 規則，產出逐檔保留／合併／降級／刪除的刪減提案，經人工核准後落地，目標
+  system/ 執行期載入量與總量明顯下降且不破壞任何 hook／CI 契約
+status: review
+risk_level: high
+approval_needed: true
+output_path: outputs/drafts/2026-10-31_p1-rule-reduction-proposal.md
+checkpoints:
+- commit: 2dfd2dc
+  stage: 建立 Task Card（C1）
+- commit: 7f1d229
+  stage: 階段一：刪減提案草稿（C2）
+- commit: 9a0e5c9
+  stage: A 組落地（C3）
+- commit: 26b7b85
+  stage: B 組落地（C4）
+- commit: 478bf5b
+  stage: C 組落地（C5）
+actual_tool_calls: 52
+result_summary: DoD 5/5。提案經人工核准 A／B／C（D 未核准，維持原狀）。刪 3 檔（AGENT_CONTEXT、ROUTING_RULES、RETRO_FLOW），內容併入
+  CLAUDE.md／PERMISSIONS、INTAKE_FLOW、retro skill；GLOBAL_RULES 刪失效的「5 次呼叫／3 輪查詢」全域規則（實測
+  81 張有紀錄卡中 60 張超過 5 次）；APPROVAL_POLICY 刪與 PERMISSIONS／settings.json 重複的 triggers；COST_POLICY
+  刪重複行為規則、未執行的每週量測、過時的 v2 升級條件；CONTEXT_ENGINEERING 刪與 CLAUDE.md 矛盾的組裝順序。實測：執行期載入 10.9K→5.3K
+  bytes（−52%），system/ 總量 65.2K→56.3K（−13.6%），低於提案估計（−59%／−26%），差異原因記於 RUN-20261031-002。全套測試與
+  CI 檢查不回歸。
+completion_time: '2026-10-31'
+```
+
+```yaml
 task_id: 20261031-P01
 date: '2026-10-31'
 skill_type: ops
