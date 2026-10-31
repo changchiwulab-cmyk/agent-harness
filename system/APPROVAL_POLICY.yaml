@@ -13,36 +13,9 @@
 # | high       | explicit_review           | draft_first     | 產出草稿，明確審閱後才發布  |
 # | critical   | deny_by_default           | human_confirm + 額外授權 | 預設拒絕，需明確授權繞過 |
 
-triggers:
-  # --- 自動觸發批准的條件 ---
-  - condition: "risk_level >= high"
-    action: "輸出到 outputs/drafts/，等待人工確認"
-    method: human_confirm
-
-  - condition: "對外動作（email / 發文 / API call）"
-    action: "產出草稿，不直接執行"
-    method: draft_first
-
-  - condition: "修改 system/ 目錄下任何檔案"
-    action: "列出變更差異，等待確認"
-    method: human_confirm
-
-  - condition: "修改 skills/ 目錄下任何檔案"
-    action: "列出變更差異，等待確認"
-    method: human_confirm
-
-  - condition: "寫入 memory/ 長期記憶"
-    action: "列出擬寫入內容，等待確認"
-    method: human_confirm
-
-  - condition: "建立新的 Task Card（risk_level >= high）"
-    action: "展示 goal + definition_of_done，等待確認"
-    method: human_confirm
-    note: "low/medium risk Task Card 已升為 allow（見 PERMISSIONS.yaml）"
-
-  - condition: "寫入正式報告（outputs/reports/）"
-    action: "先存 drafts/，確認後移至 reports/"
-    method: draft_first
+# 「哪些動作要核准」的唯一事實來源是 PERMISSIONS.yaml 的 ask/deny 清單與
+# .claude/settings.json 的 ask 規則（runtime 執行點）。原 triggers 段與兩者重複，
+# 20261031-P02 移除；本檔只管「怎麼核准」與「核准紀錄格式」，執行期不預載，需要時才查。
 
 approval_methods:
   human_confirm:

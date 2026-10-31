@@ -1,31 +1,11 @@
 # 成本控制策略 COST_POLICY
 
-## 當前方案（v1）
+## 成本護欄
 
-v1 階段採用「粗略護欄 + 事後量測」策略：
-
-- **硬上限**：透過 Anthropic API dashboard 的 spending limit 設定月度/日度上限
-- **軟上限**：透過 CLAUDE.md 規則限制單一任務的工具呼叫次數與重試次數
-- **事後追蹤**：每次任務完成後在 audit log 記錄預估 token 消耗
-
-## 行為規則
-
-### 節省 token 的做法
-- 能讀檔解決的不做 web search
-- 單次查詢能解決的不拆多次
-- 大型檔案用路徑引用，不全文貼入
-- 重複內容用摘要取代
-- Context 接近上限時主動壓縮
-
-### 工具呼叫限制
-- 單一任務最多 5 次外部工具呼叫後需 checkpoint
-- 單一任務最多 3 輪 web search
-- 連續失敗重試上限 3 次
-
-### 超限行為
-- 工具呼叫達上限 → checkpoint，通知使用者決定是否繼續
-- 連續失敗達上限 → 停止執行，記錄到 error log
-- 發現任務範圍遠超預期 → 暫停，建議拆分任務
+- **硬上限**：Anthropic dashboard 的 spending limit（月／日）。
+- **任務級上限**：Task Card 的 `max_tool_calls` / `max_retries` / `max_web_searches`，逐卡設定；不設全域次數規則（20261031-P02：原「5 次呼叫／3 輪查詢」全域規則與實測不符，已移除）。
+- **失敗熔斷**：連續失敗 3 次由 `scripts/failure_counter.py` hook 自動攔阻。
+- **超限行為**：達上限 → checkpoint 並通知使用者決定是否繼續；範圍遠超預期 → 暫停、建議拆卡。
 
 ## Context 量化基準（參考值）
 
@@ -37,7 +17,7 @@ v1 階段採用「粗略護欄 + 事後量測」策略：
 | Programmatic Tool Calling | 省 ~37% | 中間結果不進 context |
 | CLAUDE.md + GLOBAL_RULES | 控制在 3K 以內 | 軟性上限；實測 baseline ~400 tokens |
 | 單一 skill prompt | 控制在 1.5K 以內 | 軟性上限；只計執行期載入的 SKILL.md（eval_examples.md 不計），實測 baseline 480-990 tokens（與 CLAUDE.md 同口徑） |
-| 常駐 system prompt 快取 | 命中省 ~90% input | prompt caching：穩定前綴（CLAUDE.md+GLOBAL_RULES+PERMISSIONS）做 cache，可變後綴（Task Card+skill）後接 |
+| 常駐 system prompt 快取 | 命中省 ~90% input | prompt caching：穩定前綴（CLAUDE.md+GLOBAL_RULES）做 cache，可變後綴（Task Card+skill）後接 |
 
 ## 模型路由規則（2026-05-29 起：已落地於原生子代理）
 
@@ -56,15 +36,9 @@ v1 階段採用「粗略護欄 + 事後量測」策略：
 - 路由判斷本身改由原生 skill description 自動觸發，不再需要獨立的「路由模型」。
 - 校準資料（下方各 skill 實測平均）回填時，可據以調整對應子代理的分層（成本長期偏高 → 升一層模型）。
 
-## 事後量測流程（每週）
-
-1. 查看 Anthropic dashboard 的當週用量
-2. 對照 audit log 中的任務紀錄
-3. 計算每種任務類型的平均消耗
-4. 累積 4 週後，設定任務級別的 token 預算建議值
-5. 寫入本文件的「任務級預算」區塊
-
 ## 任務級預算（2026-04-15 依首次 RETRO 校正，基於 8 筆 audit log）
+
+> **歷史數據**：每類僅 1–2 筆樣本，2026-04 後未再重算（20261031-P02 盤點）。僅供建卡時參考，不作為硬上限。
 
 | 任務類型 | 預估 token | 實測平均 | 建議上限 | 備註 |
 |---------|-----------|---------|---------|------|
@@ -98,14 +72,3 @@ v1 階段採用「粗略護欄 + 事後量測」策略：
 - analysis 係數未知，至少 3 筆實測後再更新
 
 **下次校準觸發**：再累積 5 筆任務（含至少 1 筆 analysis）後，於下次 retro 重算。
-
-## 升級觸發條件
-
-當以下任一條件持續 2 週以上，考慮升級到 v2：
-
-| 觸發條件 | 說明 |
-|---------|------|
-| Context 經常超限 | 單一代理的 context 頻繁需要壓縮，影響任務品質 |
-| 規則衝突頻繁 | 不同任務類型間的規則互相干擾 |
-| 單任務成本持續超標 | 任務級預算建議值被頻繁突破 |
-| 錯誤率上升 | error log 中同類錯誤重複出現 |
