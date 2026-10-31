@@ -94,4 +94,7 @@ enforcement:
   - guard: "scripts/allowed_tools_guard.py"
     matcher: "Bash + Write|Edit|MultiEdit|NotebookEdit"
     enforces: "Task Card allowed_tools 白名單當下強制（20260712-P11）— 有 active task 時，寫入目標路徑映射到 gate_check L2 同一詞彙的工具名、Bash 分類為 run_tests/bash，白名單外即 block；idle 全放行（不做全域綁卡，20260710-001 §三-6）；治理控制面（tasks/、state/、logs/ 寫入；harness 協定 CLI；git checkpoint/push）豁免；輸入層 fail-open（寫入 matcher 的 fail-closed 由 task_card_guard 專責，見 SECURITY.md）"
+  - guard: "scripts/mcp_guard.py"
+    matcher: "mcp__.*"
+    enforces: "deny 清單與硬規則 2 延伸到 MCP 工具（20261031-P01）— 工具名動詞分三級：刪除／外發／發布／合併／分享／直推遠端檔案／金流 → block（exit 2）；其他寫入型 → ask 交人工；唯讀動詞開頭 → allow；未知工具與壞輸入 → ask（fail-closed 到人工）。stdlib only"
 # 殘餘 prompt-only（誠實標註）：硬規則 1 的「drafts/ 探索」與 ask 等級的人工確認仍依賴 Claude 遵循 CLAUDE.md。

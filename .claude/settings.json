@@ -49,6 +49,15 @@
             "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/allowed_tools_guard.py\""
           }
         ]
+      },
+      {
+        "matcher": "mcp__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-.}/scripts/mcp_guard.py\""
+          }
+        ]
       }
     ],
     "PostToolUse": [
