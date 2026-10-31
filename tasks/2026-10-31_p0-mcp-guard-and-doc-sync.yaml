@@ -1,0 +1,69 @@
+# Task Card — P0：MCP 外部動作攔截 + retro 註冊 + COST_POLICY 版本同步
+# 來源：2026-10-31 對話中專案體檢（Opus 5.5 規範對照）P0 兩項；使用者同日明示「先開卡處理 P0」
+
+task_id: "20261031-P01"
+date: "2026-10-31"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "P0：把 deny／對外動作防線延伸到 MCP 工具（mcp__* PreToolUse guard），並補 retro skill 原生註冊、更新 COST_POLICY 過時的模型表與 token 數字"
+context: |
+  體檢發現：PreToolUse hook 只掛 Bash 與 Write|Edit 類，scripts/ 與 system/ 無任何 mcp__ 覆蓋；
+  session 內可用的 mcp__github__merge_pull_request / push_files、mcp__Google_Drive__share_file /
+  trash_file 等外發、刪除動作完全繞過 permissions_guard——硬規則 2 與 deny 清單在 MCP 路徑失效。
+  設計邊界：
+  (1) 新 guard 以工具名動詞分三級：deny（刪除／外發／發布／合併／分享／直推遠端檔案／金流）→ exit 2；
+      ask（其他寫入型 MCP 動作，如建 PR、留言、更新 issue）→ hookSpecificOutput permissionDecision=ask 交人工；
+      allow（get/list/search/read 等唯讀動詞）；
+  (2) 無法分類的 MCP 工具一律 ask（fail-closed 到人工，而非放行）；壞輸入 → ask，不 crash-open；
+  (3) stdlib only，不 import yaml；
+  (4) 不新增 PERMISSIONS deny key（避免動 sync 契約），在 enforcement 段登記新 guard。
+  另：skills/retro 有 frontmatter 但 .claude/skills/ 未註冊（5/6）；COST_POLICY 仍寫 4.x 世代模型、
+  skill token baseline 與 CLAUDE.md 矛盾。
+input_data:
+  - ".claude/settings.json"
+  - "scripts/permissions_guard.py（輸出／exit 語意參考）"
+  - "system/PERMISSIONS.yaml"
+  - "system/COST_POLICY.md"
+  - "SECURITY.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "scripts/mcp_guard.py 落地：deny 類 exit 2、寫入類 ask、唯讀 allow、未知與壞輸入 ask；stdlib only"
+  - "scripts/test_mcp_guard.py 涵蓋三級分類、未知工具、壞輸入、settings.json 佈線斷言，全綠並接入 CI"
+  - ".claude/settings.json 新增 matcher mcp__.* 的 PreToolUse hook；PERMISSIONS.yaml enforcement 段與 SECURITY.md 登記"
+  - ".claude/skills/retro symlink 建立，check_spec_consistency 第 9 項通過"
+  - "COST_POLICY.md 模型表改為 Claude 5 世代（標註 alias 對映以官方為準），skill token baseline 與 CLAUDE.md 一致"
+  - "全套既有 Python＋Ruby 測試與 sync_derived.sh --check 不回歸"
+
+# === 輸出定義 ===
+expected_output:
+  format: "py"
+  location: "scripts/"
+  filename: "mcp_guard.py"
+
+# === 風險與權限 ===
+risk_level: "medium"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "file_write"
+  - "bash"
+  - "run_tests"
+  - "git_commit_checkpoint"
+  - "modify_settings_json"
+  - "modify_system_rules"
+  - "write_logs"
+  - "write_drafts"
+
+# === 成本控制 ===
+max_tool_calls: 40
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "ops"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
