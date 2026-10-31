@@ -8,13 +8,13 @@
 不是多代理平台，不是 AI 自動化全套。
 是一個讓 Claude 穩定幫你做事、不失控的結構。
 
-## 架構：三平面、十六模組
+## 架構：三平面、十五模組
 
 ```
 控制平面（Control）
 ├── 1. Interface         Claude Code CLI
 ├── 2. Task Card         tasks/*.yaml — 任務定義
-├── 3. Planner/Router    system/ROUTING_RULES.md — skill 路由
+├── 3. Planner/Router    原生 skill 自動觸發＋system/INTAKE_FLOW.md「Skill 路由」三條
 └── 4. Decision Log      tasks/DECISION_LOG_TEMPLATE.yaml — 決策紀錄
 
 執行平面（Execution）
@@ -25,20 +25,19 @@
 └── 9. Checkpoint        git commit — 進度保存
 
 治理平面（Governance）
-├── 10. Agent Context      system/AGENT_CONTEXT.yaml — 系統自我認知
-├── 11. Permission         system/PERMISSIONS.yaml — 權限策略
-├── 12. Approval Policy    system/APPROVAL_POLICY.yaml — 批准流程（v2 新增）
-├── 13. Cost Policy        system/COST_POLICY.md — 成本控制
-├── 14. Failure Taxonomy   system/FAILURE_TAXONOMY.yaml — 失敗分類學（v2 新增）
-├── 15. Execution Log      system/EXECUTION_LOG_SCHEMA.yaml — 執行紀錄 schema（v2 新增）
-└── 16. Audit Log          logs/AUDIT_LOG.md — 稽核紀錄
+├── 10. Permission         system/PERMISSIONS.yaml — 權限策略
+├── 11. Approval Policy    system/APPROVAL_POLICY.yaml — 批准流程（v2 新增）
+├── 12. Cost Policy        system/COST_POLICY.md — 成本控制
+├── 13. Failure Taxonomy   system/FAILURE_TAXONOMY.yaml — 失敗分類學（v2 新增）
+├── 14. Execution Log      system/EXECUTION_LOG_SCHEMA.yaml — 執行紀錄 schema（v2 新增）
+└── 15. Audit Log          logs/AUDIT_LOG.md — 稽核紀錄
 ```
 
 ### 輔助檔（非編號模組，依附於上述平面）
 
 - `system/INTAKE_FLOW.md` — Fast-path / Intake 流程（依附 #3 Planner/Router）
 - `system/NATIVE_OVERLAP.yaml` — Claude Code 原生功能重疊度量（依附 #10 Agent Context，v3 規劃輸入）
-- `system/RETRO_FLOW.md` — RETRO 流程（已歸檔；近期回顧見 `outputs/reports/retro-*.md`）
+- `skills/retro/SKILL.md` — RETRO 流程（原 system/RETRO_FLOW.md 已併入；近期回顧見 `outputs/reports/retro-*.md`）
 - `system/validate_task_card.py` — Task Card schema 驗證工具（依附 #8 Gate Verifier）
 
 ## 資料夾結構
@@ -52,9 +51,7 @@ agent-harness/
 │   ├── GLOBAL_RULES.md        ← 全域規則 + 失敗分類學
 │   ├── PERMISSIONS.yaml       ← 權限策略（allow/ask/deny + 四級風險）
 │   ├── COST_POLICY.md         ← 成本控制 + 升級觸發條件
-│   ├── ROUTING_RULES.md       ← Skill 路由規則
 │   ├── GATE_POLICY.yaml            ← 四層驗證 checklist + rollback（v1.5+v2）
-│   ├── AGENT_CONTEXT.yaml          ← 系統自我認知與邊界（v1.5 新增）
 │   ├── APPROVAL_POLICY.yaml        ← 批准流程規則（v2 新增）
 │   ├── FAILURE_TAXONOMY.yaml       ← 17 種失敗模式獨立檔（v2 新增；G-A 補 SEC-05/06 間接注入）
 │   ├── INPUT_GUARDRAILS.md         ← 輸入側防護：不受信任內容當資料不當指令（G-A 新增）
@@ -62,7 +59,6 @@ agent-harness/
 │   ├── EXECUTION_LOG_SCHEMA.yaml   ← 執行紀錄結構定義（v2 新增）
 │   ├── INTAKE_FLOW.md              ← Fast-path / Intake 釐清流程
 │   ├── NATIVE_OVERLAP.yaml         ← Claude Code 原生功能重疊度（v3 規劃輸入）
-│   ├── RETRO_FLOW.md               ← RETRO 流程（已歸檔）
 │   └── validate_task_card.py       ← Task Card schema 驗證工具
 ├── tasks/
 │   ├── TASK_CARD_TEMPLATE.yaml

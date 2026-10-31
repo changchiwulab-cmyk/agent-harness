@@ -1,0 +1,11 @@
+approval_records:
+  - approval_id: "APR-20261031-002"
+    task_id: "20261031-P02"
+    date: "2026-10-31"
+    action: "modify_system_rules＋modify_claude_md＋modify_skills：依 outputs/drafts/2026-10-31_p1-rule-reduction-proposal.md 落地 A（刪 AGENT_CONTEXT、ROUTING_RULES→INTAKE_FLOW、RETRO_FLOW→retro skill）、B（GLOBAL_RULES 瘦身＋CLAUDE.md 載入集）、C（APPROVAL_POLICY／COST_POLICY／CONTEXT_ENGINEERING 瘦身）"
+    approval_method: "human_confirm"
+    risk_level: "high"
+    status: "approved"
+    approved_by: "human"
+    rationale: "使用者審閱提案後勾選 A／B／C；D（RECOVERY_RUNBOOK 附錄搬移、FAILURE_TAXONOMY 百分比）未核准，維持原狀"
+    linked_run: "RUN-20261031-002"

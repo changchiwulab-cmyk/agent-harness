@@ -65,7 +65,7 @@ escalation:
 # 定義批准動作如何被記錄、寫到哪。
 # 來源權威（source of truth）：logs/approvals/ 為「全任務」核准 audit trail 的唯一權威；
 # EXECUTION_LOG_SCHEMA.yaml 的 execution_log.approvals[] 僅為「該 run」鏡像，不得當權威。
-# RETRO_FLOW §1 的「核准紀錄」資料源即指此目錄。模板見 logs/approvals/APPROVAL_LOG_TEMPLATE.yaml。
+# retro skill（skills/retro/SKILL.md）資料蒐集的「核准紀錄」即指此目錄。模板見 logs/approvals/APPROVAL_LOG_TEMPLATE.yaml。
 approval_record:
   location: "logs/approvals/"
   filename_pattern: "YYYY-MM-DD_[task_id]_approval.yaml"   # 純 YAML，便於 CI lint

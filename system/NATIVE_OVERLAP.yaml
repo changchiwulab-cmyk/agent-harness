@@ -19,7 +19,7 @@ modules:
     overlap_pct: 85
     native: "Claude Code Skills（/skill、自動載入）"
     evidence: "本 session Skill tool + skills 列表自動列出；N3 PoC 起步，2026-07-02（20260702-R03）已補完 5/5 skill 的 frontmatter + .claude/skills/ symlink 註冊"
-  - name: "Planner/Router (ROUTING_RULES.md)"
+  - name: "Planner/Router (ROUTING_RULES.md → 20261031-P02 併入 INTAKE_FLOW.md 後刪除)"
     overlap_pct: 70
     native: "Skill 自動路由 + 子代理"
     evidence: "原生會根據 skill description 觸發；表格式手動路由屬冗餘"
@@ -31,7 +31,7 @@ modules:
     overlap_pct: 75
     native: "settings.json（allow/ask/deny）"
     evidence: "兩者語意幾乎 1:1，僅缺風險等級欄位"
-  - name: "Agent Context (AGENT_CONTEXT.yaml)"
+  - name: "Agent Context (AGENT_CONTEXT.yaml → 20261031-P02 刪除，邊界由 CLAUDE.md＋PERMISSIONS 承載)"
     overlap_pct: 60
     native: "CLAUDE.md / 系統 prompt"
     evidence: "內容 ≈ 自我描述段落，與 CLAUDE.md 互相重複"

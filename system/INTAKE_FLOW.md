@@ -13,7 +13,7 @@
 當使用者的需求同時滿足以下三條，直接進入「草擬 Task Card → 使用者確認 → 執行」：
 
 1. `goal` 可以一句話說清楚
-2. `skill_type` 可直接判斷（見 `system/ROUTING_RULES.md`）
+2. `skill_type` 可直接判斷（見下方「Skill 路由」）
 3. `risk_level` 明顯為 low 或 medium
 
 ```
@@ -78,6 +78,16 @@
 - 有沒有已有的內部資料可以參考？
 - 時間或成本有沒有限制？
 - 這個產出會用在哪裡？（決定 risk level）
+
+---
+
+## Skill 路由（原 ROUTING_RULES.md，20261031-P02 併入）
+
+日常路由交給原生：`skills/*/SKILL.md` 的 description 自動觸發，對應成本分層子代理見 `.claude/agents/`。原生不處理的只剩三條：
+
+1. **一張 Task Card 只對應一個 skill**；`skill_type` ∈ research / analysis / writing / ops / review（retro 為週期流程，見 `skills/retro/SKILL.md`）。
+2. **跨 skill 的需求拆成多張卡**，以 output 檔案接力（例：research → `outputs/drafts/research_note.md` → writing 讀取產出報告）；不做開放式 agent-to-agent 路由。
+3. **判斷不了 skill 類型就問使用者**，不要猜。
 
 ---
 
