@@ -13,7 +13,7 @@ description: 週期性回顧 skill — 蒐集執行數據、分析五維模式�
 與 review 的差異：review 審查單一輸出的品質，retro 審查整批任務執行的**系統性模式**。
 
 ## 觸發條件
-（依 system/RETRO_FLOW.md）
+（原 system/RETRO_FLOW.md 於 20261031-P02 併入本檔；retro 本身也需要 Task Card）
 - 累積完成 ≥5 個任務（從 `logs/AUDIT_LOG.md` 計算，上次 retro 截止點起）
 - 發生 2 次以上同類錯誤
 - 使用者手動請求
@@ -40,6 +40,10 @@ description: 週期性回顧 skill — 蒐集執行數據、分析五維模式�
 | 權限 | 哪些 ask 每次都被立即 approve？（畢業候選） | PERMISSIONS.yaml |
 | 品質 | DoD 夠具體嗎？積壓在 drafts/ 待晉升的報告有幾份？ | TASK_CARD_TEMPLATE.yaml |
 
+附加檢查（五維之外，每次 retro 都跑）：
+- 決策回看：`ruby scripts/check_decision_revisit.rb`，有觸發 revisit 的 decision 列入建議
+- 原生重疊回看：`python3 scripts/governance_metrics.py` 看 M4；`system/NATIVE_OVERLAP.yaml` 過季或 aggregate >50% 即列入建議
+
 每條發現**必須附 task_id** 作為證據，不能只說「感覺上」。
 
 ### 3. 輸出草稿
@@ -51,6 +55,10 @@ description: 週期性回顧 skill — 蒐集執行數據、分析五維模式�
 - 哪些 drafts 晉升為 reports
 - 哪些專案封存
 - 是否需建立新技能或自動化
+
+### 5. 晉升至 reports/（使用者確認後，另開 Task Card）
+- 複製 `outputs/drafts/retro-[日期].md` → `outputs/reports/retro-[季度-序號].md`，檔頭加晉升標記（日期、審閱者、採納項目）
+- 原 draft 檔尾加回指；寫 `reports/` 屬 ask 權限
 
 ## 輸出格式
 

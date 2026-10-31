@@ -1,0 +1,66 @@
+# Execution Log — P1 規則減量（20261031-P02）
+# 觸發條件符合 EXECUTION_LOG_SCHEMA 使用範圍：risk ≥ high、checkpoints ≥ 3
+
+execution_log:
+  run_id: "RUN-20261031-002"
+  task_id: "20261031-P02"
+  skill_type: "analysis"
+  started_at: "2026-10-31 16:35"
+  ended_at: "2026-10-31 17:20"
+  status: "completed"
+
+  tools_used:
+    - tool: file_read
+      call_count: 8
+    - tool: file_search
+      call_count: 6
+    - tool: file_write
+      call_count: 3
+    - tool: bash
+      call_count: 16
+    - tool: run_tests
+      call_count: 4
+    - tool: git_commit_checkpoint
+      call_count: 6
+    - tool: modify_system_rules
+      call_count: 6
+    - tool: modify_claude_md
+      call_count: 1
+    - tool: write_logs
+      call_count: 2
+    - tool: write_drafts
+      call_count: 1
+
+  checkpoints:
+    - commit: "2dfd2dc"
+      stage: "建立 Task Card（C1）"
+    - commit: "7f1d229"
+      stage: "階段一：刪減提案草稿，送人工核准（C2）"
+    - commit: "9a0e5c9"
+      stage: "A 組：刪 AGENT_CONTEXT、ROUTING_RULES→INTAKE_FLOW、RETRO_FLOW→retro skill（C3）"
+    - commit: "26b7b85"
+      stage: "B 組：GLOBAL_RULES 刪失效次數規則、CLAUDE.md 載入集縮減（C4）"
+    - commit: "478bf5b"
+      stage: "C 組：APPROVAL_POLICY／COST_POLICY／CONTEXT_ENGINEERING 瘦身（C5）"
+
+  token_estimate:
+    input: 90000
+    output: 14000
+    total: 104000
+    source: "rule_estimated"
+
+  approvals:
+    - action: "依提案落地 A／B／C 三組（modify_system_rules＋modify_claude_md＋modify_skills）"
+      status: "approved"
+      approved_by: "human"
+      timestamp: "2026-10-31"
+      note: "APR-20261031-002；D 組（RECOVERY_RUNBOOK 附錄、FAILURE_TAXONOMY 百分比）未核准，維持原狀"
+
+  output_path: "outputs/drafts/2026-10-31_p1-rule-reduction-proposal.md"
+  error_summary: ""
+  gate_results:
+    schema_check: "pass"
+    rule_check: "pass"
+    completion_check: "pass"
+    risk_check: "pass"
+  notes: "實測結果：執行期載入集（CLAUDE.md＋CLAUDE.md 指定預載的 system/ 檔）10,919 → 5,258 bytes（−52%）；system/ 總量 65,160 → 56,300 bytes（−13.6%）。兩者都低於提案估計（−59%／−26%），原因：(1) D 組未核准；(2) APPROVAL_POLICY 保留的 approval_record 契約與註解比預估大（4.1K→3.4K，估 1.6K）；(3) COST_POLICY 保留 Context 量化基準＋模型路由＋兩張校準表（6.0K→5.0K，估 2.5K）；(4) GLOBAL_RULES 只刪核准的兩條次數規則與成本段（2.4K→約 2.3K，估 1.5K）；(5) retro skill 吸收 RETRO_FLOW 後 2.8K→3.4K（≈1,036 tokens，仍在 1,500 上限內）。memory/ 歷史決策紀錄內的舊檔名引用依提案不回改。全套 Python 14＋Ruby 4＋e2e 4＋spec consistency＋context budget＋sync_derived --check 不回歸。"

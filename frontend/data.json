@@ -224,18 +224,33 @@
       "started_at": "2026-10-31 16:08",
       "status": "completed",
       "task_id": "20261031-P01"
+    },
+    {
+      "ended_at": "2026-10-31 17:20",
+      "gate_results": {
+        "completion_check": "pass",
+        "risk_check": "pass",
+        "rule_check": "pass",
+        "schema_check": "pass"
+      },
+      "path": "logs/runs/RUN-20261031-002.yaml",
+      "run_id": "RUN-20261031-002",
+      "skill_type": "analysis",
+      "started_at": "2026-10-31 16:35",
+      "status": "completed",
+      "task_id": "20261031-P02"
     }
   ],
   "overview": {
     "alerts": [
       {
-        "current": "76/9 = 8.44",
+        "current": "77/9 = 8.56",
         "id": "M2",
         "name": "outputs/drafts:reports 比例",
         "status": "ok"
       },
       {
-        "current": "82/82 = 100.0%",
+        "current": "83/83 = 100.0%",
         "id": "M3",
         "name": "audit log 覆蓋率（status ∈ {review, done, failed, partial}）",
         "status": "ok"
@@ -250,34 +265,34 @@
     "gate_results": {
       "completion_check": {
         "not_run": 1,
-        "pass": 8
+        "pass": 9
       },
       "risk_check": {
         "n/a": 7,
         "not_run": 1,
-        "pass": 1
+        "pass": 2
       },
       "rule_check": {
         "not_run": 1,
-        "pass": 8
+        "pass": 9
       },
       "schema_check": {
         "fail": 1,
-        "pass": 8
+        "pass": 9
       }
     },
     "run_status": {
-      "completed": 8,
+      "completed": 9,
       "failed": 1
     },
-    "run_total": 9,
+    "run_total": 10,
     "task_risk": {
-      "high": 2,
+      "high": 3,
       "low": 57,
       "medium": 40
     },
     "task_skill": {
-      "analysis": 10,
+      "analysis": 11,
       "ops": 65,
       "research": 9,
       "review": 8,
@@ -287,9 +302,9 @@
       "done": 77,
       "in_progress": 4,
       "pending": 13,
-      "review": 5
+      "review": 6
     },
-    "task_total": 99
+    "task_total": 100
   },
   "tasks": [
     {
@@ -1281,6 +1296,16 @@
       "skill_type": "ops",
       "status": "review",
       "task_id": "20261031-P01"
+    },
+    {
+      "approval_needed": true,
+      "date": "2026-10-31",
+      "goal": "P1：以實際執行證據（logs/errors、logs/runs、Task Card 實測欄位、程式依賴）盤點 system/ 規則，產出逐檔保留／合併／降級／刪除的刪減提案，經人工核准後落地，目標 system/ 執行期載入量與總量明顯下降且不破壞任何 hook／CI 契約",
+      "path": "tasks/2026-10-31_p1-rule-reduction.yaml",
+      "risk_level": "high",
+      "skill_type": "analysis",
+      "status": "review",
+      "task_id": "20261031-P02"
     }
   ]
 }
