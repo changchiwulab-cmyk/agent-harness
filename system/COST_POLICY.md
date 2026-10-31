@@ -36,22 +36,23 @@ v1 階段採用「粗略護欄 + 事後量測」策略：
 | 子代理 context 隔離 | 省 ~67% | vs 單一代理塞所有 context |
 | Programmatic Tool Calling | 省 ~37% | 中間結果不進 context |
 | CLAUDE.md + GLOBAL_RULES | 控制在 3K 以內 | 軟性上限；實測 baseline ~400 tokens |
-| 單一 skill prompt | 控制在 1.5K 以內 | 軟性上限；含 eval_examples，實測 baseline 200-600 tokens |
+| 單一 skill prompt | 控制在 1.5K 以內 | 軟性上限；只計執行期載入的 SKILL.md（eval_examples.md 不計），實測 baseline 480-990 tokens（與 CLAUDE.md 同口徑） |
 | 常駐 system prompt 快取 | 命中省 ~90% input | prompt caching：穩定前綴（CLAUDE.md+GLOBAL_RULES+PERMISSIONS）做 cache，可變後綴（Task Card+skill）後接 |
 
 ## 模型路由規則（2026-05-29 起：已落地於原生子代理）
 
 以 `.claude/agents/*.md` 的 per-agent `model` 欄位落地分流（context 隔離另估省 ~67%）：
 
-| 子代理 | model（alias→實際） | 對應 skill | 依據 |
+| 子代理 | model（alias→實際，2026-10-31 校正） | 對應 skill | 依據 |
 |--------|--------------------|-----------|------|
-| ops-specialist | haiku → Haiku 4.5 | ops | 分類、抽取、格式檢查 → 便宜模型 |
-| research-specialist | sonnet → Sonnet 4.6 | research | 整合分析 |
-| writing-specialist | sonnet → Sonnet 4.6 | writing | 內容產出 |
-| review-specialist | sonnet → Sonnet 4.6 | review | 品質判斷 |
-| analysis-specialist | opus → Opus 4.8 | analysis | 規劃、推理、決策 → 強模型 |
+| ops-specialist | haiku → Haiku 5.5 | ops | 分類、抽取、格式檢查 → 便宜模型 |
+| research-specialist | sonnet → Sonnet 5.5 | research | 整合分析 |
+| writing-specialist | sonnet → Sonnet 5.5 | writing | 內容產出 |
+| review-specialist | sonnet → Sonnet 5.5 | review | 品質判斷 |
+| analysis-specialist | opus → Opus 5.5 | analysis | 規劃、推理、決策 → 強模型 |
 
-- alias（haiku/sonnet/opus）會自動對映到當代各層級最新模型，無需追版本。
+- alias（haiku/sonnet/opus）會自動對映到當代各層級最新模型，無需追版本；上表「實際」欄僅供成本估算參考，以官方 alias 對映為準（[待驗證] 每次主版本升級時隨 NATIVE_OVERLAP 一併複核）。
+- Claude 5 世代另有 Fable 5.1；本 harness 目前未分配子代理，需有實測成本／品質資料再評估是否納入分層。
 - 路由判斷本身改由原生 skill description 自動觸發，不再需要獨立的「路由模型」。
 - 校準資料（下方各 skill 實測平均）回填時，可據以調整對應子代理的分層（成本長期偏高 → 升一層模型）。
 

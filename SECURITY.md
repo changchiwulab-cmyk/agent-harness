@@ -20,7 +20,7 @@
 |---|---|---|---|
 | 0 | 容器／VM／OS 層 sandbox | 真正隔離 — **不在本 repo 內**，屬部署決策 | 未部署則此層不存在 |
 | 1 | `.claude/settings.json` permissions ask 規則 | 人工把關（system/、skills/、memory/、reports/ 的寫入） | 依賴 runtime 實作 |
-| 2 | PreToolUse hooks（deterministic chokepoint） | `task_card_guard.py`：新正式報告需 active task 精確授權，輸入層 **fail-closed**（壞 stdin／例外 → block）；`allowed_tools_guard.py`：active 卡的 allowed_tools 白名單當下強制（Bash＋寫入類，20260712-P11），idle 全放行、控制面豁免 | matcher 外的工具不經過；idle 時白名單不綁 |
+| 2 | PreToolUse hooks（deterministic chokepoint） | `task_card_guard.py`：新正式報告需 active task 精確授權，輸入層 **fail-closed**（壞 stdin／例外 → block）；`allowed_tools_guard.py`：active 卡的 allowed_tools 白名單當下強制（Bash＋寫入類，20260712-P11），idle 全放行、控制面豁免；`mcp_guard.py`（matcher `mcp__.*`，20261031-P01）：MCP 工具依動詞分 deny／ask／allow，未知與壞輸入 → ask | matcher 外的工具不經過；idle 時白名單不綁；MCP 分類靠工具名動詞，命名不規則的工具落到 ask |
 | 3 | `permissions_guard.py` regex deny-list | 輔助防線：攔明顯違規簽章（刪除／外發／金流／force-push），**fail-open** | 見下方「已知可繞過」 |
 | 4 | Prompt 自律（CLAUDE.md／GLOBAL_RULES） | 最弱層，僅引導 | 模型不遵循即失效 |
 

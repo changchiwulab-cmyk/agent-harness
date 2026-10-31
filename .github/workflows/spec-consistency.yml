@@ -85,6 +85,9 @@ jobs:
       - name: Allowed tools guard tests
         run: python3 scripts/test_allowed_tools_guard.py
 
+      - name: MCP guard tests
+        run: python3 scripts/test_mcp_guard.py
+
       - name: Active task pointer tests
         run: python3 scripts/test_active_task.py
 

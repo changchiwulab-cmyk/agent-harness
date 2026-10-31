@@ -1,0 +1,11 @@
+approval_records:
+  - approval_id: "APR-20261031-001"
+    task_id: "20261031-P01"
+    date: "2026-10-31"
+    action: "modify_settings_json（PreToolUse 新增 mcp__.* → scripts/mcp_guard.py）＋modify_system_rules（PERMISSIONS.yaml enforcement 段、COST_POLICY.md 模型表與 token 口徑）＋.claude/skills/retro 註冊"
+    approval_method: "human_confirm"
+    risk_level: "medium"
+    status: "approved"
+    approved_by: "human"
+    rationale: "使用者於對話中檢視體檢報告的 P0 清單後明示「好，先開卡處理 P0」；PR 人工合併為最終批准"
+    linked_run: "RUN-20261031-001"
