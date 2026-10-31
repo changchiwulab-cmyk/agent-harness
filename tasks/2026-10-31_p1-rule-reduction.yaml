@@ -1,0 +1,63 @@
+# Task Card — P1：規則減量（system/ 以實證盤點後刪併）
+# 來源：2026-10-31 專案體檢 P1 第一項；使用者同日明示「接著開卡處理 P1 規則減量」
+# 兩階段：階段一只產出刪減提案（drafts/）；使用者核准清單後，階段二才動 system/
+
+task_id: "20261031-P02"
+date: "2026-10-31"
+status: "in_progress"
+
+# === 任務定義 ===
+goal: "P1：以實際執行證據（logs/errors、logs/runs、Task Card 實測欄位、程式依賴）盤點 system/ 規則，產出逐檔保留／合併／降級／刪除的刪減提案，經人工核准後落地，目標 system/ 執行期載入量與總量明顯下降且不破壞任何 hook／CI 契約"
+context: |
+  體檢判斷：system/ 17 份規則檔約 65KB，多數規則針對早期模型失控模式設計，但實際失敗紀錄極少，
+  部分規則已被實務數據證偽（例：「累計 >5 次工具呼叫先 checkpoint」與卡片實測呼叫數長期不符）。
+  原則：
+  (1) 程式或 CI 有讀取的檔案／欄位（machine contract）不刪，只能瘦身非契約段落；
+  (2) 與原生功能或其他檔案重複者合併到單一事實來源；
+  (3) 無實證觸發、也無程式依賴的行為規則 → 刪除或降為參考文件（不在執行期載入）；
+  (4) 三條硬規則與 deny 清單不在刪減範圍。
+input_data:
+  - "system/*"
+  - "CLAUDE.md"
+  - "logs/errors/、logs/runs/、tasks/*.yaml（實測欄位）"
+  - "scripts/、.github/workflows/（契約依賴）"
+
+# === 完成標準 ===
+definition_of_done:
+  - "階段一：outputs/drafts/ 產出刪減提案——逐檔列出處置（保留／瘦身／合併／降級／刪除）、實證依據、程式依賴、刪後位元組估算"
+  - "階段一：提案明列執行期載入量（CLAUDE.md 指定載入集）前後對比與風險"
+  - "人工核准刪減清單（核准前不修改 system/）"
+  - "階段二：依核准清單落地，所有引用點（README、CLAUDE.md、skills、scripts）同步更新，無斷鏈"
+  - "階段二：全套 Python＋Ruby＋e2e 測試、spec consistency、context budget、sync_derived --check 不回歸"
+
+# === 輸出定義 ===
+expected_output:
+  format: "md"
+  location: "outputs/drafts/"
+  filename: "2026-10-31_p1-rule-reduction-proposal.md"
+
+# === 風險與權限 ===
+risk_level: "high"
+approval_needed: true
+allowed_tools:
+  - "file_read"
+  - "file_search"
+  - "file_write"
+  - "bash"
+  - "run_tests"
+  - "git_commit_checkpoint"
+  - "modify_system_rules"
+  - "modify_claude_md"
+  - "write_logs"
+  - "write_drafts"
+
+# === 成本控制 ===
+max_tool_calls: 60
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "analysis"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []
