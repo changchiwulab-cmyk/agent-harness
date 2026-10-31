@@ -10,7 +10,6 @@ LLM 原生缺乏四件事：穩定目標、穩定上下文邊界、穩定權限�
 
 - 所有任務必須有 Task Card，無例外
 - Task Card 必須包含 definition_of_done，否則不進入執行
-- 單一任務最多 3 輪外部查詢，超過需 checkpoint 後再繼續
 - 任務中途變更目標時，更新 Task Card 再繼續，不要在空中轉彎
 
 ## 輸出規則
@@ -35,14 +34,12 @@ LLM 原生缺乏四件事：穩定目標、穩定上下文邊界、穩定權限�
 - 每次任務只使用 Task Card 白名單內的工具
 - 工具呼叫前確認輸入格式正確
 - 工具返回錯誤時記錄，不要靜默忽略
-- 單一任務累計超過 5 次工具呼叫 → 先 checkpoint
+- 工具呼叫與 web search 次數以 Task Card 的 `max_tool_calls` / `max_web_searches` 為上限；checkpoint 依 CLAUDE.md「Checkpoint」時機，不按呼叫次數
 
 ## 成本意識
 
-- 能用檔案讀取解決的，不要用 web search
-- 能用一次查詢解決的，不要拆成多次
-- 長文件用摘要引用，不要全文貼入 context
-- 意識到每次 LLM 呼叫都有成本，避免不必要的重試循環
+- 先讀 repo 內檔案，再 web search；長文件用路徑引用，不全文貼入
+- 預算、模型分層與校準數據見 `system/COST_POLICY.md`
 
 ## 失敗分類學
 
