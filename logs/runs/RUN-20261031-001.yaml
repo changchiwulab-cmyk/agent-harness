@@ -34,7 +34,7 @@ execution_log:
       stage: "建立 P0 Task Card 並綁定 active task（C1）"
     - commit: "7ba50f9"
       stage: "mcp_guard.py＋13 例測試＋settings.json 佈線＋PERMISSIONS/SECURITY 登記＋CI step＋retro symlink（C2）"
-    - commit: "pending"
+    - commit: "42d989c"
       stage: "COST_POLICY 同步＋回歸＋run log＋approval＋卡片收尾（status→review）（C3）"
 
   token_estimate:

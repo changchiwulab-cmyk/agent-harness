@@ -21,7 +21,7 @@ checkpoints:
   stage: 建立 Task Card 並綁定 active task（C1）
 - commit: 7ba50f9
   stage: mcp_guard 佈線＋測試＋retro 註冊（C2）
-- commit: pending
+- commit: 42d989c
   stage: COST_POLICY 同步＋回歸＋run log＋approval＋收尾（C3）
 actual_tool_calls: 30
 result_summary: DoD 6/6。mcp_guard.py（matcher mcp__.*）：唯讀 allow、刪除／外發／發布／合併／分享／push／金流
